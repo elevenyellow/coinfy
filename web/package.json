@@ -8,11 +8,11 @@
     "build": "webpack --optimize-minimize --progress --colors --display-error-details"
   },
   "dependencies": {
-    "crypto-js": "^3.1.9-1",
     "dop": "^0.22.6",
     "html-webpack-plugin": "^2.29.0",
     "path": "^0.12.7",
     "preact": "^8.2.1",
+    "styled-components": "^2.1.1",
     "webpack": "^3.3.0",
     "webpack-dev-server": "^2.5.1"
   },

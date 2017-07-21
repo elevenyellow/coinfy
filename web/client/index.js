@@ -1,4 +1,3 @@
-import preact from 'preact';
-import dop from 'dop';
-
-console.log('Hey guys and ladies!!', dop, preact)
+import preact from 'preact'
+import dop from 'dop'
+import styled from 'styled-components'

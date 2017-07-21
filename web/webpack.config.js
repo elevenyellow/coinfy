@@ -1,17 +1,16 @@
+const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
-  template: './client/index.html',
-  filename: 'index.html',
-  inject: 'body'
-})
 
 
 module.exports = {
-  entry: './client/index.js',
+  entry: {
+      index: './client/index.js',
+      libs: './client/libs.js',
+  },
   output: {
     path: path.resolve('dist'),
-    filename: 'index_bundle.js'
+    filename: '[name].bundle.js'
   },
   module: {
     loaders: [
@@ -19,5 +18,16 @@ module.exports = {
       { test: /\.jsx$/, loader: 'babel-loader', exclude: /node_modules/ }
     ]
   },
-  plugins: [HtmlWebpackPluginConfig]
+  plugins: [
+        new webpack.optimize.ModuleConcatenationPlugin(),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'common' // Specify the common bundle's name.
+        }),
+        new HtmlWebpackPlugin({
+            template: './client/index.html',
+            filename: 'index.html',
+            inject: 'body'
+        })
+    ]
 }
+
