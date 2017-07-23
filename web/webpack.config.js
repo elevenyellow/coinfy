@@ -2,11 +2,10 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-
 module.exports = {
   entry: {
       index: './client/index.js',
-      libs: './client/libs.js',
+    //   libs: './client/libs.js',
   },
   output: {
     path: path.resolve('dist'),
@@ -20,9 +19,9 @@ module.exports = {
   },
   plugins: [
         new webpack.optimize.ModuleConcatenationPlugin(),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'common' // Specify the common bundle's name.
-        }),
+        // new webpack.optimize.CommonsChunkPlugin({
+        //     name: 'common' // Specify the common bundle's name.
+        // }),
         new HtmlWebpackPlugin({
             template: './client/index.html',
             filename: 'index.html',
