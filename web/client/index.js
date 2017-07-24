@@ -1,10 +1,19 @@
-import preact from 'preact'
-import dop from 'dop'
-import styled from 'styled-components'
+import React from 'react';
+import { render } from 'react-dom';
+import App from './App.js';
 
-import crypto from 'crypto'
-import bignumber from 'bignumber.js'
-import bitcoin from 'bitcoinjs-lib'
-import QRCode from 'qrcode.react'
+const container = document.querySelector('#app');
 
-console.log( QRCode );
+function renderApp() {
+  const app = (<App />);
+  render(app, container);
+}
+
+// Set up HMR re-rendering.
+if (module.hot) {
+  module.hot.accept();
+  module.hot.accept('./App.js', renderApp);
+}
+
+// Initial render.
+renderApp();
