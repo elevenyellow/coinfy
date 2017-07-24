@@ -2,7 +2,9 @@
   "name": "wedontneedbanks",
   "version": "1.0.0",
   "scripts": {
-    "dev": "NODE_ENV=development node index"
+    "dev": "NODE_ENV=development node index",
+    "build": "webpack --config=./webpack/production.js --optimize-minimize --progress --colors --display-error-details",
+    "prod": "node index"
   },
   "dependencies": {
     "express": "4.14.0",
@@ -14,7 +16,7 @@
     "babel-loader": "6.2.5",
     "babel-preset-es2015": "6.13.2",
     "babel-preset-react": "6.11.1",
-    "webpack": "^2.1.0-beta.19",
+    "webpack": "^3.3.0",
     "webpack-dev-middleware": "1.6.1",
     "webpack-hot-middleware": "2.12.2"
   }
