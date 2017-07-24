@@ -1,14 +1,14 @@
-const webpack = require('webpack');
-const path = require('path');
+const webpack = require('webpack')
+const path = require('path')
 
 module.exports = {
     entry: {
         index: './client/index.js'
-        //   libs: './client/libs.js',
     },
     output: {
         path: path.resolve('dist'),
-        filename: '[name].bundle.js'
+		filename: '[name].bundle.js',
+		publicPath: '/'
     },
     module: {
         loaders: [
@@ -24,9 +24,10 @@ module.exports = {
         }
     },
     plugins: [
-        new webpack.optimize.ModuleConcatenationPlugin()
-        // new webpack.optimize.CommonsChunkPlugin({
-        //     name: 'common' // Specify the common bundle's name.
-        // })
+        new webpack.optimize.ModuleConcatenationPlugin(),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            minChunks: ({ resource }) => /node_modules/.test(resource),
+        })
     ]
 };

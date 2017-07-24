@@ -7,15 +7,22 @@
     "prod": "node index"
   },
   "dependencies": {
+    "bignumber.js": "^4.0.2",
+    "bitcoinjs-lib": "^3.1.1",
+    "dop": "^0.22.9",
     "express": "4.14.0",
     "preact": "5.7.0",
-    "preact-compat": "2.3.1"
+    "preact-compat": "2.3.1",
+    "qrcode.react": "^0.7.1",
+    "styled-components": "^2.1.1"
   },
   "devDependencies": {
     "babel-core": "6.13.2",
+    "babel-dop": "^1.0.3",
     "babel-loader": "6.2.5",
     "babel-preset-es2015": "6.13.2",
     "babel-preset-react": "6.11.1",
+    "prettier-eslint": "^6.4.2",
     "webpack": "^3.3.0",
     "webpack-dev-middleware": "1.6.1",
     "webpack-hot-middleware": "2.12.2"
