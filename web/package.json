@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "NODE_ENV=development node index",
-    "build": "webpack --config=./webpack/production.js --optimize-minimize --progress --colors --display-error-details",
+    "build": "NODE_ENV=production webpack --config=./webpack/production.js --optimize-minimize --progress --colors --display-error-details",
     "prod": "node index"
   },
   "dependencies": {
@@ -12,8 +12,9 @@
     "dop": "^0.22.9",
     "express": "4.14.0",
     "preact": "5.7.0",
-    "preact-compat": "2.3.1",
+    "preact-compat": "^3.15.0",
     "qrcode.react": "^0.7.1",
+    "react-icons": "^2.2.5",
     "styled-components": "^2.1.1"
   },
   "devDependencies": {

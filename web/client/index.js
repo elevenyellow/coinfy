@@ -5,8 +5,8 @@ import App from '/components/App.js';
 const container = document.querySelector('#app');
 
 function renderApp() {
-  const app = (<App />);
-  render(app, container);
+	const app = (<App />);
+	render(app, container);
 }
 
 // Set up HMR re-rendering.
