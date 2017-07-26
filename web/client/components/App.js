@@ -32,24 +32,27 @@ export default function App() {
                 </Header>
                 <Columns>
                     <ColumnLeft>
+                        <ColumnLeftChart>
+                            <ColumnLeftChartBalance>
+                                <ColumnLeftChartLabel>Total balance</ColumnLeftChartLabel>
+                                <ColumnLeftChartNumber>
+                                    <AmountSuper>$</AmountSuper>
+                                    <Amount>22,521</Amount>
+                                    {/* <AmountDec>.5</AmountDec> */}
+                                </ColumnLeftChartNumber>
+                            </ColumnLeftChartBalance>
+                            <ColumnLeftChartChart>
+                                <svg width="100%" height="100%" viewBox="0 0 42 42" class="donut">
+                                    <circle class="donut-segment" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#f5922f" stroke-width="2"></circle>
+                                </svg>
+                            </ColumnLeftChartChart>
+                        </ColumnLeftChart>
                         <ColumnLeftHeader>
                             <ColumnLeftHeaderLeft>
                                 <IconMore size={35} color={styles.color.front2} />
                             </ColumnLeftHeaderLeft>
                             <ColumnLeftHeaderRight></ColumnLeftHeaderRight>
                         </ColumnLeftHeader>
-                        <ColumnLeftChart>
-                            <ColumnLeftChartText>
-                                $2521
-                            </ColumnLeftChartText>
-                            <ColumnLeftChartChart>
-                                <svg width="100%" height="100%" viewBox="0 0 42 42" class="donut">
-                                    <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle>
-                                    <circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#d2d3d4" stroke-width="2"></circle>
-                                    <circle class="donut-segment" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#f5922f" stroke-width="2"></circle>
-                                </svg>
-                            </ColumnLeftChartChart>
-                        </ColumnLeftChart>
                     </ColumnLeft>
                     <ColumnRight>ColumnRight</ColumnRight>
                 </Columns>
@@ -66,7 +69,8 @@ const styles = {
     color: {
         background: '#f3f6f8',
         front1: '#8b9bae',
-        front2: '#becad9',
+        front2: '#adb3bb',
+        front3: '#5a6168',
     }
 }
 
@@ -154,8 +158,10 @@ border: 1px solid rgba(205,213,218,.7);
 
 const ColumnLeftHeader = styled.div`
 position:absolute;
+top:0;
 `
 const ColumnLeftHeaderLeft = styled.div`
+cursor: pointer;
 float:left;
 padding-left: 5px;
 padding-top: 10px;
@@ -169,16 +175,23 @@ const ColumnLeftChart = styled.div`
 const ColumnLeftChartChart = styled.div`
 `
 
-const ColumnLeftChartText = styled.div`
-    position: absolute;
-    text-align: center;
-    width: 100%;
-    /* height: 100%; */
-    padding-top: 100px;
-    font-weight: 900;
-    font-size: 4vw;
-    color: #5a6168;
+const ColumnLeftChartBalance = styled.div`
+position: absolute;
+text-align: center;
+width: 100%;
+padding-top: 95px;
 `
+
+const ColumnLeftChartLabel = styled.div`
+font-size: 12px;
+color: ${styles.color.front2};
+`
+
+const ColumnLeftChartNumber = styled.div`
+line-height: 35px;
+`
+
+
 
 
 
@@ -200,4 +213,18 @@ border-left: 6px solid transparent;
 border-right: 6px solid transparent;
 border-top: 7px solid ${styles.color.front1};
 margin-top: -2px;
+`
+
+
+const AmountSuper = styled.span`
+position:relative;
+top: -13px;
+font-size: 20px;
+font-weight: bold;
+color: ${styles.color.front3};
+`
+const Amount = styled.span`
+font-size: 40px;
+font-weight: bold;
+color: ${styles.color.front3};
 `
