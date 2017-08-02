@@ -23,10 +23,17 @@ export default function App() {
                             <HeaderCrypto>LTC / <strong>$42.5</strong></HeaderCrypto>
                         </HeaderCenter>
                         <HeaderRight>
-                            <div onClick={()=>alert(1)}>
-                            <HeaderCurrencySelected>USD</HeaderCurrencySelected>
-                            <Arrow />
-                            </div>
+                            <DropDown>
+                                <div onClick={()=>alert(1)}>
+                                <HeaderCurrencySelected>USD</HeaderCurrencySelected>
+                                <Arrow />
+                                </div>
+                                <DropDownMenu visible={true} right="0" top="25px">
+                                    <DropDownItem>USD</DropDownItem>
+                                    <DropDownItem>EUR</DropDownItem>
+                                </DropDownMenu>
+                            </DropDown>
+                            
                         </HeaderRight>
                     </HeaderContent> 
                 </Header>
@@ -49,13 +56,19 @@ export default function App() {
                         </ColumnLeftChart>
                         <ColumnLeftHeader>
                             <ColumnLeftHeaderLeft>
-                                <IconMore size={35} color={styles.color.front2} />
+                                <DropDown>
+                                    <IconMore size={35} color={styles.color.front2} />
+                                    <DropDownMenu visible={true} left="7px">
+                                        <DropDownItem>Import</DropDownItem>
+                                        <DropDownItem>Export / Save</DropDownItem>
+                                    </DropDownMenu>
+                                </DropDown>
                             </ColumnLeftHeaderLeft>
                             <ColumnLeftHeaderRight></ColumnLeftHeaderRight>
                         </ColumnLeftHeader>
                         <ColumnLeftContent>
                             {[0,0,0,0,0,0,0].map((e,index)=>(
-                            <Wallet selected={index===6}>
+                            <Wallet selected={index===1}>
                                 <WalletIcon>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32" class="currencyIcons-cEnxSc jkLgUs"><g fill="none" fill-rule="evenodd"><circle cx="16" cy="16" r="16" fill="#FFB119"></circle><path fill="#FFF" d="M21.78 15.37c.51-.61.83-1.4.83-2.26 0-2.74-1.6-4.38-4.24-4.38V5.45c0-.12-.1-.22-.22-.22h-1.27c-.11 0-.2.1-.2.21v3.3h-1.7V5.44c0-.12-.1-.22-.22-.22H13.5c-.12 0-.2.1-.21.21v3.3H9.67c-.12 0-.21.09-.21.21v1.31c0 .12.1.22.21.22h.21c.94 0 1.7.79 1.7 1.75v7c0 .92-.68 1.67-1.55 1.75a.21.21 0 0 0-.18.16l-.33 1.32c-.01.06 0 .13.04.19.04.05.1.08.17.08h3.55v3.3c0 .1.1.2.2.2h1.28c.12 0 .21-.1.21-.22v-3.28h1.7v3.3c0 .1.1.2.21.2h1.27c.12 0 .22-.1.22-.22v-3.28h.85c2.65 0 4.24-1.64 4.24-4.37 0-1.28-.68-2.39-1.68-3zm-6.8-4.01h2.54c.94 0 1.7.78 1.7 1.75 0 .96-.76 1.75-1.7 1.75h-2.55v-3.5zm3.39 8.75h-3.4v-3.5h3.4c.93 0 1.7.78 1.7 1.75 0 .96-.77 1.75-1.7 1.75z"></path></g></svg>
                                 </WalletIcon>
@@ -89,6 +102,7 @@ const styles = {
         front1: '#8b9bae',
         front2: '#adb3bb',
         front3: '#5a6168',
+        front4: '#e1e4e6'
     }
 }
 
@@ -211,7 +225,7 @@ line-height: 35px;
 
 
 const ColumnLeftContent = styled.div`
-border-top:2px solid ${styles.color.background};
+border-top:1px solid ${styles.color.background};
 height: calc(100% - 277px);
 overflow-y: auto;
 position: absolute;
@@ -243,12 +257,12 @@ padding: 10px;
 
 const Wallet = styled.div`
 padding: 15px 15px;
-border-bottom:2px solid ${styles.color.background};
+border-bottom:1px solid ${styles.color.front4};
 color: ${styles.color.front3};
 ${props=>{
     if (props.selected) {
         return `
-        border-left: 5px solid ${styles.color.background2};
+        /*border-left: 5px solid ${styles.color.background2};*/
         border-bottom: 0;
         box-shadow: 0 1px 2px -1px rgba(0,0,0,.4) inset;
         background: ${styles.color.background}
@@ -265,7 +279,7 @@ margin-left: 33px;
 `
 const WalletLabel = styled.div`
 font-weight: bold;
-font-size: 17px;
+font-size: 16px;
 color: inherit;
 line-height: 20px;
 `
@@ -319,4 +333,31 @@ const Amount = styled.span`
 font-size: 36px;
 font-weight: bold;
 color: ${styles.color.front3};
+`
+
+const DropDown = styled.div`
+position: relative;
+`
+
+const DropDownMenu = styled.div`
+position: absolute;
+background: white;
+box-shadow: 0 1px 5px 0 rgba(0,0,0,0.25);
+border-radius: 3px;
+display:${props=>props.visible?'block':'none'};
+left:${props=>props.left};
+right:${props=>props.right};
+top:${props=>props.top};
+`
+
+const DropDownItem = styled.div`
+padding: 10px 20px;
+font-size: 13px;
+color: #adb3bb;
+border-top: 1px solid #f3f6f8;
+width: 90px;
+text-align: left;
+&:first-child {
+    border-top: 0
+}
 `
