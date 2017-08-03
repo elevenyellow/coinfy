@@ -117,7 +117,9 @@ export default function App() {
 
                                 </ColumnRightContentMenu>
                                 <ColumnRightContentContent>
+                                    <ColumnRightContentInner>
                                     <p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>End</p>
+                                    </ColumnRightContentInner>
                                 </ColumnRightContentContent>
                             </ColumnRightContent>
                     </ColumnRight>
@@ -345,7 +347,7 @@ height: 108px;
 border-bottom: 1px solid ${styles.color.background4}
 `
 const ColumnRightHeaderInner = styled.div`
-padding: 20px 30px;
+padding: 20px 35px;
 `
 
 const ColumnRightContent = styled.div`
@@ -371,6 +373,8 @@ overflow-y: auto;
   background: transparent;
 }
 `
+
+
 const ColumnRightContentMenuItem = styled.div`
 clear:both;
 width: calc(100% - 40px);
@@ -397,12 +401,12 @@ ${props=>{
 `
 const ColumnRightContentMenuItemIcon = styled.div`
 float:left;
+margin-right: 10px;
 `
 const ColumnRightContentMenuItemText = styled.div`
 color: ${styles.color.front3};
-font-weight: 800;
-font-size: 14px;
-padding-left: 30px;
+font-weight: bold;
+font-size: 13px;
 padding-top: 3px;
 `
 
@@ -421,6 +425,10 @@ height: 100%;
 &::-webkit-scrollbar-track {
   background: transparent;
 }
+`
+
+const ColumnRightContentInner = styled.div`
+padding: 20px;
 `
 
 
