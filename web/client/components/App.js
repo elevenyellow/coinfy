@@ -8,7 +8,9 @@ import styled from 'styled-components'
 // import bitcoin from 'bitcoinjs-lib'
 // import QRCode from 'qrcode.react'
 
+
 import IconMore from 'react-icons/lib/md/more-vert'
+import IconDashboard from 'react-icons/lib/md/dashboard'
 import Div from '/components/reusable/Div'
 
 
@@ -97,10 +99,25 @@ export default function App() {
                             </ColumnRightHeader>
                             <ColumnRightContent>
                                 <ColumnRightContentMenu>
-                                    Menu
+
+                                    <ColumnRightContentMenuItem>
+                                        <ColumnRightContentMenuItemIcon><IconDashboard size={20} color={styles.color.front4} /></ColumnRightContentMenuItemIcon>
+                                        <ColumnRightContentMenuItemText>Import Bitcoin</ColumnRightContentMenuItemText>
+                                    </ColumnRightContentMenuItem>
+
+                                    <ColumnRightContentMenuItem selected={true}>
+                                        <ColumnRightContentMenuItemIcon><IconDashboard size={20} color={styles.color.front4} /></ColumnRightContentMenuItemIcon>
+                                        <ColumnRightContentMenuItemText>Create Bitcoin</ColumnRightContentMenuItemText>
+                                    </ColumnRightContentMenuItem>
+
+                                    <ColumnRightContentMenuItem>
+                                        <ColumnRightContentMenuItemIcon><IconDashboard size={20} color={styles.color.front4} /></ColumnRightContentMenuItemIcon>
+                                        <ColumnRightContentMenuItemText>Import Ethereum</ColumnRightContentMenuItemText>
+                                    </ColumnRightContentMenuItem>
+
                                 </ColumnRightContentMenu>
                                 <ColumnRightContentContent>
-                                    Item
+                                    <p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>End</p>
                                 </ColumnRightContentContent>
                             </ColumnRightContent>
                     </ColumnRight>
@@ -123,6 +140,7 @@ const styles = {
         front1: '#8b9bae',
         front2: '#adb3bb',
         front3: '#5a6168',
+        front4: '#a8b5c5',
     }
 }
 
@@ -235,6 +253,7 @@ line-height: 35px;
 `
 
 
+
 const ColumnLeftContent = styled.div`
 border-top:1px solid ${styles.color.background4};
 height: calc(100% - 277px);
@@ -247,8 +266,7 @@ top: 215px;
   height: 8px;
 }
 &::-webkit-scrollbar-thumb {
-  background: ${styles.color.background2};
-  border-radius: 1em;
+  background: ${styles.color.background4};
   cursor: grab;
 }
 &::-webkit-scrollbar-track {
@@ -270,10 +288,16 @@ const Wallet = styled.div`
 padding: 15px 15px;
 border-bottom:1px solid ${styles.color.background4};
 color: ${styles.color.front3};
+border-left: 5px solid transparent;
+cursor: pointer;
+&:hover {
+    border-left-color: ${styles.color.background2};
+}
 ${props=>{
     if (props.selected) {
         return `
-        border-left: 5px solid ${styles.color.background2};
+        cursor: inherit;
+        border-left-color: ${styles.color.background2};
         border-bottom: 0;
         box-shadow: 0 1px 2px -1px rgba(0,0,0,.4) inset;
         background: ${styles.color.background1}
@@ -321,7 +345,7 @@ height: 108px;
 border-bottom: 1px solid ${styles.color.background4}
 `
 const ColumnRightHeaderInner = styled.div`
-padding: 20px 35px;
+padding: 20px 30px;
 `
 
 const ColumnRightContent = styled.div`
@@ -332,10 +356,71 @@ const ColumnRightContentMenu = styled.div`
 float: left;
 width: 200px;
 height: 100%;
-border-right: 1px solid ${styles.color.background4}
+border-right: 1px solid ${styles.color.background4};
+overflow-y: auto;
+
+&::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+&::-webkit-scrollbar-thumb {
+  background: ${styles.color.background4};
+  cursor: grab;
+}
+&::-webkit-scrollbar-track {
+  background: transparent;
+}
 `
+const ColumnRightContentMenuItem = styled.div`
+clear:both;
+width: calc(100% - 40px);
+padding-bottom: 15px;
+padding-right: 15px;
+padding-left: 20px;
+padding-top: 15px;
+border-left: 5px solid transparent;
+cursor: pointer;
+&:hover {
+    border-left-color: ${styles.color.background2};
+}
+
+${props=>{
+    if (props.selected) {
+        return `
+        cursor: inherit;
+        background: ${styles.color.background1};
+        border-left-color: ${styles.color.background2};
+        box-shadow: 0 1px 2px -1px rgba(0,0,0,.4) inset;
+        `
+    }
+}}
+`
+const ColumnRightContentMenuItemIcon = styled.div`
+float:left;
+`
+const ColumnRightContentMenuItemText = styled.div`
+color: ${styles.color.front3};
+font-weight: 800;
+font-size: 14px;
+padding-left: 30px;
+padding-top: 3px;
+`
+
+
 const ColumnRightContentContent = styled.div`
-float: left;
+overflow-y: auto;
+height: 100%;
+&::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+&::-webkit-scrollbar-thumb {
+  background: ${styles.color.background4};
+  cursor: grab;
+}
+&::-webkit-scrollbar-track {
+  background: transparent;
+}
 `
 
 
