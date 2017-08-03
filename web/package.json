@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "NODE_ENV=development node index",
-    "build": "NODE_ENV=production webpack --config=./webpack/production.js --optimize-minimize --progress --colors --display-error-details",
+    "build": "webpack --config=./webpack/production.js --optimize-minimize --progress --colors --display-error-details",
     "prod": "node index"
   },
   "dependencies": {
