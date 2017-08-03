@@ -10,7 +10,6 @@ import styled from 'styled-components'
 
 
 import IconMore from 'react-icons/lib/md/more-vert'
-import IconDashboard from 'react-icons/lib/md/dashboard'
 import Div from '/components/reusable/Div'
 
 
@@ -73,9 +72,7 @@ export default function App() {
                         <ColumnLeftContent>
                             {[0,0,0,0,0,0,0].map((e,index)=>(
                             <Wallet selected={index===1} key={index}>
-                                <WalletIcon>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32"><g fill="none" fillRule="evenodd"><circle cx="16" cy="16" r="16" fill="#FFB119"></circle><path fill="#FFF" d="M21.78 15.37c.51-.61.83-1.4.83-2.26 0-2.74-1.6-4.38-4.24-4.38V5.45c0-.12-.1-.22-.22-.22h-1.27c-.11 0-.2.1-.2.21v3.3h-1.7V5.44c0-.12-.1-.22-.22-.22H13.5c-.12 0-.2.1-.21.21v3.3H9.67c-.12 0-.21.09-.21.21v1.31c0 .12.1.22.21.22h.21c.94 0 1.7.79 1.7 1.75v7c0 .92-.68 1.67-1.55 1.75a.21.21 0 0 0-.18.16l-.33 1.32c-.01.06 0 .13.04.19.04.05.1.08.17.08h3.55v3.3c0 .1.1.2.2.2h1.28c.12 0 .21-.1.21-.22v-3.28h1.7v3.3c0 .1.1.2.21.2h1.27c.12 0 .22-.1.22-.22v-3.28h.85c2.65 0 4.24-1.64 4.24-4.37 0-1.28-.68-2.39-1.68-3zm-6.8-4.01h2.54c.94 0 1.7.78 1.7 1.75 0 .96-.76 1.75-1.7 1.75h-2.55v-3.5zm3.39 8.75h-3.4v-3.5h3.4c.93 0 1.7.78 1.7 1.75 0 .96-.77 1.75-1.7 1.75z"></path></g></svg>
-                                </WalletIcon>
+                                <WalletIcon><img src="image/bitcoin.svg" width="22" height="22" /></WalletIcon>
                                 <WalletInfo>
                                     <WalletLabel>Coinbase {index+1}</WalletLabel>
                                     <WalletBalance><strong>$2351.32</strong> / 0.93123 BTC</WalletBalance>
@@ -101,24 +98,24 @@ export default function App() {
                                 <ColumnRightContentMenu>
 
                                     <ColumnRightContentMenuItem>
-                                        <ColumnRightContentMenuItemIcon><IconDashboard size={20} color={styles.color.front4} /></ColumnRightContentMenuItemIcon>
-                                        <ColumnRightContentMenuItemText>Import Bitcoin</ColumnRightContentMenuItemText>
+                                        <ColumnRightContentMenuItemIcon><img src="image/bitcoin.svg" width="20" height="20" /></ColumnRightContentMenuItemIcon>
+                                        <ColumnRightContentMenuItemText>Import wallet</ColumnRightContentMenuItemText>
                                     </ColumnRightContentMenuItem>
 
                                     <ColumnRightContentMenuItem selected={true}>
-                                        <ColumnRightContentMenuItemIcon><IconDashboard size={20} color={styles.color.front4} /></ColumnRightContentMenuItemIcon>
-                                        <ColumnRightContentMenuItemText>Create Bitcoin</ColumnRightContentMenuItemText>
+                                        <ColumnRightContentMenuItemIcon><img src="image/bitcoin.svg" width="20" height="20" /></ColumnRightContentMenuItemIcon>
+                                        <ColumnRightContentMenuItemText>Create new wallet</ColumnRightContentMenuItemText>
                                     </ColumnRightContentMenuItem>
 
                                     <ColumnRightContentMenuItem>
-                                        <ColumnRightContentMenuItemIcon><IconDashboard size={20} color={styles.color.front4} /></ColumnRightContentMenuItemIcon>
+                                        <ColumnRightContentMenuItemIcon><img src="image/bitcoin.svg" width="20" height="20" /></ColumnRightContentMenuItemIcon>
                                         <ColumnRightContentMenuItemText>Import Ethereum</ColumnRightContentMenuItemText>
                                     </ColumnRightContentMenuItem>
 
                                 </ColumnRightContentMenu>
                                 <ColumnRightContentContent>
                                     <ColumnRightContentInner>
-                                    <p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>A</p><p>End</p>
+                                        
                                     </ColumnRightContentInner>
                                 </ColumnRightContentContent>
                             </ColumnRightContent>
@@ -407,7 +404,7 @@ const ColumnRightContentMenuItemText = styled.div`
 color: ${styles.color.front3};
 font-weight: bold;
 font-size: 13px;
-padding-top: 3px;
+line-height: 20px;
 `
 
 
@@ -465,14 +462,18 @@ color: white;
 font-weight: bold;
 height: 40px;
 width: 100%;
-border-radius: 5px;
+border-radius: 2px;
 font-size: 15px;
 letter-spacing: -0.2px;
 cursor: pointer;
 outline: none;
-&:hover {
-    background-color: ${styles.color.background3};
-}
+
+/*color: ${styles.color.front3};
+background-image: linear-gradient(#fff,#f7f9fb);
+background-color: #f7f9fb;
+border: 1px solid #d4dce4;
+-webkit-transition: 0.15s ease all;
+transition: 0.15s ease all;*/
 `
 
 
