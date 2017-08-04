@@ -3,10 +3,10 @@ const path = require('path')
 
 module.exports = {
     entry: {
-        index: './client/index.js'
+        index: './src/client/index.js'
     },
     output: {
-        path: path.resolve('dist'),
+        path: path.resolve('static/bundle'),
 		filename: '[name].bundle.js',
 		publicPath: '/'
     },

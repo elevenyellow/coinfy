@@ -1,7 +1,7 @@
 {
   "plugins": [
     // "babel-dop",
-    ["babel-root-slash-import", {"rootPathSuffix": "client/"}]
+    ["babel-root-slash-import", {"rootPathSuffix": "src/client/"}]
   ],
   "presets": [["es2015", { "modules": false }], "react"]
 }

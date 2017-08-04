@@ -60,7 +60,7 @@ export default function App() {
                         <ColumnLeftHeader>
                             <ColumnLeftHeaderLeft>
                                 <DropDown>
-                                    <IconMore size={35} color={styles.color.front2} />
+                                    {/* <IconMore size={35} color={styles.color.front2} /> */}
                                     <DropDownMenu visible={false} left="7px">
                                         <DropDownItem>Import</DropDownItem>
                                         <DropDownItem>Export / Save</DropDownItem>

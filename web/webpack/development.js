@@ -1,18 +1,18 @@
 const webpack = require('webpack');
+const path = require('path');
 const createWebpackMiddleware = require('webpack-dev-middleware');
 const createWebpackHotMiddleware = require('webpack-hot-middleware');
-const path = require('path');
 
 const config = {
     devtool: 'inline-source-map',
     entry: {
-        index: [
+        main: [
             'webpack-hot-middleware/client',
-            path.resolve(__dirname, '../client/index.js')
+            path.resolve(__dirname, '../src/client/index.js')
         ]
     },
     output: {
-        // path: path.resolve(__dirname, '../build'),
+        // path: path.resolve(__dirname, './build'),
         filename: '[name].bundle.js',
         // chunkFilename: '[name]-[chunkhash].js',
         publicPath: '/'
@@ -34,6 +34,10 @@ const config = {
         ]
     },
     plugins: [
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            minChunks: ({ resource }) => /node_modules/.test(resource)
+        }),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin()
@@ -42,16 +46,16 @@ const config = {
 
 const compiler = webpack(config);
 
-const webpackDevMiddleware = createWebpackMiddleware(compiler, {
-    quiet: true,
-    noInfo: true,
-    headers: {
-        'Access-Control-Allow-Origin': '*'
-    },
-    publicPath: '/'
-});
-
 module.exports = function(app) {
-    app.use(webpackDevMiddleware);
+    app.use(
+        createWebpackMiddleware(compiler, {
+            quiet: true,
+            noInfo: true,
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            publicPath: config.output.publicPath
+        })
+    );
     app.use(createWebpackHotMiddleware(compiler));
 };
