@@ -12,10 +12,8 @@ const config = {
         ]
     },
     output: {
-        // path: path.resolve(__dirname, './build'),
-        filename: '[name].bundle.js',
-        // chunkFilename: '[name]-[chunkhash].js',
-        publicPath: '/'
+        filename: '[name].js',
+        publicPath: '/bundle/'
     },
     resolve: {
         extensions: ['.js'],

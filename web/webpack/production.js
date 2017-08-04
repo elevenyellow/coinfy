@@ -1,20 +1,14 @@
-const webpack = require('webpack')
-const path = require('path')
+const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
     entry: {
-        index: './src/client/index.js'
+        main: './src/client/index.js'
     },
     output: {
-        path: path.resolve('static/bundle'),
-		filename: '[name].bundle.js',
-		publicPath: '/'
-    },
-    module: {
-        loaders: [
-            { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
-            { test: /\.jsx$/, loader: 'babel-loader', exclude: /node_modules/ }
-        ]
+        filename: '[name].js',
+        publicPath: '/bundle/',
+        path: path.resolve('public/bundle')
     },
     resolve: {
         extensions: ['.js'],
@@ -23,11 +17,20 @@ module.exports = {
             'react-dom': 'preact-compat'
         }
     },
+    module: {
+        loaders: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                exclude: [/node_modules/]
+            }
+        ]
+    },
     plugins: [
         new webpack.optimize.ModuleConcatenationPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
-            minChunks: ({ resource }) => /node_modules/.test(resource),
+            minChunks: ({ resource }) => /node_modules/.test(resource)
         }),
         new webpack.DefinePlugin({
             'process.env': {
