@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-
-
 // import { register, createObserver } from 'dop'
 // import cipher from 'browserify-cipher'
 // import bignumber from 'bignumber.js'
@@ -60,7 +58,7 @@ export default function App() {
                         <ColumnLeftHeader>
                             <ColumnLeftHeaderLeft>
                                 <DropDown>
-                                    {/* <IconMore size={35} color={styles.color.front2} /> */}
+                                    <IconMore size={35} color={styles.color.front2} /> 
                                     <DropDownMenu visible={false} left="7px">
                                         <DropDownItem>Import</DropDownItem>
                                         <DropDownItem>Export / Save</DropDownItem>
@@ -462,7 +460,7 @@ color: white;
 font-weight: bold;
 height: 40px;
 width: 100%;
-border-radius: 2px;
+border-radius: 4px;
 font-size: 15px;
 letter-spacing: -0.2px;
 cursor: pointer;
