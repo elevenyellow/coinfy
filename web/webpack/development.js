@@ -12,7 +12,8 @@ const config = {
     },
     plugins: [
         undefined,
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoErrorsPlugin()
     ],
     devtool: 'inline-source-map'
 }
@@ -23,6 +24,10 @@ module.exports = function(app) {
     app.use(
         require('webpack-dev-middleware')(compiler, {
             noInfo: true,
+            quiet: true,		
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
             publicPath: commonConfig.output.publicPath
         })
     )
