@@ -8,7 +8,7 @@ module.exports = {
     },
     output: {
         filename: '[name].js',
-        publicPath: '/bundle/'
+        publicPath: '/static/bundle/'
     },
     // Remove resolve in case you want to use react
     resolve: {

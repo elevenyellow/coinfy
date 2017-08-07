@@ -5,7 +5,7 @@ const commonConfig = require('./common')
 
 const config = {
     output: {
-        path: path.resolve('public/bundle')
+        path: path.resolve('public/static/bundle')
     },
     plugins: [
         undefined,

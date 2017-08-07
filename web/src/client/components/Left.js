@@ -40,7 +40,7 @@ export default function Left() {
             <ColumnLeftContent>
                 {[0,0,0,0,0,0,0].map((e,index)=>(
                 <Wallet selected={index===1} key={index}>
-                    <WalletIcon><img src="image/bitcoin.svg" width="22" height="22" /></WalletIcon>
+                    <WalletIcon><img src="/static/image/bitcoin.svg" width="22" height="22" /></WalletIcon>
                     <WalletInfo>
                         <WalletLabel>Coinbase {index+1}</WalletLabel>
                         <WalletBalance><strong>$2351.32</strong> / 0.93123 BTC</WalletBalance>

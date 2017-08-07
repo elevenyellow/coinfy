@@ -21,10 +21,12 @@ export default function App() {
                 <Left />
                 <Right />
             </Columns>
-            <Footer></Footer>
+            <Footer />
         </Background>
     )
 }
+
+
 
 
 const Background = styled.div`

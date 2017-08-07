@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import styles from '/styles'
+import ui from '/stores/ui'
 
 import Div from '/components/styled/Div'
 import H1 from '/components/styled/H1'
@@ -23,17 +24,17 @@ export default function Right() {
                     <RightContentMenu>
 
                         <RightContentMenuItem>
-                            <RightContentMenuItemIcon><img src="image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemIcon>
+                            <RightContentMenuItemIcon><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemIcon>
                             <RightContentMenuItemText>Import wallet</RightContentMenuItemText>
                         </RightContentMenuItem>
 
                         <RightContentMenuItem selected={true}>
-                            <RightContentMenuItemIcon><img src="image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemIcon>
+                            <RightContentMenuItemIcon><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemIcon>
                             <RightContentMenuItemText>Create new wallet</RightContentMenuItemText>
                         </RightContentMenuItem>
 
                         <RightContentMenuItem>
-                            <RightContentMenuItemIcon><img src="image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemIcon>
+                            <RightContentMenuItemIcon><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemIcon>
                             <RightContentMenuItemText>Import Ethereum</RightContentMenuItemText>
                         </RightContentMenuItem>
 
