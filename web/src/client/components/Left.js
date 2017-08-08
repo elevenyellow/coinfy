@@ -5,6 +5,7 @@ import IconMore from 'react-icons/lib/md/more-vert'
 import { DropDown, DropDownItem, DropDownMenu, DropDownArrow } from '/components/styled/Dropdown'
 import Button from '/components/styled/Button'
 
+import { Link } from '/router'
 
 
 export default function Left() {
@@ -49,7 +50,7 @@ export default function Left() {
                 ))}
             </ColumnLeftContent>
             <ColumnLeftFooter>
-                <Button>Add wallet</Button>
+                <Button onClick={e=>{ Link('/addwallet') }}>Add wallet</Button>
             </ColumnLeftFooter>
         </LeftDiv>
     )

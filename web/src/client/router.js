@@ -1,8 +1,39 @@
+var url, urlparsed
+
+exports.getUrl = function() {
+    return url
+}
+
+exports.getUrlParsed = function() {
+    return urlparsed
+}
+
+exports.Link = function(url, state, label) {
+    history.pushState(state, label, url)
+    updateUrl()
+}
+
+exports.onUpdate = function() {}
+
+
+function updateUrl() {
+    url = window.location.href
+    urlparsed = parse(url)
+    exports.onUpdate(url, urlparsed)
+}
+updateUrl()
+
+
+
+
+window.addEventListener('popstate', updateUrl)
+// window.addEventListener("hashchange", updateUrl)
+
 
 function parse(url) {
-    var resu = /(.*):\/\/([^/#?]+)([^?#]*)([^#]*)(.*)?/.exec(url)
-    var query = {}
-    var data = {
+    var resu = /(.*):\/\/([^/#?]+)([^?#]*)([^#]*)(.*)?/.exec(url),
+    query = {},
+    data = {
         href: url,
         protocol: resu[1],
         host: resu[2],
@@ -25,24 +56,9 @@ function parse(url) {
         })
     }
 
-
     return data
 }
-console.log(   parse('http://localhost:8000/wendios/peri/?A=123&B&=C&#molando') )
 
 
 
 
-// function onChange(e) {
-//     console.log( e );
-// }
-
-// window.addEventListener('popstate', onChange)
-
-// exports.getRoute = function(url) {
-//     return url.replace(/.*:\/\/([^/#?]+\/?)(#|\?)?/, '$2');
-// }
-
-// exports.link = function(url, state, label) {
-//     history.pushState(state, label, url)
-// }

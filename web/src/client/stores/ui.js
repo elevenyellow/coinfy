@@ -1,8 +1,12 @@
-import { register } from 'dop'
-import { getRoute } from '/router'
+import { register, set } from 'dop'
+import router from '/router'
 
 const ui = register({
-    url: getRoute(window.location.href)
+    url: window.location.href
 })
+
+router.onUpdate = function(url, urlparsed) {
+    set(ui,'url',url)
+}
 
 export default ui
