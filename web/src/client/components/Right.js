@@ -2,20 +2,20 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
 import styles from '/styles'
-import ui from '/stores/ui'
 import AddWallet from '/components/views/AddWallet'
 import Message from '/components/views/Message'
 import { RightContainer } from '/components/styled/Right'
+import { location } from '/stores/router'
 
-
+console.log( location, window.location );
 
 export default class Right extends Component {
 
     componentWillMount() {
-        const observer = createObserver(mutations => {
-            this.forceUpdate();
-        });
-        observer.observe(ui, 'url');
+        // const observer = createObserver(mutations => {
+        //     this.forceUpdate();
+        // });
+        // observer.observe(ui, 'url');
     }
 
     shouldComponentUpdate() {
@@ -23,7 +23,7 @@ export default class Right extends Component {
     }
 
     render() {
-        return <RightTemplate url={ui.url} />
+        return <RightTemplate url={'ui.url'} />
     }
 
 }

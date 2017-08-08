@@ -4,8 +4,8 @@ import styles from '/styles'
 import IconMore from 'react-icons/lib/md/more-vert'
 import { DropDown, DropDownItem, DropDownMenu, DropDownArrow } from '/components/styled/Dropdown'
 import Button from '/components/styled/Button'
+import { location } from '/stores/router'
 
-import { Link } from '/router'
 
 
 export default function Left() {
@@ -50,7 +50,7 @@ export default function Left() {
                 ))}
             </ColumnLeftContent>
             <ColumnLeftFooter>
-                <Button onClick={e=>{ Link('/addwallet') }}>Add wallet</Button>
+                <Button onClick={e=>{ location.href='/addwallet' }}>Add wallet</Button>
             </ColumnLeftFooter>
         </LeftDiv>
     )
