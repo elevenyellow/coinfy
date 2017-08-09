@@ -12,25 +12,14 @@ let dop = require('dop'),
 export function create(url) {
 
     let shallWeEmit = false
-    let shallWePush = true
     let location = register(parse(url))
     let disposeInterceptor = intercept(location, mutation => {
 
         if (!shallWeEmit) {
 
             if (mutation.prop === 'href') {
-                if (shallWePush)
-                    pushState(mutation.value)
-                let newlocation = parse(window.location.href)
-                newlocation.href = getHref(newlocation)
-                let collector = collect()
-                shallWeEmit = true
-                set(location, 'href', newlocation.href)
-                set(location, 'pathname', newlocation.pathname)
-                set(location, 'search', newlocation.search)
-                set(location, 'hash', newlocation.hash)
-                shallWeEmit = false
-                collector.emit()
+                pushState(mutation.value)
+                setHref(getWindowLocation())
             }
 
         }
@@ -39,11 +28,28 @@ export function create(url) {
 
     })
 
+
+
+    function setHref(href) {
+        let newlocation = parse(href)
+        newlocation.href = getHref(newlocation)
+        let collector = collect()
+        shallWeEmit = true
+        set(location, 'href', newlocation.href)
+        set(location, 'pathname', newlocation.pathname)
+        set(location, 'search', newlocation.search)
+        set(location, 'hash', newlocation.hash)
+        shallWeEmit = false
+        collector.emit()
+    }
+
+
+
+
+
     if (window) {
         window.addEventListener('popstate', function(){
-            shallWePush = false
-            set(location, 'href', window.location.href)
-            shallWePush = true
+            setHref(getWindowLocation())
         })
     }
 
@@ -58,12 +64,14 @@ function pushState(url, state, title) {
     window.history.pushState(state, title, url)
 }
 
+function getWindowLocation() {
+    // if nodejs ... todo
+    return window.location.href
+}
 
-// function setUrl(url) {
-//     locations.forEach(location => {
-//         set(location, 'href', url)
-//     })
-// }
+function getHref(location) {
+    return location.pathname + location.search + location.hash
+}
 
 
 function parse(url) {
@@ -97,55 +105,3 @@ function parse(url) {
 
     return location
 }
-
-function getHref(location) {
-    return location.pathname + location.search + location.hash
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // exports.pushState = function pushState(state, title, url) {
-//     pushState(url, state, title)
-//     setUrl(url)
-// }
-
-// exports.Link = function(url, state, label) {
-//     history.pushState(state, label, url)
-//     updateUrl()
-// }
-
-// let url, urlparsed
-
-
-// exports.onUpdate = function() {}
-
-
-// function updateUrl() {
-//     url = window.location.href
-//     urlparsed = parse(url)
-//     exports.onUpdate(url, urlparsed)
-// }
-// updateUrl()
-
-
-
-
-// window.addEventListener('popstate', updateUrl)
-// window.addEventListener("hashchange", updateUrl)
-
-
-
-
-
