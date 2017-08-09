@@ -1,93 +1,132 @@
 
-var dop = require('dop'),
+let dop = require('dop'),
     register = dop.register,
     set = dop.set,
     del = dop.del,
-    createObserver = dop.createObserver,
+    collect = dop.collect,
+    intercept = dop.intercept,
     locations = [];
 
 
 
-exports.create = function create(url) {
-    var location = dop.register(parse(url))
-    locations.push(location)
+export function create(url) {
 
-    // Creating observers
-    var observer = createObserver(function(mutations) {
-        mutations.forEach(mutation=>{
-            console.log( 'mutation', mutation.prop );
-        })
+    let shallWeEmit = false
+    let shallWePush = true
+    let location = register(parse(url))
+    let disposeInterceptor = intercept(location, mutation => {
+
+        if (!shallWeEmit) {
+
+            if (mutation.prop === 'href') {
+                if (shallWePush)
+                    pushState(mutation.value)
+                let newlocation = parse(window.location.href)
+                newlocation.href = getHref(newlocation)
+                let collector = collect()
+                shallWeEmit = true
+                set(location, 'href', newlocation.href)
+                set(location, 'pathname', newlocation.pathname)
+                set(location, 'search', newlocation.search)
+                set(location, 'hash', newlocation.hash)
+                shallWeEmit = false
+                collector.emit()
+            }
+
+        }
+
+        return shallWeEmit
+
     })
-    observer.observe(location)
-    observer.observe(location.path)
-    observer.observe(location.query)
 
+    if (window) {
+        window.addEventListener('popstate', function(){
+            shallWePush = false
+            set(location, 'href', window.location.href)
+            shallWePush = true
+        })
+    }
+
+
+    locations.push(location)
     return location
 }
 
-exports.pushState = function pushState(state, title, url) {
+
+
+function pushState(url, state, title) {
     window.history.pushState(state, title, url)
-    setUrl(url)
 }
 
 
+// function setUrl(url) {
+//     locations.forEach(location => {
+//         set(location, 'href', url)
+//     })
+// }
 
-
-
-function setUrl(url) {
-    locations.forEach(function(location) {
-        set(location, 'href', url)
-    })
-}
 
 function parse(url) {
-    var match = /((.*):\/\/([^/#?]+))?([^?#]*)([^#]*)(.*)?/.exec(url),
+    let match = /((.*):\/\/([^/#?]+))?([^?#]*)([^#]*)(.*)?/.exec(url),
     query = {},
-    data = {
+    location = {
         // origin: match[1],
         // protocol: match[2],
         // host: match[3],
         pathname: match[4],
-        path: match[4].split('/').filter(item => item.length>0),
+        // path: match[4].split('/').filter(item => item.length>0),
         search: match[5],
-        query: query,
+        // query: query,
         hash: match[6] || ''
     }
-    data.href = data.pathname + data.search + data.hash
+    location.href = getHref(location)
 
-    if (data.search.length > 1) {
-        data.search.substr(1).split('&').forEach(item => {
-            if (item.length > 0) {
-                var equal = item.indexOf('=');
-                (equal > -1) ?
-                    data.query[item.substr(0,equal)] = item.substr(equal+1)
-                :
-                    data.query[item] = ''
-            }
-        })
-    }
 
-    return data
+
+    // if (location.search.length > 1) {
+    //     location.search.substr(1).split('&').forEach(item => {
+    //         if (item.length > 0) {
+    //             let equal = item.indexOf('=');
+    //             (equal > -1) ?
+    //                 location.query[item.substr(0,equal)] = item.substr(equal+1)
+    //             :
+    //                 location.query[item] = ''
+    //         }
+    //     })
+    // }
+
+    return location
+}
+
+function getHref(location) {
+    return location.pathname + location.search + location.hash
 }
 
 
 
 
-if (window)
-    window.addEventListener('popstate', function(){
-        setUrl(window.location.href)
-    })
 
 
 
 
+
+
+
+
+
+
+
+    // exports.pushState = function pushState(state, title, url) {
+//     pushState(url, state, title)
+//     setUrl(url)
+// }
 
 // exports.Link = function(url, state, label) {
 //     history.pushState(state, label, url)
 //     updateUrl()
 // }
 
-// var url, urlparsed
+// let url, urlparsed
 
 
 // exports.onUpdate = function() {}

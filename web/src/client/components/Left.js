@@ -50,7 +50,7 @@ export default function Left() {
                 ))}
             </ColumnLeftContent>
             <ColumnLeftFooter>
-                <Button onClick={e=>{ location.href='/addwallet' }}>Add wallet</Button>
+                <Button onClick={e=>{ location.href='addwallet?perotio=123' }}>Add wallet</Button>
             </ColumnLeftFooter>
         </LeftDiv>
     )

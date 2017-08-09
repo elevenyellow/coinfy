@@ -7,15 +7,15 @@ import Message from '/components/views/Message'
 import { RightContainer } from '/components/styled/Right'
 import { location } from '/stores/router'
 
-console.log( location, window.location );
 
 export default class Right extends Component {
 
     componentWillMount() {
-        // const observer = createObserver(mutations => {
-        //     this.forceUpdate();
-        // });
-        // observer.observe(ui, 'url');
+        const observer = createObserver(mutations => {
+            console.log( 'mutations', mutations );
+            // this.forceUpdate();
+        });
+        observer.observe(location);
     }
 
     shouldComponentUpdate() {
@@ -30,7 +30,7 @@ export default class Right extends Component {
 
 
 function RightTemplate({ url }) {
-    let view = (url.indexOf('addwallet')>-1) ? <AddWallet /> : (<Message>Add or Import wallet to start working</Message>)
+    let view = (url.indexOf('addwallet')>-1) ? <AddWallet /> : (<Message>Add or Import a wallet to start working</Message>)
     return <RightContainer>{view}</RightContainer>
 }
 
