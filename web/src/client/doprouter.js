@@ -1,13 +1,4 @@
-
-let dop = require('dop'),
-    register = dop.register,
-    set = dop.set,
-    del = dop.del,
-    collect = dop.collect,
-    intercept = dop.intercept,
-    locations = [];
-
-
+import { register, set, del, collect, intercept, getObjectTarget } from 'dop'
 
 export function create(url) {
 
@@ -18,7 +9,47 @@ export function create(url) {
         if (!shallWeEmit) {
 
             if (mutation.prop === 'href') {
+                dop.getObjectTarget(mutation.object).href = mutation.oldValue
                 pushState(mutation.value)
+                setHref(getWindowLocation())
+            }
+
+
+            else if (mutation.prop === 'pathname') {
+                let value = mutation.value.split('/').map(encodeURIComponent).join('/')
+                if (mutation.value[0]!=='/')
+                    value = '/' + value
+                value = value + location.search + location.hash
+                dop.getObjectTarget(mutation.object).pathname = mutation.oldValue
+                pushState(value)
+                setHref(getWindowLocation())
+            }
+
+
+            else if (mutation.prop === 'search') {
+                let value = mutation.value[0]==='?' ? mutation.value.substr(1) : mutation.value
+                value = value
+                    .split('&')
+                    .map(param=>{
+                        let splited = param.split('=')
+                        param = encodeURIComponent(splited[0]||'')
+                        if (splited.hasOwnProperty(1))
+                            param += '='+encodeURIComponent(splited[1]) 
+                        return param
+                    })
+                    .join('&')
+
+                value = location.pathname + '?' + value + location.hash
+                dop.getObjectTarget(mutation.object).search = mutation.oldValue
+                pushState(value)
+                setHref(getWindowLocation())
+            }
+
+            else if (mutation.prop === 'hash') {
+                let value = mutation.value[0]==='#' ? mutation.value : '#' + mutation.value
+                value = location.pathname + location.search + value
+                dop.getObjectTarget(mutation.object).hash = mutation.oldValue
+                pushState(value)
                 setHref(getWindowLocation())
             }
 
@@ -29,7 +60,7 @@ export function create(url) {
     })
 
 
-
+    
     function setHref(href) {
         let newlocation = parse(href)
         newlocation.href = getHref(newlocation)
@@ -46,21 +77,20 @@ export function create(url) {
 
 
 
-
-    if (window) {
+    // when user click back/forward on browser or change the hash
+    if (window)
         window.addEventListener('popstate', function(){
             setHref(getWindowLocation())
         })
-    }
 
 
-    locations.push(location)
     return location
 }
 
 
 
 function pushState(url, state, title) {
+    // if nodejs ... todo
     window.history.pushState(state, title, url)
 }
 
