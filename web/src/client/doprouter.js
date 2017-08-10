@@ -92,6 +92,7 @@ export function create(url) {
                 setHref(getWindowLocation(), mutation)
             }
         }
+        return shallWeEmit
     })
     
 
@@ -108,10 +109,11 @@ export function create(url) {
             for (prop in query)
                 search.push(prop+'='+query[prop])
             href = location.pathname + '?'+search.join('&') + location.hash
-            console.log( href );
+
             pushState(href)
             setHref(getWindowLocation(), mutation)
         }
+        return shallWeEmit
     })
 
     
@@ -128,7 +130,7 @@ export function create(url) {
         set(location, 'hash', newlocation.hash)
 
         // path
-        newlocation.path.forEach((path,index) => set(location.path, index, path))
+        newlocation.path.forEach((path, index) => set(location.path, index, path))
         set(location.path, 'length', newlocation.path.length)
 
         // query

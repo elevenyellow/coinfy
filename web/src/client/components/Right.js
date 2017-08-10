@@ -1,24 +1,21 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import dop,{ createObserver } from 'dop'
+import { createObserver } from 'dop'
 import styles from '/styles'
+import Route from '/components/reusable/Route'
 import AddWallet from '/components/views/AddWallet'
 import Message from '/components/views/Message'
 import { RightContainer } from '/components/styled/Right'
 import { location } from '/stores/router'
 
-window.dop=dop
-window._location=location
+// window.dop=dop
+// window._location=location
 export default class Right extends Component {
 
     componentWillMount() {
-        const observer = createObserver(mutations => {
-            console.log( mutations.map(m=>m.prop), JSON.parse(JSON.stringify(location.path)) );
-            // this.forceUpdate();
-        });
-        // observer.observe(location);
-        // observer.observe(location.path);
-        observer.observe(location.query);
+        const observer = createObserver(mutations => this.forceUpdate());
+        observer.observe(location.path, 'length');
+        observer.observe(location.path, '0');
     }
 
     shouldComponentUpdate() {
@@ -26,14 +23,26 @@ export default class Right extends Component {
     }
 
     render() {
-        return <RightTemplate url={'ui.url'} />
+        return <RightTemplate location={location} />
     }
 
 }
 
 
-function RightTemplate({ url }) {
-    let view = (url.indexOf('addwallet')>-1) ? <AddWallet /> : (<Message>Add or Import a wallet to start working</Message>)
-    return <RightContainer>{view}</RightContainer>
+function RightTemplate({ location }) {
+
+    return (
+        <RightContainer>
+            <Route pathname={/^\/addwallet/} source={location}>
+                <AddWallet />
+            </Route>
+            <Route pathname="/" source={location}>
+                <Message>Add or Import a wallet to start working</Message>
+            </Route>
+            {/* <Route pathname="/" source={location}>
+                <Message>Not found</Message>
+            </Route> */}
+        </RightContainer>
+    )
 }
 
