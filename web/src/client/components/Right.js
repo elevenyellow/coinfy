@@ -2,14 +2,18 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
 import styles from '/styles'
-import Route from '/components/reusable/Route'
+
+import { location } from '/stores/router'
+import { Router, Route } from '/components/reusable/Router'
+
+// styled
+import { RightContainer } from '/components/styled/Right'
+
+// views
 import AddWallet from '/components/views/AddWallet'
 import Message from '/components/views/Message'
-import { RightContainer } from '/components/styled/Right'
-import { location } from '/stores/router'
 
-// window.dop=dop
-// window._location=location
+
 export default class Right extends Component {
 
     componentWillMount() {
@@ -30,18 +34,19 @@ export default class Right extends Component {
 
 
 function RightTemplate({ location }) {
-
     return (
         <RightContainer>
-            <Route pathname={/^\/addwallet/} source={location}>
-                <AddWallet />
-            </Route>
-            <Route pathname="/" source={location}>
-                <Message>Add or Import a wallet to start working</Message>
-            </Route>
-            {/* <Route pathname="/" source={location}>
-                <Message>Not found</Message>
-            </Route> */}
+            <Router source={location}>
+                <Route path-0="addwallet">
+                    <AddWallet />
+                </Route> 
+                <Route pathname="/">
+                    <Message>Add or Import a wallet to start working</Message>
+                </Route>
+                <Route>
+                    <Message>Not found</Message>
+                </Route> 
+            </Router>
         </RightContainer>
     )
 }

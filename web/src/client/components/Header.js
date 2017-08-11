@@ -1,14 +1,19 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import styles from '/styles'
+
+import { setHref } from '/actions'
+import { routes } from '/stores/router'
+
 import Div from '/components/styled/Div'
 import { DropDown, DropDownItem, DropDownMenu, DropDownArrow } from '/components/styled/Dropdown'
+
 
 export default function Header() {
     return (
         <HeaderDiv>
             <HeaderContent>
-                <HeaderLeft>Logo</HeaderLeft>
+                <HeaderLeft onClick={e=>{ setHref(routes.home) }}>Logo</HeaderLeft>
                 <HeaderCenter>
                     <HeaderCrypto>BTC / <strong>$2521.3</strong></HeaderCrypto>
                     <HeaderCrypto>ETH / <strong>$152.3</strong></HeaderCrypto>

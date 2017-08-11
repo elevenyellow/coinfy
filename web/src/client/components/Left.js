@@ -1,17 +1,19 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import styles from '/styles'
+
+import { setHref } from '/actions'
+import { routes } from '/stores/router'
+
 import IconMore from 'react-icons/lib/md/more-vert'
 import { DropDown, DropDownItem, DropDownMenu, DropDownArrow } from '/components/styled/Dropdown'
 import Button from '/components/styled/Button'
-import { location } from '/stores/router'
-
 
 
 export default function Left() {
     return (
         <LeftDiv>
-            <ColumnLeftChart>
+            <ColumnLeftChart onClick={e=>{ setHref(routes.home) }}>
                 <ColumnLeftChartBalance>
                     <ColumnLeftChartLabel>Total balance</ColumnLeftChartLabel>
                     <ColumnLeftChartNumber>
@@ -50,7 +52,7 @@ export default function Left() {
                 ))}
             </ColumnLeftContent>
             <ColumnLeftFooter>
-                <Button onClick={e=>{ location.href='/addwallet' }}>Add wallet</Button>
+                <Button onClick={e=>{ setHref(routes.addwallet) }}>Add wallet</Button>
             </ColumnLeftFooter>
         </LeftDiv>
     )
@@ -88,6 +90,7 @@ float:right;
 `
 
 const ColumnLeftChart = styled.div`
+cursor: pointer;
 `
 const ColumnLeftChartChart = styled.div`
 `
