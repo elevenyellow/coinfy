@@ -19,6 +19,9 @@ export function Route(props) {
         return children
 }
 
+// Just an alias
+export const Show = Route
+
 let sourceProperty = 'source'
 export function setSourceProperty(name) {
     sourceProperty = name

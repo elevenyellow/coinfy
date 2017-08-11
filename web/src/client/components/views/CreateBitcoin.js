@@ -1,34 +1,68 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
-import { Router, Route } from '/doprouter/react'
-import Div from '/components/styled/Div'
-import styles from '/styles'
-// import QRCode from 'qrcode.react'
+import { Show } from '/doprouter/react'
+import QRious from 'qrious'
 // import cipher from 'browserify-cipher'
 // import bignumber from 'bignumber.js'
-// import bitcoin from 'bitcoinjs-lib'
+
+import { setInitialViewState, generateBitcoinWallet } from '/actions'
+import state from '/stores/state'
+import styles from '/styles'
+import Div from '/components/styled/Div'
+
 
 export default class CreateBitcoin extends Component {
+
+    componentWillMount() {
+        this.observer = createObserver(mutations => this.forceUpdate());
+        this.observer.observe(state.view, 'address');
+        setInitialViewState({
+            address: ''
+        })
+    }
+
+    componentWillUnmount() {
+        this.observer.destroy()
+    }
 
     shouldComponentUpdate() {
         return false
     }
 
     render() {
+
+        let qrcodebase64 = ''
+        if (state.view.address !== '') {
+            const qr = new QRious({
+                background: 'white',
+                foreground: 'black',
+                level: 'H',
+                size: 300,
+                value: state.view.address
+            })
+            qrcodebase64 = qr.toDataURL()
+        }
+
+
+
         return (
             <div>
                 <Div padding-bottom="15px">
-                    <Code></Code>
+                    <Code>
+                        <Show if={qrcodebase64!==''}>
+                            <img width="150" src={qrcodebase64} />
+                        </Show>
+                    </Code>
                 </Div>
                 <Div padding-bottom="10px">
                     <CenterElement>
-                        <Address><span>1FL5PyZRtHm4q2atdNb4DozRyshqsFgnXh</span></Address>
+                        <Address><span>{state.view.address}</span></Address>
                     </CenterElement>
                 </Div>
                 <Div padding-bottom="15px">
                     <CenterElement>
-                        <Button width="100%">Generate address</Button>
+                        <Button onClick={generateBitcoinWallet} width="100%">Generate address</Button>
                     </CenterElement>
                 </Div>
             </div>
@@ -79,7 +113,7 @@ line-height: 20px;
 cursor: pointer;
 border-radius: 4px;
 width: ${props=>props.width};
-
+outline: none;
 &:hover {
     color: ${styles.color.background3}
 }
