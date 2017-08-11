@@ -51,10 +51,10 @@ overflow-y: auto;
 
 export const RightContentMenuItem = styled.div`
 clear:both;
-width: calc(100% - 40px);
+width: calc(100% - 35px);
 padding-bottom: 15px;
 padding-right: 15px;
-padding-left: 20px;
+padding-left: 15px;
 padding-top: 15px;
 border-left: 5px solid transparent;
 cursor: pointer;

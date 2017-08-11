@@ -1,4 +1,4 @@
-import { register, set, del, collect, intercept, getObjectTarget } from 'dop'
+import { register, set, del, collect, intercept } from 'dop'
 
 const enc = encodeURIComponent
 
@@ -6,12 +6,12 @@ export function create(url) {
 
     let shallWeEmit = false
     let location = register(parse(url))
-    intercept(location, mutation => {
+    intercept(location, (mutation, object) => {
 
         if (!shallWeEmit) {
 
             if (mutation.prop === 'href') {
-                getObjectTarget(mutation.object).href = mutation.oldValue
+                object.href = mutation.oldValue
                 pushState(mutation.value)
                 setHref(getWindowLocation())
             }
@@ -22,7 +22,7 @@ export function create(url) {
                 if (mutation.value[0]!=='/')
                     href = '/' + href
                 href = href + location.search + location.hash
-                getObjectTarget(mutation.object).pathname = mutation.oldValue
+                object.pathname = mutation.oldValue
                 pushState(href)
                 setHref(getWindowLocation())
             }
@@ -42,7 +42,7 @@ export function create(url) {
                     .join('&')
 
                 href = location.pathname + '?' + href + location.hash
-                getObjectTarget(mutation.object).search = mutation.oldValue
+                object.search = mutation.oldValue
                 pushState(href)
                 setHref(getWindowLocation())
             }
@@ -50,7 +50,7 @@ export function create(url) {
             else if (mutation.prop === 'hash') {
                 let href = mutation.value[0]==='#' ? mutation.value : '#' + mutation.value
                 href = location.pathname + location.search + href
-                getObjectTarget(mutation.object).hash = mutation.oldValue
+                object.hash = mutation.oldValue
                 pushState(href)
                 setHref(getWindowLocation())
             }
@@ -73,7 +73,7 @@ export function create(url) {
 
             // origin, protocol, domain
             else
-                getObjectTarget(mutation.object)[mutation.prop] = mutation.oldValue
+                object[mutation.prop] = mutation.oldValue
 
         }
 
@@ -82,10 +82,10 @@ export function create(url) {
     })
 
 
-    intercept(location.path, mutation => {
+    intercept(location.path, (mutation, object) => {
         if (!shallWeEmit) {
             let path = location.path
-            getObjectTarget(path)[mutation.prop] = enc(path[mutation.prop])
+            object[mutation.prop] = enc(path[mutation.prop])
             let href = '/' + path.filter(p=>p!==undefined).join('/') + location.search + location.hash
             if ( href !== location.pathname ) {
                 pushState(href)
@@ -96,15 +96,15 @@ export function create(url) {
     })
     
 
-    intercept(location.query, mutation => {
+    intercept(location.query, (mutation,object) => {
         if (!shallWeEmit) {
             let href, query=location.query, search=[], prop = mutation.prop
             // Is true if is not a delete
             if (mutation.hasOwnProperty('value')) {
                 let propenc = enc(mutation.prop)
                 let valueenc = enc(mutation.value)
-                delete getObjectTarget(query)[mutation.prop]
-                getObjectTarget(query)[propenc] = valueenc
+                delete object[mutation.prop]
+                object[propenc] = valueenc
             }
             for (prop in query)
                 search.push(prop+'='+query[prop])

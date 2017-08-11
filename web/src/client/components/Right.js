@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
-import styles from '/styles'
+import { Router, Route } from '/doprouter/react'
 
-import { location } from '/stores/router'
-import { Router, Route } from '/components/reusable/Router'
+import styles from '/styles'
+import { location, routes } from '/stores/router'
 
 // styled
 import { RightContainer } from '/components/styled/Right'
@@ -27,27 +27,23 @@ export default class Right extends Component {
     }
 
     render() {
-        return <RightTemplate location={location} />
+        return (
+            <RightContainer>
+                <Router source={location}>
+                    <Route pathname={new RegExp(routes.addwallet)}>
+                        <AddWallet />
+                    </Route> 
+                    <Route pathname="/">
+                        <Message>Add or Import a wallet to start working</Message>
+                    </Route>
+                    <Route>
+                        <Message>Not found</Message>
+                    </Route> 
+                </Router>
+            </RightContainer>
+        )
     }
 
 }
 
-
-function RightTemplate({ location }) {
-    return (
-        <RightContainer>
-            <Router source={location}>
-                <Route path-0="addwallet">
-                    <AddWallet />
-                </Route> 
-                <Route pathname="/">
-                    <Message>Add or Import a wallet to start working</Message>
-                </Route>
-                <Route>
-                    <Message>Not found</Message>
-                </Route> 
-            </Router>
-        </RightContainer>
-    )
-}
 

@@ -1,11 +1,5 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-// import { register, createObserver } from 'dop'
-// import cipher from 'browserify-cipher'
-// import bignumber from 'bignumber.js'
-// import bitcoin from 'bitcoinjs-lib'
-// import QRCode from 'qrcode.react'
-
 import styles from '/styles'
 import Header from '/components/Header'
 import Left from '/components/Left'

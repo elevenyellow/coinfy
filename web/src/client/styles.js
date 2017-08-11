@@ -9,9 +9,11 @@ export default {
         background2: '#546f9b',
         background3: '#4e92df',
         background4: '#e5e9eb',
+        background5: '#d4dde1',
         front1: '#8b9bae',
         front2: '#adb3bb',
         front3: '#5a6168',
         front4: '#a8b5c5',
+        front5: '#617991',
     }
 }

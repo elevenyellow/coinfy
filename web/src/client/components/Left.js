@@ -7,13 +7,13 @@ import { routes } from '/stores/router'
 
 import IconMore from 'react-icons/lib/md/more-vert'
 import { DropDown, DropDownItem, DropDownMenu, DropDownArrow } from '/components/styled/Dropdown'
-import Button from '/components/styled/Button'
+import ButtonBig from '/components/styled/ButtonBig'
 
 
 export default function Left() {
     return (
         <LeftDiv>
-            <ColumnLeftChart onClick={e=>{ setHref(routes.home) }}>
+            <ColumnLeftChart onClick={e=>setHref(routes.home)}>
                 <ColumnLeftChartBalance>
                     <ColumnLeftChartLabel>Total balance</ColumnLeftChartLabel>
                     <ColumnLeftChartNumber>
@@ -52,7 +52,7 @@ export default function Left() {
                 ))}
             </ColumnLeftContent>
             <ColumnLeftFooter>
-                <Button onClick={e=>{ setHref(routes.addwallet) }}>Add wallet</Button>
+                <ButtonBig onClick={e=>{ setHref(routes.addwallet) }}>Add wallet</ButtonBig>
             </ColumnLeftFooter>
         </LeftDiv>
     )
