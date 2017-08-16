@@ -24,7 +24,6 @@ import CreateBitcoin from '/components/views/CreateBitcoin'
 
 
 
-
 export default class AddWallet extends Component {
 
     componentWillMount() {

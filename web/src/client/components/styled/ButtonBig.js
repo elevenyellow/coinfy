@@ -16,6 +16,12 @@ outline: none;
 &:hover {
     background-color: ${styles.color.background3};
 }
+${props=>{
+    if (props.disabled) return `
+    cursor:default;
+    background-color: ${styles.color.disabled} !important
+    `;
+}}
 /*color: ${styles.color.front3};
 background-image: linear-gradient(#fff,#f7f9fb);
 background-color: #f7f9fb;

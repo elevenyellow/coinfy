@@ -3,38 +3,77 @@ import styled from 'styled-components'
 import { set, createObserver } from 'dop'
 import { Route as Show } from '/doprouter/react'
 
-import { setInitialViewState, generateBitcoinWallet } from '/actions'
+import { generateQRCode } from '/../util/qr'
+import { generateRandomWallet } from '/../util/bitcoin'
+
 import state from '/stores/state'
 import styles from '/styles'
+
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
 import ButtonBig from '/components/styled/ButtonBig'
 import QRCode from '/components/styled/QRCode'
 import Address from '/components/styled/Address'
 import Tooltip from '/components/styled/Tooltip'
-import { generateQRCode } from '/../util/qr'
+
 
 
 export default class CreateBitcoin extends Component {
 
     componentWillMount() {
-        this.observer = createObserver(mutations => this.forceUpdate());
+        this.observer = createObserver(m => this.forceUpdate());
         this.observer.observe(state.view, 'address');
-        set(state,'view', {
-            address: ''
-        })
-    }
+        this.observer.observe(state.view, 'password');
+        this.observer.observe(state.view, 'repassword');
 
+        // Initial state
+        set(state,'view', {
+            address: '',
+            password: '',
+            repassword: ''
+        })
+
+        // binding
+        this.onGenerateWallet = this.onGenerateWallet.bind(this)
+        this.onChangePassword = this.onChangePassword.bind(this)
+        this.onChangeRepassword = this.onChangeRepassword.bind(this)
+    }
     componentWillUnmount() {
         this.observer.destroy()
     }
-
     shouldComponentUpdate() {
         return false
     }
 
+
+    // Local actions
+    onGenerateWallet(e) {
+        const wallet = generateRandomWallet()
+        set(state.view, 'address', wallet.address)
+        set(state.view, 'private_key', wallet.private_key)
+    }
+    onChangePassword(e) {
+        set(state.view, 'password', e.target.value)
+    }
+    onChangeRepassword(e) {
+        set(state.view, 'repassword', e.target.value)
+    }
+
+
+    // Getters
+    isFormValid() {
+        return (state.view.password.length>=4 && state.view.password===state.view.repassword)
+    }
+
+
     render() {
         const isAddressDefined = state.view.address !== ''
+        const invalidRepassword = (
+            state.view.password.length>0 &&
+            state.view.repassword.length>0 &&
+            state.view.password.length===state.view.repassword.length &&
+            state.view.password!==state.view.repassword
+        )
         let qrcodebase64 = ''
         if (isAddressDefined)
             qrcodebase64 = generateQRCode(state.view.address)
@@ -55,7 +94,7 @@ export default class CreateBitcoin extends Component {
                 </Div>
                 <Div padding-bottom="50px">
                     <CenterElement>
-                        <Button onClick={generateBitcoinWallet} width="100%">Generate address</Button>
+                        <Button onClick={this.onGenerateWallet} width="100%">Generate address</Button>
                     </CenterElement>
                 </Div>
 
@@ -67,7 +106,7 @@ export default class CreateBitcoin extends Component {
                                 <SubLabel>This password encrypts your private key.</SubLabel>
                             </Div>
                             <Div float="left" width="60%">
-                                <Input type="password" width="100%" />
+                                <Input type="password" width="100%" value={state.view.password} onChange={this.onChangePassword} />
                                 <div>
                                     <PasswordIndicator />
                                     <PasswordIndicator />
@@ -80,12 +119,14 @@ export default class CreateBitcoin extends Component {
                         <Div height="55px">
                             <Div float="left" width="40%"><Label>Repeat Password</Label></Div>
                             <Div float="left" width="60%">
-                                <Input type="password" width="100%" />
-                                {/* <InputError>Invalid password</InputError> */}
+                                <Input type="password" width="100%" error={invalidRepassword} value={state.view.repassword} onChange={this.onChangeRepassword} />
+                                <Show if={invalidRepassword}>
+                                    <InputError>Passwords do not match</InputError> 
+                                </Show>
                             </Div>
                         </Div>
                         <Div float="right" >
-                            <ButtonBig width="100px">Create</ButtonBig>
+                            <ButtonBig width="100px" disabled={!this.isFormValid()}>Create</ButtonBig>
                         </Div>
                         <Div clear="both" />
                     </div>
@@ -94,6 +135,7 @@ export default class CreateBitcoin extends Component {
         )
     }
 }
+
 
 
 
@@ -122,7 +164,7 @@ const Input = styled.input`
 ${props=>{
     if (props.width) return 'width:'+props.width+';'
 }}
-border: 1px solid ${styles.color.background4};
+border: 1px solid ${props=>props.error ? `${styles.color.error} !important` : styles.color.background4};
 background: #FFF;
 padding: 10px;
 font-weight: 500;
@@ -134,14 +176,14 @@ box-shadow:0 1px 1px 0 rgba(0,0,0,0.05) inset;
 box-sizing: border-box;
 
 &:focus {
-    box-shadow: none!important;
+    box-shadow: none !important;
     border-color: ${styles.color.background3};
 }
 `
 const InputError = styled.div`
 font-size: 10px;
 text-align: left;
-color: #c30;
+color: ${styles.color.error};
 `
 
 const PasswordIndicator = styled.div`
