@@ -46,7 +46,7 @@ export default function Left() {
                     <WalletIcon><img src="/static/image/bitcoin.svg" width="22" height="22" /></WalletIcon>
                     <WalletInfo>
                         <WalletLabel>Coinbase {index+1}</WalletLabel>
-                        <WalletBalance><strong>$2351.32</strong> / 0.93123 BTC</WalletBalance>
+                        <WalletBalance><strong>$2351.32</strong> ≈ 0.93123 BTC</WalletBalance>
                     </WalletInfo>
                 </Wallet>
                 ))}
@@ -69,8 +69,8 @@ background: white;
 float: left;
 border-radius: 5px;
 box-shadow: 0 0 3px 2px rgba(205,213,218,.4);
-border: 1px solid rgba(205,213,218,.7);
 `
+// border: 1px solid rgba(205,213,218,.7);
 
 
 

@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { createObserver } from 'dop'
-import { Show } from '/doprouter/react'
+import { set, createObserver } from 'dop'
+import { Route as Show } from '/doprouter/react'
 import QRious from 'qrious'
-// import cipher from 'browserify-cipher'
-// import bignumber from 'bignumber.js'
 
 import { setInitialViewState, generateBitcoinWallet } from '/actions'
 import state from '/stores/state'
 import styles from '/styles'
 import Div from '/components/styled/Div'
+import Button from '/components/styled/Button'
+import QRCode from '/components/styled/QRCode'
+import Address from '/components/styled/Address'
 
 
 export default class CreateBitcoin extends Component {
@@ -17,7 +18,7 @@ export default class CreateBitcoin extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate());
         this.observer.observe(state.view, 'address');
-        setInitialViewState({
+        set(state,'view', {
             address: ''
         })
     }
@@ -31,9 +32,9 @@ export default class CreateBitcoin extends Component {
     }
 
     render() {
-
+        const isAddressDefined = state.view.address !== ''
         let qrcodebase64 = ''
-        if (state.view.address !== '') {
+        if (isAddressDefined) {
             const qr = new QRious({
                 background: 'white',
                 foreground: 'black',
@@ -49,21 +50,33 @@ export default class CreateBitcoin extends Component {
         return (
             <div>
                 <Div padding-bottom="15px">
-                    <Code>
-                        <Show if={qrcodebase64!==''}>
+                    <QRCode>
+                        <Show if={isAddressDefined}>
                             <img width="150" src={qrcodebase64} />
                         </Show>
-                    </Code>
+                    </QRCode>
                 </Div>
                 <Div padding-bottom="10px">
                     <CenterElement>
-                        <Address><span>{state.view.address}</span></Address>
+                        <Address>{state.view.address}</Address>
                     </CenterElement>
                 </Div>
-                <Div padding-bottom="15px">
+                <Div padding-bottom="50px">
                     <CenterElement>
                         <Button onClick={generateBitcoinWallet} width="100%">Generate address</Button>
                     </CenterElement>
+                </Div>
+                <Div padding-bottom="10px">
+                    <div>
+                        <Label>Password</Label>
+                        <Input width="100%" />
+                    </div>
+                </Div>
+                <Div padding-bottom="10px">
+                    <div>
+                        <Label>Repeat Password</Label>
+                        <Input width="100%" type="password" />
+                    </div>
                 </Div>
             </div>
         )
@@ -71,50 +84,41 @@ export default class CreateBitcoin extends Component {
 }
 
 
-const Code = styled.div`
-margin: 0 auto;
-width: 150px;
-height: 150px;
-background-color: #EEE;
-`
+
 const CenterElement = styled.div`
 margin: 0 auto;
 width: 360px;
 `
 
-const Address = styled.div`
+
+
+const Label = styled.label`
+font-weight: 600;
+margin-bottom: 0px;
+line-height: 1.9em;
+color: #5a5f6d;
+font-size: 13px;
+`
+
+const Input = styled.input`
+${props=>{
+    if (props.width) return 'width:'+props.width+';'
+}}
 border: 1px solid ${styles.color.background4};
-border-radius: 4px;
 background: #FFF;
 padding: 10px;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
 font-weight: 500;
-text-align:center;
-
-& span {
-    display: inline-block;
-    font-family: monospace;
-    font-size: 16px;
-    color:${styles.color.front5};
-}
-`
-
-const Button = styled.button`
-color: ${styles.color.front5};
-background-image: linear-gradient(#fff,${styles.color.background1});
-border: 1px solid ${styles.color.background5};
-padding: 8px 20px 8px;
-font-weight: bold;
-font-size: 12px;
-display: inline-block;
-line-height: 20px;
-cursor: pointer;
-border-radius: 4px;
-width: ${props=>props.width};
 outline: none;
-&:hover {
-    color: ${styles.color.background3}
+font-family: monospace;
+font-size: 14px;
+color:${styles.color.front6};
+box-shadow:0 1px 1px 0 rgba(0,0,0,0.05) inset;
+box-sizing: border-box;
+
+&:focus {
+    box-shadow: none!important;
+    border-color: ${styles.color.background3};
 }
 `
+
+

@@ -9,7 +9,6 @@ background: white;
 float: right;
 border-radius: 5px;
 box-shadow: 0 0 3px 2px rgba(205,213,218,.4);
-border: 1px solid rgba(205,213,218,.7);
 &>div {
   height: 100%;
   width: 100%;

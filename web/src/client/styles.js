@@ -15,5 +15,6 @@ export default {
         front3: '#5a6168',
         front4: '#a8b5c5',
         front5: '#617991',
+        front6: '#8e9499'
     }
 }

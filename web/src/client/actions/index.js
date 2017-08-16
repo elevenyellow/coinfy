@@ -1,14 +1,13 @@
 import { set } from 'dop'
+import bitcoin from 'bitcoinjs-lib'
+// import cipher from 'browserify-cipher'
+// import bignumber from 'bignumber.js'
 import { location } from '/stores/router'
 import state from '/stores/state'
-import bitcoin from 'bitcoinjs-lib'
+
 
 export function setHref(href) {
     set(location, 'href', href)
-}
-
-export function setInitialViewState(view_state) {
-    set(state, 'view', view_state)
 }
 
 export function generateBitcoinWallet(view_state) {
