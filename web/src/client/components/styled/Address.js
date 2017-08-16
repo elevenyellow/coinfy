@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import styles from '/styles'
 
 
-export default function({ children }) {
-    return <Address><span>{children}</span></Address>
+export default function(props) {
+    return <Address {...props}><span>{props.children}</span></Address>
 }
 
 

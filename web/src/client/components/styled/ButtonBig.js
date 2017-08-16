@@ -7,7 +7,7 @@ background-color: ${styles.color.background2};
 color: white;
 font-weight: bold;
 height: 40px;
-width: 100%;
+width: ${props=>props.width||'100%'};
 border-radius: 4px;
 font-size: 15px;
 letter-spacing: -0.2px;
