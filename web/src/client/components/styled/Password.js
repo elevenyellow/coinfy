@@ -5,7 +5,7 @@ import Input from '/components/styled/Input'
 import { getPasswordStrength } from '/../util/crypto'
 
 
-const minpassword = 8
+
 const colors = {
     1: styles.color.error,
     2: '#ffac01',
@@ -13,13 +13,7 @@ const colors = {
     4: '#89a24c',
     5: '#28bc05',
 }
-const messages = {
-    length: 'Invalid. At least '+minpassword+' characters',
-    lowercase: 'Add at least one lowercase letter',
-    uppercase: 'Add an optional upper case letter',
-    numbers: 'Add an optional number',
-    specials: 'Add an optional special character',
-}
+
 const strenghs = {
     1: '',
     2: 'Weak. ',
@@ -29,8 +23,9 @@ const strenghs = {
 }
 
 export default function Password(props) {
+    const minpassword = props.minlength
     const password = props.value
-    const strength = getPasswordStrength(password, minpassword, messages)
+    const strength = getPasswordStrength(password, minpassword, getMessages(minpassword))
     const score = password.length === 0 ? 0 : strength.score+1
     const color = colors[score]
     const message = strength.message == undefined ? 'Excelent!' : strength.message
@@ -60,6 +55,16 @@ function PasswordIndicator({ total, score }) {
     return (
         <div>{indicators}</div>
     )
+}
+
+function getMessages(minpassword) {
+    return {
+        length: 'Invalid. At least '+minpassword+' characters',
+        lowercase: 'Add at least one lowercase letter',
+        uppercase: 'Add an optional upper case letter',
+        numbers: 'Add an optional number',
+        specials: 'Add an optional special character',
+    }
 }
 
 

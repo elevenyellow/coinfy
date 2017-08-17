@@ -5,6 +5,7 @@ import { Route as Show } from '/doprouter/react'
 
 import { generateQRCode } from '/../util/qr'
 import { generateRandomWallet } from '/../util/bitcoin'
+import { encryptAES128CTR, decryptAES128CTR } from '/../util/crypto'
 
 import state from '/stores/state'
 import styles from '/styles'
@@ -19,8 +20,9 @@ import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
 
 
-
+const minpassword = 8
 export default class CreateBitcoin extends Component {
+
 
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate());
@@ -39,6 +41,7 @@ export default class CreateBitcoin extends Component {
         this.onGenerateWallet = this.onGenerateWallet.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onChangeRepassword = this.onChangeRepassword.bind(this)
+        this.onCreate = this.onCreate.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -60,11 +63,17 @@ export default class CreateBitcoin extends Component {
     onChangeRepassword(e) {
         set(state.view, 'repassword', e.target.value)
     }
-
+    onCreate(e) {
+        e.preventDefault()
+        if (this.isFormValid) {
+            let enc = encryptAES128CTR(state.view.private_key, state.view.password)
+            alert( decryptAES128CTR(enc, state.view.password) );
+        }
+    }
 
     // Getters
-    isFormValid() {
-        return (state.view.password.length>=4 && state.view.password===state.view.repassword)
+    get isFormValid() {
+        return (state.view.password.length>=minpassword && state.view.password===state.view.repassword)
     }
 
 
@@ -108,17 +117,17 @@ export default class CreateBitcoin extends Component {
                                 <SubLabel>This password encrypts your private key.</SubLabel>
                             </Div>
                             <Div float="left" width="60%">
-                                <Password value={state.view.password} onChange={this.onChangePassword} width="100%" type="password" />
+                                <Password minlength={minpassword} value={state.view.password} onChange={this.onChangePassword} width="100%" type="password" />
                             </Div>
                         </Div>
                         <Div height="55px">
                             <Div float="left" width="40%"><Label>Repeat Password</Label></Div>
                             <Div float="left" width="60%">
-                                <Input error={invalidRepassword?'Passwords do not match':null} invalid={invalidRepassword} value={state.view.repassword} onChange={this.onChangeRepassword} width="100%" type="password" />
+                                <Input minlength={minpassword} error={invalidRepassword?'Passwords do not match':null} invalid={invalidRepassword} value={state.view.repassword} onChange={this.onChangeRepassword} width="100%" type="password" />
                             </Div>
                         </Div>
                         <Div float="right" >
-                            <ButtonBig width="100px" disabled={!this.isFormValid()}>Create</ButtonBig>
+                            <ButtonBig width="100px" disabled={!this.isFormValid} onClick={this.onCreate}>Create</ButtonBig>
                         </Div>
                         <Div clear="both" />
                     </form>
@@ -143,12 +152,12 @@ font-weight: 600;
 margin-bottom: 0px;
 line-height: 1.9em;
 color: ${styles.color.front3};
-font-size: 13px;
+font-size: 15px;
 `
 
 const SubLabel = styled.div`
 color: ${styles.color.front2};
-font-size: 11px;
+font-size: 12px;
 line-height: 8px;
 `
 
