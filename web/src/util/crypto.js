@@ -2,6 +2,7 @@ import { createCipheriv, createDecipheriv } from 'browserify-cipher'
 import pbkdf2 from 'pbkdf2'
 
 export function encryptAES128CTR(string, password) {
+    const string_buffer = new Buffer(string) // ethereum: new Buffer(string,'hex')
     const ciphertype = 'aes-128-ctr'
     const salt = randomBytes(32)
     const iv = randomBytes(16)
@@ -19,7 +20,7 @@ export function encryptAES128CTR(string, password) {
         throw new Error('Unsupported cipher')
 
     return {
-        ciphertext: Buffer.concat([cipher.update(string), cipher.final()]).toString('hex'),
+        ciphertext: Buffer.concat([cipher.update(string_buffer), cipher.final()]).toString('hex'),
         cipherparams: {
             iv: iv.toString('hex')
         },
@@ -32,10 +33,15 @@ export function encryptAES128CTR(string, password) {
 export function decryptAES128CTR(encryption, password) {
     const ciphertype = 'aes-128-ctr'
     const ciphertext = new Buffer(encryption.ciphertext, 'hex')
-    const derivedKey = scrypt(new Buffer(password), new Buffer(encryption.kdfparams.salt, 'hex'), encryption.kdfparams.n, encryption.kdfparams.r, encryption.kdfparams.p, encryption.kdfparams.dklen)
+    const derivedKey = encryption.kdf==='scrypt' ?
+        scrypt(new Buffer(password), new Buffer(encryption.kdfparams.salt, 'hex'), encryption.kdfparams.n, encryption.kdfparams.r, encryption.kdfparams.p, encryption.kdfparams.dklen)
+    :
+        pbkdf2.pbkdf2Sync(new Buffer(password), new Buffer(encryption.kdfparams.salt, 'hex'), encryption.kdfparams.c, encryption.kdfparams.dklen, 'sha256')
     const decipher = createDecipheriv(ciphertype, derivedKey.slice(0, 16), new Buffer(encryption.cipherparams.iv, 'hex'))
-    const seed = Buffer.concat([decipher.update(ciphertext), decipher.final()])
-    return seed.toString()
+    let seed = Buffer.concat([decipher.update(ciphertext), decipher.final()])
+    while (seed.length < 32)
+        seed = Buffer.concat([new Buffer([0x00]), seed]);
+    return seed.toString() //ethereum seed.toString('hex')
 }
 
 
