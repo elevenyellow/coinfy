@@ -1,4 +1,5 @@
-// import cipher from 'browserify-cipher'
+// import { createCipheriv } from 'browserify-cipher'
+
 
 export const getPasswordStrength = (function() {
 
