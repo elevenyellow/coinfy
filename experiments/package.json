@@ -5,7 +5,8 @@
   "main": "generate.js",
   "dependencies": {
     "bitcoinjs-lib": "^3.1.0",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "scryptsy": "^2.0.0"
   },
   "devDependencies": {},
   "scripts": {
