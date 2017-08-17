@@ -1,4 +1,3 @@
-// import crypto from 'crypto'
 import { createCipheriv, createDecipheriv } from 'browserify-cipher'
 import pbkdf2 from 'pbkdf2'
 import scrypt from '/../util/scrypt'
@@ -19,7 +18,7 @@ function toV3(value, password, opts) {
         derivedKey = pbkdf2.pbkdf2Sync(new Buffer(password), salt, kdfparams.c, kdfparams.dklen, 'sha256')
     } else if (kdf === 'scrypt') {
         // FIXME: support progress reporting callback
-        kdfparams.n = opts.n || 262144
+        kdfparams.n = opts.n || 1024
         kdfparams.r = opts.r || 8
         kdfparams.p = opts.p || 1
         derivedKey = scrypt(new Buffer(password), salt, kdfparams.n, kdfparams.r, kdfparams.p, kdfparams.dklen)
@@ -45,10 +44,17 @@ function decipherBuffer(decipher, data) {
     return Buffer.concat([decipher.update(data), decipher.final()])
 }
 
-function randomBytes(size, cb) {
-  var rawBytes = new global.Uint8Array(size);
-  var bytes = Buffer.from(rawBytes.buffer);
-  return bytes;
+
+function randomBytes (size) {
+  // in case browserify  isn't using the Uint8Array version
+  var rawBytes = new global.Uint8Array(size)
+  // This will not work in older browsers.
+  // See https://developer.mozilla.org/en-US/docs/Web/API/window.crypto.getRandomValues
+  if (size > 0) {  // getRandomValues fails on IE if size == 0
+    crypto.getRandomValues(rawBytes)
+  }
+  // XXX: phantomjs doesn't like a buffer being passed here
+  return Buffer.from(rawBytes.buffer)
 }
 
 
@@ -63,9 +69,10 @@ function randomBytes(size, cb) {
 // console.log( seed.toString() );
 
 
+window.go = function(){
 
-var password='1234'
-var enc=toV3('If the text is very very long?', password, {kdf:'scrypt'})
+var password='holamundo'
+var enc=toV3('If the text is very very long?', password)
 console.log( enc );
 
 var ciphertext = new Buffer(enc.ciphertext, 'hex')
@@ -73,6 +80,9 @@ var derivedKey = scrypt(new Buffer(password), new Buffer(enc.kdfparams.salt, 'he
 var decipher = createDecipheriv(enc.cipher, derivedKey.slice(0, 16), new Buffer(enc.cipherparams.iv, 'hex'))
 var seed = decipherBuffer(decipher, ciphertext, 'hex')
 console.log( 'DECRYPTED yeah!', seed.toString() );
+
+}
+
 
 
 
