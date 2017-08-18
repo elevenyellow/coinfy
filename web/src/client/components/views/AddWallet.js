@@ -21,6 +21,7 @@ import {
 } from '/components/styled/Right'
 
 import CreateBitcoin from '/components/views/CreateBitcoin'
+import ImportBitcoin from '/components/views/ImportBitcoin'
 
 
 
@@ -56,12 +57,12 @@ export default class AddWallet extends Component {
                 <RightContent>
                     <RightContentMenu>
 
-                        <RightContentMenuItem selected={location.pathname===routes.createbtc} onClick={e=>setHref(routes.createbtc)}>
+                        <RightContentMenuItem selected={location.pathname===routes.createbtc()} onClick={e=>setHref(routes.createbtc())}>
                             <RightContentMenuItemIcon><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemIcon>
                             <RightContentMenuItemText>Create Bitcoin wallet</RightContentMenuItemText>
                         </RightContentMenuItem>
 
-                        <RightContentMenuItem selected={location.pathname===routes.importbtc} onClick={e=>setHref(routes.importbtc)}>
+                        <RightContentMenuItem selected={location.pathname===routes.importbtc()} onClick={e=>setHref(routes.importbtc())}>
                             <RightContentMenuItemIcon><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemIcon>
                             <RightContentMenuItemText>Import Bitcoin wallet</RightContentMenuItemText>
                         </RightContentMenuItem>
@@ -71,11 +72,11 @@ export default class AddWallet extends Component {
                         <RightContentInner>
                             
                             <Router source={location}>
-                                <Route pathname={routes.createbtc}>
+                                <Route pathname={routes.createbtc()}>
                                     <CreateBitcoin />
                                 </Route> 
-                                <Route pathname={routes.importbtc}>
-                                    <div>Import</div>
+                                <Route pathname={routes.importbtc()}>
+                                    <ImportBitcoin />
                                 </Route>
                             </Router>
 

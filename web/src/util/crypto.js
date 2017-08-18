@@ -24,7 +24,7 @@ export function encryptAES128CTR(string, password) {
         cipherparams: {
             iv: iv.toString('hex')
         },
-        // cipher: ciphertype,
+        cipher: ciphertype,
         kdf: kdf,
         kdfparams: kdfparams
     }
@@ -41,6 +41,7 @@ export function decryptAES128CTR(encryption, password) {
     let seed = Buffer.concat([decipher.update(ciphertext), decipher.final()])
     while (seed.length < 32)
         seed = Buffer.concat([new Buffer([0x00]), seed]);
+
     return seed.toString() //ethereum seed.toString('hex')
 }
 

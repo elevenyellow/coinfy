@@ -12,12 +12,14 @@ import styles from '/styles'
 
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
-import ButtonBig from '/components/styled/ButtonBig'
 import QRCode from '/components/styled/QRCode'
 import Address from '/components/styled/Address'
 import Tooltip from '/components/styled/Tooltip'
 import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
+import { Label, SubLabel } from '/components/styled/Label'
+
+import { addWalletBtc } from '/actions'
 
 
 const minpassword = 8
@@ -66,8 +68,8 @@ export default class CreateBitcoin extends Component {
     onCreate(e) {
         e.preventDefault()
         if (this.isFormValid) {
-            let enc = encryptAES128CTR(state.view.private_key, state.view.password)
-            alert( decryptAES128CTR(enc, state.view.password) );
+            let private_key = encryptAES128CTR(state.view.private_key, state.view.password)
+            addWalletBtc(state.view.address, private_key)
         }
     }
 
@@ -127,7 +129,7 @@ export default class CreateBitcoin extends Component {
                             </Div>
                         </Div>
                         <Div float="right" >
-                            <ButtonBig width="100px" disabled={!this.isFormValid} onClick={this.onCreate}>Create</ButtonBig>
+                            <Button width="100px" disabled={!this.isFormValid} onClick={this.onCreate}>Create</Button>
                         </Div>
                         <Div clear="both" />
                     </form>
@@ -147,19 +149,6 @@ width: 360px;
 
 
 
-const Label = styled.label`
-font-weight: 600;
-margin-bottom: 0px;
-line-height: 1.9em;
-color: ${styles.color.front3};
-font-size: 15px;
-`
-
-const SubLabel = styled.div`
-color: ${styles.color.front2};
-font-size: 12px;
-line-height: 8px;
-`
 
 
 

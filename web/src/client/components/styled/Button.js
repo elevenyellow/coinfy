@@ -21,4 +21,13 @@ outline: none;
 &:active {
     background-image: linear-gradient(${styles.color.background1},${styles.color.background1});
 }
+${props=>{
+    if (props.disabled) return `
+    cursor:default;
+    background-image: none;
+    background-color: ${styles.color.disabled};
+    border-color: ${styles.color.disabled} !important;
+    color: grey !important;
+    `;
+}}
 `

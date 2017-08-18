@@ -13,7 +13,7 @@ export default function Header() {
     return (
         <HeaderDiv>
             <HeaderContent>
-                <HeaderLeft onClick={e=>{ setHref(routes.home) }}>Logo</HeaderLeft>
+                <HeaderLeft onClick={e=>{ setHref(routes.home()) }}>Logo</HeaderLeft>
                 <HeaderCenter>
                     <HeaderCrypto>BTC / <strong>$2521.3</strong></HeaderCrypto>
                     <HeaderCrypto>ETH / <strong>$152.3</strong></HeaderCrypto>

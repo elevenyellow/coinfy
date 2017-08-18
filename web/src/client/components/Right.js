@@ -30,7 +30,7 @@ export default class Right extends Component {
         return (
             <RightContainer>
                 <Router source={location}>
-                    <Route pathname={new RegExp(routes.addwallet)}>
+                    <Route pathname={new RegExp(routes.addwallet())}>
                         <AddWallet />
                     </Route> 
                     <Route pathname="/">

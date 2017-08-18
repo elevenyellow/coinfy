@@ -13,7 +13,7 @@ import ButtonBig from '/components/styled/ButtonBig'
 export default function Left() {
     return (
         <LeftDiv>
-            <ColumnLeftChart onClick={e=>setHref(routes.home)}>
+            <ColumnLeftChart onClick={e=>setHref(routes.home())}>
                 <ColumnLeftChartBalance>
                     <ColumnLeftChartLabel>Total balance</ColumnLeftChartLabel>
                     <ColumnLeftChartNumber>
@@ -52,7 +52,7 @@ export default function Left() {
                 ))}
             </ColumnLeftContent>
             <ColumnLeftFooter>
-                <ButtonBig onClick={e=>{ setHref(routes.addwallet) }}>Add wallet</ButtonBig>
+                <ButtonBig onClick={e=>{ setHref(routes.addwallet()) }}>Add wallet</ButtonBig>
             </ColumnLeftFooter>
         </LeftDiv>
     )
