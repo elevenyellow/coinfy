@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { set, createObserver } from 'dop'
+import { set, createObserver, collect } from 'dop'
 import { Route as Show } from '/doprouter/react'
 
 import { generateQRCode } from '/../util/qr'
-import { isAddress, isPrivateKey } from '/../util/bitcoin'
+import { isAddress, isPrivateKey, getAddressFromPrivateKey } from '/../util/bitcoin'
 import { encryptAES128CTR, decryptAES128CTR } from '/../util/crypto'
 
 import state from '/stores/state'
@@ -28,6 +28,7 @@ export default class CreateBitcoin extends Component {
 
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate());
+        this.observer.observe(state.view)
 
 
         // Initial state
@@ -52,27 +53,53 @@ export default class CreateBitcoin extends Component {
 
     // Actions 
     onChangeInput(e) {
-        let value = e.target.value.trim()
+        const collector = collect()
+        const value = e.target.value.trim()
         set(state.view, 'input', value)
-        console.log( 'isAddress', isAddress(value) );
-        console.log( 'isPrivateKey', isPrivateKey(value) );
+
+        if (isAddress(value)) {
+            set(state.view, 'address', value)
+            set(state.view, 'private_key', '')
+        }
+        else if (isPrivateKey(value)) {
+            try {
+                const address = getAddressFromPrivateKey(value)
+                set(state.view, 'address', address)
+                set(state.view, 'private_key', value)
+            } catch(e) {
+                console.log( e );
+            }
+        }
+        else {
+            set(state.view, 'address', '')
+            set(state.view, 'private_key', '')
+        }
+        collector.emit()
     }
 
 
+
+
     render() {
+
+        const isValidInput = (state.view.input.length>0 && state.view.address.length>0)
+        const isErrorInput = (state.view.input.length>0 && state.view.address.length===0)
+        let qrcodebase64 = ''
+        if (isValidInput)
+            qrcodebase64 = generateQRCode(state.view.address)
 
         return (
             <div>
                 <Div padding-bottom="15px">
                     <QRCode>
-                        <Show>
-                            <img width="150" />
+                        <Show if={isValidInput}>
+                            <img width="150" src={qrcodebase64} />
                         </Show>
                     </QRCode>
                 </Div>
                 <Div padding-bottom="50px">
                     <CenterElement>
-                        <Address>state.view.address</Address>
+                        <Address>{state.view.address}</Address>
                     </CenterElement>
                 </Div>
 
@@ -84,7 +111,7 @@ export default class CreateBitcoin extends Component {
                             <SubLabel>Type or paste your address or Private key.</SubLabel>
                         </Div>
                         <Div float="left" width="60%">
-                            <Input width="100%" value={state.view.value} onChange={this.onChangeInput} />
+                            <Input width="100%" value={state.view.input} onChange={this.onChangeInput} error={isErrorInput?'Invalid address or private key':null} invalid={isErrorInput} />
                         </Div>
                     </Div>
                     {/* <Div height="65px">

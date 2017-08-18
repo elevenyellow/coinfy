@@ -1,5 +1,6 @@
 import Bitcoin from 'bitcoinjs-lib'
 
+
 const privateKeyPrefix = 0x80; // mainnet 0x80    testnet 0xEF
 
 
@@ -12,13 +13,12 @@ export function isAddress(address) {
     return /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
 }
 
-// https://github.com/pointbiz/bitaddress.org/blob/67e167930c4ebd9cf91047c36792c4e32dc41f11/src/ninja.key.js
 export function isPrivateKey(private_key) {
     return (
         isWalletImportFormat(private_key) ||
-        isCompressedWalletImportFormat(private_key) ||
-        isHexFormat(private_key) ||
-        isBase64Format(private_key)
+        isCompressedWalletImportFormat(private_key)
+        // isHexFormat(private_key) ||
+        // isBase64Format(private_key)
     );
 }
 
@@ -38,7 +38,24 @@ export function isCompressedWalletImportFormat(key) {
     :
         (/^c[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(key));
 }
-                        
+           
+export function getAddressFromPrivateKey(private_key) {
+    const key = Bitcoin.ECPair.fromWIF(private_key)
+    return key.getAddress().toString()
+}
+
+
+
+
+
+
+
+
+/*
+// To allow: https://www.bitaddress.org
+Private Key Hexadecimal Format (64 characters [0-9A-F]):
+Private Key Base64 (44 characters):
+
 
 export function isHexFormat(key) {
     key = key.toString();
@@ -51,3 +68,44 @@ export function isBase64Format(key) {
     return (/^[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789=+\/]{44}$/.test(key));
 }
 
+
+
+function hexToBytes(hex) {
+    for (var bytes = [], c = 0; c < hex.length; c += 2)
+        bytes.push(parseInt(hex.substr(c, 2), 16));
+    return bytes;
+}
+
+function base64ToBytes(base64) {
+    // Remove non-base-64 characters
+    var base64map = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    base64 = base64.replace(/[^A-Z0-9+\/]/ig, "");
+
+    for (var bytes = [], i = 0, imod4 = 0; i < base64.length; imod4 = ++i % 4) {
+        if (imod4 == 0) continue;
+        bytes.push(((base64map.indexOf(base64.charAt(i - 1)) & (Math.pow(2, -2 * imod4 + 8) - 1)) << (imod4 * 2)) |
+        (base64map.indexOf(base64.charAt(i)) >>> (6 - imod4 * 2)));
+    }
+
+    return bytes;
+}
+
+
+function getBitcoinWalletImportFormat(bytes) {
+    if (bytes == null) return "";
+    bytes.unshift(privateKeyPrefix); // prepend 0x80 byte
+    var checksum = Crypto.SHA256(Crypto.SHA256(bytes, { asBytes: true }), { asBytes: true });
+    bytes = bytes.concat(checksum.slice(0, 4));
+    var privWif = Bitcoin.Base58.encode(bytes);
+    return privWif;
+};
+
+function getBitcoinPrivateKeyByteArray(priv) {
+    if (priv == null) return null;
+    // Get a copy of private key as a byte array
+    var bytes = priv.toByteArrayUnsigned();
+    // zero pad if private key is less than 32 bytes 
+    while (bytes.length < 32) bytes.unshift(0x00);
+    return bytes;
+};
+*/
