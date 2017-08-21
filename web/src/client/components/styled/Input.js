@@ -4,7 +4,7 @@ import styles from '/styles'
 
 
 export default function Input(props) {
-    const showerror = props.error ? <InputError>{props.error}</InputError> : null
+    const showerror = props.invalid && props.error ? <InputError>{props.error}</InputError> : null
     return (
         <div>
             <InputStyled {...props} />

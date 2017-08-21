@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { set, createObserver, collect } from 'dop'
+import { createObserver, collect } from 'dop'
 import { Route as Show } from '/doprouter/react'
 
 import { generateQRCode } from '/../util/qr'
@@ -33,11 +33,11 @@ export default class CreateBitcoin extends Component {
         this.observer.observe(state.view, 'repassword');
 
         // Initial state
-        set(state,'view', {
+        state.view = {
             address: '',
             password: '',
             repassword: ''
-        })
+        }
 
         // binding
         this.onGenerateWallet = this.onGenerateWallet.bind(this)
@@ -56,14 +56,14 @@ export default class CreateBitcoin extends Component {
     // Local actions
     onGenerateWallet(e) {
         const wallet = generateRandomWallet()
-        set(state.view, 'address', wallet.address)
-        set(state.view, 'private_key', wallet.private_key)
+        state.view.address = wallet.address
+        state.view.private_key = wallet.private_key
     }
     onChangePassword(e) {
-        set(state.view, 'password', e.target.value)
+        state.view.password = e.target.value
     }
     onChangeRepassword(e) {
-        set(state.view, 'repassword', e.target.value)
+        state.view.repassword = e.target.value
     }
     onSubmit(e) {
         e.preventDefault()
