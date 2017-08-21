@@ -81,66 +81,97 @@ export default class CreateBitcoin extends Component {
     get isFormValid() {
         return (state.view.password.length>=minpassword && state.view.password===state.view.repassword)
     }
-
-
-    render() {
-        const isAddressDefined = state.view.address !== ''
-        const invalidRepassword = (
+    get isAddressDefined() {
+        return state.view.address !== ''
+    }
+    get isInvalidRepassword() {
+        return (
             state.view.password.length>0 &&
             state.view.repassword.length>0 &&
             state.view.password.length===state.view.repassword.length &&
             state.view.password!==state.view.repassword
         )
-        let qrcodebase64 = ''
-        if (isAddressDefined)
-            qrcodebase64 = generateQRCode(state.view.address)
-
-        return (
-            <div>
-                <Div padding-bottom="15px">
-                    <QRCode>
-                        <Show if={isAddressDefined}>
-                            <img width="150" src={qrcodebase64} />
-                        </Show>
-                    </QRCode>
-                </Div>
-                <Div padding-bottom="10px">
-                    <CenterElement>
-                        <Address>{state.view.address}</Address>
-                    </CenterElement>
-                </Div>
-                <Div padding-bottom="50px">
-                    <CenterElement>
-                        <Button onClick={this.onGenerateWallet} width="100%">Generate address</Button>
-                    </CenterElement>
-                </Div>
-
-                <Show if={isAddressDefined}>
-                    <form>
-                        <Div height="65px">
-                            <Div float="left" width="40%">
-                                <Label>Password</Label><Tooltip>Make sure that you remember this. This password can't be restored because we don't store it. For security reasons you will be asked often for this password to operate with this wallet.</Tooltip>
-                                <SubLabel>This password encrypts your private key.</SubLabel>
-                            </Div>
-                            <Div float="left" width="60%">
-                                <Password minlength={minpassword} value={state.view.password} onChange={this.onChangePassword} width="100%" type="password" />
-                            </Div>
-                        </Div>
-                        <Div height="55px">
-                            <Div float="left" width="40%"><Label>Repeat Password</Label></Div>
-                            <Div float="left" width="60%">
-                                <Input minlength={minpassword} error={invalidRepassword?'Passwords do not match':null} invalid={invalidRepassword} value={state.view.repassword} onChange={this.onChangeRepassword} width="100%" type="password" />
-                            </Div>
-                        </Div>
-                        <Div float="right" >
-                            <Button width="100px" disabled={!this.isFormValid} onClick={this.onSubmit}>Create</Button>
-                        </Div>
-                        <Div clear="both" />
-                    </form>
-                </Show>
-            </div>
-        )
     }
+
+
+    render() {
+        return React.createElement(CreateBitcoinTemplate, {
+            qrcodebase64: this.isAddressDefined ? generateQRCode(state.view.address) : '',
+            isAddressDefined: this.isAddressDefined,
+            isInvalidRepassword: this.isInvalidRepassword,
+            isFormValid: this.isFormValid,
+            address: state.view.address,
+            password: state.view.password,
+            repassword: state.view.repassword,
+            onGenerateWallet: this.onGenerateWallet,
+            onChangePassword: this.onChangePassword,
+            onChangeRepassword: this.onChangeRepassword,
+            onSubmit: this.onSubmit,
+            minpassword: minpassword
+        })
+    }
+}
+
+
+
+function CreateBitcoinTemplate({
+    qrcodebase64,
+    isAddressDefined,
+    isInvalidRepassword,
+    isFormValid,
+    address,
+    password,
+    repassword,
+    onGenerateWallet,
+    onChangePassword,
+    onChangeRepassword,
+    onSubmit
+}) {
+    return (
+        <div>
+            <Div padding-bottom="15px">
+                <QRCode>
+                    <Show if={isAddressDefined}>
+                        <img width="150" src={qrcodebase64} />
+                    </Show>
+                </QRCode>
+            </Div>
+            <Div padding-bottom="10px">
+                <CenterElement>
+                    <Address>{address}</Address>
+                </CenterElement>
+            </Div>
+            <Div padding-bottom="50px">
+                <CenterElement>
+                    <Button onClick={onGenerateWallet} width="100%">Generate address</Button>
+                </CenterElement>
+            </Div>
+
+            <Show if={isAddressDefined}>
+                <form>
+                    <Div height="65px">
+                        <Div float="left" width="40%">
+                            <Label>Password</Label><Tooltip>Make sure that you remember this. This password can't be restored because we don't store it. For security reasons you will be asked often for this password to operate with this wallet.</Tooltip>
+                            <SubLabel>This password encrypts your private key.</SubLabel>
+                        </Div>
+                        <Div float="left" width="60%">
+                            <Password minlength={minpassword} value={password} onChange={onChangePassword} width="100%" type="password" />
+                        </Div>
+                    </Div>
+                    <Div height="55px">
+                        <Div float="left" width="40%"><Label>Repeat Password</Label></Div>
+                        <Div float="left" width="60%">
+                            <Input minlength={minpassword} error={isInvalidRepassword?'Passwords do not match':null} invalid={isInvalidRepassword} value={repassword} onChange={onChangeRepassword} width="100%" type="password" />
+                        </Div>
+                    </Div>
+                    <Div float="right" >
+                        <Button width="100px" disabled={!isFormValid} onClick={onSubmit}>Create</Button>
+                    </Div>
+                    <Div clear="both" />
+                </form>
+            </Show>
+        </div>
+    )
 }
 
 

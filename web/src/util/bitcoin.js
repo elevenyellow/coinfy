@@ -44,20 +44,33 @@ export function isCompressedWalletImportFormat(key) {
 }
            
 export function getAddressFromPrivateKey(private_key) {
-    const key = Bitcoin.ECPair.fromWIF(private_key)
-    return key.getAddress().toString()
+    const wallet = Bitcoin.ECPair.fromWIF(private_key)
+    return wallet.getAddress().toString()
 }
 
 
 export function getAddressFromPublicKey(public_key) {
-    var publicKeyBuffer = new Buffer(public_key, 'hex')
-    var key = Bitcoin.ECPair.fromPublicKeyBuffer(publicKeyBuffer)
-    return key.getAddress().toString()
-    // console.log(new Bitcoin.ECPair(null, publicKey.Q, { compressed: true }).getAddress())
-    // console.log(new Bitcoin.ECPair(null, publicKey.Q, { compressed: false }).getAddress())
+    const publicKeyBuffer = new Buffer(public_key, 'hex')
+    const wallet = Bitcoin.ECPair.fromPublicKeyBuffer(publicKeyBuffer)
+    return wallet.getAddress().toString()
+    // console.log(new Bitcoin.ECPair(null, wallet.Q, { compressed: true }).getAddress())
+    // console.log(new Bitcoin.ECPair(null, wallet.Q, { compressed: false }).getAddress())
 }
 
-
+export function getAllFormats(wallet) {
+    const formats = {}
+    if (typeof wallet == 'string')
+        wallet = Bitcoin.ECPair.fromWIF(wallet)
+    wallet.compressed = false
+    formats.address = wallet.getAddress()
+    formats.public_key = wallet.getPublicKeyBuffer().toString('hex')
+    formats.private_key = wallet.toWIF()
+    wallet.compressed = true
+    formats.address_comp = wallet.getAddress()
+    formats.public_key_comp = wallet.getPublicKeyBuffer().toString('hex')
+    formats.private_key_comp = wallet.toWIF()
+    return formats
+}
 
 
 

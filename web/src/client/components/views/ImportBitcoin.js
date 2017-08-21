@@ -181,6 +181,7 @@ export default class ImportBitcoin extends Component {
             onChangePassword: this.onChangePassword,
             onChangeRepassword: this.onChangeRepassword,
             onSubmit: this.onSubmit,
+            minpassword: minpassword
         })
     }
 }
