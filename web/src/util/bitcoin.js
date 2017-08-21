@@ -13,6 +13,10 @@ export function isAddress(address) {
     return /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
 }
 
+export function isPublicKey(public_key) {
+    return /^([0-9a-fA-F]{66}|[0-9a-fA-F]{130})$/.test(public_key)
+}
+
 export function isPrivateKey(private_key) {
     return (
         isWalletImportFormat(private_key) ||
@@ -44,6 +48,14 @@ export function getAddressFromPrivateKey(private_key) {
     return key.getAddress().toString()
 }
 
+
+export function getAddressFromPublicKey(public_key) {
+    var publicKeyBuffer = new Buffer(public_key, 'hex')
+    var key = Bitcoin.ECPair.fromPublicKeyBuffer(publicKeyBuffer)
+    return key.getAddress().toString()
+    // console.log(new Bitcoin.ECPair(null, publicKey.Q, { compressed: true }).getAddress())
+    // console.log(new Bitcoin.ECPair(null, publicKey.Q, { compressed: false }).getAddress())
+}
 
 
 

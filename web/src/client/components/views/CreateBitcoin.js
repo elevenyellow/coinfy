@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { set, createObserver } from 'dop'
+import { set, createObserver, collect } from 'dop'
 import { Route as Show } from '/doprouter/react'
 
 import { generateQRCode } from '/../util/qr'
 import { generateRandomWallet } from '/../util/bitcoin'
-import { encryptAES128CTR, decryptAES128CTR } from '/../util/crypto'
 
+import { routes } from '/stores/router'
 import state from '/stores/state'
 import styles from '/styles'
 
@@ -19,7 +19,7 @@ import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
 import { Label, SubLabel } from '/components/styled/Label'
 
-import { addWalletBtc } from '/actions'
+import { setHref, BTCcreate, BTCsetPrivateKey } from '/actions'
 
 
 const minpassword = 8
@@ -43,7 +43,7 @@ export default class CreateBitcoin extends Component {
         this.onGenerateWallet = this.onGenerateWallet.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onChangeRepassword = this.onChangeRepassword.bind(this)
-        this.onCreate = this.onCreate.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -65,11 +65,15 @@ export default class CreateBitcoin extends Component {
     onChangeRepassword(e) {
         set(state.view, 'repassword', e.target.value)
     }
-    onCreate(e) {
+    onSubmit(e) {
         e.preventDefault()
         if (this.isFormValid) {
-            let private_key = encryptAES128CTR(state.view.private_key, state.view.password)
-            addWalletBtc(state.view.address, private_key)
+            const collector = collect()
+            const address = state.view.address
+            BTCcreate(address)
+            BTCsetPrivateKey(address, state.view.private_key, state.view.password)
+            setHref(routes.wallet('BTC', address))
+            collector.emit()
         }
     }
 
@@ -129,7 +133,7 @@ export default class CreateBitcoin extends Component {
                             </Div>
                         </Div>
                         <Div float="right" >
-                            <Button width="100px" disabled={!this.isFormValid} onClick={this.onCreate}>Create</Button>
+                            <Button width="100px" disabled={!this.isFormValid} onClick={this.onSubmit}>Create</Button>
                         </Div>
                         <Div clear="both" />
                     </form>
