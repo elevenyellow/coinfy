@@ -11,21 +11,21 @@ border:0;
 font-family: inherit;
 outline: none;
 border-radius: 2px;
-:hover {
-    background-color: #EEE;
+:hover, :focus {
+    background-color: ${styles.color.background1};
 }
 ::-webkit-input-placeholder { /* Chrome */
-    color: #DDD;
+    color: rgba(90,97,104,.2);
   }
 :-ms-input-placeholder { /* IE 10+ */
-color: #DDD;
+color: rgba(90,97,104,.2);
 }
 ::-moz-placeholder { /* Firefox 19+ */
-color: #DDD;
+color: rgba(90,97,104,.2);
 opacity: 1;
 }
 :-moz-placeholder { /* Firefox 4 - 18 */
-color: #DDD;
+color: rgba(90,97,104,.2);
 opacity: 1;
 }
 `

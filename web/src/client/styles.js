@@ -17,7 +17,8 @@ export default {
         front5: '#617991',
         front6: '#8e9499',
         front7: '#a6b3c3',
-        disabled: '#DDD',
+        disabled: '#dddddd',
+        disabled2: '#eeeeee',
         error: '#e71015',
     }
 }

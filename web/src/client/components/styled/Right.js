@@ -57,15 +57,22 @@ padding-left: 15px;
 padding-top: 15px;
 border-left: 5px solid transparent;
 cursor: pointer;
+color: ${styles.color.front3};
 &:hover {
     border-left-color: ${styles.color.background2};
 }
 
 ${props=>{
-    if (props.selected) {
+    if (props.disabled) {
+      return `
+      color: ${styles.color.disabled};
+      cursor: default;
+      border-left-color: transparent !important;
+      `
+    }
+    else if (props.selected && props.disabled!==true) {
         return `
-        cursor: inherit;
-        background: ${styles.color.background1};
+        background-color: ${styles.color.background1};
         border-left-color: ${styles.color.background2};
         box-shadow: 0 1px 2px -1px rgba(0,0,0,.4) inset;
         `
@@ -79,12 +86,13 @@ margin-right: 10px;
 export const RightContentMenuItemIcon = styled.div`
 float:left;
 margin-right: 10px;
-top: -2px;
+top: -3px;
 position: relative;
+transform: ${props=>props.transform||'auto'}
 `
 
 export const RightContentMenuItemText = styled.div`
-color: ${styles.color.front3};
+color: ${props=>props.color||'inherit'};
 font-weight: bold;
 font-size: 14px;
 line-height: 20px;
