@@ -25,7 +25,7 @@ export default function Header() {
                         <HeaderCurrencySelected>USD</HeaderCurrencySelected>
                         <DropDownArrow />
                         </Div>
-                        <DropDownMenu visible={true} right="0" top="25px">
+                        <DropDownMenu visible={false} right="0" top="25px">
                             <DropDownItem>USD</DropDownItem>
                             <DropDownItem>EUR</DropDownItem>
                         </DropDownMenu>

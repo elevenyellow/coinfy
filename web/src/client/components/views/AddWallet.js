@@ -14,7 +14,7 @@ import {
     RightContent,
     RightContentMenu,
     RightContentMenuItem,
-    RightContentMenuItemIcon,
+    RightContentMenuItemImage,
     RightContentMenuItemText,
     RightContentContent,
     RightContentInner
@@ -47,7 +47,7 @@ export default class AddWallet extends Component {
             <div>
                 <RightHeader>
                     <RightHeaderInner>
-                        <Div float="left">
+                        <Div float="left" padding-left="15px">
                             <H1>Add wallet</H1>
                             <H2>Create or Import Wallets</H2> 
                         </Div>
@@ -58,12 +58,12 @@ export default class AddWallet extends Component {
                     <RightContentMenu>
 
                         <RightContentMenuItem selected={location.pathname===routes.createbtc()} onClick={e=>setHref(routes.createbtc())}>
-                            <RightContentMenuItemIcon><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemIcon>
+                            <RightContentMenuItemImage><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemImage>
                             <RightContentMenuItemText>Create Bitcoin wallet</RightContentMenuItemText>
                         </RightContentMenuItem>
 
                         <RightContentMenuItem selected={location.pathname===routes.importbtc()} onClick={e=>setHref(routes.importbtc())}>
-                            <RightContentMenuItemIcon><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemIcon>
+                            <RightContentMenuItemImage><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemImage>
                             <RightContentMenuItemText>Import Bitcoin wallet</RightContentMenuItemText>
                         </RightContentMenuItem>
 

@@ -3,8 +3,11 @@ import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 
+import { isAddress } from '/../util/bitcoin'
+
 import styles from '/styles'
 import { location, routes } from '/stores/router'
+import wallets from '/stores/wallets'
 
 // styled
 import { RightContainer } from '/components/styled/Right'
@@ -12,6 +15,7 @@ import { RightContainer } from '/components/styled/Right'
 // views
 import AddWallet from '/components/views/AddWallet'
 import Message from '/components/views/Message'
+import BTCWallet from '/components/views/BTCWallet'
 
 
 export default class Right extends Component {
@@ -30,12 +34,15 @@ export default class Right extends Component {
         return (
             <RightContainer>
                 <Router source={location}>
-                    <Route pathname={new RegExp(routes.addwallet())}>
-                        <AddWallet />
-                    </Route> 
                     <Route pathname="/">
                         <Message>Add or Import a wallet to start working</Message>
                     </Route>
+                    <Route pathname={new RegExp(routes.addwallet())}>
+                        <AddWallet />
+                    </Route>
+                    <Route path-0="BTC" if={isAddress(location.path[1])}>
+                        <BTCWallet />
+                    </Route> 
                     <Route>
                         <Message>Not found</Message>
                     </Route> 

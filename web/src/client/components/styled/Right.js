@@ -20,7 +20,7 @@ height: 108px;
 border-bottom: 1px solid ${styles.color.background4}
 `
 export const RightHeaderInner = styled.div`
-padding: 20px 35px;
+padding: 20px 20px;
 `
 
 export const RightContent = styled.div`
@@ -72,14 +72,21 @@ ${props=>{
     }
 }}
 `
-export const RightContentMenuItemIcon = styled.div`
+export const RightContentMenuItemImage = styled.div`
 float:left;
 margin-right: 10px;
 `
+export const RightContentMenuItemIcon = styled.div`
+float:left;
+margin-right: 10px;
+top: -2px;
+position: relative;
+`
+
 export const RightContentMenuItemText = styled.div`
 color: ${styles.color.front3};
 font-weight: bold;
-font-size: 13px;
+font-size: 14px;
 line-height: 20px;
 `
 

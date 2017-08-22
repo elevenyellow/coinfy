@@ -29,7 +29,7 @@ module.exports = {
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
+            name: 'libs',
             minChunks: ({ resource }) => /node_modules/.test(resource)
         })
     ]
