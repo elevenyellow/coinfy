@@ -73,12 +73,12 @@ function AddWalletTemplate({ location, routesCreatebtc, routesImportbtc, onClick
                 <RightContentMenu>
 
                     <RightContentMenuItem selected={location.pathname===routesCreatebtc} onClick={e=>onClick(routesCreatebtc)}>
-                        <RightContentMenuItemImage><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemImage>
+                        <RightContentMenuItemImage><img src="/static/image/BTC.svg" width="20" height="20" /></RightContentMenuItemImage>
                         <RightContentMenuItemText>Create Bitcoin wallet</RightContentMenuItemText>
                     </RightContentMenuItem>
 
                     <RightContentMenuItem selected={location.pathname===routesImportbtc} onClick={e=>onClick(routesImportbtc)}>
-                        <RightContentMenuItemImage><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemImage>
+                        <RightContentMenuItemImage><img src="/static/image/BTC.svg" width="20" height="20" /></RightContentMenuItemImage>
                         <RightContentMenuItemText>Import Bitcoin wallet</RightContentMenuItemText>
                     </RightContentMenuItem>
 

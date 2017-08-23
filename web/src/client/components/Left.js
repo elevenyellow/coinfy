@@ -1,16 +1,45 @@
 import React, { Component } from 'react'
+import { createObserver } from 'dop'
 import styled from 'styled-components'
 import styles from '/styles'
 
 import { setHref } from '/actions'
 import { routes } from '/stores/router'
+import state from '/stores/state'
 
 import IconMore from 'react-icons/lib/md/more-vert'
 import { DropDown, DropDownItem, DropDownMenu, DropDownArrow } from '/components/styled/Dropdown'
 import ButtonBig from '/components/styled/ButtonBig'
 
+import Wallets from '/components/partials/Wallets'
 
-export default function Left() {
+
+
+
+
+
+export default class Left extends Component {
+    
+        componentWillMount() {
+            this.observer = createObserver(mutations => this.forceUpdate());
+        }
+        componentWillUnmount() {
+            this.observer.destroy()
+        }
+        shouldComponentUpdate() {
+            return false
+        }
+    
+
+    
+        render() {
+            return React.createElement(LeftTemplate, {
+            })
+        }
+    }
+
+
+function LeftTemplate({}) {
     return (
         <LeftDiv>
             <ColumnLeftChart onClick={e=>setHref(routes.home())}>
@@ -41,15 +70,7 @@ export default function Left() {
                 <ColumnLeftHeaderRight></ColumnLeftHeaderRight>
             </ColumnLeftHeader>
             <ColumnLeftContent>
-                {[0,0,0,0,0,0,0].map((e,index)=>(
-                <Wallet selected={index===1} key={index}>
-                    <WalletIcon><img src="/static/image/bitcoin.svg" width="22" height="22" /></WalletIcon>
-                    <WalletInfo>
-                        <WalletLabel>Coinbase {index+1}</WalletLabel>
-                        <WalletBalance><strong>$2351.32</strong> ≈ 0.93123 BTC</WalletBalance>
-                    </WalletInfo>
-                </Wallet>
-                ))}
+                <Wallets />
             </ColumnLeftContent>
             <ColumnLeftFooter>
                 <ButtonBig onClick={e=>{ setHref(routes.addwallet()) }}>Add wallet</ButtonBig>
@@ -140,50 +161,6 @@ width: calc(100% - 20px);
 padding: 10px;
 `
 
-
-
-
-const Wallet = styled.div`
-padding: 15px 15px;
-border-bottom:1px solid ${styles.color.background4};
-color: ${styles.color.front3};
-border-left: 5px solid transparent;
-cursor: pointer;
-&:hover {
-    border-left-color: ${styles.color.background2};
-}
-${props=>{
-    if (props.selected) {
-        return `
-        cursor: inherit;
-        border-left-color: ${styles.color.background2};
-        border-bottom: 0;
-        box-shadow: 0 1px 2px -1px rgba(0,0,0,.4) inset;
-        background: ${styles.color.background1}
-        `
-    }
-}};
-`
-const WalletIcon = styled.div`
-float:left;
-padding-top:3px;
-`
-const WalletInfo = styled.div`
-margin-left: 33px;
-`
-const WalletLabel = styled.div`
-font-weight: bold;
-font-size: 16px;
-color: inherit;
-line-height: 20px;
-`
-const WalletBalance = styled.div`
-font-size: 12px;
-color: ${styles.color.front2};
-padding-top: 2px;
-font-weight: 100;
-letter-spacing: 0.5px;
-`
 
 
 

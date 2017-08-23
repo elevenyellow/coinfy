@@ -37,9 +37,7 @@ export default class BTCWallet extends Component {
 
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate());
-        // this.observer.observe(state.view, 'address');
-        // this.observer.observe(state.view, 'password');
-        // this.observer.observe(state.view, 'repassword');
+        this.observer.observe(location, 'pathname');
 
         // Initial state
         state.view = {
@@ -55,9 +53,13 @@ export default class BTCWallet extends Component {
 
 
     render() {
+        const address = location.path[1]
+        const isRegistered = state.wallets.BTC.hasOwnProperty(address)
+        const hasPrivateKey = isRegistered && state.wallets.BTC[address].hasOwnProperty('private_key')
         return React.createElement(BTCWalletTemplate, {
             pathname: location.pathname,
-            hasPrivateKey: state.wallets.BTC.hasOwnProperty(location.path[1])
+            isRegistered: isRegistered,
+            hasPrivateKey: hasPrivateKey
         })
     }
 }
@@ -72,7 +74,7 @@ function BTCWalletTemplate({ pathname, hasPrivateKey }) {
             <RightHeader>
                 <RightHeaderInner>
                     <Div width="30px" float="left" padding-top="11px" padding-right="10px">
-                        <img src="/static/image/bitcoin.svg" width="30" height="30" />
+                        <img src="/static/image/BTC.svg" width="30" height="30" />
                     </Div>
                     <Div width="calc(100% - 130px)" float="left">
                         <H1Input width="100%" placeholder="Type a label..." />

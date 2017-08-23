@@ -10,7 +10,6 @@ export function setHref(href) {
 
 export function BTCcreate(address) {
     state.wallets.BTC[address] = {
-        version: 3, // using format of ethereum keystore
         label: '',
         balance: 0,
         last_check: 0 // last time we checked balance in timestamp

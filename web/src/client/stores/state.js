@@ -1,10 +1,10 @@
 import { register } from 'dop'
 
-const state = {
+const state = register({
     wallets: {
         BTC: {}
     },
     view: {}
-}
+})
 
-export default register(state)
+export default state
