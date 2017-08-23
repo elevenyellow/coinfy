@@ -11,7 +11,7 @@ import IconMore from 'react-icons/lib/md/more-vert'
 import { DropDown, DropDownItem, DropDownMenu, DropDownArrow } from '/components/styled/Dropdown'
 import ButtonBig from '/components/styled/ButtonBig'
 
-import Wallets from '/components/partials/Wallets'
+import WalletList from '/components/partials/WalletList'
 
 
 
@@ -70,7 +70,7 @@ function LeftTemplate({}) {
                 <ColumnLeftHeaderRight></ColumnLeftHeaderRight>
             </ColumnLeftHeader>
             <ColumnLeftContent>
-                <Wallets />
+                <WalletList />
             </ColumnLeftContent>
             <ColumnLeftFooter>
                 <ButtonBig onClick={e=>{ setHref(routes.addwallet()) }}>Add wallet</ButtonBig>

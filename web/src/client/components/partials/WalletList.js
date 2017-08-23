@@ -5,11 +5,11 @@ import styles from '/styles'
 
 import state from '/stores/state'
 
-import Wallet from '/components/partials/Wallet'
+import WalletListItem from '/components/partials/WalletListItem'
 
 
 
-export default class Wallets extends Component {
+export default class WalletList extends Component {
     
         componentWillMount() {
             this.observer = createObserver(mutations => this.forceUpdate());
@@ -27,26 +27,26 @@ export default class Wallets extends Component {
         render() {
             const wallets = []
 
-            Object.keys(state.wallets).forEach(crypto=>{
-                Object.keys(state.wallets[crypto]).forEach(address=>{
+            Object.keys(state.wallets).forEach(symbol=>{
+                Object.keys(state.wallets[symbol]).forEach(address=>{
                     wallets.push({
-                        type: crypto,
+                        symbol: symbol,
                         address: address,
-                        wallet: state.wallets[crypto][address]
+                        wallet: state.wallets[symbol][address]
                     })
                 })
             })
 
-            return React.createElement(WalletsTemplate, {
+            return React.createElement(WalletListTemplate, {
                 wallets: wallets
             })
         }
     }
 
 
-function WalletsTemplate({ wallets }) {
+function WalletListTemplate({ wallets }) {
     return <div>
-        {wallets.map(wallet => <Wallet wallet={wallet} />)}
+        {wallets.map(wallet => <WalletListItem wallet={wallet} />)}
     </div>
 }
 

@@ -9,11 +9,13 @@ import { setHref } from '/actions'
 export default class Wallet extends Component {
     
         componentWillMount() {
+            const wallet = this.props.wallet
             this.observer = createObserver(mutations => this.forceUpdate());
             this.observer.observe(location, 'pathname');
-            this.observer.observe(state.wallets[this.props.wallet.type]);
-            this.observer.observe(this.props.wallet.wallet);
-
+            this.observer.observe(wallet.wallet, 'label');
+            this.observer.observe(wallet.wallet, 'balance');
+            this.observer.observe(state.wallets[wallet.symbol]);
+            
             // binding
             this.onClick = this.onClick.bind(this)
         }
@@ -27,7 +29,7 @@ export default class Wallet extends Component {
 
         onClick() {
             setHref(routes.wallet(
-                this.props.wallet.type,
+                this.props.wallet.symbol,
                 this.props.wallet.address
             ))
         }
@@ -44,10 +46,10 @@ export default class Wallet extends Component {
 
 function WalletTemplate({ wallet, location, onClick }) {
     return (
-        <WalletStyled onClick={onClick} selected={location.path[0]===wallet.type && location.path[1]===wallet.address}>
+        <WalletStyled onClick={onClick} selected={location.path[0]===wallet.symbol && location.path[1]===wallet.address}>
             <WalletIcon><img src="/static/image/BTC.svg" width="22" height="22" /></WalletIcon>
             <WalletInfo>
-                <WalletLabel>{wallet.wallet.label.length>0?wallet.wallet.label.length:wallet.address}</WalletLabel>
+                <WalletLabel>{wallet.wallet.label.length>0?wallet.wallet.label:wallet.address}</WalletLabel>
                 <WalletBalance><strong>$2351.32</strong> ≈ 0.93123 BTC</WalletBalance>
             </WalletInfo>
         </WalletStyled>
@@ -73,7 +75,6 @@ ${props=>{
         return `
         cursor: inherit;
         border-left-color: ${styles.color.background2};
-        border-bottom: 0;
         box-shadow: 0 1px 2px -1px rgba(0,0,0,.4) inset;
         background: ${styles.color.background1}
         `
