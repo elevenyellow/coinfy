@@ -14,7 +14,7 @@ import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
 import QRCode from '/components/styled/QRCode'
 import Address from '/components/styled/Address'
-import Tooltip from '/components/styled/Tooltip'
+import Help from '/components/styled/Help'
 import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
 import { Label, SubLabel } from '/components/styled/Label'
@@ -151,7 +151,7 @@ function CreateBitcoinTemplate({
                 <form>
                     <Div height="65px">
                         <Div float="left" width="40%">
-                            <Label>Password</Label><Tooltip>Make sure that you remember this. This password can't be restored because we don't store it. For security reasons you will be asked often for this password to operate with this wallet.</Tooltip>
+                            <Label>Password</Label><Help>Make sure that you remember this. This password can't be restored because we don't store it. For security reasons you will be asked often for this password to operate with this wallet.</Help>
                             <SubLabel>This password encrypts your private key.</SubLabel>
                         </Div>
                         <Div float="left" width="60%">

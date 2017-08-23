@@ -19,16 +19,16 @@ export default function(props) {
         top = '-2px';
     }
     return (
-        <Tooltip width={width + 'px'} left={left} top={top} position={props.position}>
+        <Help width={width + 'px'} left={left} top={top} position={props.position}>
             <span>?</span>
             <div>
                 {props.children}
             </div>
-        </Tooltip>
+        </Help>
     );
 }
 
-const Tooltip = styled.div`
+const Help = styled.div`
     display: inline-block;
     position: relative;
     width: 16px;

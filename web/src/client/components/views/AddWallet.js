@@ -41,55 +41,67 @@ export default class AddWallet extends Component {
         return false
     }
 
+    onClick(route) {
+        setHref(route)
+    }
 
     render() {
-        return (
-            <div>
-                <RightHeader>
-                    <RightHeaderInner>
-                        <Div float="left" padding-left="15px">
-                            <H1>Add wallet</H1>
-                            <H2>Create or Import Wallets</H2> 
-                        </Div>
-                        <Div clear="both" />
-                    </RightHeaderInner>
-                </RightHeader>
-                <RightContent>
-                    <RightContentMenu>
-
-                        <RightContentMenuItem selected={location.pathname===routes.createbtc()} onClick={e=>setHref(routes.createbtc())}>
-                            <RightContentMenuItemImage><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemImage>
-                            <RightContentMenuItemText>Create Bitcoin wallet</RightContentMenuItemText>
-                        </RightContentMenuItem>
-
-                        <RightContentMenuItem selected={location.pathname===routes.importbtc()} onClick={e=>setHref(routes.importbtc())}>
-                            <RightContentMenuItemImage><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemImage>
-                            <RightContentMenuItemText>Import Bitcoin wallet</RightContentMenuItemText>
-                        </RightContentMenuItem>
-
-                    </RightContentMenu>
-                    <RightContentContent>
-                        <RightContentInner>
-                            
-                            <Router source={location}>
-                                <Route pathname={routes.createbtc()}>
-                                    <CreateBitcoin />
-                                </Route> 
-                                <Route pathname={routes.importbtc()}>
-                                    <ImportBitcoin />
-                                </Route>
-                            </Router>
-
-
-                        </RightContentInner>
-                    </RightContentContent>
-                </RightContent>
-            </div>
-        )
+        return React.createElement(AddWalletTemplate, {
+            location: location,
+            routesCreatebtc: routes.createbtc(),
+            routesImportbtc: routes.importbtc(),
+            onClick: this.onClick
+        })
     }
 }
 
 
+
+function AddWalletTemplate({ location, routesCreatebtc, routesImportbtc, onClick }) {
+    return (
+        <div>
+            <RightHeader>
+                <RightHeaderInner>
+                    <Div float="left" padding-left="15px">
+                        <H1>Add wallet</H1>
+                        <H2>Create or Import Wallets</H2> 
+                    </Div>
+                    <Div clear="both" />
+                </RightHeaderInner>
+            </RightHeader>
+            <RightContent>
+                <RightContentMenu>
+
+                    <RightContentMenuItem selected={location.pathname===routesCreatebtc} onClick={e=>onClick(routesCreatebtc)}>
+                        <RightContentMenuItemImage><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemImage>
+                        <RightContentMenuItemText>Create Bitcoin wallet</RightContentMenuItemText>
+                    </RightContentMenuItem>
+
+                    <RightContentMenuItem selected={location.pathname===routesImportbtc} onClick={e=>onClick(routesImportbtc)}>
+                        <RightContentMenuItemImage><img src="/static/image/bitcoin.svg" width="20" height="20" /></RightContentMenuItemImage>
+                        <RightContentMenuItemText>Import Bitcoin wallet</RightContentMenuItemText>
+                    </RightContentMenuItem>
+
+                </RightContentMenu>
+                <RightContentContent>
+                    <RightContentInner>
+                        
+                        <Router source={location}>
+                            <Route pathname={routesCreatebtc}>
+                                <CreateBitcoin />
+                            </Route> 
+                            <Route pathname={routesImportbtc}>
+                                <ImportBitcoin />
+                            </Route>
+                        </Router>
+
+
+                    </RightContentInner>
+                </RightContentContent>
+            </RightContent>
+        </div>
+    )
+}
 
 
 

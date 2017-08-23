@@ -7,7 +7,6 @@ import { isAddress } from '/../util/bitcoin'
 
 import styles from '/styles'
 import { location, routes } from '/stores/router'
-import wallets from '/stores/wallets'
 
 // styled
 import { RightContainer } from '/components/styled/Right'

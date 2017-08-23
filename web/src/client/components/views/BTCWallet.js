@@ -6,7 +6,6 @@ import { setHref } from '/actions'
 
 import { location, routes } from '/stores/router'
 import state from '/stores/state'
-import wallets from '/stores/wallets'
 
 import styles from '/styles'
 
@@ -19,7 +18,7 @@ import IconDelete from 'react-icons/lib/md/delete'
 import Div from '/components/styled/Div'
 import H1Input from '/components/styled/H1Input'
 import H2 from '/components/styled/H2'
-import Tooltip from '/components/styled/Tooltip'
+import Help from '/components/styled/Help'
 import Opacity from '/components/styled/Opacity'
 import { 
     RightHeader,
@@ -45,7 +44,6 @@ export default class BTCWallet extends Component {
         // Initial state
         state.view = {
             address: location.path[1],
-            // wallet: wallets.BTC[location.path[1]]
         }
     }
     componentWillUnmount() {
@@ -59,7 +57,7 @@ export default class BTCWallet extends Component {
     render() {
         return React.createElement(BTCWalletTemplate, {
             pathname: location.pathname,
-            hasPrivateKey: wallets.BTC.hasOwnProperty(location.path[1])
+            hasPrivateKey: state.wallets.BTC.hasOwnProperty(location.path[1])
         })
     }
 }
@@ -68,7 +66,7 @@ export default class BTCWallet extends Component {
 
 
 function BTCWalletTemplate({ pathname, hasPrivateKey }) {
-    const tooltipPrivatekey = hasPrivateKey ? null : <Tooltip position="center" width={150}>You must set your private key first in order to use this area.</Tooltip>
+    const tooltipPrivatekey = hasPrivateKey ? null : <Help position="center" width={150}>You must set your private key first in order to use this area.</Help>
     return (
         <div>
             <RightHeader>

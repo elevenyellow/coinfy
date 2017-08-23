@@ -9,7 +9,6 @@ import { encryptAES128CTR } from '/../util/crypto'
 
 import { routes } from '/stores/router'
 import state from '/stores/state'
-import wallets from '/stores/wallets'
 
 import styles from '/styles'
 
@@ -17,7 +16,7 @@ import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
 import QRCode from '/components/styled/QRCode'
 import Address from '/components/styled/Address'
-import Tooltip from '/components/styled/Tooltip'
+import Help from '/components/styled/Help'
 import Input from '/components/styled/Input'
 import Select from '/components/styled/Select'
 import Password from '/components/styled/Password'
@@ -160,7 +159,7 @@ export default class ImportBitcoin extends Component {
         )
     }
     get isRegistered() {
-        return wallets.BTC.hasOwnProperty(state.view.address)
+        return state.wallets.BTC.hasOwnProperty(state.view.address)
     }
 
     render() {
@@ -276,7 +275,7 @@ function ImportBitcoinTemplate({
                 <Show if={type_import===types_import.public_key}>
                     <Div height="65px">
                         <Div float="left" width="40%">
-                            <Label>Public key</Label><Tooltip>Your address can be calculated through public key.</Tooltip>
+                            <Label>Public key</Label><Help>Your address can be calculated through public key.</Help>
                             <SubLabel>Type or paste your public key.</SubLabel>
                         </Div>
                         <Div float="left" width="60%">
@@ -290,7 +289,7 @@ function ImportBitcoinTemplate({
                     <div>
                     <Div height="65px">
                         <Div float="left" width="40%">
-                            <Label>Private key</Label><Tooltip>Your address can be calculated through private key.</Tooltip>
+                            <Label>Private key</Label><Help>Your address can be calculated through private key.</Help>
                             <SubLabel>Type or paste your Private key.</SubLabel>
                         </Div>
                         <Div float="left" width="60%">
@@ -299,7 +298,7 @@ function ImportBitcoinTemplate({
                     </Div>
                         <Div height="65px">
                         <Div float="left" width="40%">
-                            <Label>Password</Label><Tooltip>Make sure that you remember this. This password can't be restored because we don't store it. For security reasons you will be asked often for this password to operate with this wallet.</Tooltip>
+                            <Label>Password</Label><Help>Make sure that you remember this. This password can't be restored because we don't store it. For security reasons you will be asked often for this password to operate with this wallet.</Help>
                             <SubLabel>This password encrypts your private key.</SubLabel>
                         </Div>
                         <Div float="left" width="60%">
