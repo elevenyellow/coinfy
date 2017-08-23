@@ -20,15 +20,27 @@ import {
 export default class HeaderWallet extends Component {
 
     componentWillMount() {
-        const path = location.path
-        this.symbol = path[0]
-        this.address = path[1]
+        let unobserveLabel
+        let unobserveBalance
+        this.symbol = location.path[0]
+        this.address = location.path[1]
         this.wallet = state.wallets[this.symbol][this.address]
-        this.observer = createObserver(m => this.forceUpdate())
+        this.observer = createObserver(m => {
+            if (m[0].prop === 'pathname') {
+                this.symbol = location.path[0]
+                this.address = location.path[1]
+                this.wallet = state.wallets[this.symbol][this.address]
+                unobserveLabel()
+                unobserveBalance()
+                unobserveLabel = this.observer.observe(this.wallet, 'label')
+                unobserveBalance = this.observer.observe(this.wallet, 'balance')
+            }
+            this.forceUpdate()
+        })
         this.observer.observe(location, 'pathname')
         if (this.wallet !== undefined) {
-            this.observer.observe(this.wallet, 'label')
-            this.observer.observe(this.wallet, 'balance')
+            unobserveLabel = this.observer.observe(this.wallet, 'label')
+            unobserveBalance = this.observer.observe(this.wallet, 'balance')
         }
 
 
@@ -49,7 +61,8 @@ export default class HeaderWallet extends Component {
 
     render() {
         return React.createElement(HeaderWalletTemplate, {
-            label: this.wallet.label,
+            label: this.wallet ? this.wallet.label : '',
+            symbol: this.symbol,
             onChangeLabel: this.onChangeLabel
         })
     }
