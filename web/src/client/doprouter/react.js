@@ -19,6 +19,8 @@ export function Route(props) {
         return children
 }
 
+export const Show = Route
+
 
 let sourceProperty = 'source'
 export function setSourceProperty(name) {

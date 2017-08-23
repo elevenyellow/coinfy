@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
-import { Route as Show } from '/doprouter/react'
+import { Show } from '/doprouter/react'
 
 import { generateQRCode } from '/../util/qr'
 import { isAddress, isPublicKey, isPrivateKey, getAddressFromPublicKey, getAddressFromPrivateKey } from '/../util/bitcoin'

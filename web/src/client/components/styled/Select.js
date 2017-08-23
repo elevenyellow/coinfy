@@ -7,7 +7,7 @@ ${props=>{
     if (props.width) return 'width:'+props.width+';'
 }}
 border: 1px solid ${props=>props.invalid ? `${styles.color.error} !important` : styles.color.background4};
-background: #FFF;
+background-color: #FFFFFF;
 font-weight: 500;
 outline: none;
 font-family: monospace;
