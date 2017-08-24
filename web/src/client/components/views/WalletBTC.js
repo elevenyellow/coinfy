@@ -1,20 +1,25 @@
-import React, { Component } from "react";
-import { createObserver } from "dop";
-import { Router, Route, Show } from "/doprouter/react";
+import React, { Component } from 'react'
+import { createObserver } from 'dop'
+import { Router, Route, Show } from '/doprouter/react'
 
-import { setHref } from "/actions";
+import { setHref } from '/actions'
 
-import { location, routes } from "/stores/router";
-import { state } from "/stores/state";
+import { BTC } from '/const/crypto'
+import { location, routes } from '/stores/router'
+import {
+    state,
+    isWalletRegistered,
+    isWalletWithPrivateKey
+} from '/stores/state'
 
-import styles from "/styles";
+import styles from '/styles'
 
-import IconDashboard from "react-icons/lib/md/dashboard";
-import IconReceive from "react-icons/lib/md/send";
-import IconPrint from "react-icons/lib/fa/print";
-import IconKey from "react-icons/lib/go/key";
-import IconDelete from "react-icons/lib/md/delete";
-import Help from "/components/styled/Help";
+import IconDashboard from 'react-icons/lib/md/dashboard'
+import IconReceive from 'react-icons/lib/md/send'
+import IconPrint from 'react-icons/lib/fa/print'
+import IconKey from 'react-icons/lib/go/key'
+import IconDelete from 'react-icons/lib/md/delete'
+import Help from '/components/styled/Help'
 import {
     RightContent,
     RightContentMenu,
@@ -23,42 +28,40 @@ import {
     RightContentMenuItemText,
     RightContentContent,
     RightContentInner
-} from "/components/styled/Right";
+} from '/components/styled/Right'
 
-import HeaderWallet from "/components/partials/HeaderWallet";
+import HeaderWallet from '/components/partials/HeaderWallet'
 
-export default class BTCWallet extends Component {
+export default class WalletBTC extends Component {
     componentWillMount() {
-        this.observer = createObserver(m => this.forceUpdate());
-        this.observer.observe(location, "pathname");
+        this.observer = createObserver(m => this.forceUpdate())
+        this.observer.observe(location, 'pathname')
     }
     componentWillUnmount() {
-        this.observer.destroy();
+        this.observer.destroy()
     }
     shouldComponentUpdate() {
-        return false;
+        return false
     }
 
     render() {
-        const address = location.path[1];
-        const isRegistered = state.wallets.BTC.hasOwnProperty(address);
-        const hasPrivateKey =
-            isRegistered &&
-            state.wallets.BTC[address].hasOwnProperty("private_key");
-        return React.createElement(BTCWalletTemplate, {
+        const address = location.path[1]
+        const isRegistered = isWalletRegistered(BTC.symbol, address)
+        const hasPrivateKey = isWalletWithPrivateKey(BTC.symbol, address)
+        return React.createElement(WalletBTCTemplate, {
             pathname: location.pathname,
             isRegistered: isRegistered,
             hasPrivateKey: hasPrivateKey
-        });
+        })
     }
 }
 
-function BTCWalletTemplate({ pathname, isRegistered, hasPrivateKey }) {
+function WalletBTCTemplate({ pathname, isRegistered, hasPrivateKey }) {
     const tooltipPrivatekey = hasPrivateKey
         ? null
         : <Help position="center" width={175}>
               You must set your private key
-          </Help>;
+          </Help>
     return (
         <div>
             <HeaderWallet />
@@ -172,5 +175,5 @@ function BTCWalletTemplate({ pathname, isRegistered, hasPrivateKey }) {
                 </RightContentContent>
             </RightContent>
         </div>
-    );
+    )
 }

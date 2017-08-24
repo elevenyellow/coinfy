@@ -4,11 +4,18 @@ import { createObserver, collect } from 'dop'
 import { Show } from '/doprouter/react'
 
 import { generateQRCode } from '/../util/qr'
-import { isAddress, isPublicKey, isPrivateKey, getAddressFromPublicKey, getAddressFromPrivateKey } from '/../util/bitcoin'
+import {
+    isAddress,
+    isPublicKey,
+    isPrivateKey,
+    getAddressFromPublicKey,
+    getAddressFromPrivateKey
+} from '/../util/bitcoin'
 import { encryptAES128CTR } from '/../util/crypto'
 
+import { BTC } from '/const/crypto'
 import { routes } from '/stores/router'
-import { state } from '/stores/state'
+import { state, isWalletRegistered } from '/stores/state'
 
 import styles from '/styles'
 
@@ -22,8 +29,7 @@ import Select from '/components/styled/Select'
 import Password from '/components/styled/Password'
 import { Label, SubLabel } from '/components/styled/Label'
 
-import { setHref, BTCcreate, BTCsetPrivateKey, BTCsetPublicKey } from '/actions'
-
+import { setHref, createWallet, setPrivateKey, setPublicKey } from '/actions'
 
 const minpassword = 8
 const types_import = {
@@ -32,14 +38,10 @@ const types_import = {
     private_key: 2
 }
 
-
 export default class ImportBitcoin extends Component {
-
-
     componentWillMount() {
-        this.observer = createObserver(m => this.forceUpdate());
+        this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
-
 
         // Initial state
         state.view = {
@@ -65,8 +67,7 @@ export default class ImportBitcoin extends Component {
         return false
     }
 
-
-    // Actions 
+    // Actions
     onChangeTypeImport(e) {
         const collector = collect()
         state.view.type_import = Number(e.target.value)
@@ -81,29 +82,35 @@ export default class ImportBitcoin extends Component {
         const value = e.target.value.trim()
         state.view.input = value
 
-        if (state.view.type_import===types_import.address && isAddress(value)) {
+        if (
+            state.view.type_import === types_import.address &&
+            isAddress(value)
+        ) {
             state.view.address = value
             state.view.private_key = ''
-        }
-        else if (state.view.type_import===types_import.public_key && isPublicKey(value)) {
+        } else if (
+            state.view.type_import === types_import.public_key &&
+            isPublicKey(value)
+        ) {
             try {
                 const address = getAddressFromPublicKey(value)
                 state.view.address = address
                 state.view.private_key = ''
-            } catch(e) {
+            } catch (e) {
                 //console.log( e );
             }
-        }
-        else if (state.view.type_import===types_import.private_key && isPrivateKey(value)) {
+        } else if (
+            state.view.type_import === types_import.private_key &&
+            isPrivateKey(value)
+        ) {
             try {
                 const address = getAddressFromPrivateKey(value)
                 state.view.address = address
                 state.view.private_key = value
-            } catch(e) {
+            } catch (e) {
                 //console.log( e );
             }
-        }
-        else {
+        } else {
             state.view.address = ''
             state.view.private_key = ''
         }
@@ -120,55 +127,56 @@ export default class ImportBitcoin extends Component {
         if (this.isFormValid) {
             const collector = collect()
             const address = state.view.address
-            BTCcreate(address)
-            if (state.view.type_import===types_import.public_key)
-                BTCsetPublicKey(address, state.view.private_key)
+            createWallet(BTC.symbol, address)
+            if (state.view.type_import === types_import.public_key)
+                setPublicKey(BTC.symbol, address, state.view.private_key)
+            else if (state.view.type_import === types_import.private_key)
+                setPrivateKey(
+                    BTC.symbol,
+                    address,
+                    state.view.private_key,
+                    state.view.password
+                )
 
-            else if (state.view.type_import===types_import.private_key)
-                BTCsetPrivateKey(address, state.view.private_key, state.view.password)
-        
-            setHref(routes.wallet('BTC', address))
+            setHref(routes.wallet(BTC.symbol, address))
             collector.emit()
         }
     }
 
-
     // Getters
     get isFormValid() {
         return (
-            state.view.address.length>0 &&
+            state.view.address.length > 0 &&
             !this.isRegistered &&
-            (state.view.private_key === '' || (
-                state.view.password.length>=minpassword &&
-                state.view.password===state.view.repassword
-            ))
+            (state.view.private_key === '' ||
+                (state.view.password.length >= minpassword &&
+                    state.view.password === state.view.repassword))
         )
     }
     get isValidInput() {
-        return (state.view.input.length>0 && state.view.address.length>0)
+        return state.view.input.length > 0 && state.view.address.length > 0
     }
     get isErrorInput() {
-        return (state.view.input.length>0 && state.view.address.length===0)
+        return state.view.input.length > 0 && state.view.address.length === 0
     }
     get isInvalidRepassword() {
         return (
-            state.view.password.length>0 &&
-            state.view.repassword.length>0 &&
-            state.view.password.length===state.view.repassword.length &&
-            state.view.password!==state.view.repassword
+            state.view.password.length > 0 &&
+            state.view.repassword.length > 0 &&
+            state.view.password.length === state.view.repassword.length &&
+            state.view.password !== state.view.repassword
         )
-    }
-    get isRegistered() {
-        return state.wallets.BTC.hasOwnProperty(state.view.address)
     }
 
     render() {
         return React.createElement(ImportBitcoinTemplate, {
-            qrcodebase64: this.isValidInput ? generateQRCode(state.view.address) : '',
+            qrcodebase64: this.isValidInput
+                ? generateQRCode(state.view.address)
+                : '',
             isValidInput: this.isValidInput,
             isInvalidRepassword: this.isInvalidRepassword,
             isErrorInput: this.isErrorInput,
-            isRegistered: this.isRegistered,
+            isRegistered: isWalletRegistered(BTC.symbol, state.view.address),
             isFormValid: this.isFormValid,
             type_import: state.view.type_import,
             address: state.view.address,
@@ -185,30 +193,7 @@ export default class ImportBitcoin extends Component {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function ImportBitcoinTemplate({ 
+function ImportBitcoinTemplate({
     qrcodebase64,
     isValidInput,
     isInvalidRepassword,
@@ -225,8 +210,7 @@ function ImportBitcoinTemplate({
     onChangePassword,
     onChangeRepassword,
     onSubmit
- }) {
-
+}) {
     return (
         <div>
             <Div padding-bottom="15px">
@@ -238,100 +222,186 @@ function ImportBitcoinTemplate({
             </Div>
             <Div padding-bottom="50px">
                 <CenterElement>
-                    <Address>{address}</Address>
+                    <Address>
+                        {address}
+                    </Address>
                 </CenterElement>
             </Div>
-
 
             <form>
                 <Div height="65px">
                     <Div float="left" width="40%">
                         <Label>I have my</Label>
-                        <SubLabel>Select the option you prefer to import.</SubLabel>
+                        <SubLabel>
+                            Select the option you prefer to import.
+                        </SubLabel>
                     </Div>
                     <Div float="left" width="60%">
                         <Select width="100%" onChange={onChangeTypeImport}>
-                            <option value={types_import.address} selected={type_import===types_import.address}>Address</option>
-                            <option value={types_import.public_key} selected={type_import===types_import.public_key}>Public key</option>
-                            <option value={types_import.private_key} selected={type_import===types_import.private_key}>Private key</option>
+                            <option
+                                value={types_import.address}
+                                selected={type_import === types_import.address}
+                            >
+                                Address
+                            </option>
+                            <option
+                                value={types_import.public_key}
+                                selected={
+                                    type_import === types_import.public_key
+                                }
+                            >
+                                Public key
+                            </option>
+                            <option
+                                value={types_import.private_key}
+                                selected={
+                                    type_import === types_import.private_key
+                                }
+                            >
+                                Private key
+                            </option>
                         </Select>
                     </Div>
                 </Div>
 
-
-                <Show if={type_import===types_import.address}>
+                <Show if={type_import === types_import.address}>
                     <Div height="65px">
                         <Div float="left" width="40%">
                             <Label>Address</Label>
                             <SubLabel>Type or paste your address.</SubLabel>
                         </Div>
                         <Div float="left" width="60%">
-                            <Input width="100%" value={input} onChange={onChangeInput} error={isErrorInput?'Invalid address':'You already have this wallet'} invalid={isErrorInput || isRegistered} />
+                            <Input
+                                width="100%"
+                                value={input}
+                                onChange={onChangeInput}
+                                error={
+                                    isErrorInput
+                                        ? 'Invalid address'
+                                        : 'You already have this wallet'
+                                }
+                                invalid={isErrorInput || isRegistered}
+                            />
                         </Div>
                     </Div>
                 </Show>
 
-
-                <Show if={type_import===types_import.public_key}>
+                <Show if={type_import === types_import.public_key}>
                     <Div height="65px">
                         <Div float="left" width="40%">
-                            <Label>Public key</Label><Help>Your address can be calculated through public key.</Help>
+                            <Label>Public key</Label>
+                            <Help>
+                                Your address can be calculated through public
+                                key.
+                            </Help>
                             <SubLabel>Type or paste your public key.</SubLabel>
                         </Div>
                         <Div float="left" width="60%">
-                            <Input width="100%" value={input} onChange={onChangeInput} error={isErrorInput?'Invalid public key':'You already have this wallet'} invalid={isErrorInput || isRegistered} />
+                            <Input
+                                width="100%"
+                                value={input}
+                                onChange={onChangeInput}
+                                error={
+                                    isErrorInput
+                                        ? 'Invalid public key'
+                                        : 'You already have this wallet'
+                                }
+                                invalid={isErrorInput || isRegistered}
+                            />
                         </Div>
                     </Div>
                 </Show>
 
-
-                <Show if={type_import===types_import.private_key}>
+                <Show if={type_import === types_import.private_key}>
                     <div>
-                    <Div height="65px">
-                        <Div float="left" width="40%">
-                            <Label>Private key</Label><Help>Your address can be calculated through private key.</Help>
-                            <SubLabel>Type or paste your Private key.</SubLabel>
-                        </Div>
-                        <Div float="left" width="60%">
-                            <Input width="100%" value={input} onChange={onChangeInput} error={isErrorInput?'Invalid private key':'You already have this wallet'} invalid={isErrorInput || isRegistered} />
-                        </Div>
-                    </Div>
                         <Div height="65px">
-                        <Div float="left" width="40%">
-                            <Label>Password</Label><Help>Make sure that you remember this. This password can't be restored because we don't store it. For security reasons you will be asked often for this password to operate with this wallet.</Help>
-                            <SubLabel>This password encrypts your private key.</SubLabel>
+                            <Div float="left" width="40%">
+                                <Label>Private key</Label>
+                                <Help>
+                                    Your address can be calculated through
+                                    private key.
+                                </Help>
+                                <SubLabel>
+                                    Type or paste your Private key.
+                                </SubLabel>
+                            </Div>
+                            <Div float="left" width="60%">
+                                <Input
+                                    width="100%"
+                                    value={input}
+                                    onChange={onChangeInput}
+                                    error={
+                                        isErrorInput
+                                            ? 'Invalid private key'
+                                            : 'You already have this wallet'
+                                    }
+                                    invalid={isErrorInput || isRegistered}
+                                />
+                            </Div>
                         </Div>
-                        <Div float="left" width="60%">
-                            <Password minlength={minpassword} value={password} onChange={onChangePassword} width="100%" type="password" />
+                        <Div height="65px">
+                            <Div float="left" width="40%">
+                                <Label>Password</Label>
+                                <Help>
+                                    Make sure that you remember this. This
+                                    password can't be restored because we don't
+                                    store it. For security reasons you will be
+                                    asked often for this password to operate
+                                    with this wallet.
+                                </Help>
+                                <SubLabel>
+                                    This password encrypts your private key.
+                                </SubLabel>
+                            </Div>
+                            <Div float="left" width="60%">
+                                <Password
+                                    minlength={minpassword}
+                                    value={password}
+                                    onChange={onChangePassword}
+                                    width="100%"
+                                    type="password"
+                                />
+                            </Div>
                         </Div>
-                    </Div>
-                    <Div height="55px">
-                        <Div float="left" width="40%"><Label>Repeat Password</Label></Div>
-                        <Div float="left" width="60%">
-                            <Input minlength={minpassword} error={isInvalidRepassword?'Passwords do not match':null} invalid={isInvalidRepassword} value={repassword} onChange={onChangeRepassword} width="100%" type="password" />
+                        <Div height="55px">
+                            <Div float="left" width="40%">
+                                <Label>Repeat Password</Label>
+                            </Div>
+                            <Div float="left" width="60%">
+                                <Input
+                                    minlength={minpassword}
+                                    error={
+                                        isInvalidRepassword
+                                            ? 'Passwords do not match'
+                                            : null
+                                    }
+                                    invalid={isInvalidRepassword}
+                                    value={repassword}
+                                    onChange={onChangeRepassword}
+                                    width="100%"
+                                    type="password"
+                                />
+                            </Div>
                         </Div>
-                    </Div>
                     </div>
                 </Show>
 
-                <Div float="right" >
-                    <Button width="100px" disabled={!isFormValid} onClick={onSubmit}>Import</Button>
+                <Div float="right">
+                    <Button
+                        width="100px"
+                        disabled={!isFormValid}
+                        onClick={onSubmit}
+                    >
+                        Import
+                    </Button>
                 </Div>
                 <Div clear="both" />
             </form>
-
         </div>
     )
 }
 
-
-
-
-
-
-
-
 const CenterElement = styled.div`
-margin: 0 auto;
-width: 360px;
+    margin: 0 auto;
+    width: 360px;
 `

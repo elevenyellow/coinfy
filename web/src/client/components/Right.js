@@ -14,19 +14,17 @@ import { RightContainer } from '/components/styled/Right'
 // views
 import AddWallet from '/components/views/AddWallet'
 import Message from '/components/views/Message'
-import BTCWallet from '/components/views/BTCWallet'
-
+import WalletBTC from '/components/views/WalletBTC'
 
 export default class Right extends Component {
-
     componentWillMount() {
-        const observer = createObserver(mutations => this.forceUpdate());
-        observer.observe(location.path, 'length');
-        observer.observe(location.path, '0');
+        const observer = createObserver(mutations => this.forceUpdate())
+        observer.observe(location.path, 'length')
+        observer.observe(location.path, '0')
     }
 
     shouldComponentUpdate() {
-        return false;
+        return false
     }
 
     render() {
@@ -34,22 +32,21 @@ export default class Right extends Component {
             <RightContainer>
                 <Router source={location}>
                     <Route pathname="/">
-                        <Message>Add or Import a wallet to start working</Message>
+                        <Message>
+                            Add or Import a wallet to start working
+                        </Message>
                     </Route>
                     <Route pathname={new RegExp(routes.addwallet())}>
                         <AddWallet />
                     </Route>
                     <Route path-0="BTC" if={isAddress(location.path[1])}>
-                        <BTCWallet />
-                    </Route> 
+                        <WalletBTC />
+                    </Route>
                     <Route>
                         <Message>Not found</Message>
-                    </Route> 
+                    </Route>
                 </Router>
             </RightContainer>
         )
     }
-
 }
-
-
