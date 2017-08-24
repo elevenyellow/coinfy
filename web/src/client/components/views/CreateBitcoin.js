@@ -7,7 +7,7 @@ import { generateQRCode } from '/../util/qr'
 import { generateRandomWallet } from '/../util/bitcoin'
 
 import { routes } from '/stores/router'
-import state from '/stores/state'
+import { state } from '/stores/state'
 import styles from '/styles'
 
 import Div from '/components/styled/Div'

@@ -5,7 +5,7 @@ import { Router, Route, Show } from '/doprouter/react'
 import { setHref } from '/actions'
 
 import { location, routes } from '/stores/router'
-import state from '/stores/state'
+import { state } from '/stores/state'
 
 import Div from '/components/styled/Div'
 import H1Input from '/components/styled/H1Input'

@@ -3,7 +3,7 @@ import { createObserver } from 'dop'
 import styled from 'styled-components'
 import styles from '/styles'
 
-import state from '/stores/state'
+import { state } from '/stores/state'
 
 import WalletListItem from '/components/partials/WalletListItem'
 

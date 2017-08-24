@@ -5,7 +5,7 @@ import styles from '/styles'
 
 import { setHref } from '/actions'
 import { routes } from '/stores/router'
-import state from '/stores/state'
+import { state } from '/stores/state'
 
 import IconMore from 'react-icons/lib/md/more-vert'
 import { DropDown, DropDownItem, DropDownMenu, DropDownArrow } from '/components/styled/Dropdown'

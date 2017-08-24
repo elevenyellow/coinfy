@@ -8,7 +8,7 @@ import { isAddress, isPublicKey, isPrivateKey, getAddressFromPublicKey, getAddre
 import { encryptAES128CTR } from '/../util/crypto'
 
 import { routes } from '/stores/router'
-import state from '/stores/state'
+import { state } from '/stores/state'
 
 import styles from '/styles'
 
