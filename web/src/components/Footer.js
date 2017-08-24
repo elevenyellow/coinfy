@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import styles from '/styles'
+import styles from '/const/styles'
 
 export default function Footer() {
     return (

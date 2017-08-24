@@ -5,7 +5,7 @@ import { Router, Route } from '/doprouter/react'
 
 import { isAddress } from '/util/bitcoin'
 
-import styles from '/styles'
+import styles from '/const/styles'
 import { location, routes } from '/stores/router'
 
 // styled

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import styles from '/styles'
+import styles from '/const/styles'
 import Header from '/components/Header'
 import Left from '/components/Left'
 import Right from '/components/Right'

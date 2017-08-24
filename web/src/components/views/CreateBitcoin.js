@@ -9,7 +9,7 @@ import { generateRandomWallet } from '/util/bitcoin'
 import { BTC } from '/const/crypto'
 import { routes } from '/stores/router'
 import { state } from '/stores/state'
-import styles from '/styles'
+import styles from '/const/styles'
 
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
@@ -20,7 +20,7 @@ import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
 import { Label, SubLabel } from '/components/styled/Label'
 
-import { setHref, createWallet, setPrivateKey } from '/actions'
+import { setHref, createWallet, setPrivateKey } from '/stores/actions'
 
 const minpassword = 8
 export default class CreateBitcoin extends Component {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
-import styles from '/styles'
+import styles from '/const/styles'
 
 import { BTC } from '/const/crypto'
 import { state } from '/stores/state'

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import { Router, Route, Show } from '/doprouter/react'
 
-import { setHref } from '/actions'
+import { setHref } from '/stores/actions'
 
 import { BTC } from '/const/crypto'
 import { location, routes } from '/stores/router'
@@ -12,7 +12,7 @@ import {
     isWalletWithPrivateKey
 } from '/stores/state'
 
-import styles from '/styles'
+import styles from '/const/styles'
 
 import IconDashboard from 'react-icons/lib/md/dashboard'
 import IconReceive from 'react-icons/lib/md/send'

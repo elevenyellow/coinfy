@@ -17,7 +17,7 @@ import { BTC } from '/const/crypto'
 import { routes } from '/stores/router'
 import { state, isWalletRegistered } from '/stores/state'
 
-import styles from '/styles'
+import styles from '/const/styles'
 
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
@@ -29,7 +29,12 @@ import Select from '/components/styled/Select'
 import Password from '/components/styled/Password'
 import { Label, SubLabel } from '/components/styled/Label'
 
-import { setHref, createWallet, setPrivateKey, setPublicKey } from '/actions'
+import {
+    setHref,
+    createWallet,
+    setPrivateKey,
+    setPublicKey
+} from '/stores/actions'
 
 const minpassword = 8
 const types_import = {
