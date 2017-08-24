@@ -2,9 +2,7 @@ const webpack = require('webpack')
 
 module.exports = {
     entry: {
-        main: [
-            './src/client/index.js',
-        ]
+        main: ['./src/index.js']
     },
     output: {
         filename: '[name].js',

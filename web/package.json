@@ -1,38 +1,38 @@
 {
-  "name": "wedontneedbanks",
-  "version": "1.0.0",
-  "scripts": {
-    "build": "webpack --config=./webpack/production.js --optimize-minimize --progress --colors --display-error-details",
-    "dev": "NODE_ENV=development node src/index",
-    "prod": "NODE_ENV=production node src/index"
-  },
-  "dependencies": {
-    "bignumber.js": "^4.0.2",
-    "bitcoinjs-lib": "^3.1.1",
-    "dop": "^0.24.3",
-    "express": "4.14.0",
-    "preact": "5.7.0",
-    "preact-compat": "^3.15.0",
-    "qrious": "^4.0.2",
-    "react": "^16.0.0-beta.5",
-    "react-dom": "^16.0.0-beta.5",
-    "react-icons": "^2.2.5",
-    "styled-components": "^2.1.1"
-  },
-  "devDependencies": {
-    "babel-core": "6.13.2",
-    "babel-loader": "6.2.5",
-    "babel-preset-es2015": "6.13.2",
-    "babel-preset-react": "6.11.1",
-    "babel-root-slash-import": "^1.1.0",
-    "eslint": "^4.5.0",
-    "eslint-plugin-react": "^7.3.0",
-    "eslint-watch": "^3.1.2",
-    "express": "4.14.0",
-    "lodash.merge": "^4.6.0",
-    "path": "0.12.7",
-    "webpack": "^3.4.1",
-    "webpack-dev-middleware": "1.6.1",
-    "webpack-hot-middleware": "2.12.2"
-  }
+    "name": "wedontneedbanks",
+    "version": "1.0.0",
+    "scripts": {
+        "build": "webpack --config=./webpack/production.js --optimize-minimize --progress --colors --display-error-details",
+        "dev": "NODE_ENV=development node src/server",
+        "prod": "NODE_ENV=production node src/server"
+    },
+    "dependencies": {
+        "bignumber.js": "^4.0.2",
+        "bitcoinjs-lib": "^3.1.1",
+        "dop": "^0.24.3",
+        "express": "4.14.0",
+        "preact": "5.7.0",
+        "preact-compat": "^3.15.0",
+        "qrious": "^4.0.2",
+        "react": "^16.0.0-beta.5",
+        "react-dom": "^16.0.0-beta.5",
+        "react-icons": "^2.2.5",
+        "styled-components": "^2.1.1"
+    },
+    "devDependencies": {
+        "babel-core": "6.13.2",
+        "babel-loader": "6.2.5",
+        "babel-preset-es2015": "6.13.2",
+        "babel-preset-react": "6.11.1",
+        "babel-root-slash-import": "^1.1.0",
+        "eslint": "^4.5.0",
+        "eslint-plugin-react": "^7.3.0",
+        "eslint-watch": "^3.1.2",
+        "express": "4.14.0",
+        "lodash.merge": "^4.6.0",
+        "path": "0.12.7",
+        "webpack": "^3.4.1",
+        "webpack-dev-middleware": "1.6.1",
+        "webpack-hot-middleware": "2.12.2"
+    }
 }

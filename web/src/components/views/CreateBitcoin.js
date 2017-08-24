@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 import { Show } from '/doprouter/react'
 
-import { generateQRCode } from '/../util/qr'
-import { generateRandomWallet } from '/../util/bitcoin'
+import { generateQRCode } from '/util/qr'
+import { generateRandomWallet } from '/util/bitcoin'
 
 import { BTC } from '/const/crypto'
 import { routes } from '/stores/router'

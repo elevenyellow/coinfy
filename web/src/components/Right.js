@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 
-import { isAddress } from '/../util/bitcoin'
+import { isAddress } from '/util/bitcoin'
 
 import styles from '/styles'
 import { location, routes } from '/stores/router'
