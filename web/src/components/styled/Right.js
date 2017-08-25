@@ -126,10 +126,6 @@ height:100%;
 & > * {
   display:table-cell;
   height: 100%;
-  text-align: center;
-  font-size: 30px;
-  font-weight: bold;
-  color: lightgrey;
   vertical-align: middle;
 }
 `
