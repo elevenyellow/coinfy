@@ -1,42 +1,55 @@
-import { register, set, del, collect, intercept } from 'dop'
+import { register, set, del, collect, intercept, isRegistered } from 'dop'
 
 const enc = encodeURIComponent
 
-export function create(url) {
-
+export function create(url, object, prop) {
     let shallWeEmit = false
-    let location = register(parse(url))
+    let location
+    let urlparsed = parse(url)
+    prop = prop || 'location'
+
+    if (object !== null && typeof object == 'object') {
+        if (isRegistered(object))
+            set(object, prop, urlparsed)
+        else {
+            object[prop] = urlparsed
+            object = register(object)
+        }
+
+        location = object[prop]
+    }
+    else
+        location = register(urlparsed)
+
+    location.toString = function() {
+        return location.href
+    }
+
     intercept(location, (mutation, object) => {
-
         if (!shallWeEmit) {
-
             if (mutation.prop === 'href') {
                 object.href = mutation.oldValue
                 pushState(mutation.value)
                 setHref(getWindowLocation())
-            }
-
-
-            else if (mutation.prop === 'pathname') {
+            } else if (mutation.prop === 'pathname') {
                 let href = mutation.value.split('/').map(enc).join('/')
-                if (mutation.value[0]!=='/')
-                    href = '/' + href
+                if (mutation.value[0] !== '/') href = '/' + href
                 href = href + location.search + location.hash
                 object.pathname = mutation.oldValue
                 pushState(href)
                 setHref(getWindowLocation())
-            }
-
-
-            else if (mutation.prop === 'search') {
-                let href = mutation.value[0]==='?' ? mutation.value.substr(1) : mutation.value
+            } else if (mutation.prop === 'search') {
+                let href =
+                    mutation.value[0] === '?'
+                        ? mutation.value.substr(1)
+                        : mutation.value
                 href = href
                     .split('&')
-                    .map(param=>{
+                    .map(param => {
                         let splited = param.split('=')
-                        param = enc(splited[0]||'')
+                        param = enc(splited[0] || '')
                         if (splited.hasOwnProperty(1))
-                            param += '='+enc(splited[1]) 
+                            param += '=' + enc(splited[1])
                         return param
                     })
                     .join('&')
@@ -45,60 +58,66 @@ export function create(url) {
                 object.search = mutation.oldValue
                 pushState(href)
                 setHref(getWindowLocation())
-            }
-
-            else if (mutation.prop === 'hash') {
-                let href = mutation.value[0]==='#' ? mutation.value : '#' + mutation.value
+            } else if (mutation.prop === 'hash') {
+                let href =
+                    mutation.value[0] === '#'
+                        ? mutation.value
+                        : '#' + mutation.value
                 href = location.pathname + location.search + href
                 object.hash = mutation.oldValue
                 pushState(href)
                 setHref(getWindowLocation())
-            }
-
-            else if (mutation.prop === 'path') {
-                let href = '/'+mutation.value.map(enc).join('/') + location.search + location.hash
+            } else if (mutation.prop === 'path') {
+                let href =
+                    '/' +
+                    mutation.value.map(enc).join('/') +
+                    location.search +
+                    location.hash
                 pushState(href)
                 setHref(getWindowLocation(), mutation)
-            }
-
-            else if (mutation.prop === 'query') {
-                let href, prop, query=mutation.value, search=[]
+            } else if (mutation.prop === 'query') {
+                let href,
+                    prop,
+                    query = mutation.value,
+                    search = []
                 for (prop in query)
-                    search.push(enc(prop)+'='+enc(query[prop]))
-                
-                href = location.pathname + '?'+search.join('&') + location.hash
+                    search.push(enc(prop) + '=' + enc(query[prop]))
+
+                href =
+                    location.pathname + '?' + search.join('&') + location.hash
                 pushState(href)
                 setHref(getWindowLocation())
-            }
-
-            // origin, protocol, domain
-            else
+            } else
+                // origin, protocol, domain
                 object[mutation.prop] = mutation.oldValue
-
         }
 
         return shallWeEmit
-
     })
-
 
     intercept(location.path, (mutation, object) => {
         if (!shallWeEmit) {
             let path = location.path
             object[mutation.prop] = enc(path[mutation.prop])
-            let href = '/' + path.filter(p=>p!==undefined).join('/') + location.search + location.hash
-            if ( href !== location.pathname ) {
+            let href =
+                '/' +
+                path.filter(p => p !== undefined).join('/') +
+                location.search +
+                location.hash
+            if (href !== location.pathname) {
                 pushState(href)
                 setHref(getWindowLocation(), mutation)
             }
         }
         return shallWeEmit
     })
-    
 
-    intercept(location.query, (mutation,object) => {
+    intercept(location.query, (mutation, object) => {
         if (!shallWeEmit) {
-            let href, query=location.query, search=[], prop = mutation.prop
+            let href,
+                query = location.query,
+                search = [],
+                prop = mutation.prop
             // Is true if is not a delete
             if (mutation.hasOwnProperty('value')) {
                 let propenc = enc(mutation.prop)
@@ -106,9 +125,8 @@ export function create(url) {
                 delete object[mutation.prop]
                 object[propenc] = valueenc
             }
-            for (prop in query)
-                search.push(prop+'='+query[prop])
-            href = location.pathname + '?'+search.join('&') + location.hash
+            for (prop in query) search.push(prop + '=' + query[prop])
+            href = location.pathname + '?' + search.join('&') + location.hash
 
             pushState(href)
             setHref(getWindowLocation(), mutation)
@@ -116,13 +134,11 @@ export function create(url) {
         return shallWeEmit
     })
 
-    
     function setHref(href, mutation) {
         let newlocation = parse(href)
         newlocation.href = getHref(newlocation)
         let collector = collect()
-        if (mutation !== undefined)
-            collector.mutations.push(mutation)
+        if (mutation !== undefined) collector.mutations.push(mutation)
         shallWeEmit = true
         set(location, 'href', newlocation.href)
         set(location, 'pathname', newlocation.pathname)
@@ -130,36 +146,31 @@ export function create(url) {
         set(location, 'hash', newlocation.hash)
 
         // path
-        newlocation.path.forEach((path, index) => set(location.path, index, path))
+        newlocation.path.forEach((path, index) =>
+            set(location.path, index, path)
+        )
         set(location.path, 'length', newlocation.path.length)
 
         // query
-        let prop, newquery=newlocation.query, query=location.query
-        for (prop in newquery)
-            set(query, prop, newquery[prop])
-        for (prop in query)
-            if (!newquery.hasOwnProperty(prop))
-                del(query, prop)
+        let prop,
+            newquery = newlocation.query,
+            query = location.query
+        for (prop in newquery) set(query, prop, newquery[prop])
+        for (prop in query) if (!newquery.hasOwnProperty(prop)) del(query, prop)
 
         // emit
         shallWeEmit = false
         collector.emit()
     }
 
-
-
-
     // when user click back/forward on browser or change the hash
     if (window)
-        window.addEventListener('popstate', function(){
+        window.addEventListener('popstate', function() {
             setHref(getWindowLocation())
         })
 
-
     return location
 }
-
-
 
 function pushState(url, state, title) {
     // if nodejs ... todo
@@ -175,32 +186,31 @@ function getHref(location) {
     return location.pathname + location.search + location.hash
 }
 
-
 function parse(url) {
     let match = /((.*):\/\/([^/#?]+))?([^?#]*)([^#]*)(.*)?/.exec(url),
-    query = {},
-    location = {
-        origin: match[1],
-        protocol: match[2],
-        host: match[3],
-        pathname: match[4],
-        path: match[4].split('/').filter(item => item.length>0),
-        search: match[5],
-        query: query,
-        hash: match[6] || ''
-    }
+        query = {},
+        location = {
+            origin: match[1],
+            protocol: match[2],
+            host: match[3],
+            pathname: match[4],
+            path: match[4].split('/').filter(item => item.length > 0),
+            search: match[5],
+            query: query,
+            hash: match[6] || ''
+        }
+
     location.href = getHref(location)
-
-
 
     if (location.search.length > 1) {
         location.search.substr(1).split('&').forEach(item => {
             if (item.length > 0) {
-                let equal = item.indexOf('=');
-                (equal > -1) ?
-                    location.query[item.substr(0,equal)] = item.substr(equal+1)
-                :
-                    location.query[item] = ''
+                let equal = item.indexOf('=')
+                equal > -1
+                    ? (location.query[item.substr(0, equal)] = item.substr(
+                          equal + 1
+                      ))
+                    : (location.query[item] = '')
             }
         })
     }
