@@ -1,7 +1,7 @@
 import { collect } from 'dop'
 import routes from '/const/routes'
 import { state } from '/store/state'
-import { encryptAES128CTR } from '/util/crypto'
+import { encryptAES128CTR } from '/api/crypto'
 
 export function setHref(href) {
     state.location.href = href

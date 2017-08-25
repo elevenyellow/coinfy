@@ -3,15 +3,15 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 import { Show } from '/doprouter/react'
 
-import { generateQRCode } from '/util/qr'
+import { generateQRCode } from '/api/qr'
 import {
     isAddress,
     isPublicKey,
     isPrivateKey,
     getAddressFromPublicKey,
     getAddressFromPrivateKey
-} from '/util/bitcoin'
-import { encryptAES128CTR } from '/util/crypto'
+} from '/api/bitcoin'
+import { encryptAES128CTR } from '/api/crypto'
 
 import { BTC } from '/const/crypto'
 import routes from '/const/routes'
