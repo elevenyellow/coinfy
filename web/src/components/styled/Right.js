@@ -118,3 +118,18 @@ height: 100%;
 export const RightContentInner = styled.div`
 padding: 20px;
 `
+
+export const RightContentMiddle = styled.div`
+display:table;
+width: 100%;
+height:100%;
+& > * {
+  display:table-cell;
+  height: 100%;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: lightgrey;
+  vertical-align: middle;
+}
+`

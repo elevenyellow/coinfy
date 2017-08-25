@@ -25,8 +25,10 @@ export default class HeaderWallet extends Component {
                 this.symbol = state.location.path[0]
                 this.address = state.location.path[1]
                 this.wallet = state.wallets[this.symbol][this.address]
-                unobserveLabel()
-                unobserveBalance()
+                if (unobserveLabel) {
+                    unobserveLabel()
+                    unobserveBalance()
+                }
                 unobserveLabel = this.observer.observe(this.wallet, 'label')
                 unobserveBalance = this.observer.observe(this.wallet, 'balance')
             }

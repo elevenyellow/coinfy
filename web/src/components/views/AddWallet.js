@@ -73,7 +73,7 @@ function AddWalletTemplate({
             <RightContent>
                 <RightContentMenu>
                     <RightContentMenuItem
-                        selected={state.location.pathname === routesCreatebtc}
+                        selected={location.pathname === routesCreatebtc}
                         onClick={e => onClick(routesCreatebtc)}
                     >
                         <RightContentMenuItemImage>
@@ -89,7 +89,7 @@ function AddWalletTemplate({
                     </RightContentMenuItem>
 
                     <RightContentMenuItem
-                        selected={state.location.pathname === routesImportbtc}
+                        selected={location.pathname === routesImportbtc}
                         onClick={e => onClick(routesImportbtc)}
                     >
                         <RightContentMenuItemImage>
@@ -106,7 +106,7 @@ function AddWalletTemplate({
                 </RightContentMenu>
                 <RightContentContent>
                     <RightContentInner>
-                        <Router source={state.location}>
+                        <Router source={location}>
                             <Route pathname={routesCreatebtc}>
                                 <CreateBitcoin />
                             </Route>

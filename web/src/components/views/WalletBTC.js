@@ -6,11 +6,7 @@ import { setHref } from '/store/actions'
 
 import { BTC } from '/const/crypto'
 import routes from '/const/routes'
-import {
-    state,
-    isWalletRegistered,
-    isWalletWithPrivateKey
-} from '/store/state'
+import { state, isWalletRegistered, isWalletWithPrivateKey } from '/store/state'
 
 import styles from '/const/styles'
 
@@ -27,10 +23,12 @@ import {
     RightContentMenuItemIcon,
     RightContentMenuItemText,
     RightContentContent,
-    RightContentInner
+    RightContentInner,
+    RightContentMiddle
 } from '/components/styled/Right'
 
 import HeaderWallet from '/components/partials/HeaderWallet'
+import DeleteWallet from '/components/views/DeleteWallet'
 
 export default class WalletBTC extends Component {
     componentWillMount() {
@@ -44,19 +42,29 @@ export default class WalletBTC extends Component {
         return false
     }
 
+    onClick(route) {
+        setHref(route)
+    }
+
     render() {
         const address = state.location.path[1]
-        const isRegistered = isWalletRegistered(BTC.symbol, address)
         const hasPrivateKey = isWalletWithPrivateKey(BTC.symbol, address)
         return React.createElement(WalletBTCTemplate, {
             pathname: state.location.pathname,
-            isRegistered: isRegistered,
-            hasPrivateKey: hasPrivateKey
+            hasPrivateKey: hasPrivateKey,
+            routesDeleteWallet: routes.deleteWallet(BTC.symbol, address),
+            onClick: this.onClick
         })
     }
 }
 
-function WalletBTCTemplate({ pathname, isRegistered, hasPrivateKey }) {
+function WalletBTCTemplate({
+    pathname,
+    isRegistered,
+    hasPrivateKey,
+    routesDeleteWallet,
+    onClick
+}) {
     const tooltipPrivatekey = hasPrivateKey
         ? null
         : <Help position="center" width={175}>
@@ -79,7 +87,7 @@ function WalletBTCTemplate({ pathname, isRegistered, hasPrivateKey }) {
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
 
-                    <RightContentMenuItem selected={true}>
+                    <RightContentMenuItem>
                         <RightContentMenuItemIcon transform="rotate(130deg) translateX(3px) translateY(-1px)">
                             <IconReceive
                                 size={23}
@@ -152,7 +160,10 @@ function WalletBTCTemplate({ pathname, isRegistered, hasPrivateKey }) {
                         </Show>
                     </Router>
 
-                    <RightContentMenuItem>
+                    <RightContentMenuItem
+                        selected={location.pathname === routesDeleteWallet}
+                        onClick={e => onClick(routesDeleteWallet)}
+                    >
                         <RightContentMenuItemIcon>
                             <IconDelete size={23} color={styles.color.front2} />
                         </RightContentMenuItemIcon>
@@ -162,16 +173,19 @@ function WalletBTCTemplate({ pathname, isRegistered, hasPrivateKey }) {
                     </RightContentMenuItem>
                 </RightContentMenu>
                 <RightContentContent>
-                    <RightContentInner>
-                        {/* <Router source={state.location}>
-                            <Route pathname={routes.createbtc()}>
-                                <CreateBitcoin />
-                            </Route> 
-                            <Route pathname={routes.importbtc()}>
-                                <ImportBitcoin />
+                    
+                        <Router source={location}>
+                            {/* <Route pathname={routes.createbtc()}>
+                                <RightContentInner>
+                                    <CreateBitcoin />
+                                </RightContentInner>
+                            </Route>  */}
+                            <Route pathname={routesDeleteWallet}>
+                                <RightContentMiddle>
+                                    <DeleteWallet />
+                                </RightContentMiddle>
                             </Route>
-                        </Router> */}
-                    </RightContentInner>
+                        </Router>
                 </RightContentContent>
             </RightContent>
         </div>

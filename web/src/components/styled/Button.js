@@ -2,9 +2,9 @@ import styled from 'styled-components'
 import styles from '/const/styles'
 
 export default styled.button`
-color: ${styles.color.front5};
+color: ${props=>props.red ? styles.color.red2 : styles.color.front5};
 background-image: linear-gradient(#fff,${styles.color.background1});
-border: 1px solid ${styles.color.background5};
+border: 1px solid ${props=>props.red ? styles.color.red : styles.color.background5};
 padding: 8px 20px 8px;
 font-weight: bold;
 font-size: 12px;

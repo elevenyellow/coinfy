@@ -16,7 +16,10 @@ export function getWallet(symbol, address) {
 }
 
 export function isWalletRegistered(symbol, address) {
-    return state.wallets[symbol].hasOwnProperty(address)
+    return (
+        state.wallets.hasOwnProperty(symbol) &&
+        state.wallets[symbol].hasOwnProperty(address)
+    )
 }
 
 export function isWalletWithPrivateKey(symbol, address) {

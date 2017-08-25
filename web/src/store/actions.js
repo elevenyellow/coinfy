@@ -23,3 +23,9 @@ export function setPrivateKey(symbol, address, private_key, password) {
         password
     )
 }
+export function deleteWallet(symbol, address) {
+    const collector = collect()
+    delete state.wallets[symbol][address]
+    setHref(routes.home())
+    collector.emit()
+}

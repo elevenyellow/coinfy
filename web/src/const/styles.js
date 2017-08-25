@@ -20,5 +20,7 @@ export default {
         disabled: '#dddddd',
         disabled2: '#eeeeee',
         error: '#e71015',
+        red: '#e58777',
+        red2: '#c83838',
     }
 }
