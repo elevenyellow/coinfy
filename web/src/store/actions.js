@@ -1,10 +1,10 @@
 import { collect } from 'dop'
-import { location, routes } from '/stores/router'
-import { state } from '/stores/state'
+import routes from '/const/routes'
+import { state } from '/store/state'
 import { encryptAES128CTR } from '/util/crypto'
 
 export function setHref(href) {
-    location.href = href
+    state.location.href = href
 }
 
 export function createWallet(symbol, address) {

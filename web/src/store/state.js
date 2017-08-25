@@ -1,4 +1,5 @@
 import { register } from 'dop'
+import { create } from '/doprouter/core'
 import { BTC } from '/const/crypto'
 
 export const state = register({
@@ -7,6 +8,8 @@ export const state = register({
     },
     view: {}
 })
+
+create(window.location.href, state)
 
 export function getWallet(symbol, address) {
     return state.wallets[symbol][address]

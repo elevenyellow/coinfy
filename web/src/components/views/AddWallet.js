@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 
-import { setHref } from '/stores/actions'
-import { location, routes } from '/stores/router'
+import { state } from '/store/state'
+import { setHref } from '/store/actions'
+import routes from '/const/routes'
 
 import Div from '/components/styled/Div'
 import H1 from '/components/styled/H1'
@@ -26,8 +27,8 @@ import ImportBitcoin from '/components/views/ImportBitcoin'
 export default class AddWallet extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
-        this.observer.observe(location.path, 'length')
-        this.observer.observe(location.path, '1')
+        this.observer.observe(state.location.path, 'length')
+        this.observer.observe(state.location.path, '1')
     }
 
     componentWillUnmount() {
@@ -44,7 +45,7 @@ export default class AddWallet extends Component {
 
     render() {
         return React.createElement(AddWalletTemplate, {
-            location: location,
+            location: state.location,
             routesCreatebtc: routes.createbtc(),
             routesImportbtc: routes.importbtc(),
             onClick: this.onClick
@@ -72,7 +73,7 @@ function AddWalletTemplate({
             <RightContent>
                 <RightContentMenu>
                     <RightContentMenuItem
-                        selected={location.pathname === routesCreatebtc}
+                        selected={state.location.pathname === routesCreatebtc}
                         onClick={e => onClick(routesCreatebtc)}
                     >
                         <RightContentMenuItemImage>
@@ -88,7 +89,7 @@ function AddWalletTemplate({
                     </RightContentMenuItem>
 
                     <RightContentMenuItem
-                        selected={location.pathname === routesImportbtc}
+                        selected={state.location.pathname === routesImportbtc}
                         onClick={e => onClick(routesImportbtc)}
                     >
                         <RightContentMenuItemImage>
@@ -105,7 +106,7 @@ function AddWalletTemplate({
                 </RightContentMenu>
                 <RightContentContent>
                     <RightContentInner>
-                        <Router source={location}>
+                        <Router source={state.location}>
                             <Route pathname={routesCreatebtc}>
                                 <CreateBitcoin />
                             </Route>

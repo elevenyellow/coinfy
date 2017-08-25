@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import { Router, Route, Show } from '/doprouter/react'
 
-import { setHref } from '/stores/actions'
+import { setHref } from '/store/actions'
 
-import { location, routes } from '/stores/router'
-import { state } from '/stores/state'
+import routes from '/const/routes'
+import { state } from '/store/state'
 
 import Div from '/components/styled/Div'
 import H1Input from '/components/styled/H1Input'
@@ -17,13 +17,13 @@ export default class HeaderWallet extends Component {
     componentWillMount() {
         let unobserveLabel
         let unobserveBalance
-        this.symbol = location.path[0]
-        this.address = location.path[1]
+        this.symbol = state.location.path[0]
+        this.address = state.location.path[1]
         this.wallet = state.wallets[this.symbol][this.address]
         this.observer = createObserver(m => {
             if (m[0].prop === 'pathname') {
-                this.symbol = location.path[0]
-                this.address = location.path[1]
+                this.symbol = state.location.path[0]
+                this.address = state.location.path[1]
                 this.wallet = state.wallets[this.symbol][this.address]
                 unobserveLabel()
                 unobserveBalance()
@@ -32,7 +32,7 @@ export default class HeaderWallet extends Component {
             }
             this.forceUpdate()
         })
-        this.observer.observe(location, 'pathname')
+        this.observer.observe(state.location, 'pathname')
         if (this.wallet !== undefined) {
             unobserveLabel = this.observer.observe(this.wallet, 'label')
             unobserveBalance = this.observer.observe(this.wallet, 'balance')

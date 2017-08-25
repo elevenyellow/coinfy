@@ -5,12 +5,12 @@ import { Router, Route } from '/doprouter/react'
 
 import { isAddress } from '/util/bitcoin'
 
+import { state } from '/store/state'
 import styles from '/const/styles'
-import { location, routes } from '/stores/router'
+import routes from '/const/routes'
 
 // styled
 import { RightContainer } from '/components/styled/Right'
-
 // views
 import AddWallet from '/components/views/AddWallet'
 import Message from '/components/views/Message'
@@ -19,8 +19,8 @@ import WalletBTC from '/components/views/WalletBTC'
 export default class Right extends Component {
     componentWillMount() {
         const observer = createObserver(mutations => this.forceUpdate())
-        observer.observe(location.path, 'length')
-        observer.observe(location.path, '0')
+        observer.observe(state.location.path, 'length')
+        observer.observe(state.location.path, '0')
     }
 
     shouldComponentUpdate() {
@@ -30,7 +30,7 @@ export default class Right extends Component {
     render() {
         return (
             <RightContainer>
-                <Router source={location}>
+                <Router source={state.location}>
                     <Route pathname="/">
                         <Message>
                             Add or Import a wallet to start working
@@ -39,7 +39,7 @@ export default class Right extends Component {
                     <Route pathname={new RegExp(routes.addwallet())}>
                         <AddWallet />
                     </Route>
-                    <Route path-0="BTC" if={isAddress(location.path[1])}>
+                    <Route path-0="BTC" if={isAddress(state.location.path[1])}>
                         <WalletBTC />
                     </Route>
                     <Route>

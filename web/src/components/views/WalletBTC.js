@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import { Router, Route, Show } from '/doprouter/react'
 
-import { setHref } from '/stores/actions'
+import { setHref } from '/store/actions'
 
 import { BTC } from '/const/crypto'
-import { location, routes } from '/stores/router'
+import routes from '/const/routes'
 import {
     state,
     isWalletRegistered,
     isWalletWithPrivateKey
-} from '/stores/state'
+} from '/store/state'
 
 import styles from '/const/styles'
 
@@ -35,7 +35,7 @@ import HeaderWallet from '/components/partials/HeaderWallet'
 export default class WalletBTC extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
-        this.observer.observe(location, 'pathname')
+        this.observer.observe(state.location, 'pathname')
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -45,11 +45,11 @@ export default class WalletBTC extends Component {
     }
 
     render() {
-        const address = location.path[1]
+        const address = state.location.path[1]
         const isRegistered = isWalletRegistered(BTC.symbol, address)
         const hasPrivateKey = isWalletWithPrivateKey(BTC.symbol, address)
         return React.createElement(WalletBTCTemplate, {
-            pathname: location.pathname,
+            pathname: state.location.pathname,
             isRegistered: isRegistered,
             hasPrivateKey: hasPrivateKey
         })
@@ -163,7 +163,7 @@ function WalletBTCTemplate({ pathname, isRegistered, hasPrivateKey }) {
                 </RightContentMenu>
                 <RightContentContent>
                     <RightContentInner>
-                        {/* <Router source={location}>
+                        {/* <Router source={state.location}>
                             <Route pathname={routes.createbtc()}>
                                 <CreateBitcoin />
                             </Route> 

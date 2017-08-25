@@ -3,9 +3,9 @@ import { createObserver } from 'dop'
 import styled from 'styled-components'
 import styles from '/const/styles'
 
-import { setHref } from '/stores/actions'
-import { routes } from '/stores/router'
-import { state } from '/stores/state'
+import { setHref } from '/store/actions'
+import routes from '/const/routes'
+import { state } from '/store/state'
 
 import IconMore from 'react-icons/lib/md/more-vert'
 import {

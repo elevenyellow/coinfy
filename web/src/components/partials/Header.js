@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import styles from '/const/styles'
 
-import { setHref } from '/stores/actions'
-import { routes } from '/stores/router'
+import { setHref } from '/store/actions'
+import routes from '/const/routes'
 
 import Div from '/components/styled/Div'
 import {

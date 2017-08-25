@@ -14,8 +14,8 @@ import {
 import { encryptAES128CTR } from '/util/crypto'
 
 import { BTC } from '/const/crypto'
-import { routes } from '/stores/router'
-import { state, isWalletRegistered } from '/stores/state'
+import routes from '/const/routes'
+import { state, isWalletRegistered } from '/store/state'
 
 import styles from '/const/styles'
 
@@ -34,7 +34,7 @@ import {
     createWallet,
     setPrivateKey,
     setPublicKey
-} from '/stores/actions'
+} from '/store/actions'
 
 const minpassword = 8
 const types_import = {

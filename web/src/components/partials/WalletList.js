@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import styles from '/const/styles'
 
 import { BTC } from '/const/crypto'
-import { state } from '/stores/state'
+import { state } from '/store/state'
 
 import WalletListItem from '/components/partials/WalletListItem'
 

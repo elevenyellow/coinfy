@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
 import styles from '/const/styles'
-import { location, routes } from '/stores/router'
-import { state } from '/stores/state'
-import { setHref } from '/stores/actions'
+import routes from '/const/routes'
+import { state } from '/store/state'
+import { setHref } from '/store/actions'
 
 export default class Wallet extends Component {
     componentWillMount() {
         const wallet = this.props.wallet
         this.observer = createObserver(mutations => this.forceUpdate())
-        this.observer.observe(location, 'pathname')
+        this.observer.observe(state.location, 'pathname')
         this.observer.observe(wallet.wallet, 'label')
         this.observer.observe(wallet.wallet, 'balance')
         this.observer.observe(state.wallets[wallet.symbol])
@@ -34,7 +34,7 @@ export default class Wallet extends Component {
     render() {
         return React.createElement(WalletTemplate, {
             wallet: this.props.wallet,
-            location: location,
+            location: state.location,
             onClick: this.onClick
         })
     }
@@ -45,8 +45,8 @@ function WalletTemplate({ wallet, location, onClick }) {
         <WalletStyled
             onClick={onClick}
             selected={
-                location.path[0] === wallet.symbol &&
-                location.path[1] === wallet.address
+                state.location.path[0] === wallet.symbol &&
+                state.location.path[1] === wallet.address
             }
         >
             <WalletIcon>
