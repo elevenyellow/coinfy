@@ -29,7 +29,7 @@ import {
 
 import HeaderWallet from '/components/partials/HeaderWallet'
 import DeleteWallet from '/components/views/DeleteWallet'
-import SetPrivateKey from '/components/views/SetPrivateKey'
+import SetPrivateKeyBTC from '/components/views/SetPrivateKeyBTC'
 
 export default class WalletBTC extends Component {
     componentWillMount() {
@@ -193,9 +193,9 @@ function WalletBTCTemplate({
                                 </RightContentMiddle>
                             </Route>
                             <Route pathname={routesSetPrivateKeyWallet}>
-                                <RightContentInner>
-                                    <SetPrivateKey />
-                                </RightContentInner>
+                                <RightContentMiddle>
+                                    <SetPrivateKeyBTC />
+                                </RightContentMiddle>
                             </Route>
                             <Route>
                                 <RightContentInner>

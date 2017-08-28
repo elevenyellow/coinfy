@@ -21,8 +21,8 @@ import {
     RightContentInner
 } from '/components/styled/Right'
 
-import CreateBitcoin from '/components/views/CreateBitcoin'
-import ImportBitcoin from '/components/views/ImportBitcoin'
+import CreateBTC from '/components/views/CreateBTC'
+import ImportBTC from '/components/views/ImportBTC'
 
 export default class AddWallet extends Component {
     componentWillMount() {
@@ -108,10 +108,10 @@ function AddWalletTemplate({
                     <RightContentInner>
                         <Router source={location}>
                             <Route pathname={routesCreatebtc}>
-                                <CreateBitcoin />
+                                <CreateBTC />
                             </Route>
                             <Route pathname={routesImportbtc}>
-                                <ImportBitcoin />
+                                <ImportBTC />
                             </Route>
                         </Router>
                     </RightContentInner>

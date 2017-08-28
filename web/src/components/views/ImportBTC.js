@@ -129,7 +129,7 @@ export default class ImportBitcoin extends Component {
     }
     onSubmit(e) {
         e.preventDefault()
-        if (this.isFormValid) {
+        // if (this.isFormValid) {
             const collector = collect()
             const address = state.view.address
             createWallet(BTC.symbol, address)
@@ -145,7 +145,7 @@ export default class ImportBitcoin extends Component {
 
             setHref(routes.wallet(BTC.symbol, address))
             collector.emit()
-        }
+        // }
     }
 
     // Getters
@@ -375,11 +375,7 @@ function ImportBitcoinTemplate({
                             <Div float="left" width="60%">
                                 <Input
                                     minlength={minpassword}
-                                    error={
-                                        isInvalidRepassword
-                                            ? 'Passwords do not match'
-                                            : null
-                                    }
+                                    error={'Passwords do not match'}
                                     invalid={isInvalidRepassword}
                                     value={repassword}
                                     onChange={onChangeRepassword}
