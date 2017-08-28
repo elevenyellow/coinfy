@@ -33,6 +33,20 @@ box-sizing: border-box;
     box-shadow: none !important;
     border-color: ${styles.color.background3};
 }
+::-webkit-input-placeholder { /* Chrome */
+    color: rgba(90,97,104,.4);
+  }
+:-ms-input-placeholder { /* IE 10+ */
+color: rgba(90,97,104,.4);
+}
+::-moz-placeholder { /* Firefox 19+ */
+color: rgba(90,97,104,.4);
+opacity: 1;
+}
+:-moz-placeholder { /* Firefox 4 - 18 */
+color: rgba(90,97,104,.4);
+opacity: 1;
+}
 `
 const InputError = styled.div`
 font-size: 10px;

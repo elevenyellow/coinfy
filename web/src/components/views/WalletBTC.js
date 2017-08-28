@@ -31,6 +31,7 @@ import {
 import HeaderWallet from '/components/partials/HeaderWallet'
 import DeleteWallet from '/components/views/DeleteWallet'
 import SetPrivateKeyBTC from '/components/views/SetPrivateKeyBTC'
+import PrintBTC from '/components/views/PrintBTC'
 
 export default class WalletBTC extends Component {
     componentWillMount() {
@@ -234,16 +235,19 @@ function WalletBTCTemplate({
                 </RightContentMenu>
                 <RightContentContent>
                     <Router source={location}>
+
+                        <Route pathname={routes_printWallet}>
+                            <RightContentMiddle>
+                                <PrintBTC />
+                            </RightContentMiddle>
+                        </Route>
+
                         <Route pathname={routes_deleteWallet}>
                             <RightContentMiddle>
                                 <DeleteWallet />
                             </RightContentMiddle>
                         </Route>
-                        <Route pathname={routes_setPrivateKeyWallet}>
-                            <RightContentMiddle>
-                                <SetPrivateKeyBTC />
-                            </RightContentMiddle>
-                        </Route>
+
                         <Route>
                             <RightContentMiddle>
                                 <Message>To do</Message>

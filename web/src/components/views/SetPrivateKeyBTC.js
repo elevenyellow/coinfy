@@ -20,7 +20,7 @@ import { Label, SubLabel } from '/components/styled/Label'
 
 const minpassword = 8
 
-export default class SetPrivateKey extends Component {
+export default class SetPrivateKeyBTC extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
@@ -38,6 +38,13 @@ export default class SetPrivateKey extends Component {
         this.onChangeRepassword = this.onChangeRepassword.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
+    componentWillUnmount() {
+        this.observer.destroy()
+    }
+    shouldComponentUpdate() {
+        return false
+    }
+
 
     // Actions
     onChangeTypeImport(e) {
@@ -101,7 +108,7 @@ export default class SetPrivateKey extends Component {
             !isInvalidPrivateKey &&
             !isInvalidRepassword
 
-        return React.createElement(SetPrivateKeyTemplate, {
+        return React.createElement(SetPrivateKeyBTCTemplate, {
             input: state.view.input,
             password: state.view.password,
             repassword: state.view.repassword,
@@ -116,7 +123,7 @@ export default class SetPrivateKey extends Component {
     }
 }
 
-function SetPrivateKeyTemplate({
+function SetPrivateKeyBTCTemplate({
     input,
     password,
     repassword,

@@ -1,6 +1,8 @@
 import { register } from 'dop'
 import { create } from '/doprouter/core'
 import { BTC } from '/const/crypto'
+import { decryptAES128CTR } from '/api/crypto'
+import { isPrivateKey, getAddressFromPrivateKey } from '/api/bitcoin'
 
 export const state = register({
     wallets: {
@@ -27,4 +29,18 @@ export function isWalletWithPrivateKey(symbol, address) {
         isWalletRegistered(symbol, address) &&
         state.wallets[symbol][address].hasOwnProperty('private_key')
     )
+}
+
+export function unlockBTCWallet(address, password) {
+    const private_key = decryptAES128CTR(
+        getWallet(BTC.symbol, address).private_key,
+        password
+    )
+
+    if ( isPrivateKey(private_key) ) {
+        if ( getAddressFromPrivateKey(private_key)===address )
+            return private_key
+    }
+
+    return false
 }
