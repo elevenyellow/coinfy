@@ -95,7 +95,7 @@ export const RightContentMenuItemText = styled.div`
 color: ${props=>props.color||'inherit'};
 font-weight: bold;
 font-size: 14px;
-line-height: 20px;
+line-height: 21px;
 `
 
 

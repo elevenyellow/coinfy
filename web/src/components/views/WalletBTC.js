@@ -29,6 +29,7 @@ import {
 
 import HeaderWallet from '/components/partials/HeaderWallet'
 import DeleteWallet from '/components/views/DeleteWallet'
+import SetPrivateKey from '/components/views/SetPrivateKey'
 
 export default class WalletBTC extends Component {
     componentWillMount() {
@@ -50,8 +51,10 @@ export default class WalletBTC extends Component {
         const address = state.location.path[1]
         const hasPrivateKey = isWalletWithPrivateKey(BTC.symbol, address)
         return React.createElement(WalletBTCTemplate, {
-            pathname: state.location.pathname,
+            location: state.location,
             hasPrivateKey: hasPrivateKey,
+            routesSummaryWallet: routes.summaryWallet(BTC.symbol, address),
+            routesSetPrivateKeyWallet: routes.setPrivateKeyWallet(BTC.symbol, address),
             routesDeleteWallet: routes.deleteWallet(BTC.symbol, address),
             onClick: this.onClick
         })
@@ -59,11 +62,13 @@ export default class WalletBTC extends Component {
 }
 
 function WalletBTCTemplate({
-    pathname,
+    location,
     isRegistered,
     hasPrivateKey,
+    onClick,
+    routesSummaryWallet,
+    routesSetPrivateKeyWallet,
     routesDeleteWallet,
-    onClick
 }) {
     const tooltipPrivatekey = hasPrivateKey
         ? null
@@ -75,7 +80,10 @@ function WalletBTCTemplate({
             <HeaderWallet />
             <RightContent>
                 <RightContentMenu>
-                    <RightContentMenuItem>
+                    <RightContentMenuItem
+                        selected={location.pathname === routesSummaryWallet || location.path.length===2}
+                        onClick={e => onClick(routesSummaryWallet)}
+                    >
                         <RightContentMenuItemIcon>
                             <IconDashboard
                                 size={23}
@@ -146,7 +154,10 @@ function WalletBTCTemplate({
                             </RightContentMenuItem>
                         </Show>
                         <Show>
-                            <RightContentMenuItem>
+                            <RightContentMenuItem
+                                selected={location.pathname === routesSetPrivateKeyWallet}
+                                onClick={e => onClick(routesSetPrivateKeyWallet)}
+                            >
                                 <RightContentMenuItemIcon>
                                     <IconKey
                                         size={23}
@@ -175,16 +186,22 @@ function WalletBTCTemplate({
                 <RightContentContent>
                     
                         <Router source={location}>
-                            {/* <Route pathname={routes.createbtc()}>
-                                <RightContentInner>
-                                    <CreateBitcoin />
-                                </RightContentInner>
-                            </Route>  */}
+
                             <Route pathname={routesDeleteWallet}>
                                 <RightContentMiddle>
                                     <DeleteWallet />
                                 </RightContentMiddle>
                             </Route>
+                            <Route pathname={routesSetPrivateKeyWallet}>
+                                <RightContentInner>
+                                    <SetPrivateKey />
+                                </RightContentInner>
+                            </Route>
+                            <Route>
+                                <RightContentInner>
+                                    <div>Summary</div>
+                                </RightContentInner>
+                            </Route> 
                         </Router>
                 </RightContentContent>
             </RightContent>

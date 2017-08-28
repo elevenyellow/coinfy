@@ -4,5 +4,7 @@ export default {
     createbtc: () => `/addwallet/create-bitcoin`,
     importbtc: () => `/addwallet/import-bitcoin`,
     wallet: (currency,address) => `/${currency}/${address}`,
-    deleteWallet: (currency,address) => `/${currency}/${address}/delete`
+    summaryWallet: (currency,address) => `/${currency}/${address}/summary`,
+    setPrivateKeyWallet: (currency,address) => `/${currency}/${address}/setprivatekey`,
+    deleteWallet: (currency,address) => `/${currency}/${address}/delete`,
 }
