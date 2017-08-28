@@ -1,8 +1,8 @@
 import { register } from 'dop'
 import { create } from '/doprouter/core'
 import { BTC } from '/const/crypto'
-import { decryptAES128CTR } from '/api/crypto'
-import { isPrivateKey, getAddressFromPrivateKey } from '/api/bitcoin'
+import { decryptAES128CTR } from '/api/security'
+import { isPrivateKey, getAddressFromPrivateKey } from '/api/btc'
 
 export const state = register({
     wallets: {

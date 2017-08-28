@@ -1,7 +1,6 @@
 import Bitcoin from 'bitcoinjs-lib'
 
 
-
 const privateKeyPrefix = 0x80; // mainnet 0x80    testnet 0xEF
 
 

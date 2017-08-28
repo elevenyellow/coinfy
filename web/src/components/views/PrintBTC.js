@@ -4,6 +4,8 @@ import styled from 'styled-components'
 
 import { state, unlockBTCWallet } from '/store/state'
 
+import { getAllFormats } from '/api/btc'
+
 import routes from '/const/routes'
 import { BTC } from '/const/crypto'
 
@@ -44,7 +46,7 @@ export default class DeleteWallet extends Component {
         const address = state.location.path[1]
         const private_key = unlockBTCWallet(address, state.view.password)
         if ( private_key ) {
-            console.log(  'PRINT!!', private_key )
+            console.log(  'PRINT!!', getAllFormats(private_key) )
         }
         else
             state.view.invalidPassword = true
@@ -77,7 +79,7 @@ function DeleteWalletTemplate({ password, invalidPassword, onChangePassword, onP
                         />
                     </Div>
                     <Div>
-                        <Button onClick={onPrint} width="100%">PRINT PAPER WALLET</Button>
+                        <Button onClick={onPrint} width="100%">UNLOCK AND PRINT</Button>
                     </Div>
                 </form>
             </CenterElement>

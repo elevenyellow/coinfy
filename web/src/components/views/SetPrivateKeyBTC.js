@@ -7,7 +7,7 @@ import { state } from '/store/state'
 import routes from '/const/routes'
 import { BTC } from '/const/crypto'
 
-import { isPrivateKey, getAddressFromPrivateKey } from '/api/bitcoin'
+import { isPrivateKey, getAddressFromPrivateKey } from '/api/btc'
 
 import { setHref, setPrivateKey } from '/store/actions'
 

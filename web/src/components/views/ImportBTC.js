@@ -10,8 +10,8 @@ import {
     isPrivateKey,
     getAddressFromPublicKey,
     getAddressFromPrivateKey
-} from '/api/bitcoin'
-import { encryptAES128CTR } from '/api/crypto'
+} from '/api/btc'
+import { encryptAES128CTR } from '/api/security'
 
 import { BTC } from '/const/crypto'
 import routes from '/const/routes'

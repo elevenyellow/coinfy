@@ -4,7 +4,7 @@ import { createObserver, collect } from 'dop'
 import { Show } from '/doprouter/react'
 
 import { generateQRCode } from '/api/qr'
-import { generateRandomWallet } from '/api/bitcoin'
+import { generateRandomWallet } from '/api/btc'
 
 import { BTC } from '/const/crypto'
 import routes from '/const/routes'
