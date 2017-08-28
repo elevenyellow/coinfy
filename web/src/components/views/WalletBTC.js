@@ -16,6 +16,7 @@ import IconPrint from 'react-icons/lib/fa/print'
 import IconKey from 'react-icons/lib/go/key'
 import IconDelete from 'react-icons/lib/md/delete'
 import Help from '/components/styled/Help'
+import Message from '/components/styled/Message'
 import {
     RightContent,
     RightContentMenu,
@@ -53,9 +54,19 @@ export default class WalletBTC extends Component {
         return React.createElement(WalletBTCTemplate, {
             location: state.location,
             hasPrivateKey: hasPrivateKey,
-            routesSummaryWallet: routes.summaryWallet(BTC.symbol, address),
-            routesSetPrivateKeyWallet: routes.setPrivateKeyWallet(BTC.symbol, address),
-            routesDeleteWallet: routes.deleteWallet(BTC.symbol, address),
+            routes_summaryWallet: routes.summaryWallet(BTC.symbol, address),
+            routes_receiveWallet: routes.receiveWallet(BTC.symbol, address),
+            routes_sendWallet: routes.sendWallet(BTC.symbol, address),
+            routes_printWallet: routes.printWallet(BTC.symbol, address),
+            routes_setPrivateKeyWallet: routes.setPrivateKeyWallet(
+                BTC.symbol,
+                address
+            ),
+            routes_changePasswordWallet: routes.changePasswordWallet(
+                BTC.symbol,
+                address
+            ),
+            routes_deleteWallet: routes.deleteWallet(BTC.symbol, address),
             onClick: this.onClick
         })
     }
@@ -66,9 +77,13 @@ function WalletBTCTemplate({
     isRegistered,
     hasPrivateKey,
     onClick,
-    routesSummaryWallet,
-    routesSetPrivateKeyWallet,
-    routesDeleteWallet,
+    routes_summaryWallet,
+    routes_receiveWallet,
+    routes_sendWallet,
+    routes_printWallet,
+    routes_setPrivateKeyWallet,
+    routes_changePasswordWallet,
+    routes_deleteWallet
 }) {
     const tooltipPrivatekey = hasPrivateKey
         ? null
@@ -81,8 +96,11 @@ function WalletBTCTemplate({
             <RightContent>
                 <RightContentMenu>
                     <RightContentMenuItem
-                        selected={location.pathname === routesSummaryWallet || location.path.length===2}
-                        onClick={e => onClick(routesSummaryWallet)}
+                        selected={
+                            location.pathname === routes_summaryWallet ||
+                            location.path.length === 2
+                        }
+                        onClick={e => onClick(routes_summaryWallet)}
                     >
                         <RightContentMenuItemIcon>
                             <IconDashboard
@@ -95,7 +113,13 @@ function WalletBTCTemplate({
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
 
-                    <RightContentMenuItem>
+                    <RightContentMenuItem
+                        selected={
+                            location.pathname === routes_receiveWallet ||
+                            location.path.length === 2
+                        }
+                        onClick={e => onClick(routes_receiveWallet)}
+                    >
                         <RightContentMenuItemIcon transform="rotate(130deg) translateX(3px) translateY(-1px)">
                             <IconReceive
                                 size={23}
@@ -107,7 +131,16 @@ function WalletBTCTemplate({
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
 
-                    <RightContentMenuItem disabled={!hasPrivateKey}>
+                    <RightContentMenuItem
+                        disabled={!hasPrivateKey}
+                        selected={
+                            location.pathname === routes_sendWallet ||
+                            location.path.length === 2
+                        }
+                        onClick={e => {
+                            if (hasPrivateKey) onClick(routes_sendWallet)
+                        }}
+                    >
                         <RightContentMenuItemIcon transform="rotate(-45deg) translateX(3px) translateY(-1px)">
                             <IconReceive
                                 size={23}
@@ -123,7 +156,16 @@ function WalletBTCTemplate({
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
 
-                    <RightContentMenuItem disabled={!hasPrivateKey}>
+                    <RightContentMenuItem
+                        disabled={!hasPrivateKey}
+                        selected={
+                            location.pathname === routes_printWallet ||
+                            location.path.length === 2
+                        }
+                        onClick={e => {
+                            if (hasPrivateKey) onClick(routes_printWallet)
+                        }}
+                    >
                         <RightContentMenuItemIcon>
                             <IconPrint
                                 size={23}
@@ -139,41 +181,48 @@ function WalletBTCTemplate({
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
 
-                    <Router>
-                        <Show if={hasPrivateKey}>
-                            <RightContentMenuItem>
-                                <RightContentMenuItemIcon>
-                                    <IconKey
-                                        size={23}
-                                        color={styles.color.front2}
-                                    />
-                                </RightContentMenuItemIcon>
-                                <RightContentMenuItemText>
-                                    Change password
-                                </RightContentMenuItemText>
-                            </RightContentMenuItem>
-                        </Show>
-                        <Show>
-                            <RightContentMenuItem
-                                selected={location.pathname === routesSetPrivateKeyWallet}
-                                onClick={e => onClick(routesSetPrivateKeyWallet)}
-                            >
-                                <RightContentMenuItemIcon>
-                                    <IconKey
-                                        size={23}
-                                        color={styles.color.front2}
-                                    />
-                                </RightContentMenuItemIcon>
-                                <RightContentMenuItemText>
-                                    Set private key
-                                </RightContentMenuItemText>
-                            </RightContentMenuItem>
-                        </Show>
-                    </Router>
+                    <Show if={!hasPrivateKey}>
+                        <RightContentMenuItem
+                            selected={
+                                location.pathname === routes_setPrivateKeyWallet
+                            }
+                            onClick={e => onClick(routes_setPrivateKeyWallet)}
+                        >
+                            <RightContentMenuItemIcon>
+                                <IconKey
+                                    size={23}
+                                    color={styles.color.front2}
+                                />
+                            </RightContentMenuItemIcon>
+                            <RightContentMenuItemText>
+                                Set private key
+                            </RightContentMenuItemText>
+                        </RightContentMenuItem>
+                    </Show>
+
+                    <Show if={hasPrivateKey}>
+                        <RightContentMenuItem
+                            selected={
+                                location.pathname ===
+                                routes_changePasswordWallet
+                            }
+                            onClick={e => onClick(routes_changePasswordWallet)}
+                        >
+                            <RightContentMenuItemIcon>
+                                <IconKey
+                                    size={23}
+                                    color={styles.color.front2}
+                                />
+                            </RightContentMenuItemIcon>
+                            <RightContentMenuItemText>
+                                Change password
+                            </RightContentMenuItemText>
+                        </RightContentMenuItem>
+                    </Show>
 
                     <RightContentMenuItem
-                        selected={location.pathname === routesDeleteWallet}
-                        onClick={e => onClick(routesDeleteWallet)}
+                        selected={location.pathname === routes_deleteWallet}
+                        onClick={e => onClick(routes_deleteWallet)}
                     >
                         <RightContentMenuItemIcon>
                             <IconDelete size={23} color={styles.color.front2} />
@@ -184,25 +233,23 @@ function WalletBTCTemplate({
                     </RightContentMenuItem>
                 </RightContentMenu>
                 <RightContentContent>
-                    
-                        <Router source={location}>
-
-                            <Route pathname={routesDeleteWallet}>
-                                <RightContentMiddle>
-                                    <DeleteWallet />
-                                </RightContentMiddle>
-                            </Route>
-                            <Route pathname={routesSetPrivateKeyWallet}>
-                                <RightContentMiddle>
-                                    <SetPrivateKeyBTC />
-                                </RightContentMiddle>
-                            </Route>
-                            <Route>
-                                <RightContentInner>
-                                    <div>Summary</div>
-                                </RightContentInner>
-                            </Route> 
-                        </Router>
+                    <Router source={location}>
+                        <Route pathname={routes_deleteWallet}>
+                            <RightContentMiddle>
+                                <DeleteWallet />
+                            </RightContentMiddle>
+                        </Route>
+                        <Route pathname={routes_setPrivateKeyWallet}>
+                            <RightContentMiddle>
+                                <SetPrivateKeyBTC />
+                            </RightContentMiddle>
+                        </Route>
+                        <Route>
+                            <RightContentMiddle>
+                                <Message>To do</Message>
+                            </RightContentMiddle>
+                        </Route>
+                    </Router>
                 </RightContentContent>
             </RightContent>
         </div>
