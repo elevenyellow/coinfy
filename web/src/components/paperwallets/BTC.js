@@ -13,18 +13,15 @@ body {
 .area {
     width: 95%;
     clear: both;
-    height: 130px;
-    margin: 0 auto 3em auto;
-    /* margin-bottom: 3em; */
+    height: 150px;
+    margin: 0 auto 2.3em auto;
 }
 .area-qr {
     float: left;
     padding-top: 0.7em;
     padding-right: 1em;
 }
-.area-right {
 
-}
 .area-title {
     font-weight: bold;
     font-size: 2em;
@@ -33,8 +30,10 @@ body {
 }
 .area-hash {
     color:black;
+    font-family: monospace;
     font-weight: bold;
-    font-size: 1em;
+    word-break: break-all;
+    font-size: 1.3em;
 }
 .area-description {
     padding-top: 0.8em;
@@ -42,7 +41,12 @@ body {
     font-weight: bold;
     opacity: 0.3;
 }
+.area-titlesmall {
+    font-weight: bold;
+    font-size: 1.2em;
+}
 .area-long {
+    font-family: monospace;
     word-break: break-all;
 }
 .red * {
@@ -84,9 +88,9 @@ body {
                     <img width="125" src="{{private_key_qr}}">
                 </div>
                 <div class="area-right red">
-                    <div class="area-title">Private key</div>
+                    <div class="area-title">Private Key</div>
                     <div class="area-hash">{{private_key}}</div>
-                    <div class="area-description">This CAN NOT BE SHARED. If you share this private key you can lose your funds. WIF format, 52 characters base58, starts with a 'K' or 'L'</div>
+                    <div class="area-description">This CAN NOT BE SHARED. If you share this private key you can lose your funds. WIF format, 51 characters base58, starts with a '5'</div>
                 </div>
             </div>
 
@@ -96,18 +100,18 @@ body {
                     <img width="125" src="{{private_key_comp_qr}}">
                 </div>
                 <div class="area-right red">
-                    <div class="area-title">Private key compressed</div>
+                    <div class="area-title">Private Key compressed</div>
                     <div class="area-hash">{{private_key_comp}}</div>
-                    <div class="area-description">This CAN NOT BE SHARED. If you share this private key you can lose your funds. WIF format, 51 characters base58, starts with a '5'</div>
+                    <div class="area-description">This CAN NOT BE SHARED. If you share this private key you can lose your funds. WIF format, 52 characters base58, starts with a 'K' or 'L'</div>
                 </div>
             </div>
     
             <div class="area">
                 <div class="area-right">
-                    <div class="area-hash">Public Key</div>
+                    <div class="area-titlesmall">Public Key (130 characters [0-9A-F]):</div>
                     <div class="area-long">04859b2aa16756e9c1297464117c2ed90e1749b83a9e5d6e8572bcac0a17020f1158107eb1a44cab507080291ac998b45530be81f113b35b9a164e04ac1f6a4ab0</div>
                     <br />
-                    <div class="area-hash">Public Key compressed</div>
+                    <div class="area-titlesmall">Public Key (compressed, 66 characters [0-9A-F]):</div>
                     <div class="area-long">02859b2aa16756e9c1297464117c2ed90e1749b83a9e5d6e8572bcac0a17020f11</div>
                 </div>
             </div>
