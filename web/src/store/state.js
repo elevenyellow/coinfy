@@ -4,14 +4,7 @@ import { BTC } from '/const/crypto'
 import { decryptAES128CTR } from '/api/security'
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/btc'
 
-export const state = register({
-    wallets: {
-        [BTC.symbol]: {}
-    },
-    view: {}
-})
 
-create(window.location.href, state)
 
 export function getWallet(symbol, address) {
     return state.wallets[symbol][address]
@@ -44,3 +37,28 @@ export function unlockBTCWallet(address, password) {
 
     return false
 }
+
+// initial state
+const initialState = {
+    wallets: {
+        [BTC.symbol]: {}
+    },
+    view: {}
+}
+
+
+// restoring wallets
+try {
+    let wallets = window.localStorage.getItem('wallets')
+    wallets = JSON.parse(wallets)
+    if (wallets && typeof wallets == 'object')
+        initialState.wallets = wallets
+} catch(e) {}
+
+
+// exporting
+export const state = register(initialState)
+
+
+// implementing location router (special object)
+create(window.location.href, state)

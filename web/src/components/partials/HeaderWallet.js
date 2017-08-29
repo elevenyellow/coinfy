@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import { Router, Route, Show } from '/doprouter/react'
 
-import { setHref } from '/store/actions'
+import { setHref, updateSession } from '/store/actions'
 
 import routes from '/const/routes'
 import { state } from '/store/state'
@@ -41,6 +41,7 @@ export default class HeaderWallet extends Component {
         }
 
         this.onChangeLabel = this.onChangeLabel.bind(this)
+        this.onBlur = this.onBlur.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -56,16 +57,21 @@ export default class HeaderWallet extends Component {
             ].label = e.target.value.trim()
     }
 
+    onBlur(e) {
+        updateSession()
+    }
+
     render() {
         return React.createElement(HeaderWalletTemplate, {
             label: this.wallet ? this.wallet.label : '',
             symbol: this.symbol,
-            onChangeLabel: this.onChangeLabel
+            onChangeLabel: this.onChangeLabel,
+            onBlur: this.onBlur
         })
     }
 }
 
-function HeaderWalletTemplate({ label, onChangeLabel }) {
+function HeaderWalletTemplate({ label, onChangeLabel, onBlur }) {
     return (
         <RightHeader>
             <RightHeaderInner>
@@ -81,6 +87,7 @@ function HeaderWalletTemplate({ label, onChangeLabel }) {
                     <H1Input
                         value={label}
                         onChange={onChangeLabel}
+                        onBlur={onBlur}
                         width="100%"
                         placeholder="Type a label..."
                     />

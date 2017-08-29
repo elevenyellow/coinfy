@@ -26,13 +26,10 @@ export default function Header() {
                 </HeaderLeft>
                 <HeaderCenter>
                     <HeaderCrypto>
-                        BTC / <strong>$2521.3</strong>
+                        BTC / <strong>$4200.3</strong>
                     </HeaderCrypto>
                     <HeaderCrypto>
-                        ETH / <strong>$152.3</strong>
-                    </HeaderCrypto>
-                    <HeaderCrypto>
-                        LTC / <strong>$42.5</strong>
+                        BCH / <strong>$601.5</strong>
                     </HeaderCrypto>
                 </HeaderCenter>
                 <HeaderRight>
