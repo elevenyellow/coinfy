@@ -44,9 +44,43 @@ export function updateSession() {
 export function exportWallets() {
     const wallets = JSON.stringify(state.wallets)
     const a = document.createElement('a')
-    const file = new Blob([wallets], {type: 'text/json;charset=UTF-8'})
+    const file = new Blob([wallets], {type: 'application/json;charset=UTF-8'})
     const date = new Date().toJSON().replace(/\..+$/,'')
     a.href = URL.createObjectURL(file)
     a.download = `WEDONTNEEDBANKS_backup--${date}.json`
     a.click()
+}
+
+
+export function importWallets() {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.addEventListener('change', e=>{
+        const file = input.files[0]
+        if ( file.type.indexOf('json') > -1 || file.type.indexOf('text') > -1 || file.type==='' ) {
+            const reader = new FileReader()
+            reader.onload = e => {
+                const dataString = e.target.result
+                try {
+                    const wallets = JSON.parse(dataString)
+                    console.log( wallets );
+                } catch(e) { 
+                    console.log(e, dataString)
+                    alert('Invalid format')
+                }
+            }
+            reader.readAsText(file)
+        }
+        else {
+            console.log( file.type );
+            alert(file.type + ' is not a valid format')
+        }
+    })
+    input.click()
+}
+
+
+export function closeSession() {
+    window.localStorage.removeItem('wallets')
+    window.location.href = '/'
 }
