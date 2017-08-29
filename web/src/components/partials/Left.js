@@ -3,7 +3,7 @@ import { createObserver } from 'dop'
 import styled from 'styled-components'
 import styles from '/const/styles'
 
-import { setHref } from '/store/actions'
+import { setHref, exportWallets } from '/store/actions'
 import routes from '/const/routes'
 import { state } from '/store/state'
 
@@ -21,6 +21,12 @@ import WalletList from '/components/partials/WalletList'
 export default class Left extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
+        this.observer.observe(state, 'menuOpen')
+
+        this.onMenuOpen = this.onMenuOpen.bind(this)
+        this.onExport = this.onExport.bind(this)
+        this.onImport = this.onImport.bind(this)
+        this.onClose = this.onClose.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -29,12 +35,47 @@ export default class Left extends Component {
         return false
     }
 
+    onExport(e) {
+        exportWallets()
+    }        
+    onImport(e) {
+        console.log( 'onImport' );
+    }  
+    onClose(e) {
+        console.log( 'onClose' );
+    }  
+
+    onMenuOpen(e) {
+        if (!state.menuOpen) {
+            event.stopPropagation()
+            const callback = function(e) {
+                // console.log( 'entra?',e );
+                state.menuOpen = false
+                document.removeEventListener('click', callback)
+            }
+            document.addEventListener('click', callback)
+            state.menuOpen = true
+        }
+    }
+
     render() {
-        return React.createElement(LeftTemplate, {})
+        return React.createElement(LeftTemplate, {
+            menuOpen: state.menuOpen,
+            onMenuOpen: this.onMenuOpen,
+            onExport: this.onExport,
+            onImport: this.onImport,
+            onClose: this.onClose,
+        })
     }
 }
 
-function LeftTemplate({}) {
+function LeftTemplate({
+    menuOpen,
+    onMenuOpen,
+    onExport,
+    onImport,
+    onClose
+}) {
     return (
         <LeftDiv>
             <ColumnLeftChart onClick={e => setHref(routes.home())}>
@@ -61,11 +102,12 @@ function LeftTemplate({}) {
             </ColumnLeftChart>
             <ColumnLeftHeader>
                 <ColumnLeftHeaderLeft>
-                    <DropDown>
+                    <DropDown onClick={onMenuOpen}>
                         <IconMore size={35} color={styles.color.front2} />
-                        <DropDownMenu visible={false} left="7px">
-                            <DropDownItem>Import</DropDownItem>
-                            <DropDownItem>Export / Save</DropDownItem>
+                        <DropDownMenu visible={menuOpen} left="7px">
+                            <DropDownItem onClick={onExport}>Export</DropDownItem>
+                            <DropDownItem onClick={onImport}>Import</DropDownItem>
+                            <DropDownItem onClick={onClose}>Close session</DropDownItem>
                         </DropDownMenu>
                     </DropDown>
                 </ColumnLeftHeaderLeft>
@@ -103,7 +145,6 @@ const ColumnLeftHeader = styled.div`
     top: 0;
 `
 const ColumnLeftHeaderLeft = styled.div`
-    cursor: pointer;
     float: left;
     padding-left: 5px;
     padding-top: 10px;

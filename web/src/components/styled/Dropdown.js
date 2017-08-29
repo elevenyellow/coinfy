@@ -4,6 +4,7 @@ import styles from '/const/styles'
 
 export const DropDown = styled.div`
 position: relative;
+z-index: 1;
 `
 
 export const DropDownMenu = styled.div`
@@ -26,6 +27,10 @@ width: 90px;
 text-align: left;
 &:first-child {
     border-top: 0
+}
+&:hover {
+    background-color: ${styles.color.background1};
+    color: ${styles.color.background2}
 }
 `
 

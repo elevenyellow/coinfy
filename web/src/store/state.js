@@ -43,6 +43,7 @@ const initialState = {
     wallets: {
         [BTC.symbol]: {}
     },
+    menuOpen: false,
     view: {}
 }
 

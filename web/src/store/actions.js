@@ -39,3 +39,14 @@ export function updateSession() {
     const wallets = JSON.stringify(state.wallets)
     window.localStorage.setItem('wallets', wallets)
 }
+
+
+export function exportWallets() {
+    const wallets = JSON.stringify(state.wallets)
+    const a = document.createElement('a')
+    const file = new Blob([wallets], {type: 'text/json;charset=UTF-8'})
+    const date = new Date().toJSON().replace(/\..+$/,'')
+    a.href = URL.createObjectURL(file)
+    a.download = `WEDONTNEEDBANKS_backup--${date}.json`
+    a.click()
+}
