@@ -153,7 +153,7 @@ function WalletBTCTemplate({
                             />
                         </RightContentMenuItemIcon>
                         <RightContentMenuItemText>
-                            Send {tooltipPrivatekey}
+                            Send{tooltipPrivatekey}
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
 
@@ -178,7 +178,7 @@ function WalletBTCTemplate({
                             />
                         </RightContentMenuItemIcon>
                         <RightContentMenuItemText>
-                            Print {tooltipPrivatekey}
+                            Paper Wallet{tooltipPrivatekey}
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
 
@@ -245,6 +245,12 @@ function WalletBTCTemplate({
                         <Route pathname={routes_deleteWallet}>
                             <RightContentMiddle>
                                 <DeleteWallet />
+                            </RightContentMiddle>
+                        </Route>
+
+                        <Route pathname={routes_setPrivateKeyWallet}>
+                            <RightContentMiddle>
+                                <SetPrivateKeyBTC />
                             </RightContentMiddle>
                         </Route>
 

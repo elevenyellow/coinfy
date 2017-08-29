@@ -2,18 +2,23 @@ import React, { Component } from 'react'
 import { createObserver, collect } from 'dop'
 import styled from 'styled-components'
 
-import { state, unlockBTCWallet } from '/store/state'
-
+import { generateQRCode } from '/api/qr'
 import { getAllFormats } from '/api/btc'
+import { supplant } from '/api/strings'
+
+import { state, unlockBTCWallet } from '/store/state'
 
 import routes from '/const/routes'
 import { BTC } from '/const/crypto'
+import styles from '/const/styles'
 
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
 import Input from '/components/styled/Input'
 
-export default class DeleteWallet extends Component {
+import template from '/components/paperwallets/BTC'
+
+export default class PrintBTC extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
@@ -46,13 +51,21 @@ export default class DeleteWallet extends Component {
         const address = state.location.path[1]
         const private_key = unlockBTCWallet(address, state.view.password)
         if ( private_key ) {
-            console.log(  'PRINT!!', getAllFormats(private_key) )
+            const data = getAllFormats(private_key)
+            data.address_qr = generateQRCode(data.address)
+            data.address_comp_qr = generateQRCode(data.address_comp)
+            data.private_key_qr = generateQRCode(data.private_key, undefined, styles.color.red3)
+            data.private_key_comp_qr = generateQRCode(data.private_key_comp, undefined, styles.color.red3)
+            const html = supplant(template, data)
+            const win = window.open("about:blank", "_blank")
+            win.document.write(html)
+            setTimeout(()=>{ win.print() }, 2000)
         }
         else
             state.view.invalidPassword = true
     }
     render() {
-        return React.createElement(DeleteWalletTemplate, {
+        return React.createElement(PrintBTCTemplate, {
             password: state.view.password,
             invalidPassword: state.view.invalidPassword,
             onChangePassword: this.onChangePassword,
@@ -61,7 +74,7 @@ export default class DeleteWallet extends Component {
     }
 }
 
-function DeleteWalletTemplate({ password, invalidPassword, onChangePassword, onPrint }) {
+function PrintBTCTemplate({ password, invalidPassword, onChangePassword, onPrint }) {
     return (
         <div>
             <CenterElement>
