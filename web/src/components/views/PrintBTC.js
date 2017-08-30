@@ -16,7 +16,7 @@ import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
 import Input from '/components/styled/Input'
 
-import template from '/components/paperwallets/BTC'
+import { BTC as template } from '/const/paperwallets'
 
 export default class PrintBTC extends Component {
     componentWillMount() {

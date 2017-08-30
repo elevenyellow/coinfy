@@ -22,6 +22,7 @@ export default {
         error: '#e71015',
         red: '#e58777',
         red2: '#c83838',
-        red3: '#DD4400'
+        red3: '#DD0044',
+        green1: '#1aba6a',
     }
 }

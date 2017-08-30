@@ -1,4 +1,5 @@
-import dop, { collect } from 'dop'
+import React from 'react'
+import { collect } from 'dop'
 import routes from '/const/routes'
 import { state } from '/store/state'
 import { encryptAES128CTR } from '/api/security'
@@ -72,8 +73,10 @@ export function importWallets() {
             reader.readAsText(file)
         }
         else {
-            console.log( file.type );
-            alert(file.type + ' is not a valid format')
+            // console.log( file.type );
+            addNotification(<span><strong>Invalid format</strong><br/>caca</span>, undefined, 10000)
+            addNotification(<strong>Invalid der format</strong>, 'red', 7500)
+            addNotification(<strong>Invalid format</strong>, 'green', 5000)
         }
     })
     input.click()
@@ -83,4 +86,19 @@ export function importWallets() {
 export function closeSession() {
     window.localStorage.removeItem('wallets')
     window.location.href = '/'
+}
+
+let idNotification = 1
+export function addNotification(text, color, timeout=5000) {
+    state.notifications[idNotification] = {
+        id: idNotification,
+        text: text,
+        color: color,
+        timeout: timeout
+    }
+    idNotification += 1
+}
+
+export function removeNotification(id) {
+    delete state.notifications[id]
 }

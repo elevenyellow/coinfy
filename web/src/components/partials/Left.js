@@ -105,8 +105,8 @@ function LeftTemplate({
                     <DropDown onClick={onMenuOpen}>
                         <IconMore size={35} color={styles.color.front2} />
                         <DropDownMenu visible={menuOpen} left="7px">
-                            <DropDownItem onClick={onExport}>Export</DropDownItem>
                             <DropDownItem onClick={onImport}>Import</DropDownItem>
+                            <DropDownItem onClick={onExport}>Export</DropDownItem>
                             <DropDownItem onClick={onClose}>Close session</DropDownItem>
                         </DropDownMenu>
                     </DropDown>

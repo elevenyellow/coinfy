@@ -1,4 +1,4 @@
-export default `
+export const BTC = `
 <html>
     <head>
     <style>
