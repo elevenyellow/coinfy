@@ -33,7 +33,7 @@ export function deleteWallet(symbol, address) {
     const name = state.wallets[symbol][address].label || address
     delete state.wallets[symbol][address]
     setHref(routes.home())
-    addNotification(<strong>The "{name}"" wallet has been deleted</strong>, styles.notificationColor.green)
+    addNotification(`Wallet "${name}" has been deleted`, styles.notificationColor.green)
     updateSession()
     collector.emit()
 }
@@ -61,7 +61,7 @@ export function exportWallets() {
 
 
 export function importWalletsFromFile() {
-    if (!state.walletsExported)
+    if (state.totalWallets>0 && !state.walletsExported)
         return alert('You must export your wallets')
     
     const input = document.createElement('input')
@@ -77,7 +77,7 @@ export function importWalletsFromFile() {
             reader.readAsText(file)
         }
         else
-            addNotification(<strong>Invalid JSON file</strong>, styles.notificationColor.red)
+            addNotification('Invalid JSON file', styles.notificationColor.red)
     })
     input.click()
 }
@@ -91,23 +91,23 @@ export function importWallets(dataString) {
             const collector = collect()
             state.wallets = wallets
             setHref(routes.home())
-            addNotification(<strong>You have imported {totalWallets} Wallets</strong>, styles.notificationColor.green)
+            addNotification(`You have imported ${totalWallets} Wallets`, styles.notificationColor.green)
             updateSession()
             state.walletsExported = true
             collector.emit()
         }
         else
-            addNotification(<strong>We couldn't find any Wallet to Import on this JSON file</strong>, styles.notificationColor.red)
+            addNotification('We couldn\'t find any Wallet to Import on this JSON file', styles.notificationColor.red)
         
     } catch(e) { 
         console.log( e );
-        addNotification(<strong>We couldn't parse the JSON file</strong>, styles.notificationColor.red)
+        addNotification('We couldn\'t parse the JSON file', styles.notificationColor.red)
     }
 }
 
 export function closeSession() {
     if (state.totalWallets > 0) {
-        console.log( 'walletsExported',state.walletsExported );
+        
         if (!state.walletsExported)
             return alert('You must export your wallets')
 

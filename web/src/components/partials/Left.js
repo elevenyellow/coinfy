@@ -53,9 +53,10 @@ export default class Left extends Component {
         if (!state.menuOpen) {
             event.stopPropagation()
             const callback = function(e) {
-                // console.log( 'entra?',e );
-                state.menuOpen = false
-                document.removeEventListener('click', callback)
+                // if (e.target.children.length===0) { // means is <DropDownItem> and now <DropDownMenu>
+                    state.menuOpen = false
+                    document.removeEventListener('click', callback)
+                // }
             }
             document.addEventListener('click', callback)
             state.menuOpen = true

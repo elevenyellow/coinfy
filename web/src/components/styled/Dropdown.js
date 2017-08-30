@@ -25,12 +25,13 @@ color: ${props=>props.disabled ? styles.color.disabled : styles.color.front1};
 border-top: 1px solid ${styles.color.background4};
 width: 90px;
 text-align: left;
+pointer-events:${props=>props.disabled ? 'none' : 'auto'};
 &:first-child {
     border-top: 0
 }
 &:hover {
-    background-color: ${props=>props.disabled ? 'white' : styles.color.background1};
-    color: ${props=>props.disabled ? styles.color.disabled : styles.color.background2}
+    background-color: ${styles.color.background1};
+    color: ${styles.color.background2}
 }
 
 `

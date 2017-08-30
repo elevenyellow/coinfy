@@ -30,7 +30,7 @@ const NotificationMessage = styled.div`
     text-align: center;
     & > div {
         padding: 15px ${styles.paddingOut};
-        font-weight: 100;
+        font-weight: bold;
     }
 `
 
