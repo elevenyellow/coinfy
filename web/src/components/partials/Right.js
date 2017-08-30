@@ -6,7 +6,7 @@ import { Router, Route } from '/doprouter/react'
 import { isAddress } from '/api/btc'
 
 import { state, isWalletRegistered } from '/store/state'
-import { BTC } from '/const/crypto'
+import { BTC } from '/const/cryptos'
 import styles from '/const/styles'
 import routes from '/const/routes'
 

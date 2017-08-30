@@ -1,7 +1,8 @@
 import React from 'react'
 import { collect } from 'dop'
 import routes from '/const/routes'
-import { state } from '/store/state'
+import styles from '/const/styles'
+import { state, getTotalWallets } from '/store/state'
 import { encryptAES128CTR } from '/api/security'
 
 export function setHref(href) {
@@ -53,7 +54,7 @@ export function exportWallets() {
 }
 
 
-export function importWallets() {
+export function importWalletsFromFile() {
     const input = document.createElement('input')
     input.type = 'file'
     input.addEventListener('change', e=>{
@@ -62,26 +63,37 @@ export function importWallets() {
             const reader = new FileReader()
             reader.onload = e => {
                 const dataString = e.target.result
-                try {
-                    const wallets = JSON.parse(dataString)
-                    console.log( wallets );
-                } catch(e) { 
-                    console.log(e, dataString)
-                    alert('Invalid format')
-                }
+                importWallets(dataString)
             }
             reader.readAsText(file)
         }
-        else {
-            // console.log( file.type );
-            addNotification(<span><strong>Invalid format</strong><br/>caca</span>, undefined, 10000)
-            addNotification(<strong>Invalid der format</strong>, 'red', 7500)
-            addNotification(<strong>Invalid format</strong>, 'green', 5000)
-        }
+        else
+            addNotification(<strong>Invalid JSON file</strong>, styles.notificationColor.red)
     })
     input.click()
 }
 
+
+export function importWallets(dataString) {
+    try {
+        const wallets = JSON.parse(dataString)
+        const totalWallets = getTotalWallets(wallets)
+        if (totalWallets > 0) {
+            const collector = collect()
+            state.wallets = wallets
+            setHref(routes.home())
+            addNotification(<strong>You have imported {totalWallets} Wallets</strong>, styles.notificationColor.green)
+            updateSession()
+            collector.emit()
+        }
+        else
+            addNotification(<strong>We couldn't find any Wallet to Import on this JSON file</strong>, styles.notificationColor.red)
+        
+    } catch(e) { 
+        console.log( e );
+        addNotification(<strong>We couldn't parse the JSON file</strong>, styles.notificationColor.red)
+    }
+}
 
 export function closeSession() {
     window.localStorage.removeItem('wallets')
@@ -89,7 +101,7 @@ export function closeSession() {
 }
 
 let idNotification = 1
-export function addNotification(text, color, timeout=5000) {
+export function addNotification(text, color, timeout=7500) {
     state.notifications[idNotification] = {
         id: idNotification,
         text: text,
@@ -97,6 +109,7 @@ export function addNotification(text, color, timeout=5000) {
         timeout: timeout
     }
     idNotification += 1
+    return idNotification
 }
 
 export function removeNotification(id) {

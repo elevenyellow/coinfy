@@ -5,7 +5,7 @@ import { createObserver, collect } from 'dop'
 import { state } from '/store/state'
 
 import routes from '/const/routes'
-import { BTC } from '/const/crypto'
+import { BTC } from '/const/cryptos'
 
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/btc'
 

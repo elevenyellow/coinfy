@@ -10,6 +10,7 @@ export default class Wallet extends Component {
     componentWillMount() {
         const wallet = this.props.wallet
         this.observer = createObserver(mutations => this.forceUpdate())
+        this.observer.observe(state, 'wallets')
         this.observer.observe(state.location, 'pathname')
         this.observer.observe(wallet.wallet, 'label')
         this.observer.observe(wallet.wallet, 'balance')

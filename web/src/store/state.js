@@ -1,9 +1,8 @@
-import { register } from 'dop'
+import { register, computed } from 'dop'
 import { create } from '/doprouter/core'
-import { BTC } from '/const/crypto'
+import { cryptos, BTC } from '/const/cryptos'
 import { decryptAES128CTR } from '/api/security'
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/btc'
-
 
 
 // initial state
@@ -13,7 +12,10 @@ const initialState = {
     view: {},
     wallets: {
         [BTC.symbol]: {}
-    }
+    },
+    // walletsTotal: computed(function(){
+    //     return getTotalWallets(this.wallets)
+    // }) 
 }
 
 
@@ -43,6 +45,14 @@ create(window.location.href, state)
 
 
 // GETTERS
+export function getTotalWallets(wallets) {
+    let total = 0
+    Object.keys(cryptos).forEach(crypto=>{
+        if (typeof wallets[crypto] == 'object')
+            total += Object.keys(wallets[crypto]).length
+    })
+    return total
+}
 
 
 export function getWallet(symbol, address) {

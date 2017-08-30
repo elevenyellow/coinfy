@@ -6,7 +6,7 @@ import { Show } from '/doprouter/react'
 import { generateQRCode } from '/api/qr'
 import { generateRandomWallet } from '/api/btc'
 
-import { BTC } from '/const/crypto'
+import { BTC } from '/const/cryptos'
 import routes from '/const/routes'
 import { state } from '/store/state'
 import styles from '/const/styles'

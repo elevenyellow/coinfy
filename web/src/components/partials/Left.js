@@ -3,7 +3,7 @@ import { createObserver } from 'dop'
 import styled from 'styled-components'
 import styles from '/const/styles'
 
-import { setHref, exportWallets, importWallets, closeSession } from '/store/actions'
+import { setHref, exportWallets, importWalletsFromFile, closeSession } from '/store/actions'
 import routes from '/const/routes'
 import { state } from '/store/state'
 
@@ -39,7 +39,7 @@ export default class Left extends Component {
         exportWallets()
     }        
     onImport(e) {
-        importWallets()
+        importWalletsFromFile()
     }  
     onClose(e) {
         closeSession()

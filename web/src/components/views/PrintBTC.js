@@ -9,7 +9,7 @@ import { supplant } from '/api/strings'
 import { state, unlockBTCWallet } from '/store/state'
 
 import routes from '/const/routes'
-import { BTC } from '/const/crypto'
+import { BTC } from '/const/cryptos'
 import styles from '/const/styles'
 
 import Div from '/components/styled/Div'

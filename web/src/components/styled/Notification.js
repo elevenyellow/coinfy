@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import styles from '/const/styles'
 import IconClose from 'react-icons/lib/md/close'
 
-function Notification({ children, color = styles.color.background2, onClose }) {
+export default function Notification({ children, color = styles.color.background2, onClose }) {
     return (
         <NotificationContainer color={color}>
             <NotificationMessage>

@@ -4,6 +4,10 @@ export default {
     leftColumn: '240px',
     columnSeparation: '20px',
     headerHeight: '75px',
+    notificationColor: {
+        red: '#DD0044',
+        green: '#1aba6a'
+    },
     color: {
         background1: '#f3f6f8',
         background2: '#546f9b',

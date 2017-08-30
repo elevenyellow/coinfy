@@ -3,6 +3,7 @@ import { createObserver } from 'dop'
 import { state } from '/store/state'
 import { removeNotification } from '/store/actions'
 import styles from '/const/styles'
+import Notification from '/components/styled/Notification'
 
 
 export default class Notifications extends Component {
@@ -45,18 +46,16 @@ export default class Notifications extends Component {
     }
 }
 
-const colors = {
-    red: styles.color.red3,
-    green: styles.color.green1
-}
+
 function NotificationsTemplate({ notifications, onClose }) {
     const items = []
     let notification
-    Object.keys(notifications).sort().forEach(id => {
+    const ids = Object.keys(notifications).map(Number).sort()
+    ids.forEach(id => {
         notification = notifications[id]
         items.push(
             <Notification
-                color={colors[notification.color]}
+                color={notification.color}
                 onClose={e => onClose(id)}
             >
                 {notification.text}

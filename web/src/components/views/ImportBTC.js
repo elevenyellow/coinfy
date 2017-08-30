@@ -13,7 +13,7 @@ import {
 } from '/api/btc'
 import { encryptAES128CTR } from '/api/security'
 
-import { BTC } from '/const/crypto'
+import { BTC } from '/const/cryptos'
 import routes from '/const/routes'
 import { state, isWalletRegistered } from '/store/state'
 
