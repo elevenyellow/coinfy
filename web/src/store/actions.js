@@ -30,31 +30,40 @@ export function setPrivateKey(symbol, address, private_key, password) {
 }
 export function deleteWallet(symbol, address) {
     const collector = collect()
+    const name = state.wallets[symbol][address].label || address
     delete state.wallets[symbol][address]
     setHref(routes.home())
-    collector.emit()
+    addNotification(<strong>The "{name}"" wallet has been deleted</strong>, styles.notificationColor.green)
     updateSession()
+    collector.emit()
 }
 
 
 export function updateSession() {
     const wallets = JSON.stringify(state.wallets)
+    state.walletsExported = false
     window.localStorage.setItem('wallets', wallets)
 }
 
 
 export function exportWallets() {
-    const wallets = JSON.stringify(state.wallets)
-    const a = document.createElement('a')
-    const file = new Blob([wallets], {type: 'application/json;charset=UTF-8'})
-    const date = new Date().toJSON().replace(/\..+$/,'')
-    a.href = URL.createObjectURL(file)
-    a.download = `WEDONTNEEDBANKS_backup--${date}.json`
-    a.click()
+    if (state.totalWallets > 0) {
+        const wallets = JSON.stringify(state.wallets)
+        const a = document.createElement('a')
+        const file = new Blob([wallets], {type: 'application/json;charset=UTF-8'})
+        const date = new Date().toJSON().replace(/\..+$/,'')
+        a.href = URL.createObjectURL(file)
+        a.download = `WEDONTNEEDBANKS_backup--${date}.json`
+        state.walletsExported = true
+        a.click()
+    }
 }
 
 
 export function importWalletsFromFile() {
+    if (!state.walletsExported)
+        return alert('You must export your wallets')
+    
     const input = document.createElement('input')
     input.type = 'file'
     input.addEventListener('change', e=>{
@@ -84,6 +93,7 @@ export function importWallets(dataString) {
             setHref(routes.home())
             addNotification(<strong>You have imported {totalWallets} Wallets</strong>, styles.notificationColor.green)
             updateSession()
+            state.walletsExported = true
             collector.emit()
         }
         else
@@ -96,8 +106,14 @@ export function importWallets(dataString) {
 }
 
 export function closeSession() {
-    window.localStorage.removeItem('wallets')
-    window.location.href = '/'
+    if (state.totalWallets > 0) {
+        console.log( 'walletsExported',state.walletsExported );
+        if (!state.walletsExported)
+            return alert('You must export your wallets')
+
+        window.localStorage.removeItem('wallets')
+        window.location.href = '/'
+    }
 }
 
 let idNotification = 1

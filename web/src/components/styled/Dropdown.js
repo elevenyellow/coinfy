@@ -21,7 +21,7 @@ top:${props=>props.top};
 export const DropDownItem = styled.div`
 padding: 10px 20px;
 font-size: 13px;
-color: ${styles.color.front2};
+color: ${props=>props.disabled ? styles.color.disabled : styles.color.front1};
 border-top: 1px solid ${styles.color.background4};
 width: 90px;
 text-align: left;
@@ -29,9 +29,10 @@ text-align: left;
     border-top: 0
 }
 &:hover {
-    background-color: ${styles.color.background1};
-    color: ${styles.color.background2}
+    background-color: ${props=>props.disabled ? 'white' : styles.color.background1};
+    color: ${props=>props.disabled ? styles.color.disabled : styles.color.background2}
 }
+
 `
 
 export const DropDownArrow = styled.span`

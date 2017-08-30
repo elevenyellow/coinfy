@@ -1,4 +1,4 @@
-import { register, computed } from 'dop'
+import { register, createObserver } from 'dop'
 import { create } from '/doprouter/core'
 import { cryptos, BTC } from '/const/cryptos'
 import { decryptAES128CTR } from '/api/security'
@@ -10,12 +10,10 @@ const initialState = {
     menuOpen: false,
     notifications: {},
     view: {},
+    walletsExported: true,
     wallets: {
         [BTC.symbol]: {}
-    },
-    // walletsTotal: computed(function(){
-    //     return getTotalWallets(this.wallets)
-    // }) 
+    }
 }
 
 
@@ -30,6 +28,16 @@ try {
 
 // exporting
 export const state = register(initialState)
+
+
+// totalWallets
+const updateTotalWallets = () => state.totalWallets = getTotalWallets(state.wallets)
+updateTotalWallets()
+const observer = createObserver(updateTotalWallets)
+observer.observe(state, 'wallets')
+Object.keys(cryptos).forEach(crypto=>{
+    observer.observe(state.wallets[crypto])
+})
 
 
 // implementing location router (special object)

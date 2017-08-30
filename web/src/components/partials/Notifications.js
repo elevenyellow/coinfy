@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import { state } from '/store/state'
+import styled from 'styled-components'
 import { removeNotification } from '/store/actions'
 import styles from '/const/styles'
 import Notification from '/components/styled/Notification'
@@ -13,10 +14,11 @@ export default class Notifications extends Component {
                 let notification = mutation.value
                 if (
                     notification !== undefined &&
-                    typeof notification.timeout == 'number'
+                    typeof notification.timeout == 'number' &&
+                    notification.timeout > 0
                 ) {
                     setTimeout(() => {
-                        removeNotification(notification.id)
+                        this.onClose(notification.id)
                     }, notification.timeout)
                 }
             })
@@ -63,10 +65,17 @@ function NotificationsTemplate({ notifications, onClose }) {
         )
     })
     return (
-        <div>
+        <NotificationContainer>
             {items}
-        </div>
+        </NotificationContainer>
     )
 }
 
+const NotificationContainer = styled.div`
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+z-index: 2;
+`
 

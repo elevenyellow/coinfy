@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
+import { Show } from '/doprouter/react'
+
+import routes from '/const/routes'
 import styles from '/const/styles'
 
+import { state, getTotalWallets } from '/store/state'
 import { setHref, exportWallets, importWalletsFromFile, closeSession } from '/store/actions'
-import routes from '/const/routes'
-import { state } from '/store/state'
+
 
 import IconMore from 'react-icons/lib/md/more-vert'
 import {
@@ -22,6 +25,7 @@ export default class Left extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'menuOpen')
+        this.observer.observe(state, 'totalWallets')
 
         this.onMenuOpen = this.onMenuOpen.bind(this)
         this.onExport = this.onExport.bind(this)
@@ -65,6 +69,7 @@ export default class Left extends Component {
             onExport: this.onExport,
             onImport: this.onImport,
             onClose: this.onClose,
+            totalWallets: state.totalWallets
         })
     }
 }
@@ -74,7 +79,8 @@ function LeftTemplate({
     onMenuOpen,
     onExport,
     onImport,
-    onClose
+    onClose,
+    totalWallets
 }) {
     return (
         <LeftDiv>
@@ -106,8 +112,8 @@ function LeftTemplate({
                         <IconMore size={35} color={styles.color.front2} />
                         <DropDownMenu visible={menuOpen} left="7px">
                             <DropDownItem onClick={onImport}>Import</DropDownItem>
-                            <DropDownItem onClick={onExport}>Export</DropDownItem>
-                            <DropDownItem onClick={onClose}>Close session</DropDownItem>
+                            <DropDownItem onClick={onExport} disabled={totalWallets===0}>Export</DropDownItem>
+                            <DropDownItem onClick={onClose} disabled={totalWallets===0}>Close session</DropDownItem>
                         </DropDownMenu>
                     </DropDown>
                 </ColumnLeftHeaderLeft>

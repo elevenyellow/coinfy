@@ -18,17 +18,15 @@ export default function Notification({ children, color = styles.color.background
     )
 }
 const NotificationContainer = styled.div`
-    background: ${props => props.color};
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 2;
-    color: white;
-    box-shadow: 0 2px 1px 1px rgba(0, 0, 0, .1) inset;
+position: relative;
+top: 0;
+background: ${props => props.color};
+width: 100%;
+box-shadow: 0 2px 1px 1px rgba(0, 0, 0, .1) inset;
 `
 
 const NotificationMessage = styled.div`
+    color: white;
     text-align: center;
     & > div {
         padding: 15px ${styles.paddingOut};
