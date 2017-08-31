@@ -19,11 +19,13 @@ import WalletBTC from '/components/views/WalletBTC'
 
 export default class Right extends Component {
     componentWillMount() {
-        const observer = createObserver(mutations => this.forceUpdate())
-        observer.observe(state.location.path, 'length')
-        observer.observe(state.location.path, '0')
+        this.observer = createObserver(mutations => this.forceUpdate())
+        this.observer.observe(state.location.path, 'length')
+        this.observer.observe(state.location.path, '0')
     }
-
+    componentWillUnmount() {
+        this.observer.destroy()
+    }
     shouldComponentUpdate() {
         return false
     }

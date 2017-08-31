@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import styles from '/const/styles'
+import Popups from '/components/partials/Popups'
 import Notifications from '/components/partials/Notifications'
 import Header from '/components/partials/Header'
 import Left from '/components/partials/Left'
@@ -18,6 +19,7 @@ export default function App() {
                 <Right />
             </Columns>
             <Footer />
+            <Popups />
         </Background>
     )
 }

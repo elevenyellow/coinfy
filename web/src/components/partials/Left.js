@@ -50,12 +50,10 @@ export default class Left extends Component {
     }  
 
     onMenuOpen(e) {
-        // console.log( 'onMenuOpen' );
         state.menuOpen = true
     }
 
     onMenuClose(e) {
-        // console.log( 'onMenuClose' );
         state.menuOpen = false
     }
 
