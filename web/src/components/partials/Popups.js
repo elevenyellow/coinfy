@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { state } from '/store/state'
-import { removeNotification } from '/store/actions'
 import styles from '/const/styles'
 import {
     PopupManager,
@@ -16,8 +15,9 @@ import Div from '/components/styled/Div'
 
 export default class Popups extends Component {
     componentWillMount() {
-        this.observer = createObserver(mutations => {})
-        // this.observer.observe(state.Popups)
+        this.observer = createObserver(mutations => this.forceUpdate())
+        this.observer.observe(state.popups.closeSession, 'open')
+        
 
         // binding
     }
@@ -29,11 +29,13 @@ export default class Popups extends Component {
     }
 
     render() {
-        return React.createElement(PopupsTemplate, {})
+        return React.createElement(PopupsTemplate, {
+            closeSession: state.popups.closeSession
+        })
     }
 }
 
-function PopupsTemplate({ children }) {
+function PopupsTemplate({ closeSession }) {
     return (
         <PopupManager zIndex={999}>
             {/* <Popup open={true}>
@@ -41,31 +43,23 @@ function PopupsTemplate({ children }) {
             </Popup> */}
             <Popup
                 width="400px"
-                open={true}
-                onKeyEnter={e => console.log('Ok')}
-                onClose={e => {
-                    console.log('Close')
-                }}
+                open={closeSession.open}
+                onKeyEnter={closeSession.confirm}
+                onClose={closeSession.cancel}
             >
                 {/* <PopupHeader onClose={e=>{console.log('Close')}}>Add account</PopupHeader> */}
                 <PopupContent>
-                    <Div text-align="center">
-                        <strong>
-                            You haven't export your wallets. If you continue you
-                            will lose any change you made in your wallets. Are
-                            you sure to continue?
-                        </strong>
-                    </Div>
+                    <strong>
+                        You haven't export your wallets. If you continue you
+                        will lose any change you made. Are you sure to
+                        continue?
+                    </strong>
                 </PopupContent>
                 <PopupFooter>
-                    <Button
-                        onClick={e => {
-                            console.log('Close')
-                        }}
-                    >
+                    <Button onClick={closeSession.cancel}>
                         Cancel
                     </Button>
-                    <Button highlighted={true} onClick={e => console.log('Ok')}>
+                    <Button onClick={closeSession.confirm} red={true}>
                         Continue
                     </Button>
                 </PopupFooter>

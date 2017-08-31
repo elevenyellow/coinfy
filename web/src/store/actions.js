@@ -34,17 +34,21 @@ export function deleteWallet(symbol, address) {
     delete state.wallets[symbol][address]
     setHref(routes.home())
     addNotification(`Wallet "${name}" has been deleted`, styles.notificationColor.green)
-    updateSession()
+    updateSession(true)
     collector.emit()
 }
 
 
 export function updateSession(walletsExported=false) {
     const wallets = JSON.stringify(state.wallets)
-    state.walletsExported = walletsExported
-    window.localStorage.setItem('wallets', wallets)
+    localStorage.setItem('wallets', wallets)
+    setWalletsExported(walletsExported)
 }
 
+export function setWalletsExported(value) {
+    state.walletsExported = value
+    localStorage.setItem('walletsExported', value)
+}
 
 export function exportWallets() {
     if (state.totalWallets > 0) {
@@ -54,16 +58,29 @@ export function exportWallets() {
         const date = new Date().toJSON().replace(/\..+$/,'')
         a.href = URL.createObjectURL(file)
         a.download = `WEDONTNEEDBANKS_backup--${date}.json`
-        state.walletsExported = true
+        setWalletsExported(true)
         a.click()
     }
 }
 
 
 export function importWalletsFromFile() {
-    if (state.totalWallets>0 && !state.walletsExported)
-        alert('You must export your wallets')
-    
+    if (state.totalWallets>0 && !state.walletsExported) {
+        state.popups.closeSession.confirm = () => {
+            state.popups.closeSession.open = false
+            // setWalletsExported(true) // Not sure if should ask again after a failed import
+            openImportWalletsFromFile()
+        }
+        state.popups.closeSession.cancel = () => {
+            state.popups.closeSession.open = false
+        }
+        state.popups.closeSession.open = true
+    }
+    else
+        openImportWalletsFromFile()
+}
+
+export function openImportWalletsFromFile() {
     const input = document.createElement('input')
     input.type = 'file'
     input.addEventListener('change', e=>{
@@ -106,14 +123,24 @@ export function importWallets(dataString) {
 
 export function closeSession() {
     if (state.totalWallets > 0) {
-
-        if (!state.walletsExported)
-            alert('You must export your wallets')
-
-        window.localStorage.removeItem('wallets')
-        window.location.href = '/'
+        if (!state.walletsExported) {
+            state.popups.closeSession.confirm = forceloseSession
+            state.popups.closeSession.cancel = () => {
+                state.popups.closeSession.open = false
+            }
+            state.popups.closeSession.open = true
+        }
+        else
+            forceloseSession()
     }
 }
+
+export function forceloseSession() {
+    setWalletsExported(true)
+    localStorage.removeItem('wallets')
+    location.href = '/'
+}
+
 
 let idNotification = 1
 export function addNotification(text, color, timeout=5000) {
@@ -127,6 +154,6 @@ export function addNotification(text, color, timeout=5000) {
     return idNotification
 }
 
-export function removeNotification(id) {
+export function deleteNotification(id) {
     delete state.notifications[id]
 }

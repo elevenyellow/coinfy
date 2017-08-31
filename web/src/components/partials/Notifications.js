@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import { state } from '/store/state'
 import styled from 'styled-components'
-import { removeNotification } from '/store/actions'
+import { deleteNotification } from '/store/actions'
 import styles from '/const/styles'
 import Notification from '/components/styled/Notification'
 
@@ -37,7 +37,7 @@ export default class Notifications extends Component {
     }
 
     onClose(id) {
-        removeNotification(id)
+        deleteNotification(id)
     }
 
     render() {

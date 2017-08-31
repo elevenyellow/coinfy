@@ -10,9 +10,14 @@ const initialState = {
     menuOpen: false,
     notifications: {},
     view: {},
-    walletsExported: true,
+    walletsExported: localStorage.getItem('walletsExported')!=="false",
     wallets: {
         [BTC.symbol]: {}
+    },
+    popups: {
+        closeSession: {
+            open: false
+        }
     }
 }
 

@@ -89,7 +89,7 @@ function WalletBTCTemplate({
     const tooltipPrivatekey = hasPrivateKey
         ? null
         : <Help position="center" width={175}>
-              You must set your private key
+              Set your private key first
           </Help>
     return (
         <div>
