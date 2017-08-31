@@ -8,7 +8,7 @@ export function Router(props) {
     for (let index=0,total=childrens.length; index<total; ++index) {
         children = childrens[index]
         if (Check(children.props, source))
-            return getChildrenOfChildren(children)[0] // We can remove [0] when preact supports array of childrens. react16 already does
+            return getChildrenOfChildren(children)
     }
 }
 
@@ -34,10 +34,10 @@ export function setSeparatorChar(char) {
 
 
 
-
 function getChildrenOfChildren(children) {
-                          // react || preact
-    return children.props.children || children.children
+                               // react || preact
+    let child = children.props.children || children.children
+    return Array.isArray(child) ? child[0] : child //[0] // We can remove [0] when preact supports array of childrens. react16 already does
 }
 
 function Check(props, source) {

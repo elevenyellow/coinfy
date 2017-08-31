@@ -9,11 +9,12 @@ export function encryptAES128CTR(string, password) {
     const kdf = 'scrypt'
     const kdfparams = {
         dklen: 32,
-        salt: salt.toString('hex')
+        salt: salt.toString('hex'),
+        n: 1024,
+        r: 8,
+        p: 1,
     }
-    kdfparams.n = 1024
-    kdfparams.r = 8
-    kdfparams.p = 1
+
     const derivedKey = scrypt(new Buffer(password), salt, kdfparams.n, kdfparams.r, kdfparams.p, kdfparams.dklen)
     const cipher = createCipheriv(ciphertype, derivedKey.slice(0, 16), iv)
     if (!cipher)

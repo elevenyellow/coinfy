@@ -39,9 +39,9 @@ export function deleteWallet(symbol, address) {
 }
 
 
-export function updateSession() {
+export function updateSession(walletsExported=false) {
     const wallets = JSON.stringify(state.wallets)
-    state.walletsExported = false
+    state.walletsExported = walletsExported
     window.localStorage.setItem('wallets', wallets)
 }
 
@@ -62,7 +62,7 @@ export function exportWallets() {
 
 export function importWalletsFromFile() {
     if (state.totalWallets>0 && !state.walletsExported)
-        return alert('You must export your wallets')
+        alert('You must export your wallets')
     
     const input = document.createElement('input')
     input.type = 'file'
@@ -92,8 +92,7 @@ export function importWallets(dataString) {
             state.wallets = wallets
             setHref(routes.home())
             addNotification(`You have imported ${totalWallets} Wallets`, styles.notificationColor.green)
-            updateSession()
-            state.walletsExported = true
+            updateSession(true)
             collector.emit()
         }
         else
@@ -107,9 +106,9 @@ export function importWallets(dataString) {
 
 export function closeSession() {
     if (state.totalWallets > 0) {
-        
+
         if (!state.walletsExported)
-            return alert('You must export your wallets')
+            alert('You must export your wallets')
 
         window.localStorage.removeItem('wallets')
         window.location.href = '/'
@@ -117,7 +116,7 @@ export function closeSession() {
 }
 
 let idNotification = 1
-export function addNotification(text, color, timeout=7500) {
+export function addNotification(text, color, timeout=5000) {
     state.notifications[idNotification] = {
         id: idNotification,
         text: text,

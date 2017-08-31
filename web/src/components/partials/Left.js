@@ -50,23 +50,20 @@ export default class Left extends Component {
     }  
 
     onMenuOpen(e) {
-        if (!state.menuOpen) {
-            event.stopPropagation()
-            const callback = function(e) {
-                // if (e.target.children.length===0) { // means is <DropDownItem> and now <DropDownMenu>
-                    state.menuOpen = false
-                    document.removeEventListener('click', callback)
-                // }
-            }
-            document.addEventListener('click', callback)
-            state.menuOpen = true
-        }
+        console.log( 'onMenuOpen' );
+        state.menuOpen = true
+    }
+
+    onMenuClose(e) {
+        console.log( 'onMenuClose' );
+        state.menuOpen = false
     }
 
     render() {
         return React.createElement(LeftTemplate, {
             menuOpen: state.menuOpen,
             onMenuOpen: this.onMenuOpen,
+            onMenuClose: this.onMenuClose,
             onExport: this.onExport,
             onImport: this.onImport,
             onClose: this.onClose,
@@ -78,6 +75,7 @@ export default class Left extends Component {
 function LeftTemplate({
     menuOpen,
     onMenuOpen,
+    onMenuClose,
     onExport,
     onImport,
     onClose,
@@ -109,9 +107,9 @@ function LeftTemplate({
             </ColumnLeftChart>
             <ColumnLeftHeader>
                 <ColumnLeftHeaderLeft>
-                    <DropDown onClick={onMenuOpen}>
+                    <DropDown onOpen={onMenuOpen} onClose={onMenuClose} open={menuOpen}>
                         <IconMore size={35} color={styles.color.front2} />
-                        <DropDownMenu visible={menuOpen} left="7px">
+                        <DropDownMenu left="7px">
                             <DropDownItem onClick={onImport}>Import</DropDownItem>
                             <DropDownItem onClick={onExport} disabled={totalWallets===0}>Export</DropDownItem>
                             <DropDownItem onClick={onClose} disabled={totalWallets===0}>Close session</DropDownItem>
