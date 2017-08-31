@@ -6,7 +6,7 @@ export class DropDown extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = {eventJustCreated:false}
+        this.state = { eventJustCreated: false }
 
         // binding
         this.onOpen = this.onOpen.bind(this)
@@ -22,7 +22,10 @@ export class DropDown extends React.Component {
     createEvent() {
         this.state.eventJustCreated = true
         this.callback = e => {
-            if (!this.state.eventJustCreated) {
+            if (
+                !this.state.eventJustCreated &&
+                e.target !== this.state.dropdownmenu.base
+            ) {
                 this.onClose(e)
             }
             this.state.eventJustCreated = false
@@ -46,25 +49,12 @@ export class DropDown extends React.Component {
         const props = this.props
         const childrens = props.children
         childrens.forEach((child, index) => {
-            let constructor = child.type || child.nodeName
-            let attrs = child.props || child.attributes
-            attrs.visible = props.open // won't work in react
+            // won't work in react
+            let constructor = child.nodeName// || child.type
+            let attrs = child.attributes// || child.props
+            attrs.ref = element => ( this.state.dropdownmenu = element )
+            attrs.visible = props.open 
         })
-
-        // if (!this.state.eventCreated && props.open) {
-        //     const callback = e => {
-        //         if (!this.state.eventCreated)
-        //             this.state.eventCreated = true
-        //         else if (!props.open)
-        //             document.removeEventListener('click', callback)
-        //         else
-        //             this.onClose(e)
-
-        //         // if (e.target.children.length===0) { // means is <DropDownItem> and now <DropDownMenu>
-        //         // }
-        //     }
-        //     document.addEventListener('click', callback)
-        // }
 
         return (
             <DropDownStyled onClick={this.onOpen}>
