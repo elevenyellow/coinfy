@@ -50,7 +50,7 @@ function PopupsTemplate({ closeSession }) {
                 {/* <PopupHeader onClose={e=>{console.log('Close')}}>Add account</PopupHeader> */}
                 <PopupContent>
                     <strong>
-                        You haven't export your wallets. If you continue you
+                        You haven't exported your wallets. If you continue you
                         will lose any change you made. Are you sure to
                         continue?
                     </strong>

@@ -8,7 +8,7 @@ width: calc(100% - ${styles.leftColumn} - ${styles.columnSeparation});
 background: white;
 float: right;
 border-radius: 5px;
-box-shadow: 0 0 3px 2px rgba(205,213,218,.4);
+box-shadow: 0 0 0px 4px rgba(205,213,218,.3);
 &>div {
   height: 100%;
   width: 100%;
@@ -33,18 +33,6 @@ width: 200px;
 height: 100%;
 border-right: 1px solid ${styles.color.background4};
 overflow-y: auto;
-
-&::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-&::-webkit-scrollbar-thumb {
-  background: ${styles.color.background4};
-  cursor: grab;
-}
-&::-webkit-scrollbar-track {
-  background: transparent;
-}
 `
 
 
@@ -102,17 +90,6 @@ line-height: 21px;
 export const RightContentContent = styled.div`
 overflow-y: auto;
 height: 100%;
-&::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-&::-webkit-scrollbar-thumb {
-  background: ${styles.color.background4};
-  cursor: grab;
-}
-&::-webkit-scrollbar-track {
-  background: transparent;
-}
 `
 
 export const RightContentInner = styled.div`

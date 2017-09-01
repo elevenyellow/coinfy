@@ -1,7 +1,9 @@
 
 export const BTC = {
     symbol: 'BTC',
-    name: 'Bitcoin'
+    name: 'Bitcoin',
+    color: '#fdb033',
+    ascii: 'Ƀ'
 }
 
 

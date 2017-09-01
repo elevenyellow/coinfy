@@ -158,8 +158,7 @@ function SetPrivateKeyBTCTemplate({
                     <Help>
                         Make sure that you remember this. This password can't be
                         restored because we don't store it. For security reasons
-                        you will be asked often for this password to operate
-                        with this wallet.
+                        you will be asked often for this password.
                     </Help>
                     <SubLabel>
                         This password encrypts your private key.

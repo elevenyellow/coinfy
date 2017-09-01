@@ -6,6 +6,7 @@ const privateKeyPrefix = 0x80; // mainnet 0x80    testnet 0xEF
 
 export function generateRandomWallet() {
     const wallet = Bitcoin.ECPair.makeRandom()
+    wallet.compressed = false
     return { address:wallet.getAddress(), private_key:wallet.toWIF()}
 }
 

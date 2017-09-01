@@ -139,7 +139,7 @@ const LeftDiv = styled.div`
     background: white;
     float: left;
     border-radius: 5px;
-    box-shadow: 0 0 3px 2px rgba(205, 213, 218, .4);
+    box-shadow: 0 0 0px 4px rgba(205,213,218,.3);
 `
 // border: 1px solid rgba(205,213,218,.7);
 
@@ -178,18 +178,20 @@ const ColumnLeftContent = styled.div`
     position: absolute;
     width: 100%;
     top: 215px;
-    &::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-    &::-webkit-scrollbar-thumb {
-        background: ${styles.color.background4};
-        cursor: grab;
-    }
-    &::-webkit-scrollbar-track {
-        background: transparent;
-    }
 `
+    // &::-webkit-scrollbar {
+    //     width: 8px;
+    //     height: 8px;
+    // }
+    // &::-webkit-scrollbar-thumb {
+    //     background: ${styles.color.background4};
+    //     cursor: grab;
+    // }
+    // &::-webkit-scrollbar-track {
+    //     background: transparent;
+    // }
+
+
 
 const ColumnLeftFooter = styled.div`
     position: absolute;
