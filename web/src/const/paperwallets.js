@@ -109,10 +109,10 @@ body {
             <div class="area">
                 <div class="area-right">
                     <div class="area-titlesmall">Public Key (130 characters [0-9A-F]):</div>
-                    <div class="area-long">04859b2aa16756e9c1297464117c2ed90e1749b83a9e5d6e8572bcac0a17020f1158107eb1a44cab507080291ac998b45530be81f113b35b9a164e04ac1f6a4ab0</div>
+                    <div class="area-long">{{public_key}}</div>
                     <br />
                     <div class="area-titlesmall">Public Key (compressed, 66 characters [0-9A-F]):</div>
-                    <div class="area-long">02859b2aa16756e9c1297464117c2ed90e1749b83a9e5d6e8572bcac0a17020f11</div>
+                    <div class="area-long">{{public_key_comp}}</div>
                 </div>
             </div>
 

@@ -11,7 +11,8 @@ import { state, isWalletRegistered, isWalletWithPrivateKey } from '/store/state'
 import styles from '/const/styles'
 
 import IconDashboard from 'react-icons/lib/md/dashboard'
-import IconReceive from 'react-icons/lib/md/send'
+import IconReceive from 'react-icons/lib/md/call-received'
+import IconSend from 'react-icons/lib/md/send'
 import IconPrint from 'react-icons/lib/fa/print'
 import IconKey from 'react-icons/lib/go/key'
 import IconDelete from 'react-icons/lib/md/delete'
@@ -121,7 +122,7 @@ function WalletBTCTemplate({
                         }
                         onClick={e => onClick(routes_receiveWallet)}
                     >
-                        <RightContentMenuItemIcon transform="rotate(130deg) translateX(3px) translateY(-1px)">
+                        <RightContentMenuItemIcon>
                             <IconReceive
                                 size={23}
                                 color={styles.color.front2}
@@ -143,7 +144,7 @@ function WalletBTCTemplate({
                         }}
                     >
                         <RightContentMenuItemIcon transform="rotate(-45deg) translateX(3px) translateY(-1px)">
-                            <IconReceive
+                            <IconSend
                                 size={23}
                                 color={
                                     hasPrivateKey

@@ -50,38 +50,45 @@ function WalletTemplate({ wallet, location, onClick }) {
                 state.location.path[1] === wallet.address
             }
         >
-            <WalletIcon>
-                <img src="/static/image/BTC.svg" width="22" height="22" />
-            </WalletIcon>
-            <WalletInfo>
-                <WalletLabel>
-                    {wallet.wallet.label.length > 0
-                        ? wallet.wallet.label
-                        : wallet.address}
-                </WalletLabel>
-                <WalletBalance>
-                    <strong>$2351.32</strong> ≈ 0.93123 BTC
-                </WalletBalance>
-            </WalletInfo>
+            <div>
+                <WalletIcon>
+                    <img src="/static/image/BTC.svg" width="22" height="22" />
+                </WalletIcon>
+                <WalletInfo>
+                    <WalletLabel>
+                        {wallet.wallet.label.length > 0
+                            ? wallet.wallet.label
+                            : wallet.address}
+                    </WalletLabel>
+                    <WalletBalance>
+                        <strong>$2351.32</strong> ≈ 0.93123 BTC
+                    </WalletBalance>
+                </WalletInfo>
+            </div>
         </WalletStyled>
     )
 }
 
 const WalletStyled = styled.div`
-    padding: 15px 15px;
-    border-bottom: 1px solid ${styles.color.background4};
     color: ${styles.color.front3};
-    border-left: 5px solid transparent;
+    border-bottom: 1px solid ${styles.color.background4};
     cursor: pointer;
-    &:hover {
+    & > div:hover {
         border-left-color: ${styles.color.background2};
     }
+    & > div {
+        padding: 15px 15px;
+        border-left: 5px solid transparent;
+    }
+
     ${props => {
         if (props.selected) {
             return `
         cursor: inherit;
-        border-left-color: ${styles.color.background2};
-        background: ${styles.color.background1}
+        background: ${styles.color.background1};
+        & > div {
+            border-left-color: ${styles.color.background2};
+        }
         `
         }
     }};

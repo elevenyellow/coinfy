@@ -68,6 +68,7 @@ export default class HeaderWallet extends Component {
 
     render() {
         return React.createElement(HeaderWalletTemplate, {
+            address: this.address,
             label: this.wallet ? this.wallet.label : '',
             symbol: this.symbol,
             onChangeLabel: this.onChangeLabel,
@@ -77,7 +78,7 @@ export default class HeaderWallet extends Component {
     }
 }
 
-function HeaderWalletTemplate({ label, onChangeLabel, onBlur, qr }) {
+function HeaderWalletTemplate({ address, label, onChangeLabel, onBlur, qr }) {
     return (
         <RightHeader>
             <RightHeaderInner>
@@ -98,7 +99,7 @@ function HeaderWalletTemplate({ label, onChangeLabel, onBlur, qr }) {
                         placeholder="Type a label..."
                     />
                     <H2>
-                        <strong>$2351.32</strong> ≈ 0.93123 BTC
+                        <strong>{address}</strong>
                     </H2>
                 </Div>
                 <Opacity normal="1" hover=".7">
