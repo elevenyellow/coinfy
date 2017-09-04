@@ -92,7 +92,7 @@ height: 100%;
 `
 
 export const RightContentInner = styled.div`
-padding: 20px;
+padding: 30px;
 `
 
 export const RightContentMiddle = styled.div`

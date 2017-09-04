@@ -29,5 +29,6 @@ export default {
         red2: '#c83838',
         red3: '#DD0044',
         green1: '#1aba6a',
+        black: '#000',
     }
 }
