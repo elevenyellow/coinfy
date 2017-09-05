@@ -87,7 +87,7 @@ function SummaryBTCTemplate({ detailVisible, openClose }) {
                             </TransactionDetailItem>
                             <TransactionDetailItem>
                                 <TransactionDetailItemLabel>Transaction ID</TransactionDetailItemLabel>
-                                <TransactionDetailItemValue><a href="https://live.blockcypher.com/btc/tx/71d5d58ad403e928c1b7ec1a47d3355dae0d54770d7bdb18c43b8634cb84fb5d/" target="_blank">71d5d58ad403e928c1b7ec1</a></TransactionDetailItemValue>
+                                <TransactionDetailItemValue><a href="https://live.blockcypher.com/btc/tx/71d5d58ad403e928c1b7ec1a47d3355dae0d54770d7bdb18c43b8634cb84fb5d/" target="_blank">71d5d58ad403e928c1b7ec1a47d3355dae0d54770d7bdb18c43b8634cb84fb5d</a></TransactionDetailItemValue>
                             </TransactionDetailItem>
                             {/* <TransactionDetailItem>
                                 <TransactionDetailItemLabel>Transaction</TransactionDetailItemLabel>
@@ -98,17 +98,18 @@ function SummaryBTCTemplate({ detailVisible, openClose }) {
                 </Transaction>
 
                 <Transaction>
-                    <TransactionDate><div>AUG</div>24</TransactionDate>
-                    <TransactionIco>
-                        <IconSend
-                            size={23}
-                            color={BTC.color}
-                        />
-                    </TransactionIco>
-                    <TransactionLabel>Sent</TransactionLabel>
-                    <TransactionAmount>- 0.0134132</TransactionAmount>
+                    <TransactionInner>
+                        <TransactionDate><div>AUG</div>24</TransactionDate>
+                        <TransactionIco>
+                            <IconSend
+                                size={23}
+                                color={BTC.color}
+                            />
+                        </TransactionIco>
+                        <TransactionLabel>Sent</TransactionLabel>
+                        <TransactionAmount>- 0.0134132</TransactionAmount>
+                    </TransactionInner>
                 </Transaction>
-
 
                 
                 <Transaction>
@@ -123,16 +124,19 @@ function SummaryBTCTemplate({ detailVisible, openClose }) {
                     <TransactionAmount>+ 0.0134132</TransactionAmount>
                 </Transaction>
 
+
                 <Transaction>
-                    <TransactionDate><div>AUG</div>24</TransactionDate>
-                    <TransactionIco>
-                        <IconSend
-                            size={23}
-                            color={BTC.color}
-                        />
-                    </TransactionIco>
-                    <TransactionLabel>Sent</TransactionLabel>
-                    <TransactionAmount>- 0.0134132</TransactionAmount>
+                    <TransactionInner>
+                        <TransactionDate><div>AUG</div>24</TransactionDate>
+                        <TransactionIco>
+                            <IconSend
+                                size={23}
+                                color={BTC.color}
+                            />
+                        </TransactionIco>
+                        <TransactionLabel>Sent</TransactionLabel>
+                        <TransactionAmount>- 0.0134132</TransactionAmount>
+                    </TransactionInner>
                 </Transaction>
             
             </Transactions>

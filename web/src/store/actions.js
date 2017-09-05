@@ -50,14 +50,22 @@ export function setWalletsExported(value) {
     localStorage.setItem('walletsExported', value)
 }
 
+// const strToAB = str =>
+//     new Uint8Array(str.split('')
+//         .map(c => c.charCodeAt(0))).buffer;
+
+// ABToStr = ab => 
+//     new Uint8Array(ab).reduce((p, c) =>
+//         p + String.fromCharCode(c), '');
+
 export function exportWallets() {
     if (state.totalWallets > 0) {
-        const wallets = JSON.stringify(state.wallets)
+        const data = btoa(JSON.stringify(state.wallets))
         const a = document.createElement('a')
-        const file = new Blob([wallets], {type: 'application/json;charset=UTF-8'})
-        const date = new Date().toJSON().replace(/\..+$/,'')
+        const file = new Blob([data], {type: 'charset=UTF-8'})//, 
+        // const date = new Date().toJSON().replace(/\..+$/,'')
         a.href = URL.createObjectURL(file)
-        a.download = `WEDONTNEEDBANKS_backup--${date}.json`
+        a.download = 'YOU_MUST_RENAME_THIS_FOR_SECURITY'
         setWalletsExported(true)
         a.click()
     }
@@ -85,16 +93,16 @@ export function openImportWalletsFromFile() {
     input.type = 'file'
     input.addEventListener('change', e=>{
         const file = input.files[0]
-        if ( file.type.indexOf('json') > -1 || file.type.indexOf('text') > -1 || file.type==='' ) {
+        // if ( file.type.indexOf('json') > -1 || file.type.indexOf('text') > -1 || file.type==='' ) {
             const reader = new FileReader()
             reader.onload = e => {
                 const dataString = e.target.result
                 importWallets(dataString)
             }
             reader.readAsText(file)
-        }
-        else
-            addNotification('Invalid JSON file', styles.notificationColor.red)
+        // }
+        // else
+            // addNotification('Invalid JSON file', styles.notificationColor.red)
     })
     input.click()
 }
@@ -102,7 +110,7 @@ export function openImportWalletsFromFile() {
 
 export function importWallets(dataString) {
     try {
-        const wallets = JSON.parse(dataString)
+        const wallets = JSON.parse(atob(dataString))
         const totalWallets = getTotalWallets(wallets)
         if (totalWallets > 0) {
             const collector = collect()
