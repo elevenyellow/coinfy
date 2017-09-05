@@ -47,42 +47,37 @@ function ReceiveBTCTemplate({ address, qrcodebase64 }) {
             <Div>
                 <CenterElement>
                     <Icons>
-                        <Opacity>
                             <Icon>
                                 <IconCopy
                                     size={30}
-                                    color={styles.color.front3}
+                                    color={'white'}
                                 />
                                 <div>Copy to Clipboard</div>
                             </Icon>
-                        </Opacity>
-                        <Opacity>
+
                             <Icon>
                                 <IconPrint
                                     size={30}
-                                    color={styles.color.front3}
+                                    color={'white'}
                                 />
                                 <div>Print this Address</div>
                             </Icon>
-                        </Opacity>
-                        <Opacity>
+
                             <Icon>
                                 <IconEmail
                                     size={30}
-                                    color={styles.color.front3}
+                                    color={'white'}
                                 />
                                 <div>Email this Address</div>
                             </Icon>
-                        </Opacity>
-                        <Opacity>
+
                             <Icon>
                                 <IconLink
                                     size={30}
-                                    color={styles.color.front3}
+                                    color={'white'}
                                 />
                                 <div>View on Blockchain</div>
                             </Icon>
-                        </Opacity>
                     </Icons>
                 </CenterElement>
             </Div>
@@ -110,16 +105,23 @@ const Icon = styled.div`
     cursor: pointer;
     width: 60px;
     height: 60px;
-    border: 4px solid ${styles.color.front3};
+    border: 4px solid ${BTC.color};
+    box-shadow: 0 0 0px 1px #fff inset;
+    background: ${BTC.color};
     border-radius: 50%;
     text-align: center;
     line-height: 55px;
+    transition: 0.15s ease all;
     & > div  {
         display: none;
         font-size: 12px;
         line-height: 15px;
         padding-top: 15px;
         color: ${styles.color.front2};
+    }
+    &:hover {
+        transition: 0.15s ease all;
+        box-shadow: 0 0 0px 3px #fff inset;
     }
     &:hover > div  {
         display:block
