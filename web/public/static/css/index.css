@@ -6,3 +6,6 @@ html, body, #app {
     padding: 0;
     cursor: default;
 }
+a {
+    color: inherit;
+}

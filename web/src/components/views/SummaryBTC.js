@@ -12,31 +12,29 @@ import Button from '/components/styled/Button'
 
 export default class SummaryBTC extends Component {
 
+    constructor(props) {
+        super(props)
+        this.state = {detailVisible:false}
+    }
+
+    openClose() {
+        this.setState({detailVisible:!this.state.detailVisible})
+    }
+
     render() {
         return React.createElement(SummaryBTCTemplate, {
+            detailVisible: this.state.detailVisible,
+            openClose: this.openClose.bind(this)
         })
     }
 }
 
-function SummaryBTCTemplate({  }) {
+function SummaryBTCTemplate({ detailVisible, openClose }) {
     return (
         <div>
             <Header>
-                <HeaderLeft>
-                    <HeaderLeftItem>
-                        <HeaderLeftItemLabel>Transactions</HeaderLeftItemLabel>
-                        <HeaderLeftItemValue>4</HeaderLeftItemValue>
-                    </HeaderLeftItem>
-                    <HeaderLeftItem>
-                        <HeaderLeftItemLabel>Total Received</HeaderLeftItemLabel>
-                        <HeaderLeftItemValue>1.12341511</HeaderLeftItemValue>
-                    </HeaderLeftItem>
-                    <HeaderLeftItem>
-                        <HeaderLeftItemLabel>Total Sent</HeaderLeftItemLabel>
-                        <HeaderLeftItemValue>0.13312124</HeaderLeftItemValue>
-                    </HeaderLeftItem>
-                </HeaderLeft>
-                <HeaderRight>
+
+                <HeaderValues>
                     <HeaderBalance>
                         <span>0.91342134</span>
                         <HeaderBalanceSymbol> BTC</HeaderBalanceSymbol>
@@ -45,20 +43,58 @@ function SummaryBTCTemplate({  }) {
                         <span>$3413.3</span>
                         <HeaderBalanceSymbol> USD</HeaderBalanceSymbol>
                     </HeaderBalanceCurrency>
-                </HeaderRight>
+                </HeaderValues>
+
+                <List>
+                    <ListItem>
+                        <ListItemLabel>Transactions</ListItemLabel>
+                        <ListItemValue>4</ListItemValue>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemLabel>Total Received</ListItemLabel>
+                        <ListItemValue>1.12341511</ListItemValue>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemLabel>Total Sent</ListItemLabel>
+                        <ListItemValue>0.13312124</ListItemValue>
+                    </ListItem>
+                </List>
+                
             </Header>
             <Transactions>
 
                 <Transaction>
-                    <TransactionDate><div>AUG</div>26</TransactionDate>
-                    <TransactionIco>
-                        <IconReceive
-                            size={23}
-                            color={BTC.color}
-                        />
-                    </TransactionIco>
-                    <TransactionLabel>Received</TransactionLabel>
-                    <TransactionAmount>+ 0.0134132</TransactionAmount>
+                    <TransactionInner onClick={openClose}>
+                        <TransactionDate><div>AUG</div>26</TransactionDate>
+                        <TransactionIco>
+                            <IconReceive
+                                size={23}
+                                color={BTC.color}
+                            />
+                        </TransactionIco>
+                        <TransactionLabel>Received</TransactionLabel>
+                        <TransactionAmount>+ 0.0134132</TransactionAmount>
+                    </TransactionInner>
+                    <TransactionDetail visible={detailVisible}>
+                        <div>
+                            <TransactionDetailItem>
+                                <TransactionDetailItemLabel>Date</TransactionDetailItemLabel>
+                                <TransactionDetailItemValue>7/13/2017 3:44 PM</TransactionDetailItemValue>
+                            </TransactionDetailItem>
+                            <TransactionDetailItem>
+                                <TransactionDetailItemLabel>Now</TransactionDetailItemLabel>
+                                <TransactionDetailItemValue>$23.13</TransactionDetailItemValue>
+                            </TransactionDetailItem>
+                            <TransactionDetailItem>
+                                <TransactionDetailItemLabel>Transaction ID</TransactionDetailItemLabel>
+                                <TransactionDetailItemValue><a href="https://live.blockcypher.com/btc/tx/71d5d58ad403e928c1b7ec1a47d3355dae0d54770d7bdb18c43b8634cb84fb5d/" target="_blank">71d5d58ad403e928c1b7ec1</a></TransactionDetailItemValue>
+                            </TransactionDetailItem>
+                            {/* <TransactionDetailItem>
+                                <TransactionDetailItemLabel>Transaction</TransactionDetailItemLabel>
+                                <TransactionDetailItemValue>http://www.es.com</TransactionDetailItemValue>
+                            </TransactionDetailItem> */}
+                        </div>
+                    </TransactionDetail>
                 </Transaction>
 
                 <Transaction>
@@ -109,31 +145,31 @@ function SummaryBTCTemplate({  }) {
 const Header = styled.div`
 `
 
-const HeaderLeft = styled.div`
+const List = styled.div`
 width: 165px;
 float: right;
 color: ${styles.color.front2};
 padding-top: 10px;
 `
 
-const HeaderLeftItem = styled.div`
+const ListItem = styled.div`
 font-size: 12px;
 line-height: 22px;
 clear: both;
 `
 
-const HeaderLeftItemLabel = styled.div`
+const ListItemLabel = styled.div`
 float: left;
 `
 
-const HeaderLeftItemValue = styled.div`
+const ListItemValue = styled.div`
 font-weight: bold;
 float: right;
 `
 
 
 
-const HeaderRight = styled.div`
+const HeaderValues = styled.div`
 float:left;
 `
 const HeaderBalance = styled.div`
@@ -171,8 +207,12 @@ padding-top: 70px;
 
 const Transaction = styled.div`
 clear: both;
-height: 50px;
 color: ${styles.color.front3};
+`
+
+const TransactionInner = styled.div`
+height: 50px;
+cursor: pointer;
 `
 
 const TransactionDate = styled.div`
@@ -190,7 +230,7 @@ padding: 5px 0;
 
 const TransactionIco = styled.div`
 float: left;
-padding: 13px 15px;
+padding: 13px 17px 13px 10px;
 `
 
 const TransactionLabel = styled.div`
@@ -204,4 +244,32 @@ const TransactionAmount = styled.div`
 float: right;
 line-height: 50px;
 font-weight:bold;
+`
+
+const TransactionDetail = styled.div`
+clear: both;
+font-size: 11px;
+overflow: hidden;
+height: ${props=>props.visible ? '45px' : 0};
+-webkit-transition: 0.25s ease all;
+transition: 0.25s ease all;
+& > div {
+    padding: 0 0 15px 102px;
+}
+`
+
+const TransactionDetailItem = styled.div`
+padding-top: 15px;
+display: inline-block;
+width: 33%;
+&:nth-child(-n+3) {
+    padding-top:0
+} 
+`
+
+const TransactionDetailItemLabel = styled.div`
+color: ${styles.color.front2}
+`
+
+const TransactionDetailItemValue = styled.div`
 `

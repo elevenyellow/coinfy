@@ -117,21 +117,20 @@ const PopupStyled = styled.div`
         box-sizing: content-box;
         display: table-cell;
         vertical-align: middle;
-        background-color: rgba(228, 228, 228, .9);
+        background-color: rgba(0, 0, 0, .25);
     }
 
     & .eyc-popup {
         box-sizing: content-box;
         border-radius: 6px;
         background-color: white;
-        -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
         width: ${props => props.width};
         margin-left: auto;
         margin-right: auto;
         margin-top: -4%;
     }
 `
+// box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
 
 export class PopupHeader extends React.Component {
     constructor(props) {
@@ -263,7 +262,7 @@ export class PopupFooter extends React.Component {
 const PopupFooterStyled = styled.div`
     box-sizing: content-box;
     padding: 15px 20px;
-    background: ${styles.color.background6};
+    background: ${styles.color.background1};
     border-radius: 0px 0px 5px 5px;
 
     & .eyc-buttons > * {

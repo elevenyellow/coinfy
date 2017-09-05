@@ -23,13 +23,13 @@ export default class HeaderWallet extends Component {
         this.symbol = state.location.path[0]
         this.address = state.location.path[1]
         this.wallet = state.wallets[this.symbol][this.address]
-        this.qr = generateQRCode(this.address, 140, styles.color.front3)
+        // this.qr = generateQRCode(this.address, 140, styles.color.front3)
         this.observer = createObserver(m => {
             if (m[0].prop === 'pathname') {
                 this.symbol = state.location.path[0]
                 this.address = state.location.path[1]
                 this.wallet = state.wallets[this.symbol][this.address]
-                this.qr = generateQRCode(this.address, 140, styles.color.front3)
+                // this.qr = generateQRCode(this.address, 140, styles.color.front3)
                 if (unobserveLabel) {
                     unobserveLabel()
                     unobserveBalance()
@@ -73,7 +73,7 @@ export default class HeaderWallet extends Component {
             symbol: this.symbol,
             onChangeLabel: this.onChangeLabel,
             onBlur: this.onBlur,
-            qr: this.qr
+            // qr: this.qr
         })
     }
 }
@@ -102,11 +102,11 @@ function HeaderWalletTemplate({ address, label, onChangeLabel, onBlur, qr }) {
                         <strong>{address}</strong>
                     </H2>
                 </Div>
-                <Opacity normal="1" hover=".7">
+                {/* <Opacity normal="1" hover=".7">
                     <Div float="right" cursor="pointer">
                         <img width="70" height="70" src={qr} />
                     </Div>
-                </Opacity>
+                </Opacity> */}
                 <Div clear="both" />
             </RightHeaderInner>
         </RightHeader>
