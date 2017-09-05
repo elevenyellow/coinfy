@@ -111,7 +111,7 @@ const Icon = styled.div`
     border-radius: 50%;
     text-align: center;
     line-height: 55px;
-    transition: 0.15s ease all;
+    transition: 0.5s ease all;
     & > div  {
         display: none;
         font-size: 12px;
@@ -120,8 +120,15 @@ const Icon = styled.div`
         color: ${styles.color.front2};
     }
     &:hover {
-        transition: 0.15s ease all;
-        box-shadow: 0 0 0px 3px #fff inset;
+        transition: 0.5s ease all;
+        background-color: ${styles.color.front2};
+        border-color: ${styles.color.front2};
+        box-shadow: 0 0 0px 100px rgba(255,255,255,0) inset;
+    }
+    &:active {
+        transition: 0s;
+        box-shadow: 0 0 0px 1px #fff inset;
+        
     }
     &:hover > div  {
         display:block
