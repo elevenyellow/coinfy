@@ -9,3 +9,6 @@ html, body, #app {
 a {
     color: inherit;
 }
+strong,b {
+    font-weight: bold;
+}

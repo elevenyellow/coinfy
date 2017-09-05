@@ -31,6 +31,7 @@ import {
 
 import HeaderWallet from '/components/partials/HeaderWallet'
 import SummaryBTC from '/components/views/SummaryBTC'
+import ReceiveBTC from '/components/views/ReceiveBTC'
 import DeleteWallet from '/components/views/DeleteWallet'
 import SetPrivateKeyBTC from '/components/views/SetPrivateKeyBTC'
 import PrintBTC from '/components/views/PrintBTC'
@@ -242,6 +243,12 @@ function WalletBTCTemplate({
                             <RightContentInner>
                                 <SummaryBTC />
                             </RightContentInner>
+                        </Route>
+
+                        <Route pathname={routes_receiveWallet}>
+                            <RightContentMiddle>
+                                <ReceiveBTC />
+                            </RightContentMiddle>
                         </Route>
 
                         <Route pathname={routes_printWallet}>
