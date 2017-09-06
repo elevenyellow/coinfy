@@ -15,6 +15,7 @@ export default {
         background4: '#e5e9eb',
         background5: '#d4dde1',
         background6: '#f6f6f6',
+        background7: '#e8ecef',
         front1: '#8b9bae',
         front2: '#adb3bb',
         front3: '#5a6168',

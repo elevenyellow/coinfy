@@ -121,3 +121,78 @@ body {
     </body>
 </html>
 `
+
+
+
+
+
+export const Address = `
+<html>
+<head>
+<style>
+body {
+font-family: sans-serif;
+font-size: 1rem;
+color: black;
+}
+#content {
+}
+.area {
+width: 95%;
+clear: both;
+height: 150px;
+margin: 0 auto 2.3em auto;
+}
+.area-qr {
+float: left;
+padding-top: 0.7em;
+padding-right: 1em;
+}
+
+.area-title {
+font-weight: bold;
+font-size: 2em;
+padding-top: 0.5em;
+padding-bottom: 0.3em;
+}
+.area-hash {
+color:black;
+font-family: monospace;
+font-weight: bold;
+word-break: break-all;
+font-size: 1.3em;
+}
+.area-description {
+padding-top: 0.8em;
+font-size: 1em;
+font-weight: bold;
+opacity: 0.3;
+}
+
+
+
+#claim {
+text-align: center;
+color: #CCC
+}
+</style>
+</head>
+<body>
+    <div id="content">
+
+        <div class="area">
+            <div class="area-qr">
+                <img width="125" height="125" src="{{address_qr}}" width="150">
+            </div>
+            <div class="area-right">
+                <div class="area-title">Address</div>
+                <div class="area-hash">{{address}}</div>
+                <div class="area-description">Share this address to receive funds.</div>
+            </div>
+        </div>
+
+        <div id="claim">WWW.WEDONTNEEDBANKS.ORG</div>
+    </div>
+</body>
+</html>
+`

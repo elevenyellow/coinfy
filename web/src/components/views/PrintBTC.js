@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { generateQRCode } from '/api/qr'
 import { getAllFormats } from '/api/btc'
-import { supplant } from '/api/strings'
+import { printTemplate } from '/api/print'
 
 import { state, unlockBTCWallet } from '/store/state'
 
@@ -56,10 +56,7 @@ export default class PrintBTC extends Component {
             data.address_comp_qr = generateQRCode(data.address_comp)
             data.private_key_qr = generateQRCode(data.private_key, undefined, styles.color.red3)
             data.private_key_comp_qr = generateQRCode(data.private_key_comp, undefined, styles.color.red3)
-            const html = supplant(template, data)
-            const win = window.open("about:blank", "_blank")
-            win.document.write(html)
-            setTimeout(()=>{ win.print() }, 2000)
+            printTemplate(template, data)
         }
         else
             state.view.invalidPassword = true
