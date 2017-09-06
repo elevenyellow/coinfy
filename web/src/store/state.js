@@ -3,6 +3,7 @@ import { create } from '/doprouter/core'
 import { cryptos, BTC } from '/const/cryptos'
 import { decryptAES128CTR } from '/api/security'
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/btc'
+import { updatePrices } from '/api/prices'
 
 
 // initial state
@@ -47,6 +48,18 @@ Object.keys(cryptos).forEach(crypto=>{
 
 // implementing location router (special object)
 create(window.location.href, state)
+
+
+
+
+
+setInterval(function(){
+    updatePrices(["BTC","BCH"], "USD", function(prices){
+        console.log( prices );
+    })
+}, 30000)
+
+
 
 
 
