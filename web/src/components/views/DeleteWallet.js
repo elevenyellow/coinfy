@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 
-import { state } from '/store/state'
+import state from '/store/state'
 import { deleteWallet } from '/store/actions'
 
 import Div from '/components/styled/Div'

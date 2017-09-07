@@ -2,7 +2,8 @@ import React from 'react'
 import { collect } from 'dop'
 import routes from '/const/routes'
 import styles from '/const/styles'
-import { state, getTotalWallets } from '/store/state'
+import state from '/store/state'
+import { getTotalWallets } from '/store/getters'
 import { encryptAES128CTR } from '/api/security'
 
 export function setHref(href) {

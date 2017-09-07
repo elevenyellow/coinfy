@@ -9,7 +9,7 @@ import { BTC } from '/const/cryptos'
 import { Address as template } from '/const/paperwallets'
 import { infoAddressBTC } from '/const/urls'
 
-import { state } from '/store/state'
+import state from '/store/state'
 import { deleteWallet } from '/store/actions'
 
 import Div from '/components/styled/Div'

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import styles from '/const/styles'
 import { BTC } from '/const/cryptos'
-import { state } from '/store/state'
+import state from '/store/state'
 
 import IconReceive from 'react-icons/lib/md/call-received'
 import IconSend from 'react-icons/lib/md/send'

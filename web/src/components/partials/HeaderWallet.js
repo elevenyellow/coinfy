@@ -8,7 +8,7 @@ import { generateQRCode } from '/api/qr'
 
 import routes from '/const/routes'
 import styles from '/const/styles'
-import { state } from '/store/state'
+import state from '/store/state'
 
 import Div from '/components/styled/Div'
 import H1Input from '/components/styled/H1Input'

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
-import { state } from '/store/state'
+import state from '/store/state'
 import styles from '/const/styles'
 import {
     PopupManager,

@@ -6,7 +6,8 @@ import { Show } from '/doprouter/react'
 import routes from '/const/routes'
 import styles from '/const/styles'
 
-import { state, getTotalWallets } from '/store/state'
+import state from '/store/state'
+import { getTotalWallets } from '/store/getters'
 import { setHref, exportWallets, importWalletsFromFile, closeSession } from '/store/actions'
 
 

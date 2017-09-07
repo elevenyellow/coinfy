@@ -6,7 +6,8 @@ import { setHref } from '/store/actions'
 
 import { BTC } from '/const/cryptos'
 import routes from '/const/routes'
-import { state, isWalletRegistered, isWalletWithPrivateKey } from '/store/state'
+import state from '/store/state'
+import { isWalletRegistered, isWalletWithPrivateKey } from '/store/getters'
 
 import styles from '/const/styles'
 

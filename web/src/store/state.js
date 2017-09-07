@@ -2,8 +2,9 @@ import { register, createObserver } from 'dop'
 import { create } from '/doprouter/core'
 import { cryptos, BTC } from '/const/cryptos'
 import { decryptAES128CTR } from '/api/security'
-import { isPrivateKey, getAddressFromPrivateKey } from '/api/btc'
 import { updatePrices } from '/api/prices'
+import { isPrivateKey, getAddressFromPrivateKey } from '/api/btc'
+import { getTotalWallets } from '/store/getters'
 
 
 // initial state
@@ -32,8 +33,8 @@ try {
 } catch(e) {}
 
 
-// exporting
-export const state = register(initialState)
+// registering
+const state = register(initialState)
 
 
 // totalWallets
@@ -52,63 +53,14 @@ create(window.location.href, state)
 
 
 
+export default state
+
+
+
+
 
 setInterval(function(){
     updatePrices(["BTC","BCH"], "USD", function(prices){
         console.log( prices );
     })
-}, 30000)
-
-
-
-
-
-
-
-
-
-
-
-
-// GETTERS
-export function getTotalWallets(wallets) {
-    let total = 0
-    Object.keys(cryptos).forEach(crypto=>{
-        if (typeof wallets[crypto] == 'object')
-            total += Object.keys(wallets[crypto]).length
-    })
-    return total
-}
-
-
-export function getWallet(symbol, address) {
-    return state.wallets[symbol][address]
-}
-
-export function isWalletRegistered(symbol, address) {
-    return (
-        state.wallets.hasOwnProperty(symbol) &&
-        state.wallets[symbol].hasOwnProperty(address)
-    )
-}
-
-export function isWalletWithPrivateKey(symbol, address) {
-    return (
-        isWalletRegistered(symbol, address) &&
-        state.wallets[symbol][address].hasOwnProperty('private_key')
-    )
-}
-
-export function unlockBTCWallet(address, password) {
-    const private_key = decryptAES128CTR(
-        getWallet(BTC.symbol, address).private_key,
-        password
-    )
-
-    if ( isPrivateKey(private_key) ) {
-        if ( getAddressFromPrivateKey(private_key)===address )
-            return private_key
-    }
-
-    return false
-}
+}, 60000)

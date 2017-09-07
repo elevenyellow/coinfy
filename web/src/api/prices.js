@@ -7,36 +7,40 @@ export function updatePrices(cryptos, currency, cb) {
         prices[crypto].push(value)
         cb(prices)
     }
-    getPriceFromCoinmarketcap(cryptos, currency, update)
     getPriceFromCryptocompare(cryptos, currency, update)
+    getPriceFromCoinmarketcap(cryptos, currency, update)
 }
 
 // getPriceFromCryptocompare(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
-async function getPriceFromCryptocompare(cryptos, currency, update) {
+function getPriceFromCryptocompare(cryptos, currency, update) {
     const url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${cryptos.join(',')}&tsyms=${currency}`
-    const response = await fetch(url)
-    const json = await response.json()
-    const prices = {}
-    cryptos.forEach(crypto => {
-        update(crypto, json[crypto][currency])
+    fetch(url)
+    .then(response => response.json())
+    .then(json => {
+        const prices = {}
+        cryptos.forEach(crypto => {
+            update(crypto, json[crypto][currency])
+        })
     })
 }
 
 // getPriceFromCoinmarketcap(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
-async function getPriceFromCoinmarketcap(cryptos, currency, update) {
-    const url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=100`
-    const response = await fetch(url)
-    const json = await response.json()
-    const prices = {}
-    let count = 0
-    let price
-    for (let index = 0, total = json.length; index < total; ++index) {
-        price = json[index]
-        if (cryptos.indexOf(price.symbol) > -1)
-            update(price.symbol, Number(price[`price_${currency.toLowerCase()}`]))
-        if (++count > cryptos.length) 
-            break
-    }
+function getPriceFromCoinmarketcap(cryptos, currency, update) {
+    const url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=50`
+    fetch(url)
+    .then(response => response.json())
+    .then(json => {
+        const prices = {}
+        let count = 0
+        let price
+        for (let index = 0, total = json.length; index < total; ++index) {
+            price = json[index]
+            if (cryptos.indexOf(price.symbol) > -1)
+                update(price.symbol, Number(price[`price_${currency.toLowerCase()}`]))
+            if (++count > cryptos.length) 
+                break
+        }
+    })
 }
 
 // window.getCurrencyPrice = function() {

@@ -6,7 +6,8 @@ import { generateQRCode } from '/api/qr'
 import { getAllFormats } from '/api/btc'
 import { printTemplate } from '/api/print'
 
-import { state, unlockBTCWallet } from '/store/state'
+import state from '/store/state'
+import { unlockBTCWallet } from '/store/getters'
 
 import routes from '/const/routes'
 import { BTC } from '/const/cryptos'

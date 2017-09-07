@@ -3,7 +3,7 @@ import { createObserver } from 'dop'
 import styled from 'styled-components'
 import styles from '/const/styles'
 import routes from '/const/routes'
-import { state } from '/store/state'
+import state from '/store/state'
 import { setHref } from '/store/actions'
 
 export default class Wallet extends Component {

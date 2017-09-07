@@ -8,7 +8,7 @@ import { generateRandomWallet } from '/api/btc'
 
 import { BTC } from '/const/cryptos'
 import routes from '/const/routes'
-import { state } from '/store/state'
+import state from '/store/state'
 import styles from '/const/styles'
 
 import Div from '/components/styled/Div'

@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import styles from '/const/styles'
+import routes from '/const/routes'
 
 import { setHref } from '/store/actions'
-import routes from '/const/routes'
 
 import Div from '/components/styled/Div'
 import {

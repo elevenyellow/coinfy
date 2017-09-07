@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 
-import { state } from '/store/state'
+import state from '/store/state'
 import { setHref } from '/store/actions'
 import routes from '/const/routes'
 

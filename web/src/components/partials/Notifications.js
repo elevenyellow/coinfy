@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
-import { state } from '/store/state'
+import state from '/store/state'
 import styled from 'styled-components'
 import { deleteNotification } from '/store/actions'
 import styles from '/const/styles'
