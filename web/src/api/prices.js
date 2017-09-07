@@ -1,16 +1,44 @@
-export function getPrices(cryptos, currency, cb) {
-    const prices = {}
-    cryptos.forEach(crypto => {
-        prices[crypto] = []
+
+export function cryptoPriceManager(arrayCryptos, currency) {
+    this.canceled = false
+    this.fetching = false
+    this.timeoutMiliseconds = 5000
+    this.cryptosFinished = 0
+    this.currency = currency
+    this.arrayCryptos = arrayCryptos
+    this.prices = {}
+    arrayCryptos.forEach(crypto => {
+        this.prices[crypto] = []
     })
-    function update(crypto, value, source) {
-        prices[crypto].push(value)
-        cb(crypto, prices[crypto])
-    }
-    getPriceFromCryptocompare(cryptos, currency, update)
-    getPriceFromCoinmarketcap(cryptos, currency, update)
-    return 2 // total services 
+    setTimeout
 }
+
+cryptoPriceManager.prototype.fetch = function() {
+    this.fetching = true
+    const update = (crypto, value, source) => {
+        const pricesArray = this.prices[crypto]
+        pricesArray.push(value)
+        if (this.onUpdate)
+            this.onUpdate(crypto, value, source)
+        if (pricesArray.length === this.totalServicesUsing) {
+            this.cryptosFinished += 1
+            if (this.onFinish)
+                this.onFinish(crypto, pricesArray)
+        }
+    }
+    this.totalServicesUsing = 2
+    getPriceFromCryptocompare(this.arrayCryptos, this.currency, update)
+    getPriceFromCoinmarketcap(this.arrayCryptos, this.currency, update)
+}
+
+
+
+// cryptoPriceManager.prototype.onUpdate = function(currency, value, source) {}
+// cryptoPriceManager.prototype.onFinish = function(currency, values) {}
+
+
+
+
 
 // getPriceFromCryptocompare(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
 function getPriceFromCryptocompare(cryptos, currency, update) {

@@ -5,10 +5,16 @@ export const BTC = {
     color: '#fdb033',
     ascii: 'Ƀ'
 }
-
+export const BCH = {
+    symbol: 'BCH',
+    name: 'Bitcoin Cash',
+    color: '#edb022',
+    ascii: 'Ƀ'
+}
 
 
 
 export const cryptos = {
-    BTC: BTC
+    BTC: BTC,
+    BCH: BCH,
 }

@@ -1,9 +1,9 @@
 import { register, createObserver } from 'dop'
 import { create } from '/doprouter/core'
-import { cryptos, BTC } from '/const/cryptos'
+import { cryptos } from '/const/cryptos'
 import { USD } from '/const/currencies'
 import { decryptAES128CTR } from '/api/security'
-import { getPrices } from '/api/prices'
+import { cryptoPriceManager } from '/api/prices'
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/btc'
 import { getTotalWallets } from '/store/getters'
 
@@ -13,9 +13,7 @@ const initialState = {
     prices: {},
     currency: localStorage.getItem('currency') || USD.symbol,
     walletsExported: localStorage.getItem('walletsExported') !== 'false',
-    wallets: {
-        [BTC.symbol]: {}
-    },
+    wallets: {},
 
     // UI
     menuOpen: false,
@@ -28,6 +26,14 @@ const initialState = {
         }
     }
 }
+
+// creating subinstance of cryptos availables
+const cryptosArray = Object.keys(cryptos)
+cryptosArray.forEach(symbol => {
+    initialState.prices[symbol] = {}
+    initialState.wallets[symbol] = {}
+})
+    
 
 // restoring wallets
 try {
@@ -45,7 +51,7 @@ const updateTotalWallets = () =>
 updateTotalWallets()
 const observer = createObserver(updateTotalWallets)
 observer.observe(state, 'wallets')
-Object.keys(cryptos).forEach(crypto => {
+cryptosArray.forEach(crypto => {
     observer.observe(state.wallets[crypto])
 })
 
@@ -62,17 +68,17 @@ export default state
 
 
 
-function updatePriceCryptos() {
-    const arrayCryptos = Object.keys(cryptos)
-    const totalServices = getPrices(arrayCryptos, state.currency, function(
-        crypto,
-        prices
-    ) {
-        console.log(
-            crypto,
-            prices.reduce((sum, a) => sum + a, 0) / (prices.length || 1)
-        )
-    })
-}
 
-updatePriceCryptos()
+
+
+
+
+
+const priceCryptoManager = new cryptoPriceManager(cryptosArray, state.currency)
+// priceCryptoManager.onUpdate = function(crypto, value, source) {
+//     console.log( 'onUpdate', crypto, value, source );
+// }
+priceCryptoManager.onFinish = function(crypto, values) {
+    console.log( 'onFinish', crypto, values );
+}
+priceCryptoManager.fetch()
