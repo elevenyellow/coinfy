@@ -16,7 +16,8 @@ export class DropDown extends React.Component {
     }
 
     componentWillReceiveProps(props, state) {
-        props.open ? this.createEvent() : this.removeEvent()
+        if (this.props.open !== props.open)
+            props.open ? this.createEvent() : this.removeEvent()
     }
 
     createEvent() {
@@ -24,8 +25,10 @@ export class DropDown extends React.Component {
         this.callback = e => {
             if (
                 !this.state.eventJustCreated &&
-                e.target !== this.state.dropdownmenu.base
+                this.state.dropdownmenu &&
+                this.state.dropdownmenu.base !== e.target
             ) {
+                // this.removeEvent()
                 this.onClose(e)
             }
             this.state.eventJustCreated = false
@@ -38,11 +41,11 @@ export class DropDown extends React.Component {
     }
 
     onOpen(e) {
-        if (!this.props.open) this.props.onOpen(e)
+        if (!this.props.open && this.props.onOpen) this.props.onOpen(e)
     }
 
     onClose(e) {
-        if (this.props.open) this.props.onClose(e)
+        if (this.props.open && this.props.onClose) this.props.onClose(e)
     }
 
     render() {
@@ -50,10 +53,10 @@ export class DropDown extends React.Component {
         const childrens = props.children
         childrens.forEach((child, index) => {
             // won't work in react
-            let constructor = child.nodeName// || child.type
-            let attrs = child.attributes// || child.props
-            attrs.ref = element => ( this.state.dropdownmenu = element )
-            attrs.visible = props.open 
+            let constructor = child.nodeName // || child.type
+            let attrs = child.attributes // || child.props
+            attrs.ref = element => (this.state.dropdownmenu = element)
+            attrs.visible = props.open
         })
 
         return (

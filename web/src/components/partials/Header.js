@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import { createObserver } from 'dop'
 import styles from '/const/styles'
 import routes from '/const/routes'
 
-import { setHref } from '/store/actions'
+import { currencies } from '/const/currencies'
+import { setHref, changeCurrency } from '/store/actions'
+import state from '/store/state'
 
 import Div from '/components/styled/Div'
 import {
@@ -13,7 +16,66 @@ import {
     DropDownArrow
 } from '/components/styled/Dropdown'
 
-export default function Header() {
+export default class Header extends Component {
+    componentWillMount() {
+        this.observer = createObserver(mutations => this.forceUpdate())
+        this.observer.observe(state, 'currencyMenuOpen')
+        this.observer.observe(state, 'currency')
+
+        this.currenciesList = [
+            {
+                symbol: currencies.USD.symbol,
+                label: `${currencies.USD.ascii} ${currencies.USD.symbol}`
+            },
+            {
+                symbol: currencies.EUR.symbol,
+                label: `${currencies.EUR.ascii} ${currencies.EUR.symbol}`
+            },
+            {
+                symbol: currencies.GBP.symbol,
+                label: `${currencies.GBP.ascii} ${currencies.GBP.symbol}`
+            }
+        ]
+    }
+    componentWillUnmount() {
+        this.observer.destroy()
+    }
+    shouldComponentUpdate() {
+        return false
+    }
+
+    onMenuOpen(e) {
+        state.currencyMenuOpen = true
+    }
+
+    onMenuClose(e) {
+        state.currencyMenuOpen = false
+    }
+
+    onChangeCurrency(symbol) {
+        changeCurrency(symbol)
+    }
+
+    render() {
+        return React.createElement(HeaderTemplate, {
+            menuOpen: state.currencyMenuOpen,
+            onMenuOpen: this.onMenuOpen,
+            onMenuClose: this.onMenuClose,
+            onChangeCurrency: this.onChangeCurrency,
+            currency: state.currency,
+            currenciesList: this.currenciesList
+        })
+    }
+}
+
+function HeaderTemplate({
+    menuOpen,
+    onMenuOpen,
+    onMenuClose,
+    onChangeCurrency,
+    currency,
+    currenciesList
+}) {
     return (
         <HeaderDiv>
             <HeaderContent>
@@ -33,14 +95,28 @@ export default function Header() {
                     </HeaderCrypto>
                 </HeaderCenter>
                 <HeaderRight>
-                    <DropDown>
-                        <Div onClick={() => alert(1)}>
-                            <HeaderCurrencySelected>USD</HeaderCurrencySelected>
+                    <DropDown
+                        onOpen={onMenuOpen}
+                        onClose={onMenuClose}
+                        open={menuOpen}
+                    >
+                        <Div>
+                            <HeaderCurrencySelected>
+                                {currency}
+                            </HeaderCurrencySelected>
                             <DropDownArrow />
                         </Div>
-                        <DropDownMenu visible={false} right="0" top="25px">
-                            <DropDownItem>USD</DropDownItem>
-                            <DropDownItem>EUR</DropDownItem>
+                        <DropDownMenu right="0" top="25px">
+                            {currenciesList.map(item => {
+                                return (
+                                    <DropDownItem
+                                        disabled={currency === item.symbol}
+                                        onClick={e=>onChangeCurrency(item.symbol)}
+                                    >
+                                        {item.label}
+                                    </DropDownItem>
+                                )
+                            })}
                         </DropDownMenu>
                     </DropDown>
                 </HeaderRight>

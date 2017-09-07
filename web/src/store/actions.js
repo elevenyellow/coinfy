@@ -166,3 +166,11 @@ export function addNotification(text, color, timeout=5000) {
 export function deleteNotification(id) {
     delete state.notifications[id]
 }
+
+
+export function changeCurrency(symbol) {
+    const collector = collect()
+    state.currency = symbol
+    localStorage.setItem('currency', symbol)
+    collector.emit()
+}

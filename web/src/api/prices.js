@@ -1,14 +1,15 @@
-export function updatePrices(cryptos, currency, cb) {
+export function getPrices(cryptos, currency, cb) {
     const prices = {}
     cryptos.forEach(crypto => {
         prices[crypto] = []
     })
-    function update(crypto, value) {
+    function update(crypto, value, source) {
         prices[crypto].push(value)
-        cb(prices)
+        cb(crypto, prices[crypto])
     }
     getPriceFromCryptocompare(cryptos, currency, update)
     getPriceFromCoinmarketcap(cryptos, currency, update)
+    return 2 // total services 
 }
 
 // getPriceFromCryptocompare(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
@@ -19,7 +20,7 @@ function getPriceFromCryptocompare(cryptos, currency, update) {
     .then(json => {
         const prices = {}
         cryptos.forEach(crypto => {
-            update(crypto, json[crypto][currency])
+            update(crypto, json[crypto][currency], 'getPriceFromCryptocompare')
         })
     })
 }
@@ -36,7 +37,7 @@ function getPriceFromCoinmarketcap(cryptos, currency, update) {
         for (let index = 0, total = json.length; index < total; ++index) {
             price = json[index]
             if (cryptos.indexOf(price.symbol) > -1)
-                update(price.symbol, Number(price[`price_${currency.toLowerCase()}`]))
+                update(price.symbol, Number(price[`price_${currency.toLowerCase()}`]), 'getPriceFromCoinmarketcap')
             if (++count > cryptos.length) 
                 break
         }
