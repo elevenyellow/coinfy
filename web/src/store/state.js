@@ -72,18 +72,17 @@ export default state;
 
 
 
-window.fetchCryptoPrices = function () {
-    const manager = CryptoPriceManager(cryptosArray, state.currency)
-    // manager.onUpdate = function(crypto, value, source) {
-    //     console.log( 'onUpdate', crypto, value, source );
-    // }
-    manager.onFinish = function(crypto, values) {
-        // console.log( 'onFinish', crypto, values )
-    }
-    manager.onFinishAll = function() {
-        console.log( 'onFinishAll', manager.prices )
-        setTimeout(fetchCryptoPrices, 60000)
-    }
+window.manager = new CryptoPriceManager(cryptosArray, state.currency)
+manager.fetch()
+manager.fetch()
+// manager.onUpdate = function(crypto, value, source) {
+//     console.log( 'onUpdate', crypto, value, source );
+// }
+manager.onFinish = function(crypto, values) {
+    // console.log( 'onFinish', crypto, values )
 }
-fetchCryptoPrices()
+manager.onFinishAll = function() {
+    console.log( 'onFinishAll', manager.prices.BTC )
+    setTimeout(()=>manager.fetch(), 10000)
+}
 
