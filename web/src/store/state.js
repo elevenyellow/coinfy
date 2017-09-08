@@ -3,7 +3,7 @@ import { create } from '/doprouter/core'
 import { cryptos } from '/const/cryptos'
 import { USD } from '/const/currencies'
 import { decryptAES128CTR } from '/api/security'
-import { cryptoPriceManager } from '/api/prices'
+import { CryptoPriceManager } from '/api/prices'
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/btc'
 import { getTotalWallets } from '/store/getters'
 
@@ -31,7 +31,7 @@ const initialState = {
 const cryptosArray = Object.keys(cryptos)
 cryptosArray.forEach(symbol => {
     initialState.prices[symbol] = {}
-    initialState.wallets[symbol] = {}
+    // initialState.wallets[symbol] = {}
 })
     
 
@@ -52,13 +52,14 @@ updateTotalWallets()
 const observer = createObserver(updateTotalWallets)
 observer.observe(state, 'wallets')
 cryptosArray.forEach(crypto => {
-    observer.observe(state.wallets[crypto])
+    if (state.wallets[crypto])
+        observer.observe(state.wallets[crypto])
 })
 
 // implementing location router (special object)
 create(window.location.href, state)
 
-export default state
+export default state;
 
 
 
@@ -71,14 +72,18 @@ export default state
 
 
 
-
-
-
-const priceCryptoManager = new cryptoPriceManager(cryptosArray, state.currency)
-// priceCryptoManager.onUpdate = function(crypto, value, source) {
-//     console.log( 'onUpdate', crypto, value, source );
-// }
-priceCryptoManager.onFinish = function(crypto, values) {
-    console.log( 'onFinish', crypto, values );
+window.fetchCryptoPrices = function () {
+    const manager = CryptoPriceManager(cryptosArray, state.currency)
+    // manager.onUpdate = function(crypto, value, source) {
+    //     console.log( 'onUpdate', crypto, value, source );
+    // }
+    manager.onFinish = function(crypto, values) {
+        // console.log( 'onFinish', crypto, values )
+    }
+    manager.onFinishAll = function() {
+        console.log( 'onFinishAll', manager.prices )
+        setTimeout(fetchCryptoPrices, 60000)
+    }
 }
-priceCryptoManager.fetch()
+fetchCryptoPrices()
+
