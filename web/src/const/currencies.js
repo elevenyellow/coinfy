@@ -1,55 +1,67 @@
+import { round } from '/api/numbers'
+
 export const USD = {
     symbol: 'USD',
     name: 'US Dollar',
-    ascii: '$'
+    ascii: '$',
+    format: value => `$${round(value)}`
 }
 
 export const EUR = {
     symbol: 'EUR',
     name: 'Euro',
-    ascii: '€'
+    ascii: '€',
+    format: value => `€${round(value)}`
 }
 
 export const GBP = {
     symbol: 'GBP',
     name: 'British Pound',
-    ascii: '£'
+    ascii: '£',
+    format: value => `£${round(value)}`
 }
 
-export const CAD = {
-    symbol: 'CAD',
-    name: 'Canadian Dollar',
-    ascii: '$'
-}
-
-export const AUD = {
-    symbol: 'AUD',
-    name: 'Australian Dollar',
-    ascii: '$'
-}
 
 export const JPY = {
     symbol: 'JPY',
     name: 'Japanese Yen',
-    ascii: '¥'
+    ascii: '¥',
+    format: value => `¥${round(value)}`
 }
 
 export const INR = {
     symbol: 'INR',
     name: 'Indian Rupee',
-    ascii: '₹'
+    ascii: '₹',
+    format: value => `₹${round(value)}`
 }
 
 export const CNY = {
     symbol: 'CNY',
     name: 'Chinese Yuan Renminbi',
-    ascii: '¥'
+    ascii: '¥',
+    format: value => `¥${round(value)}`
+}
+
+export const CAD = {
+    symbol: 'CAD',
+    name: 'Canadian Dollar',
+    ascii: '$',
+    format: value => `$${round(value)}`
+}
+
+export const AUD = {
+    symbol: 'AUD',
+    name: 'Australian Dollar',
+    ascii: '$',
+    format: value => `$${round(value)}`
 }
 
 export const SGD = {
     symbol: 'SGD',
     name: 'Singapore Dollar',
-    ascii: '$'
+    ascii: '$',
+    format: value => `$${round(value)}`
 }
 
 export const currencies = {

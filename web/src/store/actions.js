@@ -1,10 +1,12 @@
 import React from 'react'
 import { collect } from 'dop'
+import { cryptos } from '/const/cryptos'
 import routes from '/const/routes'
 import styles from '/const/styles'
 import state from '/store/state'
 import { getTotalWallets } from '/store/getters'
 import { encryptAES128CTR } from '/api/security'
+import { CryptoPriceManager } from '/api/prices'
 
 export function setHref(href) {
     state.location.href = href
@@ -172,5 +174,45 @@ export function changeCurrency(symbol) {
     const collector = collect()
     state.currency = symbol
     localStorage.setItem('currency', symbol)
+    fetchWallet()
     collector.emit()
 }
+
+
+export function updatePrice(symbol, value) {
+    const collector = collect()
+    state.prices[symbol] = value
+    localStorage.setItem(symbol, value)
+    collector.emit()
+}
+
+
+
+export const fetchWallet = (function() {
+    
+    let cryptosArray = Object.keys(cryptos)
+    let timeout
+    let manager = new CryptoPriceManager()
+    // manager.onUpdate = function(crypto, value, source) {
+    //     console.log( 'onUpdate', crypto, value, source );
+    // }
+    manager.onFinish = function(crypto, values) {
+        // console.log( 'onFinish', crypto, values )
+        if (values.length > 0) {
+            const value = values.reduce(function(sum, a) { return sum + a },0)/values.length
+            updatePrice(crypto, value)
+        }
+    }
+    manager.onFinishAll = function() {
+        console.log( 'onFinishAll', manager.prices.BTC )
+        timeout = setTimeout(fetchWallet, 30000)
+    }
+
+    return function() {
+        clearTimeout(timeout)
+        manager.fetch(cryptosArray, state.currency)
+    }
+})()
+
+
+fetchWallet()

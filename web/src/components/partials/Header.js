@@ -5,6 +5,7 @@ import styles from '/const/styles'
 import routes from '/const/routes'
 
 import { currencies } from '/const/currencies'
+import { cryptos } from '/const/cryptos'
 import { setHref, changeCurrency } from '/store/actions'
 import state from '/store/state'
 
@@ -21,6 +22,7 @@ export default class Header extends Component {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'currencyMenuOpen')
         this.observer.observe(state, 'currency')
+        this.observer.observe(state.prices)
 
         this.currenciesList = [
             {
@@ -34,6 +36,30 @@ export default class Header extends Component {
             {
                 symbol: currencies.GBP.symbol,
                 label: `${currencies.GBP.ascii} ${currencies.GBP.symbol}`
+            },
+            {
+                symbol: currencies.JPY.symbol,
+                label: `${currencies.JPY.ascii} ${currencies.JPY.symbol}`
+            },
+            {
+                symbol: currencies.INR.symbol,
+                label: `${currencies.INR.ascii} ${currencies.INR.symbol}`
+            },
+            {
+                symbol: currencies.CNY.symbol,
+                label: `${currencies.CNY.ascii} ${currencies.CNY.symbol}`
+            },
+            {
+                symbol: currencies.CAD.symbol,
+                label: `${currencies.CAD.ascii} ${currencies.CAD.symbol}`
+            },
+            {
+                symbol: currencies.AUD.symbol,
+                label: `${currencies.AUD.ascii} ${currencies.AUD.symbol}`
+            },
+            {
+                symbol: currencies.SGD.symbol,
+                label: `${currencies.SGD.ascii} ${currencies.SGD.symbol}`
             }
         ]
     }
@@ -57,13 +83,16 @@ export default class Header extends Component {
     }
 
     render() {
+        const cryptoList = []
+
         return React.createElement(HeaderTemplate, {
             menuOpen: state.currencyMenuOpen,
             onMenuOpen: this.onMenuOpen,
             onMenuClose: this.onMenuClose,
             onChangeCurrency: this.onChangeCurrency,
             currency: state.currency,
-            currenciesList: this.currenciesList
+            currenciesList: this.currenciesList,
+            cryptoPrices: state.prices
         })
     }
 }
@@ -74,7 +103,8 @@ function HeaderTemplate({
     onMenuClose,
     onChangeCurrency,
     currency,
-    currenciesList
+    currenciesList,
+    cryptoPrices
 }) {
     return (
         <HeaderDiv>
@@ -87,12 +117,13 @@ function HeaderTemplate({
                     Logo
                 </HeaderLeft>
                 <HeaderCenter>
-                    <HeaderCrypto>
-                        BTC / <strong>$4200.3</strong>
-                    </HeaderCrypto>
-                    <HeaderCrypto>
-                        BCH / <strong>$601.5</strong>
-                    </HeaderCrypto>
+                    {Object.keys(cryptoPrices).map(symbol => {
+                        return(
+                        <HeaderCrypto>
+                            {symbol} / <strong>{currencies[currency].format(cryptoPrices[symbol])}</strong>
+                        </HeaderCrypto>
+                        )
+                    })}
                 </HeaderCenter>
                 <HeaderRight>
                     <DropDown
@@ -111,7 +142,8 @@ function HeaderTemplate({
                                 return (
                                     <DropDownItem
                                         disabled={currency === item.symbol}
-                                        onClick={e=>onChangeCurrency(item.symbol)}
+                                        onClick={e =>
+                                            onChangeCurrency(item.symbol)}
                                     >
                                         {item.label}
                                     </DropDownItem>

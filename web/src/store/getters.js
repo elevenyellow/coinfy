@@ -1,6 +1,7 @@
 import { cryptos, BTC } from '/const/cryptos'
 import state from '/store/state'
-
+import { decryptAES128CTR } from '/api/security'
+import { isPrivateKey, getAddressFromPrivateKey } from '/api/btc'
 
 // GETTERS
 export function getTotalWallets(wallets) {

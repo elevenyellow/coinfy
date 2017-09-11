@@ -2,9 +2,6 @@ import { register, createObserver } from 'dop'
 import { create } from '/doprouter/core'
 import { cryptos } from '/const/cryptos'
 import { USD } from '/const/currencies'
-import { decryptAES128CTR } from '/api/security'
-import { CryptoPriceManager } from '/api/prices'
-import { isPrivateKey, getAddressFromPrivateKey } from '/api/btc'
 import { getTotalWallets } from '/store/getters'
 
 // initial state
@@ -72,17 +69,4 @@ export default state;
 
 
 
-window.manager = new CryptoPriceManager(cryptosArray, state.currency)
-manager.fetch()
-manager.fetch()
-// manager.onUpdate = function(crypto, value, source) {
-//     console.log( 'onUpdate', crypto, value, source );
-// }
-manager.onFinish = function(crypto, values) {
-    // console.log( 'onFinish', crypto, values )
-}
-manager.onFinishAll = function() {
-    console.log( 'onFinishAll', manager.prices.BTC )
-    setTimeout(()=>manager.fetch(), 10000)
-}
 

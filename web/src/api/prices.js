@@ -1,18 +1,16 @@
 
-export function CryptoPriceManager(arrayCryptos, currency) {
+export function CryptoPriceManager() {
     this.timeoutMiliseconds = 5000
-    this.currency = currency
-    this.arrayCryptos = arrayCryptos
     this.prices = {}
 }
 
-CryptoPriceManager.prototype.fetch = function() {
+CryptoPriceManager.prototype.fetch = function(arrayCryptos, currency) {
     if (this.cancel)
         this.cancel()
 
     let cryptosFinished = 0
     let finished = false
-    this.arrayCryptos.forEach(crypto => {
+    arrayCryptos.forEach(crypto => {
         this.prices[crypto] = []
     })
 
@@ -37,20 +35,20 @@ CryptoPriceManager.prototype.fetch = function() {
 
     this.totalServicesUsing = 2
     getPriceFromCryptocompare(
-        this.arrayCryptos,
-        this.currency,
+        arrayCryptos,
+        currency,
         (crypto, value) => update(crypto, value, 'cryptocompare')
     )
     getPriceFromCoinmarketcap(
-        this.arrayCryptos,
-        this.currency,
+        arrayCryptos,
+        currency,
         (crypto, value) => update(crypto, value, 'coinmarketcap')
     )
 
     setTimeout(() => {
         if (!finished) {
             finished = true
-            this.arrayCryptos.forEach(crypto => {
+            arrayCryptos.forEach(crypto => {
                 const pricesArray = this.prices[crypto]
                 if (
                     this.prices[crypto].length < this.totalServicesUsing &&
@@ -62,7 +60,7 @@ CryptoPriceManager.prototype.fetch = function() {
         }
     }, this.timeoutMiliseconds)
 
-    return this.cancel = function cancel() {
+    this.cancel = function cancel() {
         finished = true
     }
 }
