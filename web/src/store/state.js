@@ -4,6 +4,7 @@ import { cryptos } from '/const/cryptos'
 import { USD } from '/const/currencies'
 import { getTotalWallets } from '/store/getters'
 
+
 // initial state
 const initialState = {
     // Data
@@ -24,23 +25,29 @@ const initialState = {
     }
 }
 
-// creating subinstance of cryptos availables
+// restoring price from localStorage
 const cryptosArray = Object.keys(cryptos)
 cryptosArray.forEach(symbol => {
-    initialState.prices[symbol] = Number(localStorage.getItem(symbol))
-    // initialState.wallets[symbol] = {}
+    if (localStorage.getItem(symbol) !== null)
+        initialState.prices[symbol] = Number(localStorage.getItem(symbol))
 })
     
 
-// restoring wallets
+
+// restoring wallets from localStorage
 try {
     let wallets = window.localStorage.getItem('wallets')
     wallets = JSON.parse(wallets)
     if (wallets && typeof wallets == 'object') initialState.wallets = wallets
 } catch (e) {}
 
+
+
+
 // registering
 const state = register(initialState)
+
+
 
 // totalWallets autoupdate
 const updateTotalWallets = () =>
@@ -53,8 +60,13 @@ cryptosArray.forEach(crypto => {
         observer.observe(state.wallets[crypto])
 })
 
+
+
+
 // implementing location router (special object)
 create(window.location.href, state)
+
+
 
 export default state;
 

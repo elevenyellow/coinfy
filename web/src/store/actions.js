@@ -7,6 +7,7 @@ import state from '/store/state'
 import { getTotalWallets } from '/store/getters'
 import { encryptAES128CTR } from '/api/security'
 import { CryptoPriceManager } from '/api/prices'
+import { fetchTxData } from '/api/bitpay'
 import { decimals } from '/api/numbers'
 
 export function setHref(href) {
