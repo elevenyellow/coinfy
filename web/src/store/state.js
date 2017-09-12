@@ -27,7 +27,7 @@ const initialState = {
 // creating subinstance of cryptos availables
 const cryptosArray = Object.keys(cryptos)
 cryptosArray.forEach(symbol => {
-    initialState.prices[symbol] = {}
+    initialState.prices[symbol] = Number(localStorage.getItem(symbol))
     // initialState.wallets[symbol] = {}
 })
     

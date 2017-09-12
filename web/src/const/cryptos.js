@@ -16,5 +16,5 @@ export const BCH = {
 
 export const cryptos = {
     BTC: BTC,
-    BCH: BCH,
+    // BCH: BCH,
 }

@@ -83,8 +83,6 @@ export default class Header extends Component {
     }
 
     render() {
-        const cryptoList = []
-
         return React.createElement(HeaderTemplate, {
             menuOpen: state.currencyMenuOpen,
             onMenuOpen: this.onMenuOpen,
@@ -118,11 +116,12 @@ function HeaderTemplate({
                 </HeaderLeft>
                 <HeaderCenter>
                     {Object.keys(cryptoPrices).map(symbol => {
-                        return(
-                        <HeaderCrypto>
-                            {symbol} / <strong>{currencies[currency].format(cryptoPrices[symbol])}</strong>
-                        </HeaderCrypto>
-                        )
+                        if ( typeof cryptoPrices[symbol] == 'number' && cryptoPrices[symbol]>0 )
+                            return(
+                            <HeaderCrypto>
+                                {symbol} / <strong>{currencies[currency].format(cryptoPrices[symbol])}</strong>
+                            </HeaderCrypto>
+                            )
                     })}
                 </HeaderCenter>
                 <HeaderRight>
@@ -171,6 +170,7 @@ const HeaderCenter = styled.div`
     width: calc(100% - ${styles.leftColumn} - 100px);
     float: left;
     text-align: center;
+    min-height: 1px;
 `
 const HeaderRight = styled.div`
     width: 100px;
@@ -180,7 +180,7 @@ const HeaderRight = styled.div`
 `
 
 const HeaderCrypto = styled.span`
-    font-size: 13px;
+    font-size: 15px;
     letter-spacing: .2px;
     color: ${styles.color.front1};
     padding-right: 25px;
@@ -188,7 +188,7 @@ const HeaderCrypto = styled.span`
 `
 
 const HeaderCurrencySelected = styled.span`
-    font-size: 14px;
+    font-size: 15px;
     color: ${styles.color.front1};
     font-weight: bold;
     padding-right: 4px;

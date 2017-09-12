@@ -7,6 +7,7 @@ import state from '/store/state'
 import { getTotalWallets } from '/store/getters'
 import { encryptAES128CTR } from '/api/security'
 import { CryptoPriceManager } from '/api/prices'
+import { decimals } from '/api/numbers'
 
 export function setHref(href) {
     state.location.href = href
@@ -174,7 +175,7 @@ export function changeCurrency(symbol) {
     const collector = collect()
     state.currency = symbol
     localStorage.setItem('currency', symbol)
-    fetchWallet()
+    fetchPrices()
     collector.emit()
 }
 
@@ -182,13 +183,13 @@ export function changeCurrency(symbol) {
 export function updatePrice(symbol, value) {
     const collector = collect()
     state.prices[symbol] = value
-    localStorage.setItem(symbol, value)
+    localStorage.setItem(symbol, decimals(value))
     collector.emit()
 }
 
 
 
-export const fetchWallet = (function() {
+export const fetchPrices = (function() {
     
     let cryptosArray = Object.keys(cryptos)
     let timeout
@@ -204,8 +205,8 @@ export const fetchWallet = (function() {
         }
     }
     manager.onFinishAll = function() {
-        console.log( 'onFinishAll', manager.prices.BTC )
-        timeout = setTimeout(fetchWallet, 30000)
+        // console.log( 'onFinishAll', manager.prices.BTC )
+        timeout = setTimeout(fetchPrices, 30000)
     }
 
     return function() {
@@ -213,6 +214,4 @@ export const fetchWallet = (function() {
         manager.fetch(cryptosArray, state.currency)
     }
 })()
-
-
-fetchWallet()
+fetchPrices()
