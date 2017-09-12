@@ -5,6 +5,7 @@ import styles from '/const/styles'
 
 import { BTC } from '/const/cryptos'
 import state from '/store/state'
+import { getWalletsAsArray } from '/store/getters'
 
 import WalletListItem from '/components/partials/WalletListItem'
 
@@ -22,20 +23,8 @@ export default class WalletList extends Component {
     }
 
     render() {
-        const wallets = []
-
-        Object.keys(state.wallets).forEach(symbol => {
-            Object.keys(state.wallets[symbol]).forEach(address => {
-                wallets.push({
-                    symbol: symbol,
-                    address: address,
-                    wallet: state.wallets[symbol][address]
-                })
-            })
-        })
-
         return React.createElement(WalletListTemplate, {
-            wallets: wallets
+            wallets: getWalletsAsArray()
         })
     }
 }

@@ -45,3 +45,20 @@ export function unlockBTCWallet(address, password) {
 
     return false
 }
+
+
+export function getWalletsAsArray() {
+    const wallets = []
+    let wallet
+    Object.keys(state.wallets).forEach(symbol => {
+        Object.keys(state.wallets[symbol]).forEach(address => {
+            wallet = {
+                symbol: symbol,
+                address: address,
+                wallet: state.wallets[symbol][address]
+            }
+            wallets.push(wallet)
+        })
+    })
+    return wallets
+}

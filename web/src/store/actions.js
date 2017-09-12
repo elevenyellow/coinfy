@@ -216,3 +216,11 @@ export const fetchPrices = (function() {
     }
 })()
 fetchPrices()
+
+
+
+
+export function getAllBalances() {
+    console.log( state.wallets )
+}
+getAllBalances()
