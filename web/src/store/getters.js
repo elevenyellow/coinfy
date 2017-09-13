@@ -14,6 +14,10 @@ export function getTotalWallets(wallets) {
 }
 
 
+export function convertBalance(symbol, balance) {
+    return state.prices[symbol] * (balance||0)
+}
+
 export function getWallet(symbol, address) {
     return state.wallets[symbol][address]
 }

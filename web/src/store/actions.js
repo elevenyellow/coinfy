@@ -3,11 +3,11 @@ import { collect } from 'dop'
 import { assets } from '/api/assets'
 import routes from '/const/routes'
 import styles from '/const/styles'
+import timeouts from '/const/timeouts'
 import state from '/store/state'
-import { getTotalWallets } from '/store/getters'
+import { getTotalWallets, getWalletsAsArray } from '/store/getters'
 import { encryptAES128CTR } from '/api/security'
 import { CryptoPriceManager } from '/api/prices'
-import { fetchTxData } from '/api/bitpay'
 import { decimals } from '/api/numbers'
 
 export function setHref(href) {
@@ -38,13 +38,15 @@ export function deleteWallet(symbol, address) {
     const name = state.wallets[symbol][address].label || address
     delete state.wallets[symbol][address]
     setHref(routes.home())
-    addNotification(`Wallet "${name}" has been deleted`, styles.notificationColor.green)
+    addNotification(
+        `Wallet "${name}" has been deleted`,
+        styles.notificationColor.green
+    )
     updateSession(true)
     collector.emit()
 }
 
-
-export function updateSession(walletsExported=false) {
+export function updateSession(walletsExported = false) {
     const wallets = JSON.stringify(state.wallets)
     localStorage.setItem('wallets', wallets)
     setWalletsExported(walletsExported)
@@ -59,7 +61,7 @@ export function setWalletsExported(value) {
 //     new Uint8Array(str.split('')
 //         .map(c => c.charCodeAt(0))).buffer;
 
-// ABToStr = ab => 
+// ABToStr = ab =>
 //     new Uint8Array(ab).reduce((p, c) =>
 //         p + String.fromCharCode(c), '');
 
@@ -67,7 +69,7 @@ export function exportWallets() {
     if (state.totalWallets > 0) {
         const data = btoa(JSON.stringify(state.wallets))
         const a = document.createElement('a')
-        const file = new Blob([data], {type: 'charset=UTF-8'})//, 
+        const file = new Blob([data], { type: 'charset=UTF-8' }) //,
         // const date = new Date().toJSON().replace(/\..+$/,'')
         a.href = URL.createObjectURL(file)
         a.download = 'YOU_MUST_RENAME_THIS_FOR_SECURITY'
@@ -76,9 +78,8 @@ export function exportWallets() {
     }
 }
 
-
 export function importWalletsFromFile() {
-    if (state.totalWallets>0 && !state.walletsExported) {
+    if (state.totalWallets > 0 && !state.walletsExported) {
         state.popups.closeSession.confirm = () => {
             state.popups.closeSession.open = false
             // setWalletsExported(true) // Not sure if should ask again after a failed import
@@ -88,30 +89,27 @@ export function importWalletsFromFile() {
             state.popups.closeSession.open = false
         }
         state.popups.closeSession.open = true
-    }
-    else
-        openImportWalletsFromFile()
+    } else openImportWalletsFromFile()
 }
 
 export function openImportWalletsFromFile() {
     const input = document.createElement('input')
     input.type = 'file'
-    input.addEventListener('change', e=>{
+    input.addEventListener('change', e => {
         const file = input.files[0]
         // if ( file.type.indexOf('json') > -1 || file.type.indexOf('text') > -1 || file.type==='' ) {
-            const reader = new FileReader()
-            reader.onload = e => {
-                const dataString = e.target.result
-                importWallets(dataString)
-            }
-            reader.readAsText(file)
+        const reader = new FileReader()
+        reader.onload = e => {
+            const dataString = e.target.result
+            importWallets(dataString)
+        }
+        reader.readAsText(file)
         // }
         // else
-            // addNotification('Invalid JSON file', styles.notificationColor.red)
+        // addNotification('Invalid JSON file', styles.notificationColor.red)
     })
     input.click()
 }
-
 
 export function importWallets(dataString) {
     try {
@@ -121,16 +119,23 @@ export function importWallets(dataString) {
             const collector = collect()
             state.wallets = wallets
             setHref(routes.home())
-            addNotification(`You have imported ${totalWallets} Wallets`, styles.notificationColor.green)
+            addNotification(
+                `You have imported ${totalWallets} Wallets`,
+                styles.notificationColor.green
+            )
             updateSession(true)
             collector.emit()
-        }
-        else
-            addNotification('We couldn\'t find any Wallet to Import on this JSON file', styles.notificationColor.red)
-        
-    } catch(e) { 
-        console.log( e );
-        addNotification('We couldn\'t parse the JSON file', styles.notificationColor.red)
+        } else
+            addNotification(
+                "We couldn't find any Wallet to Import on this JSON file",
+                styles.notificationColor.red
+            )
+    } catch (e) {
+        console.log(e)
+        addNotification(
+            "We couldn't parse the JSON file",
+            styles.notificationColor.red
+        )
     }
 }
 
@@ -142,9 +147,7 @@ export function closeSession() {
                 state.popups.closeSession.open = false
             }
             state.popups.closeSession.open = true
-        }
-        else
-            forceloseSession()
+        } else forceloseSession()
     }
 }
 
@@ -154,9 +157,8 @@ export function forceloseSession() {
     location.href = '/'
 }
 
-
 let idNotification = 1
-export function addNotification(text, color, timeout=5000) {
+export function addNotification(text, color, timeout = 5000) {
     state.notifications[idNotification] = {
         id: idNotification,
         text: text,
@@ -171,7 +173,6 @@ export function deleteNotification(id) {
     delete state.notifications[id]
 }
 
-
 export function changeCurrency(symbol) {
     const collector = collect()
     state.currency = symbol
@@ -180,7 +181,6 @@ export function changeCurrency(symbol) {
     collector.emit()
 }
 
-
 export function updatePrice(symbol, value) {
     const collector = collect()
     state.prices[symbol] = value
@@ -188,10 +188,7 @@ export function updatePrice(symbol, value) {
     collector.emit()
 }
 
-
-
 export const fetchPrices = (function() {
-    
     let assetsArray = Object.keys(assets)
     let timeout
     let manager = new CryptoPriceManager()
@@ -201,13 +198,16 @@ export const fetchPrices = (function() {
     manager.onFinish = function(crypto, values) {
         // console.log( 'onFinish', crypto, values )
         if (values.length > 0) {
-            const value = values.reduce(function(sum, a) { return sum + a },0)/values.length
+            const value =
+                values.reduce(function(sum, a) {
+                    return sum + a
+                }, 0) / values.length
             updatePrice(crypto, value)
         }
     }
     manager.onFinishAll = function() {
         // console.log( 'onFinishAll', manager.prices.BTC )
-        timeout = setTimeout(fetchPrices, 30000)
+        timeout = setTimeout(fetchPrices, timeouts.fetch_prices)
     }
 
     return function() {
@@ -219,8 +219,28 @@ fetchPrices()
 
 
 
-
-export function getAllBalances() {
-    // console.log( state.wallets )
+export function fetchAllBalances() {
+    getWalletsAsArray().forEach((wallet, index) => {
+        setTimeout(
+            () => fetchBalance(wallet.symbol, wallet.address),
+            index * timeouts.between_each_getbalance
+        )
+    })
+    setTimeout(fetchAllBalances, timeouts.update_all_balances)
 }
-getAllBalances()
+fetchAllBalances()
+
+
+
+export function fetchBalance(symbol, address) {
+    assets[symbol].fetchBalance(address, balance => {
+        updateBalance(symbol, address, balance)
+    })
+}
+
+
+export function updateBalance(symbol, address, balance) {
+    const collector = collect()
+    state.wallets[symbol][address].balance = balance
+    collector.emit()
+}

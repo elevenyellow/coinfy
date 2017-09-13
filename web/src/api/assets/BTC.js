@@ -2,6 +2,7 @@ import Bitcoin from 'bitcoinjs-lib'
 
 // private
 const privateKeyPrefix = 0x80 // mainnet 0x80    testnet 0xEF
+const api_url = 'https://insight.bitpay.com/api' // https://github.com/bitpay/insight-api
 
 
 // exports
@@ -9,7 +10,15 @@ export const symbol = 'BTC'
 export const name = 'Bitcoin'
 export const color = '#fdb033'
 export const ascii = 'Ƀ'
+export const satoshis = 100000000
 
+
+export function format(value) {
+    const tof = typeof value
+    if (tof != 'number' && tof != 'string' )
+        value = '0'
+    return `${value} ${symbol}`
+}
 
 export function generateRandomWallet() {
     const wallet = Bitcoin.ECPair.makeRandom()
@@ -79,6 +88,35 @@ export function getAllFormats(wallet) {
     formats.private_key_comp = wallet.toWIF()
     return formats
 }
+
+
+
+
+
+
+// fetchs
+export function fetchBalance(address, callback) {
+    fetch(`${api_url}/addr/${address}/balance`)
+    .then(response => response.text())
+    .then(balance => {
+        callback(Number(balance)/satoshis)
+    })
+}
+
+export function fetchTxData(address) {
+    fetch(`${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0`)
+    .then(response => response.json())
+    .then(json => {
+        console.log( json );
+    })
+}
+
+
+
+
+
+
+
 
 
 

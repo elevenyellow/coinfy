@@ -7,7 +7,6 @@ import { printTemplate } from '/api/print'
 import styles from '/const/styles'
 import { BTC } from '/api/assets'
 import { Address as template } from '/const/paperwallets'
-import { infoAddressBTC } from '/const/urls'
 
 import state from '/store/state'
 import { deleteWallet } from '/store/actions'
@@ -113,7 +112,7 @@ function ReceiveBTCTemplate({ address, qrcodebase64, refaddress, onCopy, onPrint
                             <div>Email this Address</div>
                         </Icon>
 
-                        <Icon target="_blank" href={infoAddressBTC(address)}>
+                        <Icon target="_blank" href={`https://live.blockcypher.com/btc/address/${address}/`}>
                             <IconLink size={25} color={'white'} />
                             <div>View on Blockchain</div>
                         </Icon>

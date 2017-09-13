@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
+import { assets } from '/api/assets'
 import styles from '/const/styles'
 import routes from '/const/routes'
+import { currencies } from '/const/currencies'
 import state from '/store/state'
 import { setHref } from '/store/actions'
+import { convertBalance } from '/store/getters'
 
 export default class Wallet extends Component {
     componentWillMount() {
@@ -12,6 +15,7 @@ export default class Wallet extends Component {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'wallets')
         this.observer.observe(state.location, 'pathname')
+        this.observer.observe(state.prices)
         this.observer.observe(wallet.wallet, 'label')
         this.observer.observe(wallet.wallet, 'balance')
         this.observer.observe(state.wallets[wallet.symbol])
@@ -33,15 +37,19 @@ export default class Wallet extends Component {
     }
 
     render() {
+        const wallet = this.props.wallet
+        // console.log( 'Render', convertBalance(wallet.symbol, wallet.wallet.balance) )
         return React.createElement(WalletTemplate, {
             wallet: this.props.wallet,
             location: state.location,
-            onClick: this.onClick
+            balance_currency: currencies[state.currency].format(convertBalance(wallet.symbol, wallet.wallet.balance)),
+            balance_asset: assets[wallet.symbol].format(wallet.wallet.balance),
+            onClick: this.onClick,
         })
     }
 }
 
-function WalletTemplate({ wallet, location, onClick }) {
+function WalletTemplate({ wallet, location, balance_currency, balance_asset, onClick  }) {
     return (
         <WalletStyled
             onClick={onClick}
@@ -61,7 +69,7 @@ function WalletTemplate({ wallet, location, onClick }) {
                             : wallet.address}
                     </WalletLabel>
                     <WalletBalance>
-                        <strong>$2351.32</strong> ≈ 0.93123 BTC
+                        <strong>{balance_currency}</strong> ≈ {balance_asset}
                     </WalletBalance>
                 </WalletInfo>
             </div>
@@ -107,6 +115,7 @@ const WalletLabel = styled.div`
     line-height: 20px;
 `
 const WalletBalance = styled.div`
+    text-overflow: ellipsis;
     font-size: 12px;
     color: ${styles.color.front2};
     padding-top: 2px;
