@@ -10,10 +10,10 @@ import {
     isPrivateKey,
     getAddressFromPublicKey,
     getAddressFromPrivateKey
-} from '/api/btc'
+} from '/api/assets/BTC'
 import { encryptAES128CTR } from '/api/security'
 
-import { BTC } from '/const/cryptos'
+import { BTC } from '/api/assets'
 import routes from '/const/routes'
 import state from '/store/state'
 import { isWalletRegistered } from '/store/getters'

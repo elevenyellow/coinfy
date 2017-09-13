@@ -5,7 +5,7 @@ import { generateQRCode } from '/api/qr'
 import { printTemplate } from '/api/print'
 
 import styles from '/const/styles'
-import { BTC } from '/const/cryptos'
+import { BTC } from '/api/assets'
 import { Address as template } from '/const/paperwallets'
 import { infoAddressBTC } from '/const/urls'
 

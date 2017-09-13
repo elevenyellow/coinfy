@@ -4,13 +4,13 @@ export function CryptoPriceManager() {
     this.prices = {}
 }
 
-CryptoPriceManager.prototype.fetch = function(arrayCryptos, currency) {
+CryptoPriceManager.prototype.fetch = function(arrayassets, currency) {
     if (this.cancel)
         this.cancel()
 
-    let cryptosFinished = 0
+    let assetsFinished = 0
     let finished = false
-    arrayCryptos.forEach(crypto => {
+    arrayassets.forEach(crypto => {
         this.prices[crypto] = []
     })
 
@@ -21,9 +21,9 @@ CryptoPriceManager.prototype.fetch = function(arrayCryptos, currency) {
             if (this.onUpdate)
                 this.onUpdate(crypto, value, source)
             if (pricesArray.length === this.totalServicesUsing) {
-                cryptosFinished += 1
+                assetsFinished += 1
                 if (this.onFinish) this.onFinish(crypto, pricesArray)
-                if (cryptosFinished === this.totalServicesUsing) {
+                if (assetsFinished === this.totalServicesUsing) {
                     finished = true
                     if (this.onFinishAll) {
                         this.onFinishAll()
@@ -35,12 +35,12 @@ CryptoPriceManager.prototype.fetch = function(arrayCryptos, currency) {
 
     this.totalServicesUsing = 2
     getPriceFromCryptocompare(
-        arrayCryptos,
+        arrayassets,
         currency,
         (crypto, value) => update(crypto, value, 'cryptocompare')
     )
     getPriceFromCoinmarketcap(
-        arrayCryptos,
+        arrayassets,
         currency,
         (crypto, value) => update(crypto, value, 'coinmarketcap')
     )
@@ -48,7 +48,7 @@ CryptoPriceManager.prototype.fetch = function(arrayCryptos, currency) {
     setTimeout(() => {
         if (!finished) {
             finished = true
-            arrayCryptos.forEach(crypto => {
+            arrayassets.forEach(crypto => {
                 const pricesArray = this.prices[crypto]
                 if (
                     this.prices[crypto].length < this.totalServicesUsing &&
@@ -69,20 +69,20 @@ CryptoPriceManager.prototype.fetch = function(arrayCryptos, currency) {
 // CryptoPriceManager.prototype.onFinishAll = function() {}
 
 // getPriceFromCryptocompare(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
-function getPriceFromCryptocompare(cryptos, currency, update) {
-    const url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${cryptos.join(
+function getPriceFromCryptocompare(assets, currency, update) {
+    const url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${assets.join(
         ','
     )}&tsyms=${currency}`
     fetch(url).then(response => response.json()).then(json => {
         const prices = {}
-        cryptos.forEach(crypto => {
+        assets.forEach(crypto => {
             update(crypto, json[crypto][currency])
         })
     })
 }
 
 // getPriceFromCoinmarketcap(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
-function getPriceFromCoinmarketcap(cryptos, currency, update) {
+function getPriceFromCoinmarketcap(assets, currency, update) {
     const url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=50`
     fetch(url).then(response => response.json()).then(json => {
         const prices = {}
@@ -90,12 +90,12 @@ function getPriceFromCoinmarketcap(cryptos, currency, update) {
         let price
         for (let index = 0, total = json.length; index < total; ++index) {
             price = json[index]
-            if (cryptos.indexOf(price.symbol) > -1)
+            if (assets.indexOf(price.symbol) > -1)
                 update(
                     price.symbol,
                     Number(price[`price_${currency.toLowerCase()}`])
                 )
-            if (++count > cryptos.length) break
+            if (++count > assets.length) break
         }
     })
 }

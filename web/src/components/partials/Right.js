@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 
-import { isAddress } from '/api/btc'
+import { isAddress } from '/api/assets/BTC'
 
 import state from '/store/state'
 import { isWalletRegistered } from '/store/getters'
-import { BTC } from '/const/cryptos'
+import { BTC } from '/api/assets'
 import styles from '/const/styles'
 import routes from '/const/routes'
 

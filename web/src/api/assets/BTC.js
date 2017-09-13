@@ -1,7 +1,14 @@
 import Bitcoin from 'bitcoinjs-lib'
 
-
+// private
 const privateKeyPrefix = 0x80 // mainnet 0x80    testnet 0xEF
+
+
+// exports
+export const symbol = 'BTC'
+export const name = 'Bitcoin'
+export const color = '#fdb033'
+export const ascii = 'Ƀ'
 
 
 export function generateRandomWallet() {

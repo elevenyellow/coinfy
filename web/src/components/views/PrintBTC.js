@@ -3,14 +3,14 @@ import { createObserver, collect } from 'dop'
 import styled from 'styled-components'
 
 import { generateQRCode } from '/api/qr'
-import { getAllFormats } from '/api/btc'
+import { getAllFormats } from '/api/assets/BTC'
 import { printTemplate } from '/api/print'
 
 import state from '/store/state'
 import { unlockBTCWallet } from '/store/getters'
 
 import routes from '/const/routes'
-import { BTC } from '/const/cryptos'
+import { BTC } from '/api/assets'
 import styles from '/const/styles'
 
 import Div from '/components/styled/Div'

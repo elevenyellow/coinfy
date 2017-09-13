@@ -1,6 +1,6 @@
 import React from 'react'
 import { collect } from 'dop'
-import { cryptos } from '/const/cryptos'
+import { assets } from '/api/assets'
 import routes from '/const/routes'
 import styles from '/const/styles'
 import state from '/store/state'
@@ -192,7 +192,7 @@ export function updatePrice(symbol, value) {
 
 export const fetchPrices = (function() {
     
-    let cryptosArray = Object.keys(cryptos)
+    let assetsArray = Object.keys(assets)
     let timeout
     let manager = new CryptoPriceManager()
     // manager.onUpdate = function(crypto, value, source) {
@@ -212,7 +212,7 @@ export const fetchPrices = (function() {
 
     return function() {
         clearTimeout(timeout)
-        manager.fetch(cryptosArray, state.currency)
+        manager.fetch(assetsArray, state.currency)
     }
 })()
 fetchPrices()
@@ -221,6 +221,6 @@ fetchPrices()
 
 
 export function getAllBalances() {
-    console.log( state.wallets )
+    // console.log( state.wallets )
 }
 getAllBalances()

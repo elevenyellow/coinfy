@@ -1,12 +1,12 @@
-import { cryptos, BTC } from '/const/cryptos'
+import { assets } from '/api/assets'
+import { isPrivateKey, getAddressFromPrivateKey } from '/api/assets/BTC'
 import state from '/store/state'
 import { decryptAES128CTR } from '/api/security'
-import { isPrivateKey, getAddressFromPrivateKey } from '/api/btc'
 
 // GETTERS
 export function getTotalWallets(wallets) {
     let total = 0
-    Object.keys(cryptos).forEach(crypto=>{
+    Object.keys(assets).forEach(crypto=>{
         if (typeof wallets[crypto] == 'object')
             total += Object.keys(wallets[crypto]).length
     })
@@ -34,7 +34,7 @@ export function isWalletWithPrivateKey(symbol, address) {
 
 export function unlockBTCWallet(address, password) {
     const private_key = decryptAES128CTR(
-        getWallet(BTC.symbol, address).private_key,
+        getWallet(assetsBTC.symbol, address).private_key,
         password
     )
 

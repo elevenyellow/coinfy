@@ -5,7 +5,7 @@ import styles from '/const/styles'
 import routes from '/const/routes'
 
 import { currencies } from '/const/currencies'
-import { cryptos } from '/const/cryptos'
+import { assets } from '/api/assets'
 import { setHref, changeCurrency } from '/store/actions'
 import state from '/store/state'
 

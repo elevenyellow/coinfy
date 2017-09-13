@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 
 import styles from '/const/styles'
-import { BTC } from '/const/cryptos'
+import { BTC } from '/api/assets'
 import state from '/store/state'
 
 import IconReceive from 'react-icons/lib/md/call-received'

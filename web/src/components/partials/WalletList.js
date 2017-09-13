@@ -3,7 +3,7 @@ import { createObserver } from 'dop'
 import styled from 'styled-components'
 import styles from '/const/styles'
 
-import { BTC } from '/const/cryptos'
+import { BTC } from '/api/assets'
 import state from '/store/state'
 import { getWalletsAsArray } from '/store/getters'
 

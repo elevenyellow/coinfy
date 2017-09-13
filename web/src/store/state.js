@@ -1,6 +1,6 @@
 import { register, createObserver } from 'dop'
 import { create } from '/doprouter/core'
-import { cryptos } from '/const/cryptos'
+import { assets } from '/api/assets'
 import { USD } from '/const/currencies'
 import { getTotalWallets } from '/store/getters'
 
@@ -26,8 +26,8 @@ const initialState = {
 }
 
 // restoring price from localStorage
-const cryptosArray = Object.keys(cryptos)
-cryptosArray.forEach(symbol => {
+const assetsArray = Object.keys(assets)
+assetsArray.forEach(symbol => {
     if (localStorage.getItem(symbol) !== null)
         initialState.prices[symbol] = Number(localStorage.getItem(symbol))
 })
@@ -55,7 +55,7 @@ const updateTotalWallets = () =>
 updateTotalWallets()
 const observer = createObserver(updateTotalWallets)
 observer.observe(state, 'wallets')
-cryptosArray.forEach(crypto => {
+assetsArray.forEach(crypto => {
     if (state.wallets[crypto])
         observer.observe(state.wallets[crypto])
 })
