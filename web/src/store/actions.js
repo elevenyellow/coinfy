@@ -124,6 +124,7 @@ export function importWallets(dataString) {
                 styles.notificationColor.green
             )
             updateSession(true)
+            fetchAllBalances()
             collector.emit()
         } else
             addNotification(

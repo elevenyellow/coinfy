@@ -1,7 +1,7 @@
-import { register, createObserver } from 'dop'
+import { computed, register, createObserver } from 'dop'
 import { create } from '/doprouter/core'
 import { assets } from '/api/assets'
-import { USD } from '/const/currencies'
+import { currencies, USD } from '/const/currencies'
 import { getTotalWallets } from '/store/getters'
 
 
@@ -12,6 +12,16 @@ const initialState = {
     currency: localStorage.getItem('currency') || USD.symbol,
     walletsExported: localStorage.getItem('walletsExported') !== 'false',
     wallets: {},
+    balance: computed(function() {
+        let total = 0
+        Object.keys(this.wallets).forEach(symbol => {
+            Object.keys(this.wallets[symbol]).forEach(address => {
+                total += this.prices[symbol] * (this.wallets[symbol][address].balance||0)
+            })
+        })
+        // console.log( 'recalculating balance...', total )
+        return total
+    }),
 
     // UI
     menuOpen: false,
@@ -28,6 +38,7 @@ const initialState = {
 // restoring price from localStorage
 const assetsArray = Object.keys(assets)
 assetsArray.forEach(symbol => {
+    initialState.wallets[symbol] = {}
     if (localStorage.getItem(symbol) !== null)
         initialState.prices[symbol] = Number(localStorage.getItem(symbol))
 })

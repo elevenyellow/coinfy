@@ -5,6 +5,10 @@ import { Show } from '/doprouter/react'
 
 import routes from '/const/routes'
 import styles from '/const/styles'
+import { currencies } from '/const/currencies'
+
+import { numberWithCommas, round } from '/api/numbers'
+import { assets } from '/api/assets'
 
 import state from '/store/state'
 import { getTotalWallets } from '/store/getters'
@@ -25,6 +29,7 @@ import WalletList from '/components/partials/WalletList'
 export default class Left extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
+        this.observer.observe(state, 'balance')
         this.observer.observe(state, 'menuOpen')
         this.observer.observe(state, 'totalWallets')
 
@@ -60,6 +65,9 @@ export default class Left extends Component {
 
     render() {
         return React.createElement(LeftTemplate, {
+            ascii: currencies[state.currency].ascii,
+            balance: numberWithCommas(round(state.balance)),
+            color: state.balance>0 ? assets.BTC.color : '#DDDDDD',
             menuOpen: state.menuOpen,
             onMenuOpen: this.onMenuOpen,
             onMenuClose: this.onMenuClose,
@@ -72,6 +80,9 @@ export default class Left extends Component {
 }
 
 function LeftTemplate({
+    ascii,
+    balance,
+    color,
     menuOpen,
     onMenuOpen,
     onMenuClose,
@@ -86,8 +97,8 @@ function LeftTemplate({
                 <ColumnLeftChartBalance>
                     <ColumnLeftChartLabel>Total balance</ColumnLeftChartLabel>
                     <ColumnLeftChartNumber>
-                        <AmountSuper>$</AmountSuper>
-                        <Amount>22,521</Amount>
+                        <AmountSuper>{ascii}</AmountSuper>
+                        <Amount>{balance}</Amount>
                         {/* <AmountSuper>.52</AmountSuper>  */}
                     </ColumnLeftChartNumber>
                 </ColumnLeftChartBalance>
@@ -98,7 +109,7 @@ function LeftTemplate({
                             cy="15"
                             r="12.3"
                             fill="transparent"
-                            stroke="#FFB119"
+                            stroke={color}
                             strokeWidth="1.3"
                         />
                     </svg>

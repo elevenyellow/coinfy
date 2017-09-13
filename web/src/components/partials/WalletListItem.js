@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
 import { assets } from '/api/assets'
+import { round } from '/api/numbers'
 import styles from '/const/styles'
 import routes from '/const/routes'
 import { currencies } from '/const/currencies'
@@ -42,14 +43,23 @@ export default class Wallet extends Component {
         return React.createElement(WalletTemplate, {
             wallet: this.props.wallet,
             location: state.location,
-            balance_currency: currencies[state.currency].format(convertBalance(wallet.symbol, wallet.wallet.balance)),
+            balance_currency: currencies[state.currency].format(
+                convertBalance(wallet.symbol, wallet.wallet.balance),
+                0
+            ),
             balance_asset: assets[wallet.symbol].format(wallet.wallet.balance),
-            onClick: this.onClick,
+            onClick: this.onClick
         })
     }
 }
 
-function WalletTemplate({ wallet, location, balance_currency, balance_asset, onClick  }) {
+function WalletTemplate({
+    wallet,
+    location,
+    balance_currency,
+    balance_asset,
+    onClick
+}) {
     return (
         <WalletStyled
             onClick={onClick}
@@ -64,9 +74,11 @@ function WalletTemplate({ wallet, location, balance_currency, balance_asset, onC
                 </WalletIcon>
                 <WalletInfo>
                     <WalletLabel>
-                        {wallet.wallet.label.length > 0
-                            ? wallet.wallet.label
-                            : wallet.address}
+                        {wallet.wallet.label.length > 0 ? (
+                            wallet.wallet.label
+                        ) : (
+                            wallet.address
+                        )}
                     </WalletLabel>
                     <WalletBalance>
                         <strong>{balance_currency}</strong> ≈ {balance_asset}
