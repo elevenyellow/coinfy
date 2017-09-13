@@ -119,7 +119,7 @@ function HeaderTemplate({
                         if ( typeof cryptoPrices[symbol] == 'number' && cryptoPrices[symbol]>0 )
                             return(
                             <HeaderCrypto>
-                                {symbol} / <strong>{currencies[currency].format(cryptoPrices[symbol])}</strong>
+                                {symbol} ≈ <strong>{currencies[currency].format(cryptoPrices[symbol],0)}</strong>
                             </HeaderCrypto>
                             )
                     })}

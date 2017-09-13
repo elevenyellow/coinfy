@@ -20,6 +20,7 @@ export function createWallet(symbol, address) {
         balance: 0,
         last_update: 0 // last time we checked balance in timestamp
     }
+    fetchBalance(symbol, address)
     updateSession()
 }
 export function setPublicKey(symbol, address, public_key) {
@@ -67,7 +68,7 @@ export function setWalletsExported(value) {
 
 export function exportWallets() {
     if (state.totalWallets > 0) {
-        const data = btoa(JSON.stringify(state.wallets))
+        const data = btoa(localStorage.getItem('wallets'))
         const a = document.createElement('a')
         const file = new Blob([data], { type: 'charset=UTF-8' }) //,
         // const date = new Date().toJSON().replace(/\..+$/,'')
@@ -132,7 +133,7 @@ export function importWallets(dataString) {
                 styles.notificationColor.red
             )
     } catch (e) {
-        console.log(e)
+        console.error(e)
         addNotification(
             "We couldn't parse the JSON file",
             styles.notificationColor.red

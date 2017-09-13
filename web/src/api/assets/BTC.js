@@ -101,15 +101,21 @@ export function fetchBalance(address, callback) {
     .then(balance => {
         callback(Number(balance)/satoshis)
     })
-}
-
-export function fetchTxData(address) {
-    fetch(`${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0`)
-    .then(response => response.json())
-    .then(json => {
-        console.log( json );
+    .catch(e => {
+        console.error( 'BTC.fetchBalance', e );
     })
 }
+
+// export function fetchTxData(address) {
+//     fetch(`${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0`)
+//     .then(response => response.json())
+//     .then(json => {
+//         console.log( json );
+//     })
+//     .catch(e => {
+//         console.error( 'BTC.fetchTxData', e );
+//     })
+// }
 
 
 

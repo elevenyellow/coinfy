@@ -73,18 +73,25 @@ function getPriceFromCryptocompare(assets, currency, update) {
     const url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${assets.join(
         ','
     )}&tsyms=${currency}`
-    fetch(url).then(response => response.json()).then(json => {
+    fetch(url)
+    .then(response => response.json())
+    .then(json => {
         const prices = {}
         assets.forEach(crypto => {
             update(crypto, json[crypto][currency])
         })
+    })
+    .catch(e => {
+        console.error( 'getPriceFromCryptocompare', e );
     })
 }
 
 // getPriceFromCoinmarketcap(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
 function getPriceFromCoinmarketcap(assets, currency, update) {
     const url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=50`
-    fetch(url).then(response => response.json()).then(json => {
+    fetch(url)
+    .then(response => response.json())
+    .then(json => {
         const prices = {}
         let count = 0
         let price
@@ -97,6 +104,9 @@ function getPriceFromCoinmarketcap(assets, currency, update) {
                 )
             if (++count > assets.length) break
         }
+    })
+    .catch(e => {
+        console.error( 'getPriceFromCoinmarketcap', e );
     })
 }
 

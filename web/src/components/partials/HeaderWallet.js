@@ -24,8 +24,8 @@ export default class HeaderWallet extends Component {
         this.address = state.location.path[1]
         this.wallet = state.wallets[this.symbol][this.address]
         // this.qr = generateQRCode(this.address, 140, styles.color.front3)
-        this.observer = createObserver(m => {
-            if (m[0].prop === 'pathname') {
+        this.observer = createObserver(mutations => {
+            if (mutations[0].prop === 'pathname') {
                 this.symbol = state.location.path[0]
                 this.address = state.location.path[1]
                 this.wallet = state.wallets[this.symbol][this.address]
