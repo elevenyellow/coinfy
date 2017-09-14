@@ -58,13 +58,6 @@ export function setWalletsExported(value) {
     localStorage.setItem('walletsExported', value)
 }
 
-// const strToAB = str =>
-//     new Uint8Array(str.split('')
-//         .map(c => c.charCodeAt(0))).buffer;
-
-// ABToStr = ab =>
-//     new Uint8Array(ab).reduce((p, c) =>
-//         p + String.fromCharCode(c), '');
 
 export function exportWallets() {
     if (state.totalWallets > 0) {
@@ -190,36 +183,36 @@ export function updatePrice(symbol, value) {
     collector.emit()
 }
 
-export const fetchPrices = (function() {
-    let assetsArray = Object.keys(assets)
-    let timeout
-    let manager = new CryptoPriceManager()
-    // manager.onUpdate = function(crypto, value, source) {
-    //     console.log( 'onUpdate', crypto, value, source );
-    // }
-    manager.onFinish = function(crypto, values) {
-        // console.log( 'onFinish', crypto, values )
-        if (values.length > 0) {
-            const value =
-                values.reduce(function(sum, a) {
-                    return sum + a
-                }, 0) / values.length
-            updatePrice(crypto, value)
-        }
-    }
-    manager.onFinishAll = function() {
-        // console.log( 'onFinishAll', manager.prices.BTC )
-        timeout = setTimeout(fetchPrices, timeouts.fetch_prices)
-    }
+export function updateBalance(symbol, address, balance) {
+    const collector = collect()
+    state.wallets[symbol][address].balance = balance
+    collector.emit()
+}
 
-    return function() {
-        clearTimeout(timeout)
-        manager.fetch(assetsArray, state.currency)
+let idNotificationNotConnection
+export function showNotConnectionNotification(value) {
+    if (value && state.showNotConnectionNotification===false) {
+        state.showNotConnectionNotification = true
+        idNotificationNotConnection = addNotification(
+            "Seems like you don't have internet connection",
+            styles.notificationColor.grey,
+            null
+        )
     }
-})()
-fetchPrices()
+    else if (!value && state.showNotConnectionNotification===true) {
+        state.showNotConnectionNotification = true
+        deleteNotification(idNotificationNotConnection)
+        idNotificationNotConnection = null
+    }
+}
 
 
+
+
+
+
+
+// Fetchers
 
 export function fetchAllBalances() {
     getWalletsAsArray().forEach((wallet, index) => {
@@ -233,16 +226,49 @@ export function fetchAllBalances() {
 fetchAllBalances()
 
 
-
 export function fetchBalance(symbol, address) {
-    assets[symbol].fetchBalance(address, balance => {
+    assets[symbol]
+    .fetchBalance(address)
+    .then(balance => {
+        showNotConnectionNotification(false)
         updateBalance(symbol, address, balance)
+    })
+    .catch(e => {
+        console.error( symbol, 'fetchBalance', e )
+        showNotConnectionNotification(true)
     })
 }
 
+export const fetchPrices = (function() {
+    let assetsArray = Object.keys(assets)
+    let timeout
+    let manager = new CryptoPriceManager()
+    manager.onUpdate = function(crypto, value, source) {
+        showNotConnectionNotification(false)
+        // console.log( 'onUpdate', crypto, value, source );
+    }
+    manager.onFinish = (crypto, values) => {
+        // console.log( 'onFinish', crypto, values )
+        if (values.length > 0) {
+            const value =
+                values.reduce((sum, a) => {
+                    return sum + a
+                }, 0) / values.length
+            updatePrice(crypto, value)
+        }
+    }
+    manager.onFinishAll = () => {
+        // console.log( 'onFinishAll', manager.prices.BTC )
+        timeout = setTimeout(fetchPrices, timeouts.fetch_prices)
+    }
+    manager.onError = e => {
+        showNotConnectionNotification(true)
+        console.log( 'fetchPrices', e )
+    }
 
-export function updateBalance(symbol, address, balance) {
-    const collector = collect()
-    state.wallets[symbol][address].balance = balance
-    collector.emit()
-}
+    return function() {
+        clearTimeout(timeout)
+        manager.fetch(assetsArray, state.currency)
+    }
+})()
+fetchPrices()

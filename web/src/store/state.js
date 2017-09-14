@@ -26,6 +26,7 @@ const initialState = {
     // UI
     menuOpen: false,
     currencyMenuOpen: false,
+    showNotConnectionNotification: false,
     view: {},
     notifications: {},
     popups: {

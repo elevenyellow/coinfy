@@ -6,7 +6,8 @@ export default {
     headerHeight: '75px',
     notificationColor: {
         red: '#DD0044',
-        green: '#1aba6a'
+        green: '#1aba6a',
+        grey: '#AAAAAA'
     },
     color: {
         background1: '#f3f6f8',

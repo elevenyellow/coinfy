@@ -37,12 +37,14 @@ CryptoPriceManager.prototype.fetch = function(arrayassets, currency) {
     getPriceFromCryptocompare(
         arrayassets,
         currency,
-        (crypto, value) => update(crypto, value, 'cryptocompare')
+        (crypto, value) => update(crypto, value, 'cryptocompare'),
+        this.onError
     )
     getPriceFromCoinmarketcap(
         arrayassets,
         currency,
-        (crypto, value) => update(crypto, value, 'coinmarketcap')
+        (crypto, value) => update(crypto, value, 'coinmarketcap'),
+        this.onError
     )
 
     setTimeout(() => {
@@ -69,7 +71,7 @@ CryptoPriceManager.prototype.fetch = function(arrayassets, currency) {
 // CryptoPriceManager.prototype.onFinishAll = function() {}
 
 // getPriceFromCryptocompare(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
-function getPriceFromCryptocompare(assets, currency, update) {
+function getPriceFromCryptocompare(assets, currency, update, error) {
     const url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${assets.join(
         ','
     )}&tsyms=${currency}`
@@ -81,13 +83,11 @@ function getPriceFromCryptocompare(assets, currency, update) {
             update(crypto, json[crypto][currency])
         })
     })
-    .catch(e => {
-        console.error( 'getPriceFromCryptocompare', e );
-    })
+    .catch(error)
 }
 
 // getPriceFromCoinmarketcap(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
-function getPriceFromCoinmarketcap(assets, currency, update) {
+function getPriceFromCoinmarketcap(assets, currency, update, error) {
     const url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=50`
     fetch(url)
     .then(response => response.json())
@@ -105,9 +105,7 @@ function getPriceFromCoinmarketcap(assets, currency, update) {
             if (++count > assets.length) break
         }
     })
-    .catch(e => {
-        console.error( 'getPriceFromCoinmarketcap', e );
-    })
+    .catch(error)
 }
 
 // window.getCurrencyPrice = function() {

@@ -95,14 +95,11 @@ export function getAllFormats(wallet) {
 
 
 // fetchs
-export function fetchBalance(address, callback) {
-    fetch(`${api_url}/addr/${address}/balance`)
+export function fetchBalance(address) {
+    return fetch(`${api_url}/addr/${address}/balance`)
     .then(response => response.text())
     .then(balance => {
-        callback(Number(balance)/satoshis)
-    })
-    .catch(e => {
-        console.error( 'BTC.fetchBalance', e );
+        return Number(balance)/satoshis
     })
 }
 

@@ -120,8 +120,8 @@ function LeftTemplate({
                     <DropDown onOpen={onMenuOpen} onClose={onMenuClose} open={menuOpen}>
                         <IconMore size={35} color={styles.color.front2} />
                         <DropDownMenu left="7px">
-                            <DropDownItem onClick={onImport}>Import</DropDownItem>
-                            <DropDownItem onClick={onExport} disabled={totalWallets===0}>Export</DropDownItem>
+                            <DropDownItem onClick={onImport}>Import backup</DropDownItem>
+                            <DropDownItem onClick={onExport} disabled={totalWallets===0}>Export backup</DropDownItem>
                             <DropDownItem onClick={onClose} disabled={totalWallets===0}>Close session</DropDownItem>
                         </DropDownMenu>
                     </DropDown>
