@@ -152,7 +152,7 @@ export function forceloseSession() {
     location.href = '/'
 }
 
-let idNotification = 1
+let idNotification = 0
 export function addNotification(text, color, timeout = 5000) {
     state.notifications[idNotification] = {
         id: idNotification,
@@ -160,8 +160,7 @@ export function addNotification(text, color, timeout = 5000) {
         color: color,
         timeout: timeout
     }
-    idNotification += 1
-    return idNotification
+    return idNotification++
 }
 
 export function deleteNotification(id) {
@@ -191,18 +190,16 @@ export function updateBalance(symbol, address, balance) {
 
 let idNotificationNotConnection
 export function showNotConnectionNotification(value) {
-    if (value && state.showNotConnectionNotification===false) {
-        state.showNotConnectionNotification = true
+    if (value && idNotificationNotConnection===undefined) {
         idNotificationNotConnection = addNotification(
             "Seems like you don't have internet connection",
             styles.notificationColor.grey,
             null
         )
     }
-    else if (!value && state.showNotConnectionNotification===true) {
-        state.showNotConnectionNotification = true
+    else if (!value && idNotificationNotConnection!==undefined) {
         deleteNotification(idNotificationNotConnection)
-        idNotificationNotConnection = null
+        idNotificationNotConnection = undefined
     }
 }
 
