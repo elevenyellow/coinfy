@@ -38,9 +38,14 @@ export default class Right extends Component {
         return (
             <RightContainer>
                 <Router source={state.location}>
-                    <Route pathname="/">
+                    <Route pathname="/" if={state.totalWallets===0}>
                         <RightContentMiddle>
                             <Message>Add or Import a wallet to start working</Message>
+                        </RightContentMiddle>
+                    </Route>
+                    <Route pathname="/">
+                        <RightContentMiddle>
+                            <Message>Dashboard</Message>
                         </RightContentMiddle>
                     </Route>
                     <Route pathname={new RegExp(routes.addwallet())}>
@@ -52,6 +57,7 @@ export default class Right extends Component {
                     <Route>
                         <RightContentMiddle><Message>Not found</Message></RightContentMiddle>
                     </Route>
+
                 </Router>
             </RightContainer>
         )

@@ -16,7 +16,8 @@ const initialState = {
         let total = 0
         Object.keys(this.wallets).forEach(symbol => {
             Object.keys(this.wallets[symbol]).forEach(address => {
-                total += this.prices[symbol] * (this.wallets[symbol][address].balance||0)
+                if (this.wallets[symbol][address])
+                    total += this.prices[symbol] * (this.wallets[symbol][address].balance||0)
             })
         })
         // console.log( 'recalculating balance...', total )
@@ -57,6 +58,8 @@ try {
 
 // registering
 const state = register(initialState)
+
+
 
 
 

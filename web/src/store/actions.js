@@ -18,14 +18,18 @@ export function createWallet(symbol, address) {
     state.wallets[symbol][address] = {
         label: '',
         balance: 0,
-        last_update: 0 // last time we checked balance in timestamp
+        state: { // this must be removed when exporting
+            last_update: 0, // last time we checked balance in timestamp
+        }
     }
     fetchBalance(symbol, address)
     updateSession()
+    setWalletsExported(false)
 }
 export function setPublicKey(symbol, address, public_key) {
     state.wallets[symbol][address].public_key = public_key
     updateSession()
+    setWalletsExported(false)
 }
 export function setPrivateKey(symbol, address, private_key, password) {
     state.wallets[symbol][address].private_key = encryptAES128CTR(
@@ -33,6 +37,7 @@ export function setPrivateKey(symbol, address, private_key, password) {
         password
     )
     updateSession()
+    setWalletsExported(false)    
 }
 export function deleteWallet(symbol, address) {
     const collector = collect()
@@ -43,14 +48,14 @@ export function deleteWallet(symbol, address) {
         `Wallet "${name}" has been deleted`,
         styles.notificationColor.green
     )
-    updateSession(true)
+    updateSession()
+    setWalletsExported(false)
     collector.emit()
 }
 
-export function updateSession(walletsExported = false) {
+export function updateSession() {
     const wallets = JSON.stringify(state.wallets)
     localStorage.setItem('wallets', wallets)
-    setWalletsExported(walletsExported)
 }
 
 export function setWalletsExported(value) {
@@ -117,7 +122,8 @@ export function importWallets(dataString) {
                 `You have imported ${totalWallets} Wallets`,
                 styles.notificationColor.green
             )
-            updateSession(true)
+            updateSession()
+            setWalletsExported(true)
             fetchAllBalances()
             collector.emit()
         } else
