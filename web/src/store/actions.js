@@ -23,12 +23,12 @@ export function createWallet(symbol, address) {
         }
     }
     fetchBalance(symbol, address)
-    updateSession()
+    saveAssetsLocalStorage()
     setWalletsExported(false)
 }
 export function setPublicKey(symbol, address, public_key) {
     state.wallets[symbol][address].public_key = public_key
-    updateSession()
+    saveAssetsLocalStorage()
     setWalletsExported(false)
 }
 export function setPrivateKey(symbol, address, private_key, password) {
@@ -36,7 +36,7 @@ export function setPrivateKey(symbol, address, private_key, password) {
         private_key,
         password
     )
-    updateSession()
+    saveAssetsLocalStorage()
     setWalletsExported(false)    
 }
 export function deleteWallet(symbol, address) {
@@ -48,12 +48,12 @@ export function deleteWallet(symbol, address) {
         `Wallet "${name}" has been deleted`,
         styles.notificationColor.green
     )
-    updateSession()
+    saveAssetsLocalStorage()
     setWalletsExported(false)
     collector.emit()
 }
 
-export function updateSession() {
+export function saveAssetsLocalStorage() {
     const wallets = JSON.stringify(state.wallets)
     localStorage.setItem('wallets', wallets)
 }
@@ -122,7 +122,7 @@ export function importWallets(dataString) {
                 `You have imported ${totalWallets} Wallets`,
                 styles.notificationColor.green
             )
-            updateSession()
+            saveAssetsLocalStorage()
             setWalletsExported(true)
             fetchAllBalances()
             collector.emit()
