@@ -6,6 +6,7 @@ const api_url = 'https://insight.bitpay.com/api' // https://github.com/bitpay/in
 
 
 // exports
+export const type = 'wallet'
 export const symbol = 'BTC'
 export const name = 'Bitcoin'
 export const color = '#fdb033'

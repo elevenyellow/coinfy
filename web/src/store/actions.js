@@ -1,11 +1,11 @@
 import React from 'react'
 import { collect } from 'dop'
-import { Assets } from '/api/Assets'
+import { Assets, getAssetId } from '/api/Assets'
 import routes from '/const/routes'
 import styles from '/const/styles'
 import timeouts from '/const/timeouts'
 import state from '/store/state'
-import { getTotalWallets, getWalletsAsArray } from '/store/getters'
+import { getTotalAssets, getAssetsAsArray } from '/store/getters'
 import { encryptAES128CTR } from '/api/security'
 import { CryptoPriceManager } from '/api/prices'
 import { decimals } from '/api/numbers'
@@ -14,42 +14,46 @@ export function setHref(href) {
     state.location.href = href
 }
 
-export function createWallet(symbol, address) {
-    state.assets[symbol][address] = {
+export function createAsset(type, symbol, address) {
+    state.assets[getAssetId(symbol,address,type)] = {
+        type: type,
+        symbol: symbol,
+        address: address,
         label: '',
         balance: 0,
         state: { // this must be removed when exporting
             last_update: 0, // last time we checked balance in timestamp
+            updating: false,
         }
     }
     fetchBalance(symbol, address)
     saveAssetsLocalStorage()
-    setWalletsExported(false)
+    setAssetsExported(false)
 }
 export function setPublicKey(symbol, address, public_key) {
-    state.assets[symbol][address].public_key = public_key
+    state.assets[getAssetId(symbol,address)].public_key = public_key
     saveAssetsLocalStorage()
-    setWalletsExported(false)
+    setAssetsExported(false)
 }
 export function setPrivateKey(symbol, address, private_key, password) {
-    state.assets[symbol][address].private_key = encryptAES128CTR(
+    state.assets[getAssetId(symbol,address)].private_key = encryptAES128CTR(
         private_key,
         password
     )
     saveAssetsLocalStorage()
-    setWalletsExported(false)    
+    setAssetsExported(false)    
 }
-export function deleteWallet(symbol, address) {
+export function deleteAsset(symbol, address) {
     const collector = collect()
-    const name = state.assets[symbol][address].label || address
-    delete state.assets[symbol][address]
+    const name = state.assets[getAssetId(symbol,address)].label || address
+    delete state.assets[getAssetId(symbol,address)]
     setHref(routes.home())
     addNotification(
-        `Wallet "${name}" has been deleted`,
+        `Asset "${name}" has been deleted`,
         styles.notificationColor.green
     )
     saveAssetsLocalStorage()
-    setWalletsExported(false)
+    setAssetsExported(false)
     collector.emit()
 }
 
@@ -58,40 +62,40 @@ export function saveAssetsLocalStorage() {
     localStorage.setItem('assets', assets)
 }
 
-export function setWalletsExported(value) {
+export function setAssetsExported(value) {
     state.assetsExported = value
     localStorage.setItem('assetsExported', value)
 }
 
 
-export function exportWallets() {
-    if (state.totalWallets > 0) {
+export function exportAssets() {
+    if (state.totalAssets > 0) {
         const data = btoa(localStorage.getItem('assets'))
         const a = document.createElement('a')
         const file = new Blob([data], { type: 'charset=UTF-8' }) //,
         // const date = new Date().toJSON().replace(/\..+$/,'')
         a.href = URL.createObjectURL(file)
         a.download = 'YOU_MUST_RENAME_THIS_FOR_SECURITY'
-        setWalletsExported(true)
+        setAssetsExported(true)
         a.click()
     }
 }
 
-export function importWalletsFromFile() {
-    if (state.totalWallets > 0 && !state.assetsExported) {
+export function importAssetsFromFile() {
+    if (state.totalAssets > 0 && !state.assetsExported) {
         state.popups.closeSession.confirm = () => {
             state.popups.closeSession.open = false
-            // setWalletsExported(true) // Not sure if should ask again after a failed import
-            openImportWalletsFromFile()
+            // setAssetsExported(true) // Not sure if should ask again after a failed import
+            openImportAssetsFromFile()
         }
         state.popups.closeSession.cancel = () => {
             state.popups.closeSession.open = false
         }
         state.popups.closeSession.open = true
-    } else openImportWalletsFromFile()
+    } else openImportAssetsFromFile()
 }
 
-export function openImportWalletsFromFile() {
+export function openImportAssetsFromFile() {
     const input = document.createElement('input')
     input.type = 'file'
     input.addEventListener('change', e => {
@@ -100,7 +104,7 @@ export function openImportWalletsFromFile() {
         const reader = new FileReader()
         reader.onload = e => {
             const dataString = e.target.result
-            importWallets(dataString)
+            importAssets(dataString)
         }
         reader.readAsText(file)
         // }
@@ -110,25 +114,25 @@ export function openImportWalletsFromFile() {
     input.click()
 }
 
-export function importWallets(dataString) {
+export function importAssets(dataString) {
     try {
         const assets = JSON.parse(atob(dataString))
-        const totalWallets = getTotalWallets(assets)
-        if (totalWallets > 0) {
+        const totalAssets = getTotalAssets(assets)
+        if (totalAssets > 0) {
             const collector = collect()
             state.assets = assets
             setHref(routes.home())
             addNotification(
-                `You have imported ${totalWallets} Wallets`,
+                `You have imported ${totalAssets} Assets`,
                 styles.notificationColor.green
             )
             saveAssetsLocalStorage()
-            setWalletsExported(true)
+            setAssetsExported(true)
             fetchAllBalances()
             collector.emit()
         } else
             addNotification(
-                "We couldn't find any Wallet to Import on this JSON file",
+                "We couldn't find any Asset to Import on this JSON file",
                 styles.notificationColor.red
             )
     } catch (e) {
@@ -141,7 +145,7 @@ export function importWallets(dataString) {
 }
 
 export function closeSession() {
-    if (state.totalWallets > 0) {
+    if (state.totalAssets > 0) {
         if (!state.assetsExported) {
             state.popups.closeSession.confirm = forceloseSession
             state.popups.closeSession.cancel = () => {
@@ -153,7 +157,7 @@ export function closeSession() {
 }
 
 export function forceloseSession() {
-    setWalletsExported(true)
+    setAssetsExported(true)
     localStorage.removeItem('assets')
     location.href = '/'
 }
@@ -190,7 +194,7 @@ export function updatePrice(symbol, value) {
 
 export function updateBalance(symbol, address, balance) {
     const collector = collect()
-    state.assets[symbol][address].balance = balance
+    state.assets[getAssetId(symbol,address)].balance = balance
     collector.emit()
 }
 
@@ -218,9 +222,9 @@ export function showNotConnectionNotification(value) {
 // Fetchers
 
 export function fetchAllBalances() {
-    getWalletsAsArray().forEach((wallet, index) => {
+    getAssetsAsArray().forEach((asset, index) => {
         setTimeout(
-            () => fetchBalance(wallet.symbol, wallet.address),
+            () => fetchBalance(asset.symbol, asset.address),
             index * timeouts.between_each_getbalance
         )
     })

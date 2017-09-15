@@ -71,7 +71,7 @@ export default class SetPrivateKeyBTC extends Component {
         const address = state.location.path[1]
         const collector = collect()
         setPrivateKey(BTC.symbol, address, state.view.input, state.view.password)
-        setHref(routes.wallet(BTC.symbol, address))
+        setHref(routes.asset(BTC.symbol, address))
         collector.emit()
     }
 

@@ -9,7 +9,7 @@ import { BTC } from '/api/Assets'
 import { Address as template } from '/const/paperwallets'
 
 import state from '/store/state'
-import { deleteWallet } from '/store/actions'
+import { deleteAsset } from '/store/actions'
 
 import Div from '/components/styled/Div'
 import QRCode from '/components/styled/QRCode'

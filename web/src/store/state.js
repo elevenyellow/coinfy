@@ -2,7 +2,7 @@ import { computed, register, createObserver } from 'dop'
 import { create } from '/doprouter/core'
 import { Assets } from '/api/Assets'
 import { currencies, USD } from '/const/currencies'
-import { getTotalWallets } from '/store/getters'
+import { getTotalAssets } from '/store/getters'
 
 
 // initial state
@@ -14,13 +14,13 @@ const initialState = {
     assets: {},
     balance: computed(function() {
         let total = 0
-        Object.keys(this.assets).forEach(symbol => {
-            Object.keys(this.assets[symbol]).forEach(address => {
-                if (this.assets[symbol][address])
-                    total += this.prices[symbol] * (this.assets[symbol][address].balance||0)
-            })
-        })
-        // console.log( 'recalculating balance...', total )
+        // Object.keys(this.assets).forEach(symbol => {
+        //     Object.keys(this.assets[symbol]).forEach(address => {
+        //         if (this.assets[symbol][address])
+        //             total += this.prices[symbol] * (this.assets[symbol][address].balance||0)
+        //     })
+        // })
+        // // console.log( 'recalculating balance...', total )
         return total
     }),
 
@@ -36,10 +36,11 @@ const initialState = {
     }
 }
 
+
+
 // restoring price from localStorage
 const assetsArray = Object.keys(Assets)
 assetsArray.forEach(symbol => {
-    initialState.assets[symbol] = {}
     if (localStorage.getItem(symbol) !== null)
         initialState.prices[symbol] = Number(localStorage.getItem(symbol))
 })
@@ -63,11 +64,11 @@ const state = register(initialState)
 
 
 
-// totalWallets autoupdate
-const updateTotalWallets = () =>
-    (state.totalWallets = getTotalWallets(state.assets))
-updateTotalWallets()
-const observer = createObserver(updateTotalWallets)
+// totalAssets autoupdate
+const updateTotalAssets = () =>
+    (state.totalAssets = getTotalAssets(state.assets))
+updateTotalAssets()
+const observer = createObserver(updateTotalAssets)
 observer.observe(state, 'assets')
 assetsArray.forEach(crypto => {
     if (state.assets[crypto])

@@ -2,29 +2,29 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 
 import state from '/store/state'
-import { deleteWallet } from '/store/actions'
+import { deleteAsset } from '/store/actions'
 
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
 
-export default class DeleteWallet extends Component {
+export default class DeleteAsset extends Component {
     onDelete() {
         const [symbol, address] = state.location.path
-        deleteWallet(symbol, address)
+        deleteAsset(symbol, address)
     }
     render() {
-        return React.createElement(DeleteWalletTemplate, {
+        return React.createElement(DeleteAssetTemplate, {
             onDelete: this.onDelete
         })
     }
 }
 
-function DeleteWalletTemplate({ onDelete }) {
+function DeleteAssetTemplate({ onDelete }) {
     return (
         <div>
             <CenterElement>
                 <Button red={true} onClick={onDelete} width="100%">
-                    Delete this wallet
+                    Delete this asset
                 </Button>
             </CenterElement>
         </div>

@@ -6,7 +6,7 @@ import { Router, Route } from '/doprouter/react'
 import { isAddress } from '/api/Assets/BTC'
 
 import state from '/store/state'
-import { isWalletRegistered } from '/store/getters'
+import { isAssetRegistered } from '/store/getters'
 import { BTC } from '/api/Assets'
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -16,7 +16,7 @@ import { RightContainer, RightContentMiddle } from '/components/styled/Right'
 import Message from '/components/styled/Message'
 // views
 import AddAsset from '/components/views/AddAsset'
-import WalletBTC from '/components/views/WalletBTC'
+import AssetBTC from '/components/views/AssetBTC'
 
 export default class Right extends Component {
     componentWillMount() {
@@ -34,13 +34,13 @@ export default class Right extends Component {
     render() {
         const symbol = state.location.path[0]
         const address = state.location.path[1]
-        const isRegistered = isWalletRegistered(symbol, address)
+        const isRegistered = isAssetRegistered(symbol, address)
         return (
             <RightContainer>
                 <Router source={state.location}>
-                    <Route pathname="/" if={state.totalWallets===0}>
+                    <Route pathname="/" if={state.totalAssets===0}>
                         <RightContentMiddle>
-                            <Message>Add or Import a wallet to start working</Message>
+                            <Message>Add or Import a assets to start working</Message>
                         </RightContentMiddle>
                     </Route>
                     <Route pathname="/">
@@ -48,11 +48,11 @@ export default class Right extends Component {
                             <Message>Dashboard</Message>
                         </RightContentMiddle>
                     </Route>
-                    <Route pathname={new RegExp(routes.addasset())}>
+                    <Route pathname={new RegExp(routes.add())}>
                         <AddAsset />
                     </Route>
                     <Route path-0={BTC.symbol} if={isRegistered && isAddress(state.location.path[1])}>
-                        <WalletBTC />
+                        <AssetBTC />
                     </Route>
                     <Route>
                         <RightContentMiddle><Message>Not found</Message></RightContentMiddle>

@@ -3,17 +3,16 @@ import { createObserver } from 'dop'
 import styled from 'styled-components'
 import styles from '/const/styles'
 
-import { BTC } from '/api/Assets'
 import state from '/store/state'
-import { getWalletsAsArray } from '/store/getters'
+import { getAssetsAsArray } from '/store/getters'
 
-import WalletListItem from '/components/partials/WalletListItem'
+import AssetListItem from '/components/partials/AssetListItem'
 
-export default class WalletList extends Component {
+export default class AssetList extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'assets')
-        this.observer.observe(state.assets[BTC.symbol])
+        this.observer.observe(state.assets)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -23,16 +22,16 @@ export default class WalletList extends Component {
     }
 
     render() {
-        return React.createElement(WalletListTemplate, {
-            assets: getWalletsAsArray()
+        return React.createElement(AssetListTemplate, {
+            assets: getAssetsAsArray()
         })
     }
 }
 
-function WalletListTemplate({ assets }) {
+function AssetListTemplate({ assets }) {
     return (
         <div>
-            {assets.map(wallet => <WalletListItem wallet={wallet} />)}
+            {assets.map(asset => <AssetListItem asset={asset} />)}
         </div>
     )
 }

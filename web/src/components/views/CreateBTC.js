@@ -20,7 +20,7 @@ import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
 import { Label, SubLabel } from '/components/styled/Label'
 
-import { setHref, createWallet, setPrivateKey } from '/store/actions'
+import { setHref, createAsset, setPrivateKey } from '/store/actions'
 
 const minpassword = 8
 export default class CreateBitcoin extends Component {
@@ -38,7 +38,7 @@ export default class CreateBitcoin extends Component {
         }
 
         // binding
-        this.onGenerateWallet = this.onGenerateWallet.bind(this)
+        this.onGenerateAsset = this.onGenerateAsset.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onChangeRepassword = this.onChangeRepassword.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
@@ -51,10 +51,10 @@ export default class CreateBitcoin extends Component {
     }
 
     // Local actions
-    onGenerateWallet(e) {
-        const wallet = generateRandomWallet()
-        state.view.address = wallet.address
-        state.view.private_key = wallet.private_key
+    onGenerateAsset(e) {
+        const asset = generateRandomWallet()
+        state.view.address = asset.address
+        state.view.private_key = asset.private_key
     }
     onChangePassword(e) {
         state.view.password = e.target.value
@@ -67,14 +67,14 @@ export default class CreateBitcoin extends Component {
         if (this.isFormValid) {
             const collector = collect()
             const address = state.view.address
-            createWallet(BTC.symbol, address)
+            createAsset(BTC.type, BTC.symbol, address)
             setPrivateKey(
                 BTC.symbol,
                 address,
                 state.view.private_key,
                 state.view.password
             )
-            setHref(routes.wallet(BTC.symbol, address))
+            setHref(routes.asset(BTC.symbol, address))
             collector.emit()
         }
     }
@@ -109,7 +109,7 @@ export default class CreateBitcoin extends Component {
             address: state.view.address,
             password: state.view.password,
             repassword: state.view.repassword,
-            onGenerateWallet: this.onGenerateWallet,
+            onGenerateAsset: this.onGenerateAsset,
             onChangePassword: this.onChangePassword,
             onChangeRepassword: this.onChangeRepassword,
             onSubmit: this.onSubmit,
@@ -126,7 +126,7 @@ function CreateBitcoinTemplate({
     address,
     password,
     repassword,
-    onGenerateWallet,
+    onGenerateAsset,
     onChangePassword,
     onChangeRepassword,
     onSubmit
@@ -149,7 +149,7 @@ function CreateBitcoinTemplate({
             </Div>
             <Div padding-bottom="50px">
                 <CenterElement>
-                    <Button onClick={onGenerateWallet} width="100%">
+                    <Button onClick={onGenerateAsset} width="100%">
                         Generate address
                     </Button>
                 </CenterElement>
@@ -164,7 +164,7 @@ function CreateBitcoinTemplate({
                                 Make sure that you remember this. This password
                                 can't be restored because we don't store it. For
                                 security reasons you will be asked often for
-                                this password to operate with this wallet.
+                                this password to operate with this asset.
                             </Help>
                             <SubLabel>
                                 This password encrypts your private key.

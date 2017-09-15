@@ -4,41 +4,35 @@ import state from '/store/state'
 import { decryptAES128CTR } from '/api/security'
 
 // GETTERS
-export function getTotalWallets(assets) {
-    let total = 0
-    Object.keys(Assets).forEach(crypto=>{
-        if (typeof assets[crypto] == 'object')
-            total += Object.keys(assets[crypto]).length
-    })
-    return total
+export function getTotalAssets(assets) {
+    return Object.keys(assets).length
 }
-
 
 export function convertBalance(symbol, balance) {
     return state.prices[symbol] * (balance||0)
 }
 
-export function getWallet(symbol, address) {
+export function getAsset(symbol, address) {
     return state.assets[symbol][address]
 }
 
-export function isWalletRegistered(symbol, address) {
+export function isAssetRegistered(symbol, address) {
     return (
         state.assets.hasOwnProperty(symbol) &&
         state.assets[symbol].hasOwnProperty(address)
     )
 }
 
-export function isWalletWithPrivateKey(symbol, address) {
+export function isAssetWithPrivateKey(symbol, address) {
     return (
-        isWalletRegistered(symbol, address) &&
+        isAssetRegistered(symbol, address) &&
         state.assets[symbol][address].hasOwnProperty('private_key')
     )
 }
 
-export function unlockBTCWallet(address, password) {
+export function unlockBTCAsset(address, password) {
     const private_key = decryptAES128CTR(
-        getWallet(assetsBTC.symbol, address).private_key,
+        getAsset(assetsBTC.symbol, address).private_key,
         password
     )
 
@@ -51,18 +45,10 @@ export function unlockBTCWallet(address, password) {
 }
 
 
-export function getWalletsAsArray() {
+export function getAssetsAsArray() {
     const assets = []
-    let wallet
-    Object.keys(state.assets).forEach(symbol => {
-        Object.keys(state.assets[symbol]).forEach(address => {
-            wallet = {
-                symbol: symbol,
-                address: address,
-                wallet: state.assets[symbol][address]
-            }
-            assets.push(wallet)
-        })
+    Object.keys(state.assets).forEach(asset_id => {
+        assets.push(state.assets[asset_id])
     })
     return assets
 }

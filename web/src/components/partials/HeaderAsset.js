@@ -16,33 +16,33 @@ import H2 from '/components/styled/H2'
 import Opacity from '/components/styled/Opacity'
 import { RightHeader, RightHeaderInner } from '/components/styled/Right'
 
-export default class HeaderWallet extends Component {
+export default class HeaderAsset extends Component {
     componentWillMount() {
         let unobserveLabel
         let unobserveBalance
         this.symbol = state.location.path[0]
         this.address = state.location.path[1]
-        this.wallet = state.assets[this.symbol][this.address]
+        this.asset = state.assets[this.symbol][this.address]
         // this.qr = generateQRCode(this.address, 140, styles.color.front3)
         this.observer = createObserver(mutations => {
             if (mutations[0].prop === 'pathname') {
                 this.symbol = state.location.path[0]
                 this.address = state.location.path[1]
-                this.wallet = state.assets[this.symbol][this.address]
+                this.asset = state.assets[this.symbol][this.address]
                 // this.qr = generateQRCode(this.address, 140, styles.color.front3)
                 if (unobserveLabel) {
                     unobserveLabel()
                     unobserveBalance()
                 }
-                unobserveLabel = this.observer.observe(this.wallet, 'label')
-                unobserveBalance = this.observer.observe(this.wallet, 'balance')
+                unobserveLabel = this.observer.observe(this.asset, 'label')
+                unobserveBalance = this.observer.observe(this.asset, 'balance')
             }
             this.forceUpdate()
         })
         this.observer.observe(state.location, 'pathname')
-        if (this.wallet !== undefined) {
-            unobserveLabel = this.observer.observe(this.wallet, 'label')
-            unobserveBalance = this.observer.observe(this.wallet, 'balance')
+        if (this.asset !== undefined) {
+            unobserveLabel = this.observer.observe(this.asset, 'label')
+            unobserveBalance = this.observer.observe(this.asset, 'balance')
         }
 
         this.onChangeLabel = this.onChangeLabel.bind(this)
@@ -56,7 +56,7 @@ export default class HeaderWallet extends Component {
     }
 
     onChangeLabel(e) {
-        if (this.wallet !== undefined)
+        if (this.asset !== undefined)
             state.assets[this.symbol][
                 this.address
             ].label = e.target.value.trim()
@@ -67,9 +67,9 @@ export default class HeaderWallet extends Component {
     }
 
     render() {
-        return React.createElement(HeaderWalletTemplate, {
+        return React.createElement(HeaderAssetTemplate, {
             address: this.address,
-            label: this.wallet ? this.wallet.label : '',
+            label: this.asset ? this.asset.label : '',
             symbol: this.symbol,
             onChangeLabel: this.onChangeLabel,
             onBlur: this.onBlur,
@@ -78,7 +78,7 @@ export default class HeaderWallet extends Component {
     }
 }
 
-function HeaderWalletTemplate({ address, label, onChangeLabel, onBlur, qr }) {
+function HeaderAssetTemplate({ address, label, onChangeLabel, onBlur, qr }) {
     return (
         <RightHeader>
             <RightHeaderInner>

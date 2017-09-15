@@ -11,8 +11,7 @@ import { numberWithCommas, round } from '/api/numbers'
 import { Assets } from '/api/Assets'
 
 import state from '/store/state'
-import { getTotalWallets } from '/store/getters'
-import { setHref, exportWallets, importWalletsFromFile, closeSession } from '/store/actions'
+import { setHref, exportAssets, importAssetsFromFile, closeSession } from '/store/actions'
 
 
 import IconMore from 'react-icons/lib/md/more-vert'
@@ -24,14 +23,14 @@ import {
 } from '/components/styled/Dropdown'
 import ButtonBig from '/components/styled/ButtonBig'
 
-import WalletList from '/components/partials/WalletList'
+import AssetList from '/components/partials/AssetList'
 
 export default class Left extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'balance')
         this.observer.observe(state, 'menuOpen')
-        this.observer.observe(state, 'totalWallets')
+        this.observer.observe(state, 'totalAssets')
 
         this.onMenuOpen = this.onMenuOpen.bind(this)
         this.onExport = this.onExport.bind(this)
@@ -46,10 +45,10 @@ export default class Left extends Component {
     }
 
     onExport(e) {
-        exportWallets()
+        exportAssets()
     }        
     onImport(e) {
-        importWalletsFromFile()
+        importAssetsFromFile()
     }  
     onClose(e) {
         closeSession()
@@ -74,7 +73,7 @@ export default class Left extends Component {
             onExport: this.onExport,
             onImport: this.onImport,
             onClose: this.onClose,
-            totalWallets: state.totalWallets
+            totalAssets: state.totalAssets
         })
     }
 }
@@ -89,7 +88,7 @@ function LeftTemplate({
     onExport,
     onImport,
     onClose,
-    totalWallets
+    totalAssets
 }) {
     return (
         <LeftDiv>
@@ -121,20 +120,20 @@ function LeftTemplate({
                         <IconMore size={35} color={styles.color.front2} />
                         <DropDownMenu left="7px">
                             <DropDownItem onClick={onImport}>Import backup</DropDownItem>
-                            <DropDownItem onClick={onExport} disabled={totalWallets===0}>Export backup</DropDownItem>
-                            <DropDownItem onClick={onClose} disabled={totalWallets===0}>Close session</DropDownItem>
+                            <DropDownItem onClick={onExport} disabled={totalAssets===0}>Export backup</DropDownItem>
+                            <DropDownItem onClick={onClose} disabled={totalAssets===0}>Close session</DropDownItem>
                         </DropDownMenu>
                     </DropDown>
                 </ColumnLeftHeaderLeft>
                 <ColumnLeftHeaderRight />
             </ColumnLeftHeader>
             <ColumnLeftContent>
-                <WalletList />
+                <AssetList />
             </ColumnLeftContent>
             <ColumnLeftFooter>
                 <ButtonBig
                     onClick={e => {
-                        setHref(routes.addasset())
+                        setHref(routes.add())
                     }}
                 >
                     Add asset

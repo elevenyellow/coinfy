@@ -8,7 +8,7 @@ import { getAllFormats } from '/api/Assets/BTC'
 import { printTemplate } from '/api/print'
 
 import state from '/store/state'
-import { unlockBTCWallet } from '/store/getters'
+import { unlockBTCAsset } from '/store/getters'
 
 import routes from '/const/routes'
 import styles from '/const/styles'
@@ -50,7 +50,7 @@ export default class PrintBTC extends Component {
     onPrint(e) {
         e.preventDefault()
         const address = state.location.path[1]
-        const private_key = unlockBTCWallet(address, state.view.password)
+        const private_key = unlockBTCAsset(address, state.view.password)
         if ( private_key ) {
             const data = getAllFormats(private_key)
             data.address_qr = generateQRCode(data.address)
@@ -81,7 +81,7 @@ function PrintBTCTemplate({ password, invalidPassword, onChangePassword, onPrint
                         <Input
                             width="100%"
                             value={password}
-                            placeholder="Password of this wallet"
+                            placeholder="Password of this asset"
                             onChange={onChangePassword}
                             style={{textAlign:'center'}}
                             type="password"

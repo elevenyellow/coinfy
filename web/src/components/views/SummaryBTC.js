@@ -17,7 +17,7 @@ export default class SummaryBTC extends Component {
     componentWillMount() {
         let unobserveBalance
         let address = state.location.path[1]
-        let wallet = state.assets.BTC[address]
+        let asset = state.assets.BTC[address]
 
         this.state = {
             detailVisible: false
@@ -26,13 +26,13 @@ export default class SummaryBTC extends Component {
         this.observer = createObserver(mutations => {
             if (mutations[0].prop === 'pathname') {
                 address = state.location.path[1]
-                wallet = state.assets.BTC[address]
+                asset = state.assets.BTC[address]
                 unobserveBalance()
-                unobserveBalance = this.observer.observe(wallet, 'balance')
+                unobserveBalance = this.observer.observe(asset, 'balance')
             }
             this.forceUpdate()
         })
-        unobserveBalance = this.observer.observe(wallet, 'balance')
+        unobserveBalance = this.observer.observe(asset, 'balance')
         this.observer.observe(state.location, 'pathname')
         this.observer.observe(state, 'currency')
         this.observer.observe(state.prices, BTC.symbol)
@@ -50,11 +50,11 @@ export default class SummaryBTC extends Component {
 
     render() {
         const address = state.location.path[1]
-        const wallet = state.assets.BTC[address]
+        const asset = state.assets.BTC[address]
         return React.createElement(SummaryBTCTemplate, {
-            balance_asset: wallet.balance,
+            balance_asset: asset.balance,
             balance_currency: currencies[state.currency].format(
-                convertBalance(BTC.symbol, wallet.balance),
+                convertBalance(BTC.symbol, asset.balance),
                 0
             ),
             detailVisible: this.state.detailVisible,

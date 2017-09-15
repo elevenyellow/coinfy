@@ -2,17 +2,17 @@ export default {
     home: () => `/`,
 
     // Add
-    addasset: () => `/addasset`,
-    createbtc: () => `/addasset/create-bitcoin`,
-    importbtc: () => `/addasset/import-bitcoin`,
+    add: () => `/add`,
+    createbtc: () => `/add/create-bitcoin`,
+    importbtc: () => `/add/import-bitcoin`,
 
-    // Wallets
-    wallet: (currency, address) => `/${currency}/${address}/summary`, // default
-    summaryWallet: (currency, address) => `/${currency}/${address}/summary`,
-    receiveWallet: (currency, address) => `/${currency}/${address}/receive`,
-    sendWallet: (currency, address) => `/${currency}/${address}/send`,
-    printWallet: (currency, address) => `/${currency}/${address}/print`,
-    setPrivateKeyWallet: (currency, address) => `/${currency}/${address}/setprivatekey`,
-    changePasswordWallet: (currency, address) => `/${currency}/${address}/changepassword`,
-    deleteWallet: (currency, address) => `/${currency}/${address}/delete`
+    // Assets
+    asset: asset_id => `/${asset_id}/summary`, // default
+    summaryAsset: asset_id => `/${asset_id}/summary`,
+    receiveAsset: asset_id => `/${asset_id}/receive`,
+    sendAsset: asset_id => `/${asset_id}/send`,
+    printAsset: asset_id => `/${asset_id}/print`,
+    setPrivateKeyAsset: asset_id => `/${asset_id}/setprivatekey`,
+    changePasswordAsset: asset_id => `/${asset_id}/changepassword`,
+    deleteAsset: asset_id => `/${asset_id}/delete`
 }

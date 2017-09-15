@@ -65,7 +65,7 @@ function AddAssetTemplate({
                 <RightHeaderInner>
                     <Div float="left" padding-left="15px">
                         <H1>Add asset</H1>
-                        <H2>Create or Import wallets</H2>
+                        <H2>Create or Import assets</H2>
                     </Div>
                     <Div clear="both" />
                 </RightHeaderInner>
@@ -84,7 +84,7 @@ function AddAssetTemplate({
                             />
                         </RightContentMenuItemImage>
                         <RightContentMenuItemText>
-                            Create Bitcoin wallet
+                            Create Bitcoin asset
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
 
@@ -100,7 +100,7 @@ function AddAssetTemplate({
                             />
                         </RightContentMenuItemImage>
                         <RightContentMenuItemText>
-                            Import Bitcoin wallet
+                            Import Bitcoin asset
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
                 </RightContentMenu>

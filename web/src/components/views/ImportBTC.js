@@ -16,7 +16,7 @@ import { encryptAES128CTR } from '/api/security'
 import { BTC } from '/api/Assets'
 import routes from '/const/routes'
 import state from '/store/state'
-import { isWalletRegistered } from '/store/getters'
+import { isAssetRegistered } from '/store/getters'
 
 import styles from '/const/styles'
 
@@ -32,7 +32,7 @@ import { Label, SubLabel } from '/components/styled/Label'
 
 import {
     setHref,
-    createWallet,
+    createAsset,
     setPrivateKey,
     setPublicKey
 } from '/store/actions'
@@ -133,7 +133,7 @@ export default class ImportBitcoin extends Component {
         // if (this.isFormValid) {
             const collector = collect()
             const address = state.view.address
-            createWallet(BTC.symbol, address)
+            createAsset(BTC.symbol, address)
             if (state.view.type_import === types_import.public_key)
                 setPublicKey(BTC.symbol, address, state.view.private_key)
             else if (state.view.type_import === types_import.private_key)
@@ -144,7 +144,7 @@ export default class ImportBitcoin extends Component {
                     state.view.password
                 )
 
-            setHref(routes.wallet(BTC.symbol, address))
+            setHref(routes.asset(BTC.symbol, address))
             collector.emit()
         // }
     }
@@ -182,7 +182,7 @@ export default class ImportBitcoin extends Component {
             isValidInput: this.isValidInput,
             isInvalidRepassword: this.isInvalidRepassword,
             isErrorInput: this.isErrorInput,
-            isRegistered: isWalletRegistered(BTC.symbol, state.view.address),
+            isRegistered: isAssetRegistered(BTC.type, BTC.symbol, state.view.address),
             isFormValid: this.isFormValid,
             type_import: state.view.type_import,
             address: state.view.address,
@@ -284,7 +284,7 @@ function ImportBitcoinTemplate({
                                 error={
                                     isErrorInput
                                         ? 'Invalid address'
-                                        : 'You already have this wallet'
+                                        : 'You already have this asset'
                                 }
                                 invalid={isErrorInput || isRegistered}
                             />
@@ -310,7 +310,7 @@ function ImportBitcoinTemplate({
                                 error={
                                     isErrorInput
                                         ? 'Invalid public key'
-                                        : 'You already have this wallet'
+                                        : 'You already have this asset'
                                 }
                                 invalid={isErrorInput || isRegistered}
                             />
@@ -339,7 +339,7 @@ function ImportBitcoinTemplate({
                                     error={
                                         isErrorInput
                                             ? 'Invalid private key'
-                                            : 'You already have this wallet'
+                                            : 'You already have this asset'
                                     }
                                     invalid={isErrorInput || isRegistered}
                                 />

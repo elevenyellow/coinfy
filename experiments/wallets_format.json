@@ -1,6 +1,6 @@
 {
     "v": 1, // version
-    "BTC17tqiAnH6Y4ixHaSkWB3yKJ9yQmBv2hYjw": {
+    "BTC-17tqiAnH6Y4ixHaSkWB3yKJ9yQmBv2hYjw": { // unique id
         "type": "wallet",
         "symbol": "BTC",
         "address": "17tqiAnH6Y4ixHaSkWB3yKJ9yQmBv2hYjw",
@@ -13,7 +13,7 @@
             "txs": []
         }
     },
-    "ETH0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3": {
+    "ETH-0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3": {
         "type": "wallet",
         "symbol": "ETH",
         "address": "0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3",
@@ -26,7 +26,7 @@
             "txs": []
         }
     },
-    "ANT0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3": {
+    "ANT-0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3": {
         "type": "token",
         "symbol": "ANT",
         "address": "0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3",
@@ -39,7 +39,7 @@
             "txs": []
         }
     },
-    "COINBASEBTCjosema.enzo@gmail.com": {
+    "COINBASE-BTC-josema.enzo@gmail.com": {
         "type": "coinbase",
         "symbol": "BTC",
         "address": "josema.enzo@gmail.com",
