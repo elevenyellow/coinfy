@@ -1,6 +1,6 @@
 import { computed, register, createObserver } from 'dop'
 import { create } from '/doprouter/core'
-import { assets } from '/api/assets'
+import { Assets } from '/api/Assets'
 import { currencies, USD } from '/const/currencies'
 import { getTotalWallets } from '/store/getters'
 
@@ -10,14 +10,14 @@ const initialState = {
     // Data
     prices: {},
     currency: localStorage.getItem('currency') || USD.symbol,
-    walletsExported: localStorage.getItem('walletsExported') !== 'false',
-    wallets: {},
+    assetsExported: localStorage.getItem('assetsExported') !== 'false',
+    assets: {},
     balance: computed(function() {
         let total = 0
-        Object.keys(this.wallets).forEach(symbol => {
-            Object.keys(this.wallets[symbol]).forEach(address => {
-                if (this.wallets[symbol][address])
-                    total += this.prices[symbol] * (this.wallets[symbol][address].balance||0)
+        Object.keys(this.assets).forEach(symbol => {
+            Object.keys(this.assets[symbol]).forEach(address => {
+                if (this.assets[symbol][address])
+                    total += this.prices[symbol] * (this.assets[symbol][address].balance||0)
             })
         })
         // console.log( 'recalculating balance...', total )
@@ -37,20 +37,20 @@ const initialState = {
 }
 
 // restoring price from localStorage
-const assetsArray = Object.keys(assets)
+const assetsArray = Object.keys(Assets)
 assetsArray.forEach(symbol => {
-    initialState.wallets[symbol] = {}
+    initialState.assets[symbol] = {}
     if (localStorage.getItem(symbol) !== null)
         initialState.prices[symbol] = Number(localStorage.getItem(symbol))
 })
     
 
 
-// restoring wallets from localStorage
+// restoring assets from localStorage
 try {
-    let wallets = window.localStorage.getItem('wallets')
-    wallets = JSON.parse(wallets)
-    if (wallets && typeof wallets == 'object') initialState.wallets = wallets
+    let assets = window.localStorage.getItem('assets')
+    assets = JSON.parse(assets)
+    if (assets && typeof assets == 'object') initialState.assets = assets
 } catch (e) {}
 
 
@@ -65,13 +65,13 @@ const state = register(initialState)
 
 // totalWallets autoupdate
 const updateTotalWallets = () =>
-    (state.totalWallets = getTotalWallets(state.wallets))
+    (state.totalWallets = getTotalWallets(state.assets))
 updateTotalWallets()
 const observer = createObserver(updateTotalWallets)
-observer.observe(state, 'wallets')
+observer.observe(state, 'assets')
 assetsArray.forEach(crypto => {
-    if (state.wallets[crypto])
-        observer.observe(state.wallets[crypto])
+    if (state.assets[crypto])
+        observer.observe(state.assets[crypto])
 })
 
 

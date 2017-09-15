@@ -1,14 +1,14 @@
-import { assets } from '/api/assets'
-import { isPrivateKey, getAddressFromPrivateKey } from '/api/assets/BTC'
+import { Assets } from '/api/Assets'
+import { isPrivateKey, getAddressFromPrivateKey } from '/api/Assets/BTC'
 import state from '/store/state'
 import { decryptAES128CTR } from '/api/security'
 
 // GETTERS
-export function getTotalWallets(wallets) {
+export function getTotalWallets(assets) {
     let total = 0
-    Object.keys(assets).forEach(crypto=>{
-        if (typeof wallets[crypto] == 'object')
-            total += Object.keys(wallets[crypto]).length
+    Object.keys(Assets).forEach(crypto=>{
+        if (typeof assets[crypto] == 'object')
+            total += Object.keys(assets[crypto]).length
     })
     return total
 }
@@ -19,20 +19,20 @@ export function convertBalance(symbol, balance) {
 }
 
 export function getWallet(symbol, address) {
-    return state.wallets[symbol][address]
+    return state.assets[symbol][address]
 }
 
 export function isWalletRegistered(symbol, address) {
     return (
-        state.wallets.hasOwnProperty(symbol) &&
-        state.wallets[symbol].hasOwnProperty(address)
+        state.assets.hasOwnProperty(symbol) &&
+        state.assets[symbol].hasOwnProperty(address)
     )
 }
 
 export function isWalletWithPrivateKey(symbol, address) {
     return (
         isWalletRegistered(symbol, address) &&
-        state.wallets[symbol][address].hasOwnProperty('private_key')
+        state.assets[symbol][address].hasOwnProperty('private_key')
     )
 }
 
@@ -52,17 +52,17 @@ export function unlockBTCWallet(address, password) {
 
 
 export function getWalletsAsArray() {
-    const wallets = []
+    const assets = []
     let wallet
-    Object.keys(state.wallets).forEach(symbol => {
-        Object.keys(state.wallets[symbol]).forEach(address => {
+    Object.keys(state.assets).forEach(symbol => {
+        Object.keys(state.assets[symbol]).forEach(address => {
             wallet = {
                 symbol: symbol,
                 address: address,
-                wallet: state.wallets[symbol][address]
+                wallet: state.assets[symbol][address]
             }
-            wallets.push(wallet)
+            assets.push(wallet)
         })
     })
-    return wallets
+    return assets
 }

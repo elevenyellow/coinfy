@@ -1,7 +1,7 @@
-import * as btc from '/api/assets/BTC'
-import * as bch from '/api/assets/BCH'
+import * as btc from '/api/Assets/BTC'
+import * as bch from '/api/Assets/BCH'
 
-export const assets = {
+export const Assets = {
     BTC: btc,
     // BCH: bch,
 }

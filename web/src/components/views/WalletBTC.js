@@ -4,7 +4,7 @@ import { Router, Route, Show } from '/doprouter/react'
 
 import { setHref } from '/store/actions'
 
-import { BTC } from '/api/assets'
+import { BTC } from '/api/Assets'
 import routes from '/const/routes'
 import state from '/store/state'
 import { isWalletRegistered, isWalletWithPrivateKey } from '/store/getters'

@@ -2,9 +2,9 @@ export default {
     home: () => `/`,
 
     // Add
-    addwallet: () => `/addwallet`,
-    createbtc: () => `/addwallet/create-bitcoin`,
-    importbtc: () => `/addwallet/import-bitcoin`,
+    addasset: () => `/addasset`,
+    createbtc: () => `/addasset/create-bitcoin`,
+    importbtc: () => `/addasset/import-bitcoin`,
 
     // Wallets
     wallet: (currency, address) => `/${currency}/${address}/summary`, // default

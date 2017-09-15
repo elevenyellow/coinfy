@@ -8,7 +8,7 @@ import styles from '/const/styles'
 import { currencies } from '/const/currencies'
 
 import { numberWithCommas, round } from '/api/numbers'
-import { assets } from '/api/assets'
+import { Assets } from '/api/Assets'
 
 import state from '/store/state'
 import { getTotalWallets } from '/store/getters'
@@ -67,7 +67,7 @@ export default class Left extends Component {
         return React.createElement(LeftTemplate, {
             ascii: currencies[state.currency].ascii,
             balance: numberWithCommas(round(state.balance)),
-            color: state.balance>0 ? assets.BTC.color : '#DDDDDD',
+            color: state.balance>0 ? Assets.BTC.color : '#DDDDDD',
             menuOpen: state.menuOpen,
             onMenuOpen: this.onMenuOpen,
             onMenuClose: this.onMenuClose,
@@ -134,10 +134,10 @@ function LeftTemplate({
             <ColumnLeftFooter>
                 <ButtonBig
                     onClick={e => {
-                        setHref(routes.addwallet())
+                        setHref(routes.addasset())
                     }}
                 >
-                    Add wallet
+                    Add asset
                 </ButtonBig>
             </ColumnLeftFooter>
         </LeftDiv>

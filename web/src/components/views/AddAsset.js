@@ -24,7 +24,7 @@ import {
 import CreateBTC from '/components/views/CreateBTC'
 import ImportBTC from '/components/views/ImportBTC'
 
-export default class AddWallet extends Component {
+export default class AddAsset extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state.location.path, 'length')
@@ -44,7 +44,7 @@ export default class AddWallet extends Component {
     }
 
     render() {
-        return React.createElement(AddWalletTemplate, {
+        return React.createElement(AddAssetTemplate, {
             location: state.location,
             routesCreatebtc: routes.createbtc(),
             routesImportbtc: routes.importbtc(),
@@ -53,7 +53,7 @@ export default class AddWallet extends Component {
     }
 }
 
-function AddWalletTemplate({
+function AddAssetTemplate({
     location,
     routesCreatebtc,
     routesImportbtc,
@@ -64,8 +64,8 @@ function AddWalletTemplate({
             <RightHeader>
                 <RightHeaderInner>
                     <Div float="left" padding-left="15px">
-                        <H1>Add wallet</H1>
-                        <H2>Create or Import Wallets</H2>
+                        <H1>Add asset</H1>
+                        <H2>Create or Import wallets</H2>
                     </Div>
                     <Div clear="both" />
                 </RightHeaderInner>

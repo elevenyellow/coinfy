@@ -1,6 +1,6 @@
 import React from 'react'
 import { collect } from 'dop'
-import { assets } from '/api/assets'
+import { Assets } from '/api/Assets'
 import routes from '/const/routes'
 import styles from '/const/styles'
 import timeouts from '/const/timeouts'
@@ -15,7 +15,7 @@ export function setHref(href) {
 }
 
 export function createWallet(symbol, address) {
-    state.wallets[symbol][address] = {
+    state.assets[symbol][address] = {
         label: '',
         balance: 0,
         state: { // this must be removed when exporting
@@ -27,12 +27,12 @@ export function createWallet(symbol, address) {
     setWalletsExported(false)
 }
 export function setPublicKey(symbol, address, public_key) {
-    state.wallets[symbol][address].public_key = public_key
+    state.assets[symbol][address].public_key = public_key
     saveAssetsLocalStorage()
     setWalletsExported(false)
 }
 export function setPrivateKey(symbol, address, private_key, password) {
-    state.wallets[symbol][address].private_key = encryptAES128CTR(
+    state.assets[symbol][address].private_key = encryptAES128CTR(
         private_key,
         password
     )
@@ -41,8 +41,8 @@ export function setPrivateKey(symbol, address, private_key, password) {
 }
 export function deleteWallet(symbol, address) {
     const collector = collect()
-    const name = state.wallets[symbol][address].label || address
-    delete state.wallets[symbol][address]
+    const name = state.assets[symbol][address].label || address
+    delete state.assets[symbol][address]
     setHref(routes.home())
     addNotification(
         `Wallet "${name}" has been deleted`,
@@ -54,19 +54,19 @@ export function deleteWallet(symbol, address) {
 }
 
 export function saveAssetsLocalStorage() {
-    const wallets = JSON.stringify(state.wallets)
-    localStorage.setItem('wallets', wallets)
+    const assets = JSON.stringify(state.assets)
+    localStorage.setItem('assets', assets)
 }
 
 export function setWalletsExported(value) {
-    state.walletsExported = value
-    localStorage.setItem('walletsExported', value)
+    state.assetsExported = value
+    localStorage.setItem('assetsExported', value)
 }
 
 
 export function exportWallets() {
     if (state.totalWallets > 0) {
-        const data = btoa(localStorage.getItem('wallets'))
+        const data = btoa(localStorage.getItem('assets'))
         const a = document.createElement('a')
         const file = new Blob([data], { type: 'charset=UTF-8' }) //,
         // const date = new Date().toJSON().replace(/\..+$/,'')
@@ -78,7 +78,7 @@ export function exportWallets() {
 }
 
 export function importWalletsFromFile() {
-    if (state.totalWallets > 0 && !state.walletsExported) {
+    if (state.totalWallets > 0 && !state.assetsExported) {
         state.popups.closeSession.confirm = () => {
             state.popups.closeSession.open = false
             // setWalletsExported(true) // Not sure if should ask again after a failed import
@@ -112,11 +112,11 @@ export function openImportWalletsFromFile() {
 
 export function importWallets(dataString) {
     try {
-        const wallets = JSON.parse(atob(dataString))
-        const totalWallets = getTotalWallets(wallets)
+        const assets = JSON.parse(atob(dataString))
+        const totalWallets = getTotalWallets(assets)
         if (totalWallets > 0) {
             const collector = collect()
-            state.wallets = wallets
+            state.assets = assets
             setHref(routes.home())
             addNotification(
                 `You have imported ${totalWallets} Wallets`,
@@ -142,7 +142,7 @@ export function importWallets(dataString) {
 
 export function closeSession() {
     if (state.totalWallets > 0) {
-        if (!state.walletsExported) {
+        if (!state.assetsExported) {
             state.popups.closeSession.confirm = forceloseSession
             state.popups.closeSession.cancel = () => {
                 state.popups.closeSession.open = false
@@ -154,7 +154,7 @@ export function closeSession() {
 
 export function forceloseSession() {
     setWalletsExported(true)
-    localStorage.removeItem('wallets')
+    localStorage.removeItem('assets')
     location.href = '/'
 }
 
@@ -190,7 +190,7 @@ export function updatePrice(symbol, value) {
 
 export function updateBalance(symbol, address, balance) {
     const collector = collect()
-    state.wallets[symbol][address].balance = balance
+    state.assets[symbol][address].balance = balance
     collector.emit()
 }
 
@@ -230,7 +230,7 @@ fetchAllBalances()
 
 
 export function fetchBalance(symbol, address) {
-    assets[symbol]
+    Assets[symbol]
     .fetchBalance(address)
     .then(balance => {
         showNotConnectionNotification(false)
@@ -243,7 +243,7 @@ export function fetchBalance(symbol, address) {
 }
 
 export const fetchPrices = (function() {
-    let assetsArray = Object.keys(assets)
+    let assetsArray = Object.keys(Assets)
     let timeout
     let manager = new CryptoPriceManager()
     manager.onUpdate = function(crypto, value, source) {

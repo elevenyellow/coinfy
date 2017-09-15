@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import { Router, Route, Show } from '/doprouter/react'
 
-import { setHref, updateSession } from '/store/actions'
+import { setHref, saveAssetsLocalStorage } from '/store/actions'
 
 import { generateQRCode } from '/api/qr'
 
@@ -22,13 +22,13 @@ export default class HeaderWallet extends Component {
         let unobserveBalance
         this.symbol = state.location.path[0]
         this.address = state.location.path[1]
-        this.wallet = state.wallets[this.symbol][this.address]
+        this.wallet = state.assets[this.symbol][this.address]
         // this.qr = generateQRCode(this.address, 140, styles.color.front3)
         this.observer = createObserver(mutations => {
             if (mutations[0].prop === 'pathname') {
                 this.symbol = state.location.path[0]
                 this.address = state.location.path[1]
-                this.wallet = state.wallets[this.symbol][this.address]
+                this.wallet = state.assets[this.symbol][this.address]
                 // this.qr = generateQRCode(this.address, 140, styles.color.front3)
                 if (unobserveLabel) {
                     unobserveLabel()
@@ -57,13 +57,13 @@ export default class HeaderWallet extends Component {
 
     onChangeLabel(e) {
         if (this.wallet !== undefined)
-            state.wallets[this.symbol][
+            state.assets[this.symbol][
                 this.address
             ].label = e.target.value.trim()
     }
 
     onBlur(e) {
-        updateSession()
+        saveAssetsLocalStorage()
     }
 
     render() {

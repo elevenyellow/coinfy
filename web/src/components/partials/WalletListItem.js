@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
-import { assets } from '/api/assets'
+import { Assets } from '/api/Assets'
 import { round } from '/api/numbers'
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -14,12 +14,12 @@ export default class Wallet extends Component {
     componentWillMount() {
         const wallet = this.props.wallet
         this.observer = createObserver(mutations => this.forceUpdate())
-        this.observer.observe(state, 'wallets')
+        this.observer.observe(state, 'assets')
         this.observer.observe(state.location, 'pathname')
         this.observer.observe(state.prices)
         this.observer.observe(wallet.wallet, 'label')
         this.observer.observe(wallet.wallet, 'balance')
-        this.observer.observe(state.wallets[wallet.symbol])
+        this.observer.observe(state.assets[wallet.symbol])
 
         // binding
         this.onClick = this.onClick.bind(this)
@@ -47,7 +47,7 @@ export default class Wallet extends Component {
                 convertBalance(wallet.symbol, wallet.wallet.balance),
                 0
             ),
-            balance_asset: assets[wallet.symbol].format(wallet.wallet.balance),
+            balance_asset: Assets[wallet.symbol].format(wallet.wallet.balance),
             onClick: this.onClick
         })
     }
