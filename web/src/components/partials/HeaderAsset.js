@@ -61,6 +61,7 @@ export default class HeaderAsset extends Component {
 
     onBlur(e) {
         saveAssetsLocalStorage()
+        setAssetsExported(false)
     }
 
     render() {
@@ -87,7 +88,7 @@ function HeaderAssetTemplate({ address, label, onChangeLabel, onBlur, qr }) {
                 >
                     <img src="/static/image/BTC.svg" width="30" height="30" />
                 </Div>
-                <Div width="calc(100% - 130px)" float="left">
+                <Div width="calc(100% - 40px)" float="left">
                     <H1Input
                         value={label}
                         onChange={onChangeLabel}

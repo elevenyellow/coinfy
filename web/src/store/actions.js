@@ -21,29 +21,32 @@ export function createAsset(type, symbol, address) {
         address: address,
         label: '',
         balance: 0,
-        state: { // this must be removed when exporting
-            last_update: 0, // last time we checked balance in timestamp
-            updating: false,
+        state: {
+            // this must be removed when exporting
+            last_update_balance: 0, // last time we checked balance in timestamp
+            updating_balance: false,
+            last_update_summary: 0, // last time we checked summary in timestamp
+            updating_summary: false
         }
     }
-    state.assets[getAssetId({symbol,address,type})] = asset
+    setDefaultStateAsset(asset)
+    state.assets[getAssetId({ symbol, address, type })] = asset
     fetchBalance(symbol, address)
     saveAssetsLocalStorage()
     setAssetsExported(false)
     return asset
 }
+    
+
 export function setPublicKey(asset_id, public_key) {
     state.assets[asset_id].public_key = public_key
     saveAssetsLocalStorage()
     setAssetsExported(false)
 }
 export function setPrivateKey(asset_id, private_key, password) {
-    state.assets[asset_id].private_key = encryptAES128CTR(
-        private_key,
-        password
-    )
+    state.assets[asset_id].private_key = encryptAES128CTR(private_key, password)
     saveAssetsLocalStorage()
-    setAssetsExported(false)    
+    setAssetsExported(false)
 }
 export function deleteAsset(asset_id) {
     const collector = collect()
@@ -69,17 +72,21 @@ export function setAssetsExported(value) {
     localStorage.setItem('assetsExported', value)
 }
 
-
 export function exportAssets() {
     if (state.totalAssets > 0) {
-        const data = btoa(localStorage.getItem('assets'))
+        const data = JSON.stringify(state.assets, (key, value) => {
+            key = key.toLocaleLowerCase()
+            return key === 'state'
+                ? undefined
+                : value
+        }) // btoa
         const a = document.createElement('a')
         const file = new Blob([data], { type: 'charset=UTF-8' }) //,
         // const date = new Date().toJSON().replace(/\..+$/,'')
         a.href = URL.createObjectURL(file)
         a.download = 'YOU_MUST_RENAME_THIS_FOR_SECURITY'
-        setAssetsExported(true)
         a.click()
+        setAssetsExported(true)
     }
 }
 
@@ -118,7 +125,7 @@ export function openImportAssetsFromFile() {
 
 export function importAssets(dataString) {
     try {
-        const assets = JSON.parse((dataString))//atob
+        const assets = JSON.parse(dataString) //atob
         const totalAssets = getTotalAssets(assets)
         if (totalAssets > 0) {
             const collector = collect()
@@ -195,21 +202,23 @@ export function updatePrice(symbol, value) {
 }
 
 export function updateBalance(asset_id, balance) {
-    const collector = collect()
-    state.assets[asset_id].balance = balance
-    collector.emit()
+    if (state.assets[asset_id].balance !== balance) {
+        const collector = collect()
+        state.assets[asset_id].balance = balance
+        collector.emit()
+        saveAssetsLocalStorage()
+    }
 }
 
 let idNotificationNotConnection
 export function showNotConnectionNotification(value) {
-    if (value && idNotificationNotConnection===undefined) {
+    if (value && idNotificationNotConnection === undefined) {
         idNotificationNotConnection = addNotification(
             "Seems like you don't have internet connection",
             styles.notificationColor.grey,
             null
         )
-    }
-    else if (!value && idNotificationNotConnection!==undefined) {
+    } else if (!value && idNotificationNotConnection !== undefined) {
         deleteNotification(idNotificationNotConnection)
         idNotificationNotConnection = undefined
     }
@@ -220,10 +229,6 @@ export function setAssetLabel(asset_id, label) {
     state.assets[asset_id].label = label
     collector.emit()
 }
-
-
-
-
 
 // Fetchers
 
@@ -238,18 +243,17 @@ export function fetchAllBalances() {
 }
 fetchAllBalances()
 
-
 export function fetchBalance(symbol, address) {
     Assets[symbol]
-    .fetchBalance(address)
-    .then(balance => {
-        showNotConnectionNotification(false)
-        updateBalance(getAssetId({symbol, address}), balance)
-    })
-    .catch(e => {
-        console.error( symbol, 'fetchBalance', e )
-        showNotConnectionNotification(true)
-    })
+        .fetchBalance(address)
+        .then(balance => {
+            showNotConnectionNotification(false)
+            updateBalance(getAssetId({ symbol, address }), balance)
+        })
+        .catch(e => {
+            console.error(symbol, 'fetchBalance', e)
+            showNotConnectionNotification(true)
+        })
 }
 
 export const fetchPrices = (function() {
@@ -276,7 +280,7 @@ export const fetchPrices = (function() {
     }
     manager.onError = e => {
         showNotConnectionNotification(true)
-        console.log( 'fetchPrices', e )
+        console.log('fetchPrices', e)
     }
 
     return function() {

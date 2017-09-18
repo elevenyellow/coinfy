@@ -20,7 +20,7 @@ const initialState = {
             if (asset)
                 total += this.prices[asset.symbol] * (asset.balance||0)
         })
-        console.log( 'recalculating balance...', total )
+        // console.log( 'recalculating balance...', total )
         return total
     }),
 
@@ -44,15 +44,20 @@ assetsArray.forEach(symbol => {
     if (localStorage.getItem(symbol) !== null)
         initialState.prices[symbol] = Number(localStorage.getItem(symbol))
 })
-    
 
 
 // restoring assets from localStorage
 try {
-    let assets = window.localStorage.getItem('assets')
+    let assets = localStorage.getItem('assets')
     assets = JSON.parse(assets)
-    if (assets && typeof assets == 'object') initialState.assets = assets
-} catch (e) {}
+    if (assets && typeof assets == 'object') {
+        initialState.assets = assets
+        for (let asset_id in assets)
+            assets[asset_id].state = {}
+    }
+} catch (e) {
+    console.error('estoring assets from localStorage', e );
+}
 
 
 
