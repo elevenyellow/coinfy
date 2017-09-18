@@ -6,7 +6,7 @@ import { Show } from '/doprouter/react'
 import { generateQRCode } from '/api/qr'
 import { generateRandomWallet } from '/api/Assets/BTC'
 
-import { BTC } from '/api/Assets'
+import { BTC, getAssetId } from '/api/Assets'
 import routes from '/const/routes'
 import state from '/store/state'
 import styles from '/const/styles'
@@ -67,14 +67,13 @@ export default class CreateBitcoin extends Component {
         if (this.isFormValid) {
             const collector = collect()
             const address = state.view.address
-            createAsset(BTC.type, BTC.symbol, address)
+            const asset = createAsset(BTC.type, BTC.symbol, address)
             setPrivateKey(
-                BTC.symbol,
-                address,
+                getAssetId({symbol:BTC.symbol, address}),
                 state.view.private_key,
                 state.view.password
             )
-            setHref(routes.asset(BTC.symbol, address))
+            setHref(routes.asset(getAssetId(asset)))
             collector.emit()
         }
     }

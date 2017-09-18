@@ -13,7 +13,7 @@ import {
 } from '/api/Assets/BTC'
 import { encryptAES128CTR } from '/api/security'
 
-import { BTC } from '/api/Assets'
+import { BTC, getAssetId } from '/api/Assets'
 import routes from '/const/routes'
 import state from '/store/state'
 import { isAssetRegistered } from '/store/getters'
@@ -103,7 +103,7 @@ export default class ImportBitcoin extends Component {
                 state.view.address = address
                 state.view.private_key = ''
             } catch (e) {
-                //console.log( e );
+                console.log( e );
             }
         } else if (
             state.view.type_import === types_import.private_key &&
@@ -133,18 +133,17 @@ export default class ImportBitcoin extends Component {
         // if (this.isFormValid) {
             const collector = collect()
             const address = state.view.address
-            createAsset(BTC.symbol, address)
+            const asset = createAsset(BTC.type, BTC.symbol, address)
             if (state.view.type_import === types_import.public_key)
-                setPublicKey(BTC.symbol, address, state.view.private_key)
+                setPublicKey(getAssetId({symbol:BTC.symbol, address}), state.view.private_key)
             else if (state.view.type_import === types_import.private_key)
                 setPrivateKey(
-                    BTC.symbol,
-                    address,
+                    getAssetId({symbol:BTC.symbol, address}),
                     state.view.private_key,
                     state.view.password
                 )
 
-            setHref(routes.asset(BTC.symbol, address))
+            setHref(routes.asset(getAssetId(asset)))
             collector.emit()
         // }
     }
@@ -175,6 +174,7 @@ export default class ImportBitcoin extends Component {
     }
 
     render() {
+        // console.log( this.isValidInput, state.view.address );
         return React.createElement(ImportBitcoinTemplate, {
             qrcodebase64: this.isValidInput
                 ? generateQRCode(state.view.address)
@@ -324,8 +324,7 @@ function ImportBitcoinTemplate({
                             <Div float="left" width="40%">
                                 <Label>Private key</Label>
                                 <Help>
-                                    Your address can be calculated through
-                                    private key.
+                                    We will never store your private key.
                                 </Help>
                                 <SubLabel>
                                     Type or paste your Private key.

@@ -32,15 +32,14 @@ export default class Right extends Component {
     }
 
     render() {
-        const symbol = state.location.path[0]
-        const address = state.location.path[1]
-        const isRegistered = isAssetRegistered(symbol, address)
+        const asset_id = state.location.path[1]
+        const isRegistered = isAssetRegistered(asset_id)
         return (
             <RightContainer>
                 <Router source={state.location}>
                     <Route pathname="/" if={state.totalAssets===0}>
                         <RightContentMiddle>
-                            <Message>Add or Import a assets to start working</Message>
+                            <Message>Add or Import assets to start working</Message>
                         </RightContentMiddle>
                     </Route>
                     <Route pathname="/">
@@ -51,7 +50,7 @@ export default class Right extends Component {
                     <Route pathname={new RegExp(routes.add())}>
                         <AddAsset />
                     </Route>
-                    <Route path-0={BTC.symbol} if={isRegistered && isAddress(state.location.path[1])}>
+                    <Route path-0="asset" if={isRegistered}>
                         <AssetBTC />
                     </Route>
                     <Route>

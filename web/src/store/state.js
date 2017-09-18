@@ -14,13 +14,13 @@ const initialState = {
     assets: {},
     balance: computed(function() {
         let total = 0
-        // Object.keys(this.assets).forEach(symbol => {
-        //     Object.keys(this.assets[symbol]).forEach(address => {
-        //         if (this.assets[symbol][address])
-        //             total += this.prices[symbol] * (this.assets[symbol][address].balance||0)
-        //     })
-        // })
-        // // console.log( 'recalculating balance...', total )
+        let asset
+        Object.keys(this.assets).forEach(asset_id => {
+            asset = this.assets[asset_id]
+            if (asset)
+                total += this.prices[asset.symbol] * (asset.balance||0)
+        })
+        console.log( 'recalculating balance...', total )
         return total
     }),
 
@@ -63,17 +63,11 @@ const state = register(initialState)
 
 
 
-
 // totalAssets autoupdate
-const updateTotalAssets = () =>
-    (state.totalAssets = getTotalAssets(state.assets))
+const updateTotalAssets = m => (state.totalAssets = getTotalAssets(state.assets))
 updateTotalAssets()
 const observer = createObserver(updateTotalAssets)
 observer.observe(state, 'assets')
-assetsArray.forEach(crypto => {
-    if (state.assets[crypto])
-        observer.observe(state.assets[crypto])
-})
 
 
 
@@ -83,17 +77,5 @@ create(window.location.href, state)
 
 
 
-export default state;
 
-
-
-
-
-
-
-
-
-
-
-
-
+export default state

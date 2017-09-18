@@ -54,24 +54,18 @@ export default class AssetBTC extends Component {
     }
 
     render() {
-        const address = state.location.path[1]
-        const hasPrivateKey = isAssetWithPrivateKey(BTC.symbol, address)
+        const asset_id = state.location.path[1]
+        const hasPrivateKey = isAssetWithPrivateKey(asset_id)
         return React.createElement(AssetBTCTemplate, {
             location: state.location,
             hasPrivateKey: hasPrivateKey,
-            routes_summaryAsset: routes.summaryAsset(BTC.symbol, address),
-            routes_receiveAsset: routes.receiveAsset(BTC.symbol, address),
-            routes_sendAsset: routes.sendAsset(BTC.symbol, address),
-            routes_printAsset: routes.printAsset(BTC.symbol, address),
-            routes_setPrivateKeyAsset: routes.setPrivateKeyAsset(
-                BTC.symbol,
-                address
-            ),
-            routes_changePasswordAsset: routes.changePasswordAsset(
-                BTC.symbol,
-                address
-            ),
-            routes_deleteAsset: routes.deleteAsset(BTC.symbol, address),
+            routes_summaryAsset: routes.summaryAsset(asset_id),
+            routes_receiveAsset: routes.receiveAsset(asset_id),
+            routes_sendAsset: routes.sendAsset(asset_id),
+            routes_printAsset: routes.printAsset(asset_id),
+            routes_setPrivateKeyAsset: routes.setPrivateKeyAsset(asset_id),
+            routes_changePasswordAsset: routes.changePasswordAsset(asset_id),
+            routes_deleteAsset: routes.deleteAsset(asset_id),
             onClick: this.onClick
         })
     }
@@ -182,7 +176,7 @@ function AssetBTCTemplate({
                             />
                         </RightContentMenuItemIcon>
                         <RightContentMenuItemText>
-                            Paper Asset{tooltipPrivatekey}
+                            Paper Wallet{tooltipPrivatekey}
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
 

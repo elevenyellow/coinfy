@@ -29,7 +29,6 @@ export default function(props) {
 }
 
 const Address = styled.div`
-    border: 1px solid ${styles.color.background4};
     border-radius: 4px;
     background: #fff;
     padding: 10px;
@@ -46,3 +45,4 @@ const Address = styled.div`
         color: ${props=>props.color||styles.color.front5};
     }
 `
+//border: 1px solid ${styles.color.background4};

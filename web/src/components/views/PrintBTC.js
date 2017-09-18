@@ -8,7 +8,7 @@ import { getAllFormats } from '/api/Assets/BTC'
 import { printTemplate } from '/api/print'
 
 import state from '/store/state'
-import { unlockBTCAsset } from '/store/getters'
+import { getAsset } from '/store/getters'
 
 import routes from '/const/routes'
 import styles from '/const/styles'
@@ -49,8 +49,11 @@ export default class PrintBTC extends Component {
     }
     onPrint(e) {
         e.preventDefault()
-        const address = state.location.path[1]
-        const private_key = unlockBTCAsset(address, state.view.password)
+        const asset_id = state.location.path[1]
+        const asset = getAsset(asset_id)
+        const address = asset.address
+        const private_key_encrypted = asset.private_key
+        const private_key = BTC.unlock(address, private_key_encrypted, state.view.password)
         if ( private_key ) {
             const data = getAllFormats(private_key)
             data.address_qr = generateQRCode(data.address)

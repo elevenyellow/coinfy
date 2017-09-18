@@ -1,4 +1,5 @@
 import Bitcoin from 'bitcoinjs-lib'
+import { decryptAES128CTR } from '/api/security'
 
 // private
 const privateKeyPrefix = 0x80 // mainnet 0x80    testnet 0xEF
@@ -90,6 +91,19 @@ export function getAllFormats(wallet) {
     return formats
 }
 
+export function unlock(address, private_key_encrypted, password) {
+    const private_key = decryptAES128CTR(
+        private_key_encrypted,
+        password
+    )
+
+    if ( isPrivateKey(private_key) ) {
+        if ( getAddressFromPrivateKey(private_key)===address )
+            return private_key
+    }
+
+    return false
+}
 
 
 

@@ -1,15 +1,14 @@
 {
-    "v": 1, // version
     "BTC-17tqiAnH6Y4ixHaSkWB3yKJ9yQmBv2hYjw": { // unique id
         "type": "wallet",
         "symbol": "BTC",
         "address": "17tqiAnH6Y4ixHaSkWB3yKJ9yQmBv2hYjw",
         "private_key":{},
         "label": "",
-        "balance": 0,
         "state": {
             "last_update": 0,
             "updating": 0,
+            "balance": 0,
             "txs": []
         }
     },
@@ -19,10 +18,10 @@
         "address": "0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3",
         "private_key":{},
         "label": "",
-        "balance": 0,
         "state": {
             "last_update": 0,
             "updating": 0,
+            "balance": 0,
             "txs": []
         }
     },
@@ -32,10 +31,10 @@
         "address": "0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3",
         "private_key":{},
         "label": "",
-        "balance": 0,
         "state": {
             "last_update": 0,
             "updating": 0,
+            "balance": 0,
             "txs": []
         }
     },
@@ -45,10 +44,10 @@
         "address": "josema.enzo@gmail.com",
         "token":{},
         "label": "",
-        "balance": 0,
         "state": {
             "last_update": 0,
             "updating": 0,
+            "balance": 0,
             "txs": []
         }
     }

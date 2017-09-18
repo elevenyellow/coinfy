@@ -9,6 +9,7 @@ import { BTC } from '/api/Assets'
 import { Address as template } from '/const/paperwallets'
 
 import state from '/store/state'
+import { getAsset } from '/store/getters'
 import { deleteAsset } from '/store/actions'
 
 import Div from '/components/styled/Div'
@@ -44,7 +45,9 @@ export default class ReceiveBTC extends Component {
     }
 
     onPrint(e) {
-        const address = state.location.path[1]
+        const asset_id = state.location.path[1]
+        const asset = getAsset(asset_id)
+        const address = asset.address
         const data = { address: address, address_qr: generateQRCode(address) }
         printTemplate(template, data)
     }
@@ -66,7 +69,9 @@ export default class ReceiveBTC extends Component {
         
 
     render() {
-        const address = state.location.path[1]
+        const asset_id = state.location.path[1]
+        const asset = getAsset(asset_id)
+        const address = asset.address
         return React.createElement(ReceiveBTCTemplate, {
             address: address,
             qrcodebase64: generateQRCode(address),

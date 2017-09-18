@@ -6,7 +6,7 @@ import styles from '/const/styles'
 import { currencies } from '/const/currencies'
 import { BTC } from '/api/Assets'
 import state from '/store/state'
-import { convertBalance } from '/store/getters'
+import { convertBalance, getAsset } from '/store/getters'
 
 import IconReceive from 'react-icons/lib/md/call-received'
 import IconSend from 'react-icons/lib/md/send'
@@ -16,8 +16,8 @@ import Button from '/components/styled/Button'
 export default class SummaryBTC extends Component {
     componentWillMount() {
         let unobserveBalance
-        let address = state.location.path[1]
-        let asset = state.assets.BTC[address]
+        let asset_id = state.location.path[1]
+        let asset = getAsset(asset_id)
 
         this.state = {
             detailVisible: false
@@ -25,8 +25,8 @@ export default class SummaryBTC extends Component {
 
         this.observer = createObserver(mutations => {
             if (mutations[0].prop === 'pathname') {
-                address = state.location.path[1]
-                asset = state.assets.BTC[address]
+                asset_id = state.location.path[1]
+                asset = getAsset(asset_id)
                 unobserveBalance()
                 unobserveBalance = this.observer.observe(asset, 'balance')
             }
@@ -49,8 +49,8 @@ export default class SummaryBTC extends Component {
     }
 
     render() {
-        const address = state.location.path[1]
-        const asset = state.assets.BTC[address]
+        const asset_id = state.location.path[1]
+        const asset = getAsset(asset_id)
         return React.createElement(SummaryBTCTemplate, {
             balance_asset: asset.balance,
             balance_currency: currencies[state.currency].format(

@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import { Router, Route, Show } from '/doprouter/react'
 
-import { setHref, saveAssetsLocalStorage } from '/store/actions'
+import { getAsset } from '/store/getters'
+import { setHref, saveAssetsLocalStorage, setAssetLabel } from '/store/actions'
 
 import { generateQRCode } from '/api/qr'
 
@@ -20,15 +21,13 @@ export default class HeaderAsset extends Component {
     componentWillMount() {
         let unobserveLabel
         let unobserveBalance
-        this.symbol = state.location.path[0]
-        this.address = state.location.path[1]
-        this.asset = state.assets[this.symbol][this.address]
+        this.asset_id = state.location.path[1]
+        this.asset = getAsset(this.asset_id)
         // this.qr = generateQRCode(this.address, 140, styles.color.front3)
         this.observer = createObserver(mutations => {
             if (mutations[0].prop === 'pathname') {
-                this.symbol = state.location.path[0]
-                this.address = state.location.path[1]
-                this.asset = state.assets[this.symbol][this.address]
+                this.asset_id = state.location.path[1]
+                this.asset = getAsset(this.asset_id)
                 // this.qr = generateQRCode(this.address, 140, styles.color.front3)
                 if (unobserveLabel) {
                     unobserveLabel()
@@ -57,9 +56,7 @@ export default class HeaderAsset extends Component {
 
     onChangeLabel(e) {
         if (this.asset !== undefined)
-            state.assets[this.symbol][
-                this.address
-            ].label = e.target.value.trim()
+            setAssetLabel(this.asset_id, e.target.value.trim())
     }
 
     onBlur(e) {
@@ -68,9 +65,9 @@ export default class HeaderAsset extends Component {
 
     render() {
         return React.createElement(HeaderAssetTemplate, {
-            address: this.address,
+            address: this.asset.address,
             label: this.asset ? this.asset.label : '',
-            symbol: this.symbol,
+            symbol: this.asset.symbol,
             onChangeLabel: this.onChangeLabel,
             onBlur: this.onBlur,
             // qr: this.qr

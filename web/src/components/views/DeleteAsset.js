@@ -9,8 +9,8 @@ import Button from '/components/styled/Button'
 
 export default class DeleteAsset extends Component {
     onDelete() {
-        const [symbol, address] = state.location.path
-        deleteAsset(symbol, address)
+        const asset_id = state.location.path[1]
+        deleteAsset(asset_id)
     }
     render() {
         return React.createElement(DeleteAssetTemplate, {

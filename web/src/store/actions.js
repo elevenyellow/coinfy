@@ -15,7 +15,7 @@ export function setHref(href) {
 }
 
 export function createAsset(type, symbol, address) {
-    state.assets[getAssetId(symbol,address,type)] = {
+    const asset = {
         type: type,
         symbol: symbol,
         address: address,
@@ -26,27 +26,29 @@ export function createAsset(type, symbol, address) {
             updating: false,
         }
     }
+    state.assets[getAssetId({symbol,address,type})] = asset
     fetchBalance(symbol, address)
     saveAssetsLocalStorage()
     setAssetsExported(false)
+    return asset
 }
-export function setPublicKey(symbol, address, public_key) {
-    state.assets[getAssetId(symbol,address)].public_key = public_key
+export function setPublicKey(asset_id, public_key) {
+    state.assets[asset_id].public_key = public_key
     saveAssetsLocalStorage()
     setAssetsExported(false)
 }
-export function setPrivateKey(symbol, address, private_key, password) {
-    state.assets[getAssetId(symbol,address)].private_key = encryptAES128CTR(
+export function setPrivateKey(asset_id, private_key, password) {
+    state.assets[asset_id].private_key = encryptAES128CTR(
         private_key,
         password
     )
     saveAssetsLocalStorage()
     setAssetsExported(false)    
 }
-export function deleteAsset(symbol, address) {
+export function deleteAsset(asset_id) {
     const collector = collect()
-    const name = state.assets[getAssetId(symbol,address)].label || address
-    delete state.assets[getAssetId(symbol,address)]
+    const name = state.assets[asset_id].label || state.assets[asset_id].address
+    delete state.assets[asset_id]
     setHref(routes.home())
     addNotification(
         `Asset "${name}" has been deleted`,
@@ -116,7 +118,7 @@ export function openImportAssetsFromFile() {
 
 export function importAssets(dataString) {
     try {
-        const assets = JSON.parse(atob(dataString))
+        const assets = JSON.parse((dataString))//atob
         const totalAssets = getTotalAssets(assets)
         if (totalAssets > 0) {
             const collector = collect()
@@ -192,9 +194,9 @@ export function updatePrice(symbol, value) {
     collector.emit()
 }
 
-export function updateBalance(symbol, address, balance) {
+export function updateBalance(asset_id, balance) {
     const collector = collect()
-    state.assets[getAssetId(symbol,address)].balance = balance
+    state.assets[asset_id].balance = balance
     collector.emit()
 }
 
@@ -213,7 +215,11 @@ export function showNotConnectionNotification(value) {
     }
 }
 
-
+export function setAssetLabel(asset_id, label) {
+    const collector = collect()
+    state.assets[asset_id].label = label
+    collector.emit()
+}
 
 
 
@@ -238,7 +244,7 @@ export function fetchBalance(symbol, address) {
     .fetchBalance(address)
     .then(balance => {
         showNotConnectionNotification(false)
-        updateBalance(symbol, address, balance)
+        updateBalance(getAssetId({symbol, address}), balance)
     })
     .catch(e => {
         console.error( symbol, 'fetchBalance', e )

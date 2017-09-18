@@ -12,6 +12,6 @@ export const BCH = bch
 
 
 
-export function getAssetId(symbol, address, type='wallet') {
+export function getAssetId({symbol, address, type='wallet'}) {
     return `${symbol}-${address}`
 }

@@ -84,7 +84,7 @@ function AddAssetTemplate({
                             />
                         </RightContentMenuItemImage>
                         <RightContentMenuItemText>
-                            Create Bitcoin asset
+                            Create Bitcoin Wallet
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
 
@@ -100,7 +100,7 @@ function AddAssetTemplate({
                             />
                         </RightContentMenuItemImage>
                         <RightContentMenuItemText>
-                            Import Bitcoin asset
+                            Import Bitcoin Wallet
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
                 </RightContentMenu>

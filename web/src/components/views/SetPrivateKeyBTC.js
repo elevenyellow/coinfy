@@ -2,14 +2,15 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
-import state from '/store/state'
 
 import routes from '/const/routes'
 import { BTC } from '/api/Assets'
 
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/Assets/BTC'
 
+import state from '/store/state'
 import { setHref, setPrivateKey } from '/store/actions'
+import { getAsset } from '/store/getters'
 
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
@@ -68,10 +69,10 @@ export default class SetPrivateKeyBTC extends Component {
     }
     onSubmit(e) {
         e.preventDefault()
-        const address = state.location.path[1]
+        const asset_id = state.location.path[1]
         const collector = collect()
-        setPrivateKey(BTC.symbol, address, state.view.input, state.view.password)
-        setHref(routes.asset(BTC.symbol, address))
+        setPrivateKey(asset_id, state.view.input, state.view.password)
+        setHref(routes.asset(asset_id))
         collector.emit()
     }
 
@@ -86,7 +87,8 @@ export default class SetPrivateKeyBTC extends Component {
     }
     get isTheRightPrivateKey() {
         const input = state.view.input
-        const address = state.location.path[1]
+        const asset_id = state.location.path[1]
+        const address = getAsset(asset_id).address
         let isTheRightPrivateKey = false
         if (isPrivateKey(input)) {
             try {

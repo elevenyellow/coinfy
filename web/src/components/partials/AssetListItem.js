@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
-import { Assets } from '/api/Assets'
+import { Assets, getAssetId } from '/api/Assets'
 import { round } from '/api/numbers'
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -31,9 +31,7 @@ export default class Asset extends Component {
     }
 
     onClick() {
-        setHref(
-            routes.asset(this.props.asset.symbol, this.props.asset.address)
-        )
+        setHref(routes.asset(getAssetId(this.props.asset)))
     }
 
     render() {
@@ -63,8 +61,8 @@ function AssetTemplate({
         <AssetStyled
             onClick={onClick}
             selected={
-                state.location.path[0] === asset.symbol &&
-                state.location.path[1] === asset.address
+                state.location.path[1] ===
+                getAssetId({ symbol: asset.symbol, address: asset.address })
             }
         >
             <div>
@@ -73,11 +71,7 @@ function AssetTemplate({
                 </AssetIcon>
                 <AssetInfo>
                     <AssetLabel>
-                        {asset.label.length > 0 ? (
-                            asset.label
-                        ) : (
-                            asset.address
-                        )}
+                        {asset.label.length > 0 ? asset.label : asset.address}
                     </AssetLabel>
                     <AssetBalance>
                         <strong>{balance_currency}</strong> ≈ {balance_asset}
