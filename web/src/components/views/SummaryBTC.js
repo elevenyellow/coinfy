@@ -57,6 +57,7 @@ export default class SummaryBTC extends Component {
                 convertBalance(BTC.symbol, asset.balance),
                 0
             ),
+            symbol: currencies[state.currency].symbol,
             detailVisible: this.state.detailVisible,
             openClose: this.openClose.bind(this)
         })
@@ -66,6 +67,7 @@ export default class SummaryBTC extends Component {
 function SummaryBTCTemplate({
     balance_asset,
     balance_currency,
+    symbol,
     detailVisible,
     openClose
 }) {
@@ -79,7 +81,7 @@ function SummaryBTCTemplate({
                     </HeaderBalance>
                     <HeaderBalanceCurrency>
                         <span>{balance_currency}</span>
-                        <HeaderBalanceSymbol> USD</HeaderBalanceSymbol>
+                        <HeaderBalanceSymbol> {symbol}</HeaderBalanceSymbol>
                     </HeaderBalanceCurrency>
                 </HeaderValues>
 

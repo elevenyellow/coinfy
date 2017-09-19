@@ -12,6 +12,7 @@ export const symbol = 'BTC'
 export const name = 'Bitcoin'
 export const color = '#fdb033'
 export const ascii = 'Ƀ'
+export const price_decimals = 0
 export const satoshis = 100000000
 
 
@@ -118,16 +119,28 @@ export function fetchBalance(address) {
     })
 }
 
-// export function fetchTxData(address) {
-//     fetch(`${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0`)
-//     .then(response => response.json())
-//     .then(json => {
-//         console.log( json );
-//     })
-//     .catch(e => {
-//         console.error( 'BTC.fetchTxData', e );
-//     })
-// }
+export function fetchSummary(address) {
+    return fetch(`${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0`)
+    .then(response => response.json())
+    .then(json => {
+        let transactions = json.totalItems
+        let received = 0
+        let sent = 0
+        let balance = 0
+        json.items.forEach(tx=>{
+            tx.vin.forEach(vin=>{
+                received += vin.value
+                balance += vin.value
+            })
+            tx.vout.forEach(vout=>{
+                received -= Number(vout.value)
+                balance -= Number(vout.value)
+            })
+        })
+
+        return json //{received, sent, balance, transactions}
+    })
+}
 
 
 

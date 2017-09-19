@@ -7,7 +7,7 @@ import styles from '/const/styles'
 import routes from '/const/routes'
 import { currencies } from '/const/currencies'
 import state from '/store/state'
-import { setHref } from '/store/actions'
+import { seeSummaryAsset } from '/store/actions'
 import { convertBalance } from '/store/getters'
 
 export default class Asset extends Component {
@@ -31,7 +31,7 @@ export default class Asset extends Component {
     }
 
     onClick() {
-        setHref(routes.asset(getAssetId(this.props.asset)))
+        seeSummaryAsset(getAssetId(this.props.asset))
     }
 
     render() {

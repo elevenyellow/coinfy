@@ -1,6 +1,7 @@
 import React from 'react'
 import { collect } from 'dop'
 import { Assets, getAssetId } from '/api/Assets'
+import { now } from '/api/time'
 import routes from '/const/routes'
 import styles from '/const/styles'
 import timeouts from '/const/timeouts'
@@ -29,14 +30,13 @@ export function createAsset(type, symbol, address) {
             updating_summary: false
         }
     }
-    setDefaultStateAsset(asset)
-    state.assets[getAssetId({ symbol, address, type })] = asset
-    fetchBalance(symbol, address)
+    const asset_id = getAssetId({ symbol, address, type })
+    state.assets[asset_id] = asset
+    fetchSummaryAsset(asset_id)
     saveAssetsLocalStorage()
     setAssetsExported(false)
     return asset
 }
-    
 
 export function setPublicKey(asset_id, public_key) {
     state.assets[asset_id].public_key = public_key
@@ -76,9 +76,7 @@ export function exportAssets() {
     if (state.totalAssets > 0) {
         const data = JSON.stringify(state.assets, (key, value) => {
             key = key.toLocaleLowerCase()
-            return key === 'state'
-                ? undefined
-                : value
+            return key === 'state' ? undefined : value
         }) // btoa
         const a = document.createElement('a')
         const file = new Blob([data], { type: 'charset=UTF-8' }) //,
@@ -230,12 +228,31 @@ export function setAssetLabel(asset_id, label) {
     collector.emit()
 }
 
+export function seeSummaryAsset(asset_id) {
+    fetchSummaryAssetIfReady(asset_id)
+    setHref(routes.asset(asset_id))
+}
+
+export function fetchSummaryAssetIfReady(asset_id) {
+    const asset = state.assets[asset_id]
+    const last_update_summary = asset.state.last_update_summary
+    const rightnow = now()
+    if (
+        last_update_summary === undefined ||
+        rightnow - last_update_summary > timeouts.fetch_summary
+    )
+        fetchSummaryAsset(asset_id)
+}
+
+
+
+
 // Fetchers
 
 export function fetchAllBalances() {
     getAssetsAsArray().forEach((asset, index) => {
         setTimeout(
-            () => fetchBalance(asset.symbol, asset.address),
+            () => fetchBalance(getAssetId(asset)),
             index * timeouts.between_each_getbalance
         )
     })
@@ -243,18 +260,46 @@ export function fetchAllBalances() {
 }
 fetchAllBalances()
 
-export function fetchBalance(symbol, address) {
-    Assets[symbol]
-        .fetchBalance(address)
+export function fetchBalance(asset_id) {
+    const asset = state.assets[asset_id]
+    Assets[asset.symbol]
+        .fetchBalance(asset.address)
         .then(balance => {
             showNotConnectionNotification(false)
-            updateBalance(getAssetId({ symbol, address }), balance)
+            updateBalance(asset_id, balance)
         })
         .catch(e => {
             console.error(symbol, 'fetchBalance', e)
             showNotConnectionNotification(true)
         })
 }
+
+export function fetchSummaryAsset(asset_id) {
+    const asset = state.assets[asset_id]
+    asset.state.updating_summary = true
+    Assets[asset.symbol]
+        .fetchSummary(asset.address)
+        .then(summary => {
+            showNotConnectionNotification(false)
+            asset.state.updating_summary = false
+            asset.state.last_update_summary = now()
+            console.log(summary)
+        })
+        .catch(e => {
+            showNotConnectionNotification(true)
+            asset.state.updating_summary = false
+            asset.state.last_update_summary = now()
+            console.error(asset.symbol, 'fetchSummary', e)
+        })
+}
+
+
+
+
+
+
+
+
 
 export const fetchPrices = (function() {
     let assetsArray = Object.keys(Assets)
