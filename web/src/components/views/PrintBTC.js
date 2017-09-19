@@ -84,7 +84,7 @@ function PrintBTCTemplate({ password, invalidPassword, onChangePassword, onPrint
                         <Input
                             width="100%"
                             value={password}
-                            placeholder="Password of this asset"
+                            placeholder="Password of this Wallet"
                             onChange={onChangePassword}
                             style={{textAlign:'center'}}
                             type="password"

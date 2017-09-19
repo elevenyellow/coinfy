@@ -269,7 +269,7 @@ export function fetchBalance(asset_id) {
             updateBalance(asset_id, balance)
         })
         .catch(e => {
-            console.error(symbol, 'fetchBalance', e)
+            console.error(asset.symbol, 'fetchBalance', e)
             showNotConnectionNotification(true)
         })
 }
@@ -280,10 +280,16 @@ export function fetchSummaryAsset(asset_id) {
     Assets[asset.symbol]
         .fetchSummary(asset.address)
         .then(summary => {
+            const collector = collect()
             showNotConnectionNotification(false)
             asset.state.updating_summary = false
             asset.state.last_update_summary = now()
-            console.log(summary)
+            asset.balance = summary.balance
+            asset.totalReceived = summary.totalReceived
+            asset.totalSent = summary.totalSent
+            asset.totalTxs = summary.totalTxs
+            console.log( summary, collector.mutations )
+            collector.emit()
         })
         .catch(e => {
             showNotConnectionNotification(true)
@@ -325,7 +331,7 @@ export const fetchPrices = (function() {
     }
     manager.onError = e => {
         showNotConnectionNotification(true)
-        console.log('fetchPrices', e)
+        console.error('fetchPrices', e)
     }
 
     return function() {

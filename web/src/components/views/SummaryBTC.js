@@ -100,7 +100,7 @@ function SummaryBTCTemplate({
                     </ListItem>
                 </List>
             </Header>
-            {/* <Transactions>
+            <Transactions>
                 <Transaction>
                     <TransactionInner onClick={openClose}>
                         <TransactionDate>
@@ -183,7 +183,7 @@ function SummaryBTCTemplate({
                         <TransactionAmount>- 0.0134132</TransactionAmount>
                     </TransactionInner>
                 </Transaction>
-            </Transactions> */}
+            </Transactions>
             <Div clear="both" />
         </div>
     )

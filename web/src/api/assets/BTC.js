@@ -119,27 +119,44 @@ export function fetchBalance(address) {
     })
 }
 
-export function fetchSummary(address) {
-    return fetch(`${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0`)
+export function fetchTotals(address, from=0, to=25) {
+    return fetch(`${api_url}/addr/${address}`)
+    .then(response => response.json())
+    .then(totals => totals)
+}
+
+export function fetchTxs(address, from=0, to=25) {
+    return fetch(`${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${from}&to=${to}`)
     .then(response => response.json())
     .then(json => {
-        let transactions = json.totalItems
-        let received = 0
-        let sent = 0
-        let balance = 0
-        json.items.forEach(tx=>{
-            tx.vin.forEach(vin=>{
-                received += vin.value
-                balance += vin.value
-            })
-            tx.vout.forEach(vout=>{
-                received -= Number(vout.value)
-                balance -= Number(vout.value)
+        const data = {
+            totalTxs: json.totalItems,
+            txs: []
+        }
+        json.items.forEach(tx => {
+            data.txs.push({
+                txid: tx.txid,
+                fees: tx.fees,
+                time: tx.time,
+                confirmations: tx.confirmations,
             })
         })
-
-        return json //{received, sent, balance, transactions}
+        // console.log( json )
+        return data
     })
+}
+
+export function fetchSummary(address) {
+    const totals = {}
+    return fetchTotals(address)
+    .then(data => {
+        totals.balance = data.balance
+        totals.totalReceived = data.totalReceived
+        totals.totalSent = data.totalSent
+        totals.unconfirmedBalance = data.unconfirmedBalance
+        return fetchTxs(address)
+    })
+    .then(txs => Object.assign(txs, totals))
 }
 
 
