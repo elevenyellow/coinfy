@@ -10,6 +10,6 @@ export function round(value, n=0) {
     return Math.round(value * multiplier) / multiplier
 }
 
-export function numberWithCommas(value) {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+export function numberWithSeparation(value, separation=',') {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separation);
 }

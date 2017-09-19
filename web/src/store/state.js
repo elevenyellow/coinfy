@@ -56,7 +56,7 @@ try {
             assets[asset_id].state = {}
     }
 } catch (e) {
-    console.error('estoring assets from localStorage', e );
+    console.error('restoring assets from localStorage', e );
 }
 
 

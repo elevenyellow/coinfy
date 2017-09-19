@@ -7,13 +7,18 @@ import routes from '/const/routes'
 import styles from '/const/styles'
 import { currencies } from '/const/currencies'
 
-import { numberWithCommas, round } from '/api/numbers'
+import { numberWithSeparation, round } from '/api/numbers'
 import { Assets } from '/api/Assets'
 
 import state from '/store/state'
-import { setHref, exportAssets, importAssetsFromFile, closeSession } from '/store/actions'
+import {
+    setHref,
+    exportAssets,
+    importAssetsFromFile,
+    closeSession
+} from '/store/actions'
 
-
+import CountUp from 'react-countup'
 import IconMore from 'react-icons/lib/md/more-vert'
 import {
     DropDown,
@@ -22,11 +27,11 @@ import {
     DropDownArrow
 } from '/components/styled/Dropdown'
 import ButtonBig from '/components/styled/ButtonBig'
-
 import AssetList from '/components/partials/AssetList'
 
 export default class Left extends Component {
     componentWillMount() {
+        this.state = { balance_start: 0 }
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'balance')
         this.observer.observe(state, 'menuOpen')
@@ -46,13 +51,13 @@ export default class Left extends Component {
 
     onExport(e) {
         exportAssets()
-    }        
+    }
     onImport(e) {
         importAssetsFromFile()
-    }  
+    }
     onClose(e) {
         closeSession()
-    }  
+    }
 
     onMenuOpen(e) {
         state.menuOpen = true
@@ -63,10 +68,14 @@ export default class Left extends Component {
     }
 
     render() {
+        const balance_start = this.state.balance_start
+        this.state.balance_start = state.balance
         return React.createElement(LeftTemplate, {
             ascii: currencies[state.currency].ascii,
-            balance: numberWithCommas(round(state.balance)),
-            color: state.balance>0 ? Assets.BTC.color : '#DDDDDD',
+            balance_start: balance_start,
+            balance_end: state.balance,
+            // balance: numberWithSeparation(round(state.balance)),
+            color: state.balance > 0 ? Assets.BTC.color : '#DDDDDD',
             menuOpen: state.menuOpen,
             onMenuOpen: this.onMenuOpen,
             onMenuClose: this.onMenuClose,
@@ -80,7 +89,8 @@ export default class Left extends Component {
 
 function LeftTemplate({
     ascii,
-    balance,
+    balance_start,
+    balance_end,
     color,
     menuOpen,
     onMenuOpen,
@@ -97,7 +107,16 @@ function LeftTemplate({
                     <ColumnLeftChartLabel>Total balance</ColumnLeftChartLabel>
                     <ColumnLeftChartNumber>
                         <AmountSuper>{ascii}</AmountSuper>
-                        <Amount>{balance}</Amount>
+                        <Amount>
+                            <CountUp
+                                start={balance_start}
+                                end={balance_end}
+                                duration={5}
+                                useEasing={true}
+                                useGrouping={true}
+                                separator=","
+                            />
+                        </Amount>
                         {/* <AmountSuper>.52</AmountSuper>  */}
                     </ColumnLeftChartNumber>
                 </ColumnLeftChartBalance>
@@ -116,12 +135,28 @@ function LeftTemplate({
             </ColumnLeftChart>
             <ColumnLeftHeader>
                 <ColumnLeftHeaderLeft>
-                    <DropDown onOpen={onMenuOpen} onClose={onMenuClose} open={menuOpen}>
+                    <DropDown
+                        onOpen={onMenuOpen}
+                        onClose={onMenuClose}
+                        open={menuOpen}
+                    >
                         <IconMore size={35} color={styles.color.front2} />
                         <DropDownMenu left="7px">
-                            <DropDownItem onClick={onImport}>Import backup</DropDownItem>
-                            <DropDownItem onClick={onExport} disabled={totalAssets===0}>Export backup</DropDownItem>
-                            <DropDownItem onClick={onClose} disabled={totalAssets===0}>Close session</DropDownItem>
+                            <DropDownItem onClick={onImport}>
+                                Import backup
+                            </DropDownItem>
+                            <DropDownItem
+                                onClick={onExport}
+                                disabled={totalAssets === 0}
+                            >
+                                Export backup
+                            </DropDownItem>
+                            <DropDownItem
+                                onClick={onClose}
+                                disabled={totalAssets === 0}
+                            >
+                                Close session
+                            </DropDownItem>
                         </DropDownMenu>
                     </DropDown>
                 </ColumnLeftHeaderLeft>
@@ -150,7 +185,7 @@ const LeftDiv = styled.div`
     background: white;
     float: left;
     border-radius: 5px;
-    box-shadow: 0 0 0px 4px rgba(205,213,218,.3);
+    box-shadow: 0 0 0px 4px rgba(205, 213, 218, 0.3);
 `
 // border: 1px solid rgba(205,213,218,.7);
 
@@ -190,19 +225,17 @@ const ColumnLeftContent = styled.div`
     width: 100%;
     top: 215px;
 `
-    // &::-webkit-scrollbar {
-    //     width: 8px;
-    //     height: 8px;
-    // }
-    // &::-webkit-scrollbar-thumb {
-    //     background: ${styles.color.background4};
-    //     cursor: grab;
-    // }
-    // &::-webkit-scrollbar-track {
-    //     background: transparent;
-    // }
-
-
+// &::-webkit-scrollbar {
+//     width: 8px;
+//     height: 8px;
+// }
+// &::-webkit-scrollbar-thumb {
+//     background: ${styles.color.background4};
+//     cursor: grab;
+// }
+// &::-webkit-scrollbar-track {
+//     background: transparent;
+// }
 
 const ColumnLeftFooter = styled.div`
     position: absolute;
