@@ -327,7 +327,7 @@ function ImportBitcoinTemplate({
                                     We will never store your private key.
                                 </Help>
                                 <SubLabel>
-                                    Type or paste your Private key.
+                                    Type or paste your Private key in WIF format.
                                 </SubLabel>
                             </Div>
                             <Div float="left" width="60%">

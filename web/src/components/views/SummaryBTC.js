@@ -6,6 +6,7 @@ import styles from '/const/styles'
 import { currencies } from '/const/currencies'
 import { BTC } from '/api/Assets'
 import state from '/store/state'
+import { fetchSummaryAssetIfReady } from '/store/actions'
 import { convertBalance, getAsset } from '/store/getters'
 
 import IconReceive from 'react-icons/lib/md/call-received'
@@ -15,37 +16,37 @@ import Button from '/components/styled/Button'
 
 export default class SummaryBTC extends Component {
     componentWillMount() {
-        let unobserveBalance
+        let unobserveData
         let asset_id = state.location.path[1]
         let asset = getAsset(asset_id)
-
-        this.state = {
-            detailVisible: false
-        }
 
         this.observer = createObserver(mutations => {
             if (mutations[0].prop === 'pathname') {
                 asset_id = state.location.path[1]
                 asset = getAsset(asset_id)
-                unobserveBalance()
-                unobserveBalance = this.observer.observe(asset, 'balance')
+                unobserveData()
+                unobserveData = this.observer.observe(asset,'summary')
             }
             this.forceUpdate()
         })
-        unobserveBalance = this.observer.observe(asset, 'balance')
+        unobserveData = this.observer.observe(asset,'summary')
         this.observer.observe(state.location, 'pathname')
         this.observer.observe(state, 'currency')
         this.observer.observe(state.prices, BTC.symbol)
+
+        this.fetchData()
     }
     componentWillUnmount() {
         this.observer.destroy()
     }
     shouldComponentUpdate() {
+        this.fetchData()
         return false
     }
 
-    openClose() {
-        this.setState({ detailVisible: !this.state.detailVisible })
+    fetchData() {
+        const asset_id = state.location.path[1]
+        fetchSummaryAssetIfReady(asset_id)
     }
 
     render() {
@@ -58,8 +59,10 @@ export default class SummaryBTC extends Component {
                 0
             ),
             symbol: currencies[state.currency].symbol,
-            detailVisible: this.state.detailVisible,
-            openClose: this.openClose.bind(this)
+            totalTransactions: asset.summary.totalTxs || 0,
+            totalReceived: asset.summary.totalReceived || 0,
+            totalSent: asset.summary.totalSent || 0,
+            txs: asset.summary.txs || [],
         })
     }
 }
@@ -68,9 +71,12 @@ function SummaryBTCTemplate({
     balance_asset,
     balance_currency,
     symbol,
-    detailVisible,
-    openClose
+    totalTransactions,
+    totalReceived,
+    totalSent,
+    txs,
 }) {
+    // console.log( totalSent,txs );
     return (
         <div>
             <Header>
@@ -88,101 +94,68 @@ function SummaryBTCTemplate({
                 <List>
                     <ListItem>
                         <ListItemLabel>Transactions</ListItemLabel>
-                        <ListItemValue>0</ListItemValue>
+                        <ListItemValue>{totalTransactions}</ListItemValue>
                     </ListItem>
                     <ListItem>
                         <ListItemLabel>Total Received</ListItemLabel>
-                        <ListItemValue>0</ListItemValue>
+                        <ListItemValue>{totalReceived}</ListItemValue>
                     </ListItem>
                     <ListItem>
                         <ListItemLabel>Total Sent</ListItemLabel>
-                        <ListItemValue>0</ListItemValue>
+                        <ListItemValue>{totalSent}</ListItemValue>
                     </ListItem>
                 </List>
             </Header>
             <Transactions>
-                <Transaction>
-                    <TransactionInner onClick={openClose}>
-                        <TransactionDate>
-                            <div>AUG</div>26
-                        </TransactionDate>
-                        <TransactionIco>
-                            <IconReceive size={23} color={BTC.color} />
-                        </TransactionIco>
-                        <TransactionLabel>Received</TransactionLabel>
-                        <TransactionAmount>+ 0.0134132</TransactionAmount>
-                    </TransactionInner>
-                    <TransactionDetail visible={detailVisible}>
-                        <div>
-                            <TransactionDetailItem>
-                                <TransactionDetailItemLabel>
-                                    Date
-                                </TransactionDetailItemLabel>
-                                <TransactionDetailItemValue>
-                                    7/13/2017 3:44 PM
-                                </TransactionDetailItemValue>
-                            </TransactionDetailItem>
-                            <TransactionDetailItem>
-                                <TransactionDetailItemLabel>
-                                    Now
-                                </TransactionDetailItemLabel>
-                                <TransactionDetailItemValue>
-                                    $23.13
-                                </TransactionDetailItemValue>
-                            </TransactionDetailItem>
-                            <TransactionDetailItem>
-                                <TransactionDetailItemLabel>
-                                    Transaction ID
-                                </TransactionDetailItemLabel>
-                                <TransactionDetailItemValue>
-                                    <a
-                                        href="https://live.blockcypher.com/btc/tx/71d5d58ad403e928c1b7ec1a47d3355dae0d54770d7bdb18c43b8634cb84fb5d/"
-                                        target="_blank"
-                                    >
-                                        71d5d58ad403e928c1b7ec1a47d3355dae0d54770d7bdb18c43b8634cb84fb5d
-                                    </a>
-                                </TransactionDetailItemValue>
-                            </TransactionDetailItem>
-                        </div>
-                    </TransactionDetail>
-                </Transaction>
-
-                <Transaction>
-                    <TransactionInner>
-                        <TransactionDate>
-                            <div>AUG</div>24
-                        </TransactionDate>
-                        <TransactionIco>
-                            <IconSend size={23} color={BTC.color} />
-                        </TransactionIco>
-                        <TransactionLabel>Sent</TransactionLabel>
-                        <TransactionAmount>- 0.0134132</TransactionAmount>
-                    </TransactionInner>
-                </Transaction>
-
-                <Transaction>
-                    <TransactionDate>
-                        <div>AUG</div>26
-                    </TransactionDate>
-                    <TransactionIco>
-                        <IconReceive size={23} color={BTC.color} />
-                    </TransactionIco>
-                    <TransactionLabel>Received</TransactionLabel>
-                    <TransactionAmount>+ 0.0134132</TransactionAmount>
-                </Transaction>
-
-                <Transaction>
-                    <TransactionInner>
-                        <TransactionDate>
-                            <div>AUG</div>24
-                        </TransactionDate>
-                        <TransactionIco>
-                            <IconSend size={23} color={BTC.color} />
-                        </TransactionIco>
-                        <TransactionLabel>Sent</TransactionLabel>
-                        <TransactionAmount>- 0.0134132</TransactionAmount>
-                    </TransactionInner>
-                </Transaction>
+                {"-".repeat(totalTransactions).split('').map(tx => {
+                    return (
+                        <Transaction>
+                            <TransactionInner onClick={e=>{}}>
+                                <TransactionDate>
+                                    <div>AUG</div>26
+                                </TransactionDate>
+                                <TransactionIco>
+                                    <IconReceive size={23} color={BTC.color} />
+                                </TransactionIco>
+                                <TransactionLabel>Received</TransactionLabel>
+                                <TransactionAmount>+ 0.0134132</TransactionAmount>
+                            </TransactionInner>
+                            <TransactionDetail>
+                                <div>
+                                    <TransactionDetailItem>
+                                        <TransactionDetailItemLabel>
+                                            Date
+                                        </TransactionDetailItemLabel>
+                                        <TransactionDetailItemValue>
+                                            7/13/2017 3:44 PM
+                                        </TransactionDetailItemValue>
+                                    </TransactionDetailItem>
+                                    <TransactionDetailItem>
+                                        <TransactionDetailItemLabel>
+                                            Now
+                                        </TransactionDetailItemLabel>
+                                        <TransactionDetailItemValue>
+                                            $23.13
+                                        </TransactionDetailItemValue>
+                                    </TransactionDetailItem>
+                                    <TransactionDetailItem>
+                                        <TransactionDetailItemLabel>
+                                            Transaction ID
+                                        </TransactionDetailItemLabel>
+                                        <TransactionDetailItemValue>
+                                            <a
+                                                href="https://live.blockcypher.com/btc/tx/71d5d58ad403e928c1b7ec1a47d3355dae0d54770d7bdb18c43b8634cb84fb5d/"
+                                                target="_blank"
+                                            >
+                                                71d5d58ad403e928c1b7ec1a47d3355dae0d54770d7bdb18c43b8634cb84fb5d
+                                            </a>
+                                        </TransactionDetailItemValue>
+                                    </TransactionDetailItem>
+                                </div>
+                            </TransactionDetail>
+                        </Transaction>
+                    )
+                })}
             </Transactions>
             <Div clear="both" />
         </div>

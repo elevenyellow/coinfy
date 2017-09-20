@@ -1,3 +1,4 @@
+import { util } from 'dop'
 import { Assets } from '/api/Assets'
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/Assets/BTC'
 import state from '/store/state'
@@ -36,4 +37,24 @@ export function getAssetsAsArray() {
         assets.push(state.assets[asset_id])
     })
     return assets
+}
+
+
+export function generateDefaultAsset(object={}) {
+    const asset = {
+        // type: type,
+        // symbol: symbol,
+        // address: address,
+        label: '',
+        balance: 0,
+        state: { // this must be removed when exporting
+            shall_we_fetch_summary: true,
+            fetching_summary: false
+        },
+        summary: { // summary data, must be removed when exporting
+
+        }
+    }
+
+    return util.merge(asset, object)
 }

@@ -6,7 +6,7 @@ import routes from '/const/routes'
 import styles from '/const/styles'
 import timeouts from '/const/timeouts'
 import state from '/store/state'
-import { getTotalAssets, getAssetsAsArray } from '/store/getters'
+import { getTotalAssets, getAssetsAsArray, generateDefaultAsset } from '/store/getters'
 import { encryptAES128CTR } from '/api/security'
 import { CryptoPriceManager } from '/api/prices'
 import { decimals } from '/api/numbers'
@@ -16,20 +16,7 @@ export function setHref(href) {
 }
 
 export function createAsset(type, symbol, address) {
-    const asset = {
-        type: type,
-        symbol: symbol,
-        address: address,
-        label: '',
-        balance: 0,
-        state: {
-            // this must be removed when exporting
-            last_update_balance: 0, // last time we checked balance in timestamp
-            updating_balance: false,
-            last_update_summary: 0, // last time we checked summary in timestamp
-            updating_summary: false
-        }
-    }
+    const asset = generateDefaultAsset({type, symbol, address})
     const asset_id = getAssetId({ symbol, address, type })
     state.assets[asset_id] = asset
     fetchSummaryAsset(asset_id)
@@ -72,11 +59,12 @@ export function setAssetsExported(value) {
     localStorage.setItem('assetsExported', value)
 }
 
+const keysToRemoveWhenExporting = ['key', 'summary']
 export function exportAssets() {
     if (state.totalAssets > 0) {
         const data = JSON.stringify(state.assets, (key, value) => {
             key = key.toLocaleLowerCase()
-            return key === 'state' ? undefined : value
+            return keysToRemoveWhenExporting.indexOf(key)>-1 ? undefined : value
         }) // btoa
         const a = document.createElement('a')
         const file = new Blob([data], { type: 'charset=UTF-8' }) //,
@@ -124,6 +112,8 @@ export function openImportAssetsFromFile() {
 export function importAssets(dataString) {
     try {
         const assets = JSON.parse(dataString) //atob
+        for (let asset_id in assets)
+            assets[asset_id] = generateDefaultAsset(assets[asset_id])
         const totalAssets = getTotalAssets(assets)
         if (totalAssets > 0) {
             const collector = collect()
@@ -199,14 +189,6 @@ export function updatePrice(symbol, value) {
     collector.emit()
 }
 
-export function updateBalance(asset_id, balance) {
-    if (state.assets[asset_id].balance !== balance) {
-        const collector = collect()
-        state.assets[asset_id].balance = balance
-        collector.emit()
-        saveAssetsLocalStorage()
-    }
-}
 
 let idNotificationNotConnection
 export function showNotConnectionNotification(value) {
@@ -228,21 +210,20 @@ export function setAssetLabel(asset_id, label) {
     collector.emit()
 }
 
-export function seeSummaryAsset(asset_id) {
-    fetchSummaryAssetIfReady(asset_id)
-    setHref(routes.asset(asset_id))
+
+export function updateBalance(asset_id, balance) {
+    const asset = state.assets[asset_id]
+    if (asset.balance !== balance) {
+        const collector = collect()
+        asset.state.shall_we_fetch_summary = true
+        asset.balance = balance
+        collector.emit()
+        saveAssetsLocalStorage()
+    }
 }
 
-export function fetchSummaryAssetIfReady(asset_id) {
-    const asset = state.assets[asset_id]
-    const last_update_summary = asset.state.last_update_summary
-    const rightnow = now()
-    if (
-        last_update_summary === undefined ||
-        rightnow - last_update_summary > timeouts.fetch_summary
-    )
-        fetchSummaryAsset(asset_id)
-}
+
+
 
 
 
@@ -260,6 +241,8 @@ export function fetchAllBalances() {
 }
 fetchAllBalances()
 
+
+
 export function fetchBalance(asset_id) {
     const asset = state.assets[asset_id]
     Assets[asset.symbol]
@@ -274,28 +257,33 @@ export function fetchBalance(asset_id) {
         })
 }
 
-export function fetchSummaryAsset(asset_id) {
+
+export function fetchSummaryAssetIfReady(asset_id) {
     const asset = state.assets[asset_id]
-    asset.state.updating_summary = true
+    if (asset.state.shall_we_fetch_summary && !asset.state.fetching_summary)
+        fetchSummaryAsset(asset_id)
+}
+
+
+export function fetchSummaryAsset(asset_id) {
+    console.log( 'fetchSummaryAsset', asset_id );
+    const asset = state.assets[asset_id]
+    asset.state.fetching_summary = true
     Assets[asset.symbol]
         .fetchSummary(asset.address)
         .then(summary => {
             const collector = collect()
-            showNotConnectionNotification(false)
-            asset.state.updating_summary = false
-            asset.state.last_update_summary = now()
+            asset.state.fetching_summary = false
+            asset.state.shall_we_fetch_summary = false
             asset.balance = summary.balance
-            asset.totalReceived = summary.totalReceived
-            asset.totalSent = summary.totalSent
-            asset.totalTxs = summary.totalTxs
-            console.log( summary, collector.mutations )
+            asset.summary = summary
+            console.log( 'summary', summary )
             collector.emit()
         })
         .catch(e => {
-            showNotConnectionNotification(true)
-            asset.state.updating_summary = false
-            asset.state.last_update_summary = now()
-            console.error(asset.symbol, 'fetchSummary', e)
+            asset.state.fetching_summary = false
+            // asset.state.shall_we_fetch_summary = now()
+            console.error(asset.symbol, 'fetchSummaryAsset', e)
         })
 }
 

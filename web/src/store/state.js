@@ -2,7 +2,7 @@ import { computed, register, createObserver } from 'dop'
 import { create } from '/doprouter/core'
 import { Assets } from '/api/Assets'
 import { currencies, USD } from '/const/currencies'
-import { getTotalAssets } from '/store/getters'
+import { getTotalAssets, generateDefaultAsset } from '/store/getters'
 
 
 // initial state
@@ -53,7 +53,7 @@ try {
     if (assets && typeof assets == 'object') {
         initialState.assets = assets
         for (let asset_id in assets)
-            assets[asset_id].state = {}
+            assets[asset_id] = generateDefaultAsset(assets[asset_id])
     }
 } catch (e) {
     console.error('restoring assets from localStorage', e );

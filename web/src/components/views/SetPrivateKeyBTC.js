@@ -142,7 +142,7 @@ function SetPrivateKeyBTCTemplate({
             <Div height="65px">
                 <Div float="left" width="40%">
                     <Label>Private key</Label>
-                    <SubLabel>Type or paste your Private key.</SubLabel>
+                    <SubLabel>Type or paste your Private key in WIF format.</SubLabel>
                 </Div>
                 <Div float="left" width="60%">
                     <Input
