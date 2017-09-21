@@ -117,7 +117,7 @@ function ReceiveBTCTemplate({ address, qrcodebase64, refaddress, onCopy, onPrint
                             <div>Email this Address</div>
                         </Icon>
 
-                        <Icon target="_blank" href={`https://live.blockcypher.com/btc/address/${address}/`}>
+                        <Icon target="_blank" href={`https://blockchain.info/address/${address}/`}>
                             <IconLink size={25} color={'white'} />
                             <div>View on Blockchain</div>
                         </Icon>

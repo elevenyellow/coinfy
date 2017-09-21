@@ -6,5 +6,5 @@ color: ${styles.color.front2};
 margin: 0;
 font-size: 16px;
 font-weight: 300;
-letter-spacing: 0.5px;
+letter-spacing: 1px;
 `

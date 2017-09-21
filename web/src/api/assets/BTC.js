@@ -1,4 +1,5 @@
 import Bitcoin from 'bitcoinjs-lib'
+import Big from 'big.js'
 import { decryptAES128CTR } from '/api/security'
 
 // private
@@ -133,13 +134,28 @@ export function fetchTxs(address, from=0, to=25) {
             totalTxs: json.totalItems,
             txs: []
         }
-        json.items.forEach(tx => {
-            data.txs.push({
-                txid: tx.txid,
-                fees: tx.fees,
-                time: tx.time,
-                confirmations: tx.confirmations,
+        json.items.forEach(txRaw => {
+            let tx = {
+                txid: txRaw.txid,
+                fees: Big(txRaw.fees),
+                time: txRaw.time,
+                confirmations: txRaw.confirmations,
+                vin: Big(0),
+                vout: Big(0),
+                raw: txRaw,
+            }
+
+            txRaw.vin.forEach(v=>{
+                tx.vin = tx.vin.plus(v.value)
             })
+
+            txRaw.vout.forEach(v=>{
+                if (v.spentTxId !== null)
+                    tx.vout = tx.vout.plus(v.value)
+            })
+
+            tx.value = tx.vin.minus(tx.vout).minus(tx.fees)
+            data.txs.push(tx)
         })
         // console.log( json )
         return data

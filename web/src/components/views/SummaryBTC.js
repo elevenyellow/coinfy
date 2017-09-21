@@ -8,6 +8,7 @@ import { BTC } from '/api/Assets'
 import state from '/store/state'
 import { fetchSummaryAssetIfReady } from '/store/actions'
 import { convertBalance, getAsset } from '/store/getters'
+import { getDay, getMonthTextShort } from '/api/time'
 
 import IconReceive from 'react-icons/lib/md/call-received'
 import IconSend from 'react-icons/lib/md/send'
@@ -25,11 +26,11 @@ export default class SummaryBTC extends Component {
                 asset_id = state.location.path[1]
                 asset = getAsset(asset_id)
                 unobserveData()
-                unobserveData = this.observer.observe(asset,'summary')
+                unobserveData = this.observer.observe(asset, 'summary')
             }
             this.forceUpdate()
         })
-        unobserveData = this.observer.observe(asset,'summary')
+        unobserveData = this.observer.observe(asset, 'summary')
         this.observer.observe(state.location, 'pathname')
         this.observer.observe(state, 'currency')
         this.observer.observe(state.prices, BTC.symbol)
@@ -62,7 +63,7 @@ export default class SummaryBTC extends Component {
             totalTransactions: asset.summary.totalTxs || 0,
             totalReceived: asset.summary.totalReceived || 0,
             totalSent: asset.summary.totalSent || 0,
-            txs: asset.summary.txs || [],
+            txs: asset.summary.txs || []
         })
     }
 }
@@ -74,9 +75,8 @@ function SummaryBTCTemplate({
     totalTransactions,
     totalReceived,
     totalSent,
-    txs,
+    txs
 }) {
-    // console.log( totalSent,txs );
     return (
         <div>
             <Header>
@@ -107,20 +107,36 @@ function SummaryBTCTemplate({
                 </List>
             </Header>
             <Transactions>
-                {"-".repeat(totalTransactions).split('').map(tx => {
+                {txs.map(tx => {
+                    let month = getMonthTextShort(tx.time)
+                    let day = getDay(tx.time)
+                    let received = Number(tx.value.toString()) > 0
+                    let icon = received ? (
+                        <IconReceive size={23} color={BTC.color} />
+                    ) : (
+                        <IconSend size={23} color={BTC.color} />
+                    )
+                    let value = received
+                        ? `+ ${tx.value.toString()}`
+                        : `- ${tx.value.toString().substr(1)}`
                     return (
                         <Transaction>
-                            <TransactionInner onClick={e=>{}}>
+                            <TransactionInner onClick={e => {}}>
                                 <TransactionDate>
-                                    <div>AUG</div>26
+                                    <div>{month}</div>
+                                    {day}
                                 </TransactionDate>
                                 <TransactionIco>
                                     <IconReceive size={23} color={BTC.color} />
                                 </TransactionIco>
-                                <TransactionLabel>Received</TransactionLabel>
-                                <TransactionAmount>+ 0.0134132</TransactionAmount>
+                                <TransactionLabel>
+                                    {received ? 'Received' : 'Sent'}
+                                </TransactionLabel>
+                                <TransactionAmount>
+                                    {value} {BTC.symbol}
+                                </TransactionAmount>
                             </TransactionInner>
-                            <TransactionDetail>
+                            {/* <TransactionDetail>
                                 <div>
                                     <TransactionDetailItem>
                                         <TransactionDetailItemLabel>
@@ -152,7 +168,7 @@ function SummaryBTCTemplate({
                                         </TransactionDetailItemValue>
                                     </TransactionDetailItem>
                                 </div>
-                            </TransactionDetail>
+                            </TransactionDetail> */}
                         </Transaction>
                     )
                 })}
@@ -234,6 +250,7 @@ const TransactionDate = styled.div`
     & > div {
         font-weight: 100;
         font-size: 12px;
+        text-transform: uppercase;
     }
 `
 

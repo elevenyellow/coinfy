@@ -1,5 +1,5 @@
 import React from 'react'
-import { collect } from 'dop'
+import { set, collect } from 'dop'
 import { Assets, getAssetId } from '/api/Assets'
 import { now } from '/api/time'
 import routes from '/const/routes'
@@ -276,8 +276,7 @@ export function fetchSummaryAsset(asset_id) {
             asset.state.fetching_summary = false
             asset.state.shall_we_fetch_summary = false
             asset.balance = summary.balance
-            asset.summary = summary
-            console.log( 'summary', summary )
+            set(asset, 'summary', summary, {deep:false})
             collector.emit()
         })
         .catch(e => {

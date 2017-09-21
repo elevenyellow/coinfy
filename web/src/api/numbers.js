@@ -1,4 +1,4 @@
-// import bignumber from 'bignumber.js'
+import Big from 'big.js'
 
 
 export function decimals(value, n=2) {

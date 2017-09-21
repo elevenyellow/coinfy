@@ -47,6 +47,7 @@ export function generateDefaultAsset(object={}) {
         // address: address,
         label: '',
         balance: 0,
+        printed: false, // wallet printed?
         state: { // this must be removed when exporting
             shall_we_fetch_summary: true,
             fetching_summary: false

@@ -12,15 +12,17 @@ const initialState = {
     currency: localStorage.getItem('currency') || USD.symbol,
     assetsExported: localStorage.getItem('assetsExported') !== 'false',
     assets: {},
+    totalAssets: 0,
     balance: computed(function() {
         let total = 0
         let asset
+        let totalAssets = this.totalAssets
         Object.keys(this.assets).forEach(asset_id => {
             asset = this.assets[asset_id]
             if (asset)
                 total += this.prices[asset.symbol] * (asset.balance||0)
         })
-        // console.log( 'recalculating balance...', total )
+        // console.log( 'recalculating balance...', totalAssets, total )
         return total
     }),
 
@@ -73,6 +75,7 @@ const updateTotalAssets = m => (state.totalAssets = getTotalAssets(state.assets)
 updateTotalAssets()
 const observer = createObserver(updateTotalAssets)
 observer.observe(state, 'assets')
+observer.observe(state.assets)
 
 
 
