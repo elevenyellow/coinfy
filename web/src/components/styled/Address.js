@@ -1,23 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import styles from '/const/styles'
+import { selectContentElement } from '/api/window'
 
 export default function(props) {
     return (
         <Address
             {...props}
             onClick={e => {
-                const node = e.target
-                if (document.selection) {
-                    const range = document.body.createTextRange()
-                    range.moveToElementText(node)
-                    range.select()
-                } else if (window.getSelection) {
-                    const range = document.createRange()
-                    range.selectNodeContents(node)
-                    window.getSelection().removeAllRanges()
-                    window.getSelection().addRange(range)
-                }
+                selectContentElement(e.target)
                 if (typeof props.onClick == 'function') props.onClick(e)
             }}
         >

@@ -3,14 +3,15 @@ import { create } from '/doprouter/core'
 import { Assets } from '/api/Assets'
 import { currencies, USD } from '/const/currencies'
 import { getTotalAssets, generateDefaultAsset } from '/store/getters'
+import { localStorageGet } from '/api/window'
 
 
 // initial state
 const initialState = {
     // Data
     prices: {},
-    currency: localStorage.getItem('currency') || USD.symbol,
-    assetsExported: localStorage.getItem('assetsExported') !== 'false',
+    currency: localStorageGet('currency') || USD.symbol,
+    assetsExported: localStorageGet('assetsExported') !== 'false',
     assets: {},
     totalAssets: 0,
     balance: computed(function() {
@@ -40,17 +41,17 @@ const initialState = {
 
 
 
-// restoring price from localStorage
+// restoring price from storage
 const assetsArray = Object.keys(Assets)
 assetsArray.forEach(symbol => {
-    if (localStorage.getItem(symbol) !== null)
-        initialState.prices[symbol] = Number(localStorage.getItem(symbol))
+    if (localStorageGet(symbol) !== null)
+        initialState.prices[symbol] = Number(localStorageGet(symbol))
 })
 
 
-// restoring assets from localStorage
+// restoring assets from storage
 try {
-    let assets = localStorage.getItem('assets')
+    let assets = localStorageGet('assets')
     assets = JSON.parse(assets)
     if (assets && typeof assets == 'object') {
         initialState.assets = assets
@@ -58,7 +59,7 @@ try {
             assets[asset_id] = generateDefaultAsset(assets[asset_id])
     }
 } catch (e) {
-    console.error('restoring assets from localStorage', e );
+    console.error('restoring assets from storage', e );
 }
 
 

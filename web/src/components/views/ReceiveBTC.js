@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 
 import { generateQRCode } from '/api/qr'
-import { printTemplate } from '/api/print'
+import { printTemplate } from '/api/window'
 
 import styles from '/const/styles'
 import { BTC } from '/api/Assets'
+import { selectContentElement, copyContentSelected } from '/api/window'
 import { Address as template } from '/const/paperwallets'
 
 import state from '/store/state'
@@ -36,12 +37,8 @@ export default class ReceiveBTC extends Component {
     }
 
     onCopy(e) {
-        const node = this.addressElement
-        const range = document.createRange()
-        range.selectNodeContents(node)
-        window.getSelection().removeAllRanges()
-        window.getSelection().addRange(range)
-        document.execCommand('copy')
+        selectContentElement(this.addressElement)
+        copyContentSelected()
     }
 
     onPrint(e) {

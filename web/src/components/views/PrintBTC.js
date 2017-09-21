@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { generateQRCode } from '/api/qr'
 import { BTC } from '/api/Assets'
 import { getAllFormats } from '/api/Assets/BTC'
-import { printTemplate } from '/api/print'
+import { printTemplate } from '/api/window'
 
 import state from '/store/state'
 import { getAsset } from '/store/getters'

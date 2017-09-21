@@ -10,6 +10,7 @@ import { getTotalAssets, getAssetsAsArray, generateDefaultAsset } from '/store/g
 import { encryptAES128CTR } from '/api/security'
 import { CryptoPriceManager } from '/api/prices'
 import { decimals } from '/api/numbers'
+import { localStorageSet, localStorageRemove } from '/api/window'
 
 export function setHref(href) {
     state.location.href = href
@@ -54,12 +55,12 @@ export function saveAssetsLocalStorage() {
         key = key.toLocaleLowerCase()
         return key==='state' ? undefined : value
     })
-    localStorage.setItem('assets', assets)
+    localStorageSet('assets', assets)
 }
 
 export function setAssetsExported(value) {
     state.assetsExported = value
-    localStorage.setItem('assetsExported', value)
+    localStorageSet('assetsExported', value)
 }
 
 const keysToRemoveWhenExporting = ['state', 'summary']
@@ -158,7 +159,7 @@ export function closeSession() {
 
 export function forceloseSession() {
     setAssetsExported(true)
-    localStorage.removeItem('assets')
+    localStorageRemove('assets')
     location.href = '/'
 }
 
@@ -180,7 +181,7 @@ export function deleteNotification(id) {
 export function changeCurrency(symbol) {
     const collector = collect()
     state.currency = symbol
-    localStorage.setItem('currency', symbol)
+    localStorageSet('currency', symbol)
     fetchPrices()
     collector.emit()
 }
@@ -188,7 +189,7 @@ export function changeCurrency(symbol) {
 export function updatePrice(symbol, value) {
     const collector = collect()
     state.prices[symbol] = value
-    localStorage.setItem(symbol, decimals(value))
+    localStorageSet(symbol, decimals(value))
     collector.emit()
 }
 

@@ -9,6 +9,7 @@ import state from '/store/state'
 import { fetchSummaryAssetIfReady } from '/store/actions'
 import { convertBalance, getAsset } from '/store/getters'
 import { getDay, getMonthTextShort } from '/api/time'
+import { openLink } from '/api/window'
 
 import IconReceive from 'react-icons/lib/md/call-received'
 import IconSend from 'react-icons/lib/md/send'
@@ -121,7 +122,7 @@ function SummaryBTCTemplate({
                         : `- ${tx.value.toString().substr(1)}`
                     return (
                         <Transaction>
-                            <TransactionInner onClick={e => window.open(`https://blockchain.info/tx/${tx.txid}`)}>
+                            <TransactionInner onClick={e => openLink(`https://blockchain.info/tx/${tx.txid}`)}>
                                 <TransactionDate>
                                     <div>{month}</div>
                                     {day}
