@@ -121,14 +121,12 @@ function SummaryBTCTemplate({
                         : `- ${tx.value.toString().substr(1)}`
                     return (
                         <Transaction>
-                            <TransactionInner onClick={e => {}}>
+                            <TransactionInner onClick={e => window.open(`https://blockchain.info/tx/${tx.txid}`)}>
                                 <TransactionDate>
                                     <div>{month}</div>
                                     {day}
                                 </TransactionDate>
-                                <TransactionIco>
-                                    <IconReceive size={23} color={BTC.color} />
-                                </TransactionIco>
+                                <TransactionIco>{icon}</TransactionIco>
                                 <TransactionLabel>
                                     {received ? 'Received' : 'Sent'}
                                 </TransactionLabel>
@@ -233,6 +231,9 @@ const Transactions = styled.div`
 const Transaction = styled.div`
     clear: both;
     color: ${styles.color.front3};
+    &:hover {
+        background-color: ${styles.color.background8}
+    }
 `
 
 const TransactionInner = styled.div`

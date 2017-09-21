@@ -19,9 +19,9 @@ export function createAsset(type, symbol, address) {
     const asset = generateDefaultAsset({type, symbol, address})
     const asset_id = getAssetId({ symbol, address, type })
     state.assets[asset_id] = asset
-    fetchSummaryAsset(asset_id)
     saveAssetsLocalStorage()
     setAssetsExported(false)
+    fetchSummaryAsset(asset_id)
     return asset
 }
 
@@ -50,7 +50,10 @@ export function deleteAsset(asset_id) {
 }
 
 export function saveAssetsLocalStorage() {
-    const assets = JSON.stringify(state.assets)
+    const assets = JSON.stringify(state.assets, (key, value) => {
+        key = key.toLocaleLowerCase()
+        return key==='state' ? undefined : value
+    })
     localStorage.setItem('assets', assets)
 }
 
@@ -59,7 +62,7 @@ export function setAssetsExported(value) {
     localStorage.setItem('assetsExported', value)
 }
 
-const keysToRemoveWhenExporting = ['key', 'summary']
+const keysToRemoveWhenExporting = ['state', 'summary']
 export function exportAssets() {
     if (state.totalAssets > 0) {
         const data = JSON.stringify(state.assets, (key, value) => {

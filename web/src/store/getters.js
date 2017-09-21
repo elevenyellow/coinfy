@@ -48,7 +48,7 @@ export function generateDefaultAsset(object={}) {
         label: '',
         balance: 0,
         printed: false, // wallet printed?
-        state: { // this must be removed when exporting
+        state: { // this must be removed when exporting or saving in localstorage
             shall_we_fetch_summary: true,
             fetching_summary: false
         },

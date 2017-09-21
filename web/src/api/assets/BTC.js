@@ -6,7 +6,6 @@ import { decryptAES128CTR } from '/api/security'
 const privateKeyPrefix = 0x80 // mainnet 0x80    testnet 0xEF
 const api_url = 'https://insight.bitpay.com/api' // https://github.com/bitpay/insight-api
 
-
 // exports
 export const type = 'wallet'
 export const symbol = 'BTC'
@@ -16,18 +15,16 @@ export const ascii = 'Ƀ'
 export const price_decimals = 0
 export const satoshis = 100000000
 
-
 export function format(value) {
     const tof = typeof value
-    if (tof != 'number' && tof != 'string' )
-        value = '0'
+    if (tof != 'number' && tof != 'string') value = '0'
     return `${value} ${symbol}`
 }
 
 export function generateRandomWallet() {
     const wallet = Bitcoin.ECPair.makeRandom()
     wallet.compressed = false
-    return { address:wallet.getAddress(), private_key:wallet.toWIF()}
+    return { address: wallet.getAddress(), private_key: wallet.toWIF() }
 }
 
 export function isAddress(address) {
@@ -44,31 +41,35 @@ export function isPrivateKey(private_key) {
         isCompressedWalletImportFormat(private_key)
         // isHexFormat(private_key) ||
         // isBase64Format(private_key)
-    );
+    )
 }
 
-
 export function isWalletImportFormat(key) {
-    key = key.toString();
-    return (privateKeyPrefix == 0x80) ?
-        (/^5[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(key))
-    :
-        (/^9[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(key))
+    key = key.toString()
+    return privateKeyPrefix == 0x80
+        ? /^5[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
+              key
+          )
+        : /^9[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
+              key
+          )
 }
 
 export function isCompressedWalletImportFormat(key) {
-    key = key.toString();
-    return (privateKeyPrefix == 0x80) ?
-        (/^[LK][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(key))
-    :
-        (/^c[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(key));
+    key = key.toString()
+    return privateKeyPrefix == 0x80
+        ? /^[LK][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(
+              key
+          )
+        : /^c[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(
+              key
+          )
 }
-           
+
 export function getAddressFromPrivateKey(private_key) {
     const wallet = Bitcoin.ECPair.fromWIF(private_key)
     return wallet.getAddress().toString()
 }
-
 
 export function getAddressFromPublicKey(public_key) {
     const publicKeyBuffer = new Buffer(public_key, 'hex')
@@ -80,8 +81,7 @@ export function getAddressFromPublicKey(public_key) {
 
 export function getAllFormats(wallet) {
     const formats = {}
-    if (typeof wallet == 'string')
-        wallet = Bitcoin.ECPair.fromWIF(wallet)
+    if (typeof wallet == 'string') wallet = Bitcoin.ECPair.fromWIF(wallet)
     wallet.compressed = false
     formats.address = wallet.getAddress()
     formats.public_key = wallet.getPublicKeyBuffer().toString('hex')
@@ -94,97 +94,97 @@ export function getAllFormats(wallet) {
 }
 
 export function unlock(address, private_key_encrypted, password) {
-    const private_key = decryptAES128CTR(
-        private_key_encrypted,
-        password
-    )
+    const private_key = decryptAES128CTR(private_key_encrypted, password)
 
-    if ( isPrivateKey(private_key) ) {
-        if ( getAddressFromPrivateKey(private_key)===address )
+    if (isPrivateKey(private_key)) {
+        if (getAddressFromPrivateKey(private_key) === address)
             return private_key
     }
 
     return false
 }
 
-
-
-
-
 // fetchs
 export function fetchBalance(address) {
     return fetch(`${api_url}/addr/${address}/balance`)
-    .then(response => response.text())
-    .then(balance => {
-        return Number(balance)/satoshis
-    })
-}
-
-export function fetchTotals(address, from=0, to=25) {
-    return fetch(`${api_url}/addr/${address}`)
-    .then(response => response.json())
-    .then(totals => totals)
-}
-
-export function fetchTxs(address, from=0, to=25) {
-    return fetch(`${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${from}&to=${to}`)
-    .then(response => response.json())
-    .then(json => {
-        const data = {
-            totalTxs: json.totalItems,
-            txs: []
-        }
-        json.items.forEach(txRaw => {
-            let tx = {
-                txid: txRaw.txid,
-                fees: Big(txRaw.fees),
-                time: txRaw.time,
-                confirmations: txRaw.confirmations,
-                vin: Big(0),
-                vout: Big(0),
-                raw: txRaw,
-            }
-
-            txRaw.vin.forEach(v=>{
-                tx.vin = tx.vin.plus(v.value)
-            })
-
-            txRaw.vout.forEach(v=>{
-                if (v.spentTxId !== null)
-                    tx.vout = tx.vout.plus(v.value)
-            })
-
-            tx.value = tx.vin.minus(tx.vout).minus(tx.fees)
-            data.txs.push(tx)
+        .then(response => response.text())
+        .then(balance => {
+            return Number(balance) / satoshis
         })
-        // console.log( json )
-        return data
-    })
+}
+
+export function fetchTotals(address, from = 0, to = 25) {
+    return fetch(`${api_url}/addr/${address}`)
+        .then(response => response.json())
+        .then(totals => totals)
+}
+
+export function fetchTxs(address, from = 0, to = 25) {
+    return fetch(
+        `${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${from}&to=${to}`
+    )
+        .then(response => response.json())
+        .then(json => {
+            const data = {
+                totalTxs: json.totalItems,
+                txs: []
+            }
+            json.items.forEach(txRaw => {
+                let index, total
+                let tx = {
+                    txid: txRaw.txid,
+                    fees: Big(txRaw.fees),
+                    time: txRaw.time,
+                    confirmations: txRaw.confirmations
+                    // raw: txRaw,
+                }
+
+                for (
+                    index = 0, total = txRaw.vin.length;
+                    index < total;
+                    ++index
+                ) {
+                    if (txRaw.vin[index].addr === address) {
+                        tx.value = Big(txRaw.vin[index].value).times(-1)
+                        break
+                    }
+                }
+
+                for (
+                    index = 0, total = txRaw.vout.length;
+                    index < total;
+                    ++index
+                ) {
+                    if (
+                        txRaw.vout[index].scriptPubKey.addresses.indexOf(
+                            address
+                        ) > -1
+                    ) {
+                        tx.value = Big(txRaw.vout[index].value)
+                        break
+                    }
+                }
+
+                console.log(txRaw)
+                data.txs.push(tx)
+            })
+            // console.log( json )
+            return data
+        })
 }
 
 export function fetchSummary(address) {
     const totals = {}
     return fetchTotals(address)
-    .then(data => {
-        totals.balance = data.balance
-        totals.totalReceived = data.totalReceived
-        totals.totalSent = data.totalSent
-        totals.unconfirmedBalance = data.unconfirmedBalance
-        return fetchTxs(address)
-    })
-    .then(txs => Object.assign(txs, totals))
+        .then(data => {
+            totals.balance = data.balance
+            totals.totalReceived = data.totalReceived
+            totals.totalSent = data.totalSent
+            totals.unconfirmedBalance = data.unconfirmedBalance
+            return fetchTxs(address)
+        })
+        .then(txs => Object.assign(txs, totals))
 }
-
-
-
-
-
-
-
-
-
-
-
 
 /*
 // To allow: https://www.bitaddress.org
