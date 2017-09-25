@@ -103,7 +103,7 @@ export default class ImportBitcoin extends Component {
                 state.view.address = address
                 state.view.private_key = ''
             } catch (e) {
-                console.log( e );
+                console.error( e );
             }
         } else if (
             state.view.type_import === types_import.private_key &&

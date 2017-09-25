@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
+import { Show } from '/doprouter/react'
 
 import styles from '/const/styles'
 import { currencies } from '/const/currencies'
 import { BTC } from '/api/Assets'
+import { round } from '/api/numbers'
 import state from '/store/state'
 import { fetchSummaryAssetIfReady } from '/store/actions'
 import { convertBalance, getAsset } from '/store/getters'
@@ -22,6 +24,8 @@ export default class SummaryBTC extends Component {
         let asset_id = state.location.path[1]
         let asset = getAsset(asset_id)
 
+        state.view = {fetchingMoreTxs:false}
+        
         this.observer = createObserver(mutations => {
             if (mutations[0].prop === 'pathname') {
                 asset_id = state.location.path[1]
@@ -35,7 +39,8 @@ export default class SummaryBTC extends Component {
         this.observer.observe(state.location, 'pathname')
         this.observer.observe(state, 'currency')
         this.observer.observe(state.prices, BTC.symbol)
-
+        this.observer.observe(state.view, 'fetchingMoreTxs')
+        
         this.fetchData()
     }
     componentWillUnmount() {
@@ -51,6 +56,18 @@ export default class SummaryBTC extends Component {
         fetchSummaryAssetIfReady(asset_id)
     }
 
+    fetchMoreTransactions() {
+        const asset_id = state.location.path[1]
+        const asset = getAsset(asset_id)
+        state.view.fetchingMoreTxs = true
+        BTC.fetchTxs(asset.address, asset.summary.txs.length)
+        .then(txs => {
+            asset.summary.totalTransactions = txs.totalTxs
+            asset.summary.txs = asset.summary.txs.concat(txs.txs)
+            state.view.fetchingMoreTxs = false
+        })
+    }
+
     render() {
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
@@ -62,9 +79,11 @@ export default class SummaryBTC extends Component {
             ),
             symbol: currencies[state.currency].symbol,
             totalTransactions: asset.summary.totalTxs || 0,
-            totalReceived: asset.summary.totalReceived || 0,
-            totalSent: asset.summary.totalSent || 0,
-            txs: asset.summary.txs || []
+            totalReceived: round(asset.summary.totalReceived || 0, 2),
+            totalSent: round(asset.summary.totalSent || 0, 2),
+            txs: asset.summary.txs || [],
+            fetchingMoreTxs: state.view.fetchingMoreTxs,
+            fetchMoreTransactions: this.fetchMoreTransactions
         })
     }
 }
@@ -76,7 +95,9 @@ function SummaryBTCTemplate({
     totalTransactions,
     totalReceived,
     totalSent,
-    txs
+    txs,
+    fetchingMoreTxs,
+    fetchMoreTransactions
 }) {
     return (
         <div>
@@ -171,8 +192,14 @@ function SummaryBTCTemplate({
                         </Transaction>
                     )
                 })}
+
             </Transactions>
             <Div clear="both" />
+            <Show if={totalTransactions>txs.length}>
+                <Div text-align="center" padding-top="20px">
+                    <Button loading={fetchingMoreTxs} onClick={fetchMoreTransactions} loadingIco="/static/image/loading.gif">Load more</Button>
+                </Div>
+            </Show>
         </div>
     )
 }

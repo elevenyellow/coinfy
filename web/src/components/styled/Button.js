@@ -22,12 +22,20 @@ outline: none;
     background-image: linear-gradient(${styles.color.background1},${styles.color.background1});
 }
 ${props=>{
-    if (props.disabled) return `
+    let css = ''
+    if (props.disabled || props.loading) css = `
+    pointer-events: none;
     cursor:default;
     background-image: none;
     background-color: ${styles.color.disabled};
     border-color: ${styles.color.disabled} !important;
     color: grey !important;
     `;
+    if (props.loading) css += `
+    background: url('${props.loadingIco}') no-repeat center center / 18px;
+    background-color: ${styles.color.disabled};
+    color: transparent !important;
+    `;
+    return css
 }}
 `

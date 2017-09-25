@@ -265,15 +265,15 @@ export function fetchBalance(asset_id) {
 export function fetchSummaryAssetIfReady(asset_id) {
     const asset = state.assets[asset_id]
     if (asset.state.shall_we_fetch_summary && !asset.state.fetching_summary)
-        fetchSummaryAsset(asset_id)
+        return fetchSummaryAsset(asset_id)
 }
 
 
 export function fetchSummaryAsset(asset_id) {
-    console.log( 'fetchSummaryAsset', asset_id );
+    // console.log( 'fetchSummaryAsset', asset_id );
     const asset = state.assets[asset_id]
     asset.state.fetching_summary = true
-    Assets[asset.symbol]
+    return Assets[asset.symbol]
         .fetchSummary(asset.address)
         .then(summary => {
             const collector = collect()

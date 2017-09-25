@@ -119,7 +119,7 @@ export function fetchTotals(address, from = 0, to = 25) {
         .then(totals => totals)
 }
 
-export function fetchTxs(address, from = 0, to = 25) {
+export function fetchTxs(address, from=0, to=from+25) {
     return fetch(
         `${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${from}&to=${to}`
     )
@@ -165,7 +165,7 @@ export function fetchTxs(address, from = 0, to = 25) {
                     }
                 }
 
-                console.log(txRaw)
+                // console.log(txRaw)
                 data.txs.push(tx)
             })
             // console.log( json )
