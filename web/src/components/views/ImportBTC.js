@@ -134,9 +134,9 @@ export default class ImportBitcoin extends Component {
             const collector = collect()
             const address = state.view.address
             const asset = createAsset(BTC.type, BTC.symbol, address)
-            if (state.view.type_import === types_import.public_key)
-                setPublicKey(getAssetId({symbol:BTC.symbol, address}), state.view.private_key)
-            else if (state.view.type_import === types_import.private_key)
+            // if (state.view.type_import === types_import.public_key)
+                // setPublicKey(getAssetId({symbol:BTC.symbol, address}), state.view.private_key)
+            if (state.view.type_import === types_import.private_key)
                 setPrivateKey(
                     getAssetId({symbol:BTC.symbol, address}),
                     state.view.private_key,

@@ -34,6 +34,7 @@ import HeaderAsset from '/components/partials/HeaderAsset'
 import SummaryBTC from '/components/views/SummaryBTC'
 import ReceiveBTC from '/components/views/ReceiveBTC'
 import DeleteAsset from '/components/views/DeleteAsset'
+import ChangePasswordBTC from '/components/views/ChangePasswordBTC'
 import SetPrivateKeyBTC from '/components/views/SetPrivateKeyBTC'
 import PrintBTC from '/components/views/PrintBTC'
 
@@ -255,6 +256,12 @@ function AssetBTCTemplate({
                         <Route pathname={routes_deleteAsset}>
                             <RightContentMiddle>
                                 <DeleteAsset />
+                            </RightContentMiddle>
+                        </Route>
+
+                        <Route pathname={routes_changePasswordAsset}>
+                            <RightContentMiddle>
+                                <ChangePasswordBTC />
                             </RightContentMiddle>
                         </Route>
 

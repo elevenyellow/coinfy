@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
-
 import routes from '/const/routes'
-import { BTC } from '/api/Assets'
+import styles from '/const/styles'
 
+import { BTC } from '/api/Assets'
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/Assets/BTC'
 
 import state from '/store/state'
-import { setHref, setPrivateKey } from '/store/actions'
+import { setHref, setPrivateKey, addNotification } from '/store/actions'
 import { getAsset } from '/store/getters'
 
 import Div from '/components/styled/Div'
@@ -21,20 +21,21 @@ import { Label, SubLabel } from '/components/styled/Label'
 
 const minpassword = 8
 
-export default class SetPrivateKeyBTC extends Component {
+export default class ChangePasswordBTC extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
 
         // Initial state
         state.view = {
-            input: '',
+            oldpassword: '',
             password: '',
-            repassword: ''
+            repassword: '',
+            isInvalidOldpassword: false
         }
 
         // binding
-        this.onChangeInput = this.onChangeInput.bind(this)
+        this.onChangeOldpassword = this.onChangeOldpassword.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onChangeRepassword = this.onChangeRepassword.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
@@ -46,10 +47,12 @@ export default class SetPrivateKeyBTC extends Component {
         return false
     }
 
-
     // Actions
-    onChangeInput(e) {
-        state.view.input = e.target.value.trim()
+    onChangeOldpassword(e) {
+        const collector = collect()
+        state.view.isInvalidOldpassword = false
+        state.view.oldpassword = e.target.value
+        collector.emit()
     }
     onChangePassword(e) {
         state.view.password = e.target.value
@@ -60,13 +63,25 @@ export default class SetPrivateKeyBTC extends Component {
     onSubmit(e) {
         e.preventDefault()
         const asset_id = state.location.path[1]
+        const asset = getAsset(asset_id)
         const collector = collect()
-        setPrivateKey(asset_id, state.view.input, state.view.password)
-        setHref(routes.asset(asset_id))
+        const private_key = BTC.unlock(asset.address, asset.private_key, state.view.oldpassword)
+        if ( private_key ) {
+            const name = asset.label || asset.address
+            setPrivateKey(asset_id, private_key, state.view.password)
+            addNotification(
+                `You have changed the password of "${name}"`,
+                styles.notificationColor.green
+            )
+            setHref(routes.summaryAsset(asset_id))
+        }
+        else
+            state.view.isInvalidOldpassword = true
+
         collector.emit()
     }
 
-    // // Getters
+    // Getters
     get isInvalidRepassword() {
         return (
             state.view.password.length > 0 &&
@@ -75,39 +90,26 @@ export default class SetPrivateKeyBTC extends Component {
             state.view.password !== state.view.repassword
         )
     }
-    get isTheRightPrivateKey() {
-        const input = state.view.input
-        const asset_id = state.location.path[1]
-        const address = getAsset(asset_id).address
-        let isTheRightPrivateKey = false
-        if (isPrivateKey(input)) {
-            try {
-                const newaddress = getAddressFromPrivateKey(input)
-                if (newaddress === address) isTheRightPrivateKey = true
-            } catch (e) {}
-        }
-        return isTheRightPrivateKey
-    }
+
 
     render() {
-        const isInvalidPrivateKey =
-            !this.isTheRightPrivateKey && state.view.input.length > 0
+
         const isInvalidRepassword = this.isInvalidRepassword
         const isValidForm =
-            state.view.input.length > 0 &&
+            state.view.oldpassword.length > 0 &&
             state.view.password.length >= minpassword &&
             state.view.password === state.view.repassword &&
-            !isInvalidPrivateKey &&
+            !state.view.isInvalidOldpassword &&
             !isInvalidRepassword
 
-        return React.createElement(SetPrivateKeyBTCTemplate, {
-            input: state.view.input,
+        return React.createElement(ChangePasswordBTCTemplate, {
+            oldpassword: state.view.oldpassword,
             password: state.view.password,
             repassword: state.view.repassword,
-            isInvalidPrivateKey: isInvalidPrivateKey,
+            isInvalidOldpassword: state.view.isInvalidOldpassword,
             isInvalidRepassword: isInvalidRepassword,
             isValidForm: isValidForm,
-            onChangeInput: this.onChangeInput,
+            onChangeOldpassword: this.onChangeOldpassword,
             onChangePassword: this.onChangePassword,
             onChangeRepassword: this.onChangeRepassword,
             onSubmit: this.onSubmit
@@ -115,14 +117,14 @@ export default class SetPrivateKeyBTC extends Component {
     }
 }
 
-function SetPrivateKeyBTCTemplate({
-    input,
+function ChangePasswordBTCTemplate({
+    oldpassword,
     password,
     repassword,
-    isInvalidPrivateKey,
+    isInvalidOldpassword,
     isInvalidRepassword,
     isValidForm,
-    onChangeInput,
+    onChangeOldpassword,
     onChangePassword,
     onChangeRepassword,
     onSubmit
@@ -131,16 +133,16 @@ function SetPrivateKeyBTCTemplate({
         <Div padding="0 50px">
             <Div height="65px">
                 <Div float="left" width="40%">
-                    <Label>Private key</Label>
-                    <SubLabel>Type or paste your Private key in WIF format.</SubLabel>
+                    <Label>Old password</Label>
                 </Div>
                 <Div float="left" width="60%">
                     <Input
+                        type="password"
                         width="100%"
-                        value={input}
-                        onChange={onChangeInput}
-                        error={'Invalid private key'}
-                        invalid={isInvalidPrivateKey}
+                        value={oldpassword}
+                        onChange={onChangeOldpassword}
+                        error={'Invalid old password'}
+                        invalid={isInvalidOldpassword}
                     />
                 </Div>
             </Div>
@@ -189,7 +191,7 @@ function SetPrivateKeyBTCTemplate({
                     disabled={!isValidForm}
                     onClick={onSubmit}
                 >
-                    Set private key
+                    Change password
                 </Button>
             </Div>
         </Div>
