@@ -182,7 +182,7 @@ export default class ImportBitcoin extends Component {
             isValidInput: this.isValidInput,
             isInvalidRepassword: this.isInvalidRepassword,
             isErrorInput: this.isErrorInput,
-            isRegistered: isAssetRegistered(BTC.type, BTC.symbol, state.view.address),
+            isRegistered: isAssetRegistered(getAssetId({symbol:BTC.symbol, address:state.view.address})),
             isFormValid: this.isFormValid,
             type_import: state.view.type_import,
             address: state.view.address,
