@@ -1,5 +1,7 @@
 import { createCipheriv, createDecipheriv } from 'browserify-cipher'
 import pbkdf2 from 'pbkdf2'
+// import bip38 from 'bip38'
+// import wif from 'wif'
 
 export function encryptAES128CTR(string, password) {
     const string_buffer = new Buffer(string) // ethereum: new Buffer(string,'hex')

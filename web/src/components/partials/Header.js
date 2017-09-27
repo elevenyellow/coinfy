@@ -112,7 +112,7 @@ function HeaderTemplate({
                         setHref(routes.home())
                     }}
                 >
-                    Logo
+                    <img src="/static/image/logo.svg" width="80" />
                 </HeaderLeft>
                 <HeaderCenter>
                     {Object.keys(cryptoPrices).map(symbol => {
@@ -165,6 +165,10 @@ const HeaderLeft = styled.div`
     width: ${styles.leftColumn};
     float: left;
     text-align: center;
+    cursor: pointer;
+    &:hover {
+        opacity: .7
+    }
 `
 const HeaderCenter = styled.div`
     width: calc(100% - ${styles.leftColumn} - 100px);

@@ -8,6 +8,7 @@
     },
     "dependencies": {
         "big.js": "^3.2.0",
+        "bip38": "^2.0.1",
         "bitcoinjs-lib": "^3.1.1",
         "dop": "^0.26.0",
         "express": "4.14.0",
