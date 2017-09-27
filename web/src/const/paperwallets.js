@@ -116,7 +116,7 @@ body {
                 </div>
             </div>
 
-            <div id="claim">WWW.WEDONTNEEDBANKS.ORG</div>
+            <div id="claim">COINFY.COM</div>
         </div>
     </body>
 </html>
@@ -191,7 +191,7 @@ color: #CCC
             </div>
         </div>
 
-        <div id="claim">WWW.WEDONTNEEDBANKS.ORG</div>
+        <div id="claim">COINFY.COM</div>
     </div>
 </body>
 </html>

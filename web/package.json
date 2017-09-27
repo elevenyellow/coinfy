@@ -1,5 +1,5 @@
 {
-    "name": "wedontneedbanks",
+    "name": "coinfy",
     "version": "1.0.0",
     "scripts": {
         "build": "webpack --config=./webpack/production.js --optimize-minimize --progress --colors --display-error-details",
