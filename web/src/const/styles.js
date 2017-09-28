@@ -33,5 +33,8 @@ export default {
         red3: '#DD0044',
         green1: '#1aba6a',
         black: '#000',
+
+        // 
+        grey1: '#bbbbbb'
     }
 }

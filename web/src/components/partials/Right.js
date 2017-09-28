@@ -15,6 +15,7 @@ import routes from '/const/routes'
 import { RightContainer, RightContentMiddle } from '/components/styled/Right'
 import Message from '/components/styled/Message'
 // views
+import Dashboard from '/components/views/Dashboard'
 import AddAsset from '/components/views/AddAsset'
 import AssetBTC from '/components/views/AssetBTC'
 
@@ -43,9 +44,7 @@ export default class Right extends Component {
                         </RightContentMiddle>
                     </Route>
                     <Route pathname="/">
-                        <RightContentMiddle>
-                            <Message>Dashboard</Message>
-                        </RightContentMiddle>
+                        <Dashboard />
                     </Route>
                     <Route pathname={new RegExp(routes.add())}>
                         <AddAsset />
