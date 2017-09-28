@@ -6,24 +6,23 @@ export default function Circle({
     backgroundStrokeColor = '#E5E5E5',
     backgroundColor = 'transparent',
     size = 200,
-    c = 21,
     children
 }) {
     let percentageUsed = 0
+    let c = 21
+    let r = '15.91549430918952'
     return (
-        <svg width={size} height={size} viewBox={`0 0 ${c*2} ${c*2}`} class="donut">
+        <svg width={size} height={size} viewBox="0 0 42 42">
             <circle
-                class="donut-hole"
                 cx={c}
                 cy={c}
-                r="15.91549430918954"
+                r={r}
                 fill={backgroundColor}
             />
             <circle
-                class="donut-ring"
                 cx={c}
                 cy={c}
-                r="15.91549430918954"
+                r={r}
                 fill="transparent"
                 stroke={backgroundStrokeColor}
                 stroke-width={strokeWidth}
@@ -36,10 +35,9 @@ export default function Circle({
 
                 return (
                     <circle
-                        class="donut-segment"
                         cx={c}
                         cy={c}
-                        r="15.91549430918954"
+                        r={r}
                         fill="transparent"
                         stroke={s.color}
                         stroke-width={strokeWidth}

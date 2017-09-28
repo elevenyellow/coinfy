@@ -35,6 +35,6 @@ export default {
         black: '#000',
 
         // 
-        grey1: '#bbbbbb'
+        grey1: '#aaaaaa'
     }
 }
