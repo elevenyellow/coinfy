@@ -4,7 +4,9 @@
     "scripts": {
         "build": "webpack --config=./webpack/production.js --optimize-minimize --progress --colors --display-error-details",
         "dev": "NODE_ENV=development node src/server",
-        "prod": "NODE_ENV=production node src/server"
+        "prod": "NODE_ENV=production node src/server",
+        "forever": "NODE_ENV=production forever start src/server.js",
+        "forever-stop": "forever stop src/server.js"
     },
     "dependencies": {
         "big.js": "^3.2.0",
