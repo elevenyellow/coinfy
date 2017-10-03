@@ -273,7 +273,7 @@ function AssetBTCTemplate({
 
                         <Route>
                             <RightContentMiddle>
-                                <Message>To do</Message>
+                                <Message>In development</Message>
                             </RightContentMiddle>
                         </Route>
                     </Router>

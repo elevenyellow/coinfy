@@ -22,6 +22,7 @@ import AssetBTC from '/components/views/AssetBTC'
 export default class Right extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
+        this.observer.observe(state, 'totalAssets')
         this.observer.observe(state.location.path, 'length')
         this.observer.observe(state.location.path, '0')
     }

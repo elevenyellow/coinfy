@@ -66,10 +66,10 @@ export function setAssetsExported(value) {
 const keysToRemoveWhenExporting = ['state', 'summary']
 export function exportAssets() {
     if (state.totalAssets > 0) {
-        const data = JSON.stringify(state.assets, (key, value) => {
+        const data = btoa(JSON.stringify(state.assets, (key, value) => {
             key = key.toLocaleLowerCase()
             return keysToRemoveWhenExporting.indexOf(key)>-1 ? undefined : value
-        }) // btoa
+        })) // btoa
         const a = document.createElement('a')
         const file = new Blob([data], { type: 'charset=UTF-8' }) //,
         // const date = new Date().toJSON().replace(/\..+$/,'')
@@ -115,7 +115,7 @@ export function openImportAssetsFromFile() {
 
 export function importAssets(dataString) {
     try {
-        const assets = JSON.parse(dataString) //atob
+        const assets = JSON.parse(atob(dataString)) //atob
         for (let asset_id in assets)
             assets[asset_id] = generateDefaultAsset(assets[asset_id])
         const totalAssets = getTotalAssets(assets)
