@@ -56,7 +56,7 @@ export default class Dashboard extends Component {
                 asset.balance
             )
             assetUnformated.assets.push({
-                label: asset.label,
+                label: asset.label || asset.address,
                 address: asset.address,
                 balance_asset: asset.balance + ' ' + asset.symbol,
                 balance_currency_number: convertBalance(asset.symbol, asset.balance),
