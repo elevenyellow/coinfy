@@ -115,14 +115,14 @@ function HeaderTemplate({
                     <img src="/static/image/logo.svg" width="80" />
                 </HeaderLeft>
                 <HeaderCenter>
-                    {Object.keys(cryptoPrices).map(symbol => {
+                    {/* {Object.keys(cryptoPrices).map(symbol => {
                         if ( typeof cryptoPrices[symbol] == 'number' && cryptoPrices[symbol]>0 )
                             return(
                             <HeaderCrypto>
                                 {symbol} ≈ <strong>{currencies[currency].format(cryptoPrices[symbol], Assets[symbol].price_decimals)}</strong>
                             </HeaderCrypto>
                             )
-                    })}
+                    })} */}
                 </HeaderCenter>
                 <HeaderRight>
                     <DropDown

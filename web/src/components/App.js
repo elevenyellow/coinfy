@@ -28,11 +28,15 @@ export default function App() {
 
 
 const Background = styled.div`
-background-color:${styles.color.background1};
 height:100%;
+background: linear-gradient(to bottom, #007196 20%,#d7dbd5 20%);
 `
 
 const Columns = styled.div`
 height: calc(100% - ${styles.headerHeight} - ${styles.paddingOut});
-padding: 0 ${styles.paddingOut};
+margin: 0 ${styles.paddingOut};
+position: relative;
+background: white;
+box-shadow: 0 1px 1px 0 rgba(0,0,0,0.06), 0 2px 5px 0 rgba(0,0,0,0.2);
+border-radius: 3px;
 `

@@ -179,15 +179,10 @@ function LeftTemplate({
 }
 
 const LeftDiv = styled.div`
-    position: relative;
+    position: absolute;
     height: 100%;
     width: ${styles.leftColumn};
-    background: white;
-    float: left;
-    border-radius: 5px;
-    box-shadow: 0 0 0px 4px rgba(205, 213, 218, 0.3);
 `
-// border: 1px solid rgba(205,213,218,.7);
 
 const ColumnLeftHeader = styled.div`
     position: absolute;

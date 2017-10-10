@@ -1,4 +1,5 @@
 experiments/node_modules
 web/public/static/bundle
 web/node_modules
+design/all
 .vscode

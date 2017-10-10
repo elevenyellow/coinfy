@@ -4,14 +4,12 @@ import styles from '/const/styles'
 
 export const RightContainer = styled.div`
 height: 100%;
-width: calc(100% - ${styles.leftColumn} - ${styles.columnSeparation});
-background: white;
-float: right;
-border-radius: 5px;
-box-shadow: 0 0 0px 4px rgba(205,213,218,.3);
+margin-left: ${styles.leftColumn};
 &>div {
+  padding-left: 5px;
+  box-shadow: inset 4px 0 4px -2px rgba(0,0,0,.1);
   height: 100%;
-  width: 100%;
+  width: calc(100% - 5px);
 }
 `
 

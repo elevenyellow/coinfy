@@ -1,9 +1,9 @@
 
 export default {
+    headerHeight: '75px',
     paddingOut: '50px',
     leftColumn: '240px',
-    columnSeparation: '20px',
-    headerHeight: '75px',
+    paddingContent: '50px',
     notificationColor: {
         red: '#DD0044',
         green: '#1aba6a',
