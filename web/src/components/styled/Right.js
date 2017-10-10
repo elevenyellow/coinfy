@@ -6,10 +6,16 @@ export const RightContainer = styled.div`
 height: 100%;
 margin-left: ${styles.leftColumn};
 &>div {
-  padding-left: 5px;
   box-shadow: inset 4px 0 4px -2px rgba(0,0,0,.1);
   height: 100%;
-  width: calc(100% - 5px);
+  width: 100%;
+}
+
+${styles.media.second} {
+  margin-left: 0;
+  &>div {
+    box-shadow: none;
+  }
 }
 `
 

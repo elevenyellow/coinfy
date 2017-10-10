@@ -2,8 +2,12 @@
 export default {
     headerHeight: '75px',
     paddingOut: '50px',
+    paddingOutMobile: '15px',
     leftColumn: '240px',
-    paddingContent: '50px',
+    media: {
+        first: '@media screen and (max-width: 1000px)',
+        second: '@media screen and (max-width: 850px)'
+    },
     notificationColor: {
         red: '#DD0044',
         green: '#1aba6a',
@@ -11,8 +15,8 @@ export default {
     },
     color: {
         background1: '#f3f6f8',
-        background2: '#546f9b',
-        background3: '#4e92df',
+        background2: '#007196',
+        background3: '#0789b3',
         background4: '#e5e9eb',
         background5: '#d4dde1',
         background6: '#f6f6f6',

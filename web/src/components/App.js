@@ -6,7 +6,7 @@ import Notifications from '/components/partials/Notifications'
 import Header from '/components/partials/Header'
 import Left from '/components/partials/Left'
 import Right from '/components/partials/Right'
-import Footer from '/components/partials/Footer'
+// import Footer from '/components/partials/Footer'
 
 
 export default function App() {
@@ -18,7 +18,7 @@ export default function App() {
                 <Left />
                 <Right />
             </Columns>
-            <Footer />
+            {/* <Footer /> */}
             <Popups />
         </Background>
     )
@@ -29,7 +29,7 @@ export default function App() {
 
 const Background = styled.div`
 height:100%;
-background: linear-gradient(to bottom, #007196 20%,#d7dbd5 20%);
+background: linear-gradient(to bottom, #007196 150px,#d7dbd5 150px);
 `
 
 const Columns = styled.div`
@@ -39,4 +39,9 @@ position: relative;
 background: white;
 box-shadow: 0 1px 1px 0 rgba(0,0,0,0.06), 0 2px 5px 0 rgba(0,0,0,0.2);
 border-radius: 3px;
+
+${styles.media.first} {
+margin: 0 ${styles.paddingOutMobile};
+height: calc(100% - ${styles.headerHeight} - ${styles.paddingOutMobile});
+}
 `

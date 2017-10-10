@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
 import { Show } from '/doprouter/react'
+import IconMore from 'react-icons/lib/md/more-vert'
 
 import routes from '/const/routes'
 import styles from '/const/styles'
 import { currencies } from '/const/currencies'
+
 
 import { numberWithSeparation, round } from '/api/numbers'
 import { Assets } from '/api/Assets'
@@ -19,7 +21,6 @@ import {
 } from '/store/actions'
 
 import CountUp from 'react-countup'
-import IconMore from 'react-icons/lib/md/more-vert'
 import {
     DropDown,
     DropDownItem,
@@ -135,30 +136,7 @@ function LeftTemplate({
             </ColumnLeftChart>
             <ColumnLeftHeader>
                 <ColumnLeftHeaderLeft>
-                    <DropDown
-                        onOpen={onMenuOpen}
-                        onClose={onMenuClose}
-                        open={menuOpen}
-                    >
                         <IconMore size={35} color={styles.color.front2} />
-                        <DropDownMenu left="7px">
-                            <DropDownItem onClick={onImport}>
-                                Import backup
-                            </DropDownItem>
-                            <DropDownItem
-                                onClick={onExport}
-                                disabled={totalAssets === 0}
-                            >
-                                Export backup
-                            </DropDownItem>
-                            <DropDownItem
-                                onClick={onClose}
-                                disabled={totalAssets === 0}
-                            >
-                                Close session
-                            </DropDownItem>
-                        </DropDownMenu>
-                    </DropDown>
                 </ColumnLeftHeaderLeft>
                 <ColumnLeftHeaderRight />
             </ColumnLeftHeader>
@@ -171,7 +149,7 @@ function LeftTemplate({
                         setHref(routes.add())
                     }}
                 >
-                    Add asset
+                    Add Asset
                 </ButtonBig>
             </ColumnLeftFooter>
         </LeftDiv>
@@ -182,6 +160,9 @@ const LeftDiv = styled.div`
     position: absolute;
     height: 100%;
     width: ${styles.leftColumn};
+    ${styles.media.second} {
+        display:none;
+    }
 `
 
 const ColumnLeftHeader = styled.div`
