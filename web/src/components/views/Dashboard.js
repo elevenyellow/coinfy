@@ -257,7 +257,7 @@ const Container = styled.div`
     height: 100%;
     overflow-y: auto;
     & > div {
-        padding: 50px 50px;
+        padding: ${styles.paddingContent};
     }
 `
 const Left = styled.div``

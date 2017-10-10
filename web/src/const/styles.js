@@ -3,7 +3,8 @@ export default {
     headerHeight: '75px',
     paddingOut: '50px',
     paddingOutMobile: '15px',
-    leftColumn: '240px',
+    paddingContent: '40px',
+    leftColumn: '250px',
     media: {
         first: '@media screen and (max-width: 1000px)',
         second: '@media screen and (max-width: 850px)'

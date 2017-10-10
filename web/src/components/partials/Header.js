@@ -6,6 +6,7 @@ import routes from '/const/routes'
 
 import IconMenu from 'react-icons/lib/md/menu'
 import IconMore from 'react-icons/lib/md/more-vert'
+import IconHome from 'react-icons/lib/md/home'
 
 import { currencies } from '/const/currencies'
 import { Assets } from '/api/Assets'
@@ -153,6 +154,7 @@ function HeaderTemplate({
                 <HeaderCenter onClick={e => {
                         setHref(routes.home())
                     }}>
+                    <div><IconHome size={15} color="white" /></div>
                     <img src="/static/image/logo.svg" width="80" />
                     
                     {/* {Object.keys(cryptoPrices).map(symbol => {
@@ -236,6 +238,16 @@ const HeaderLeft = styled.div`
     cursor: pointer;
     width: 30px;
     min-height: 1px;
+    box-shadow: 0 0 0px 4px rgba(255,255,255,0);
+    background: rgba(255,255,255,0);
+    border-radius: 50%;
+    transition: 0.5s ease all;
+    
+    &:hover, &:active {
+        background: rgba(255,255,255,.2);
+        box-shadow: 0 0 0px 4px rgba(255,255,255,.2);
+    }
+    
     & > div {
         display:none;
     }
@@ -251,8 +263,16 @@ const HeaderCenter = styled.div`
     text-align: center;
     cursor: pointer;
     padding-top:3px;
-    &:hover {
-        opacity: .7
+    position: relative;
+    & div {
+        display: none;
+        position: absolute;
+        text-align: center;
+        width: 100%;
+        top: -18px;
+    }
+    &:hover div {
+        display: block;
     }
 `
 const HeaderRight = styled.div`
@@ -261,19 +281,28 @@ const HeaderRight = styled.div`
     text-align: right;
     cursor: pointer;
     position: relative;
+    box-shadow: 0 0 0px 4px rgba(255,255,255,0);
+    background: rgba(255,255,255,0);
+    border-radius: 50%;
+    transition: 0.5s ease all;
+    
+    &:hover, &:active {
+        background: rgba(255,255,255,.2);
+        box-shadow: 0 0 0px 4px rgba(255,255,255,.2);
+    }
 `
 
-const HeaderCrypto = styled.span`
-    font-size: 15px;
-    letter-spacing: .2px;
-    color: ${styles.color.front1};
-    padding-right: 25px;
-    font-weight: 300;
-`
+// const HeaderCrypto = styled.span`
+//     font-size: 15px;
+//     letter-spacing: .2px;
+//     color: ${styles.color.front1};
+//     padding-right: 25px;
+//     font-weight: 300;
+// `
 
-const HeaderCurrencySelected = styled.span`
-    font-size: 15px;
-    color: ${styles.color.front1};
-    font-weight: bold;
-    padding-right: 4px;
-`
+// const HeaderCurrencySelected = styled.span`
+//     font-size: 15px;
+//     color: ${styles.color.front1};
+//     font-weight: bold;
+//     padding-right: 4px;
+// `

@@ -161,7 +161,10 @@ const LeftDiv = styled.div`
     height: 100%;
     width: ${styles.leftColumn};
     ${styles.media.second} {
-        display:none;
+        left: -${styles.paddingOutMobile};
+        top: -${styles.headerHeight};
+        height: calc(100% + ${styles.paddingOutMobile} + ${styles.headerHeight});
+        background: white;
     }
 `
 
