@@ -34,31 +34,42 @@ export default class Right extends Component {
     }
 
     render() {
-        const asset_id = state.location.path[1]
-        const isRegistered = isAssetRegistered(asset_id)
-        return (
-            <RightContainer>
-                <Router source={state.location}>
-                    <Route pathname="/" if={state.totalAssets===0}>
-                        <RightContentMiddle>
-                            <Message>Add or Import assets to start working</Message>
-                        </RightContentMiddle>
-                    </Route>
-                    <Route pathname="/">
-                        <Dashboard />
-                    </Route>
-                    <Route pathname={new RegExp(routes.add())}>
-                        <AddAsset />
-                    </Route>
-                    <Route path-0="asset" if={isRegistered}>
-                        <AssetBTC />
-                    </Route>
-                    <Route>
-                        <RightContentMiddle><Message>Not found</Message></RightContentMiddle>
-                    </Route>
-
-                </Router>
-            </RightContainer>
-        )
+        return React.createElement(RightTemplate, {
+            location: state.location,
+            totalAssets: state.totalAssets,
+            isRegistered: isAssetRegistered(state.location.path[1])
+        })            
     }
+}
+
+
+function RightTemplate({
+    location,
+    totalAssets,
+    isRegistered,
+}) {
+    return (
+        <RightContainer>
+            <Router source={location}>
+                <Route pathname="/" if={totalAssets===0}>
+                    <RightContentMiddle>
+                        <Message>Add or Import assets to start working</Message>
+                    </RightContentMiddle>
+                </Route>
+                <Route pathname="/">
+                    <Dashboard />
+                </Route>
+                <Route pathname={new RegExp(routes.add())}>
+                    <AddAsset />
+                </Route>
+                <Route path-0="asset" if={isRegistered}>
+                    <AssetBTC />
+                </Route>
+                <Route>
+                    <RightContentMiddle><Message>Not found</Message></RightContentMiddle>
+                </Route>
+
+            </Router>
+        </RightContainer>
+    )
 }

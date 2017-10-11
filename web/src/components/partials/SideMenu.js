@@ -8,6 +8,7 @@ import routes from '/const/routes'
 import styles from '/const/styles'
 import { currencies } from '/const/currencies'
 
+import Swipe from '/api/swipe'
 import { numberWithSeparation, round } from '/api/numbers'
 import { Assets } from '/api/Assets'
 
@@ -33,6 +34,8 @@ export default class Left extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'sideMenuOpen')
+        
+        this.createRef = this.createRef.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -42,27 +45,58 @@ export default class Left extends Component {
     }
 
 
+
+    componentDidMount() {
+        // Hidding sidebarmenu user click back
+        window.addEventListener('popstate', function(e) {
+            if (state.sideMenuOpen) {
+                state.sideMenuOpen = false
+                history.go(1) // this is a shitty hack because: https://stackoverflow.com/questions/32432296/is-it-possible-to-e-preventdefault-in-window-onpopstate/32432366#32432366
+            }
+        })
+        // Hidding sidebar when user change size of screen
+        window.addEventListener('resize', function(e) {
+            if (state.sideMenuOpen)
+                state.sideMenuOpen = false
+        })
+
+        // When swiping left
+        new Swipe(this.menuElement, function(event, direction) {
+            if (direction === 'left') {
+                event.preventDefault();
+                state.sideMenuOpen = false
+            }
+        })
+    }
+
+    createRef(e) {
+        if (e)
+            this.menuElement = e.base
+    }
+    
+
     onClickBackground() {
         state.sideMenuOpen = false
     }
 
 
-
     render() {
         return React.createElement(LeftTemplate, {
             open: state.sideMenuOpen,
-            onClickBackground: this.onClickBackground
+            onClickBackground: this.onClickBackground,
+            createRef: this.createRef
         })
     }
 }
 
 function LeftTemplate({
     open,
-    onClickBackground
+    onClickBackground,
+    createRef
 }) {
     return (
         <Container>
-            <Menu open={open}>
+            <Menu open={open} ref={createRef}>
                 <Content>
                     <AssetList />
                 </Content>
@@ -82,7 +116,8 @@ function LeftTemplate({
 }
 
 const Container = styled.div`
-    z-index: 2;
+    user-select: none;
+    z-index: 3;
     position: absolute;
     left: 0;
     top: 0;
@@ -93,11 +128,11 @@ const Container = styled.div`
 
 const Background = styled.div`
     ${styles.media.first} {
-        transition: 0.5s ease all;
+        transition: 0.4s ease all;
         width: 100%;
         height: 100%;
-        pointer-events: auto;
-        display: ${props=>props.open ? 'block' : 'none'};
+        pointer-events: ${props=>props.open ? 'auto' : 'none'};
+        display: block;
         background-color: rgba(0, 0, 0, ${props=>props.open ? .35 : 0});
     }
 `
@@ -110,9 +145,9 @@ const Menu = styled.div`
     left: ${styles.paddingOut};
     top: ${styles.headerHeight};
     ${styles.media.first} {
-        box-shadow: 4px 0 4px 0px rgba(0,0,0,${props=>props.open? .2 : 0});
+        transition: .4s ease all;
+        box-shadow: 4px 0 9px 0px rgba(0,0,0,${props=>props.open? .2 : 0});
         width: ${styles.leftColumnMobile};
-        transition: 0.5s ease all;
         position: fixed;
         left: ${props=>props.open? 0 : '-'+styles.leftColumnMobile};
         top: 0;
