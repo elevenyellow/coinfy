@@ -5,6 +5,7 @@ export default {
     paddingOutMobile: '15px',
     paddingContent: '40px',
     leftColumn: '250px',
+    leftColumnMobile: '300px',
     media: {
         first: '@media screen and (max-width: 1000px)',
         second: '@media screen and (max-width: 850px)'

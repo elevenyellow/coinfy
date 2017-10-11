@@ -13,7 +13,10 @@ import { decimals } from '/api/numbers'
 import { localStorageSet, localStorageRemove } from '/api/window'
 
 export function setHref(href) {
+    const collector = collect()
     state.location.href = href
+    state.sideMenuOpen = false
+    collector.emit()
 }
 
 export function createAsset(type, symbol, address) {

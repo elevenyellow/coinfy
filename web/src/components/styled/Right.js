@@ -11,7 +11,7 @@ margin-left: ${styles.leftColumn};
   width: 100%;
 }
 
-${styles.media.second} {
+${styles.media.first} {
   margin-left: 0;
   &>div {
     box-shadow: none;

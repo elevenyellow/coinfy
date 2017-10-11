@@ -29,6 +29,7 @@ const initialState = {
 
     // UI
     menuOpen: false,
+    sideMenuOpen: false,
     currencyMenuOpen: false,
     view: {},
     notifications: {},

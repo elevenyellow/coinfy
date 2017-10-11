@@ -29,10 +29,7 @@ import {
 export default class Header extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
-        this.observer.observe(state, 'currencyMenuOpen')
-        this.observer.observe(state, 'currency')
         this.observer.observe(state, 'menuOpen')
-        this.observer.observe(state.prices)
 
         // this.currenciesList = [
         //     {
@@ -92,71 +89,74 @@ export default class Header extends Component {
     //     changeCurrency(symbol)
     // }
 
-
-    onExport(e) {
+    onExport() {
         exportAssets()
     }
-    onImport(e) {
+    onImport() {
         importAssetsFromFile()
     }
-    onClose(e) {
+    onClose() {
         closeSession()
     }
 
-    onMenuOpen(e) {
+    onHome() {
+        setHref(routes.home())
+    }
+
+    onSideMenu() {
+        state.sideMenuOpen = !state.sideMenuOpen
+    }
+
+    onMenuOpen() {
         state.menuOpen = true
     }
 
-    onMenuClose(e) {
+    onMenuClose() {
         state.menuOpen = false
     }
 
     render() {
         return React.createElement(HeaderTemplate, {
+            sideMenuOpen: state.sideMenuOpen,
+            onSideMenu: this.onSideMenu,
             menuOpen: state.menuOpen,
             onMenuOpen: this.onMenuOpen,
             onMenuClose: this.onMenuClose,
-            onChangeCurrency: this.onChangeCurrency,
-            onClose: this.onClose,
             onExport: this.onExport,
             onImport: this.onImport,
-            onMenuClose: this.onMenuClose,
-            currency: state.currency,
-            currenciesList: this.currenciesList,
-            cryptoPrices: state.prices,
+            onClose: this.onClose,
+            onHome: this.onHome,
             totalAssets: state.totalAssets
         })
     }
 }
 
 function HeaderTemplate({
+    sideMenuOpen,
+    onSideMenu,
     menuOpen,
     onMenuOpen,
     onMenuClose,
     onExport,
     onImport,
-    onChangeCurrency,
-    onClose,  
-    currency,
-    currenciesList,
-    cryptoPrices,
+    onClose,
+    onHome,
     totalAssets
-    
 }) {
     return (
         <HeaderDiv>
             <HeaderContent>
-                <HeaderLeft>
+                <HeaderLeft onClick={onSideMenu}>
                     <div>
-                        <IconMenu size={30} color="white" />
+                        <IconMenu size={28} color="white" />
                     </div>
                 </HeaderLeft>
-                <HeaderCenter onClick={e => {
-                        setHref(routes.home())
-                    }}>
-                    <div><IconHome size={15} color="white" /></div>
+                <HeaderCenter onClick={onHome}>
+                    <div>
+                        <IconHome size={15} color="white" />
+                    </div>
                     <img src="/static/image/logo.svg" width="80" />
-                    
+
                     {/* {Object.keys(cryptoPrices).map(symbol => {
                         if ( typeof cryptoPrices[symbol] == 'number' && cryptoPrices[symbol]>0 )
                             return(
@@ -225,35 +225,37 @@ function HeaderTemplate({
 const HeaderDiv = styled.div`
     height: ${styles.headerHeight};
     margin: 0 ${styles.paddingOut};
-    ${styles.media.first} {
+    ${styles.media.second} {
         margin: 0 ${styles.paddingOutMobile};
     }
 `
-const HeaderContent = styled.div`
-padding-top: 25px;
-`
+const HeaderContent = styled.div`padding-top: 25px;`
 const HeaderLeft = styled.div`
     float: left;
     text-align: center;
     cursor: pointer;
-    width: 30px;
+    width: 28px;
+    height: 28px;
+    margin-top: 3px;
     min-height: 1px;
-    box-shadow: 0 0 0px 4px rgba(255,255,255,0);
-    background: rgba(255,255,255,0);
+    box-shadow: 0 0 0px 4px rgba(255, 255, 255, 0);
+    background: rgba(255, 255, 255, 0);
     border-radius: 50%;
     transition: 0.5s ease all;
-    
-    &:hover, &:active {
-        background: rgba(255,255,255,.2);
-        box-shadow: 0 0 0px 4px rgba(255,255,255,.2);
+
+    &:hover,
+    &:active {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 0px 4px rgba(255, 255, 255, 0.2);
     }
-    
+
     & > div {
-        display:none;
+        display: none;
     }
-    ${styles.media.second} {
+
+    ${styles.media.first} {
         & > div {
-            display:block;
+            display: block;
         }
     }
 `
@@ -262,7 +264,7 @@ const HeaderCenter = styled.div`
     float: left;
     text-align: center;
     cursor: pointer;
-    padding-top:3px;
+    padding-top: 3px;
     position: relative;
     & div {
         display: none;
@@ -277,18 +279,20 @@ const HeaderCenter = styled.div`
 `
 const HeaderRight = styled.div`
     width: 30px;
+    height: 30px;
     float: right;
     text-align: right;
     cursor: pointer;
     position: relative;
-    box-shadow: 0 0 0px 4px rgba(255,255,255,0);
-    background: rgba(255,255,255,0);
+    box-shadow: 0 0 0px 4px rgba(255, 255, 255, 0);
+    background: rgba(255, 255, 255, 0);
     border-radius: 50%;
     transition: 0.5s ease all;
-    
-    &:hover, &:active {
-        background: rgba(255,255,255,.2);
-        box-shadow: 0 0 0px 4px rgba(255,255,255,.2);
+
+    &:hover,
+    &:active {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 0px 4px rgba(255, 255, 255, 0.2);
     }
 `
 

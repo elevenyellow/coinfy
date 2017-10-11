@@ -117,7 +117,7 @@ const PopupStyled = styled.div`
         box-sizing: content-box;
         display: table-cell;
         vertical-align: middle;
-        background-color: rgba(0, 0, 0, .25);
+        background-color: rgba(0,0,0,.35);
     }
 
     & .eyc-popup {

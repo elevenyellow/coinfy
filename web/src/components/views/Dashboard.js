@@ -342,8 +342,7 @@ const Asset = styled.div`
     cursor: pointer;
     &:hover {
         background-color: ${styles.color.background1};
-        border-radius: 0.1px;
-        box-shadow: 0 0 0px 10px ${styles.color.background1};
+        box-shadow: 0 0 0px 15px ${styles.color.background1};
     }
 `
 const AssetIcon = styled.div`

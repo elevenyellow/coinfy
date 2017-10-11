@@ -75,7 +75,7 @@ const DropDownStyled = styled.div`
 export const DropDownMenu = styled.div`
     position: absolute;
     background: white;
-    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: 0 1px 5px 0 rgba(0,0,0,.35);
     border-radius: 3px;
     display: ${props => (props.visible ? 'block' : 'none')};
     left: ${props => props.left};
