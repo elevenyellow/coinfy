@@ -4,11 +4,11 @@ import styled from 'styled-components'
 import { Show } from '/doprouter/react'
 import IconMore from 'react-icons/lib/md/more-vert'
 
+
 import routes from '/const/routes'
 import styles from '/const/styles'
 import { currencies } from '/const/currencies'
 
-import Swipe from '/api/swipe'
 import { numberWithSeparation, round } from '/api/numbers'
 import { Assets } from '/api/Assets'
 
@@ -34,7 +34,8 @@ export default class Left extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'sideMenuOpen')
-        
+
+        this.state = { balance_start: state.balance }
         this.createRef = this.createRef.bind(this)
     }
     componentWillUnmount() {
@@ -43,8 +44,6 @@ export default class Left extends Component {
     shouldComponentUpdate() {
         return false
     }
-
-
 
     componentDidMount() {
         // Hidding sidebarmenu user click back
@@ -56,35 +55,31 @@ export default class Left extends Component {
         })
         // Hidding sidebar when user change size of screen
         window.addEventListener('resize', function(e) {
-            if (state.sideMenuOpen)
-                state.sideMenuOpen = false
+            if (state.sideMenuOpen) state.sideMenuOpen = false
         })
 
-        // When swiping left
-        new Swipe(this.menuElement, function(event, direction) {
-            if (direction === 'left') {
-                event.preventDefault();
-                state.sideMenuOpen = false
-            }
-        })
+
     }
 
     createRef(e) {
-        if (e)
-            this.menuElement = e.base
+        if (e) this.menuElement = e.base
     }
-    
 
     onClickBackground() {
         state.sideMenuOpen = false
     }
 
-
     render() {
+        const balance_start = this.state.balance_start
+        this.state.balance_start = state.balance
         return React.createElement(LeftTemplate, {
             open: state.sideMenuOpen,
             onClickBackground: this.onClickBackground,
-            createRef: this.createRef
+            createRef: this.createRef,
+            ascii: currencies[state.currency].ascii,
+            balance_start: balance_start,
+            balance_end: state.balance,
+            totalAssets: state.totalAssets
         })
     }
 }
@@ -92,11 +87,33 @@ export default class Left extends Component {
 function LeftTemplate({
     open,
     onClickBackground,
-    createRef
+    createRef,
+    ascii,
+    balance_start,
+    balance_end,
+    totalAssets
 }) {
     return (
         <Container>
             <Menu open={open} ref={createRef}>
+                <Head>
+                    <div>
+                        <HeadAssets>{totalAssets} assets</HeadAssets>
+                        <HeadBalance>
+                            <HeadBalanceAscii>$</HeadBalanceAscii>
+                            <HeadBalanceNumber>
+                                <CountUp
+                                    start={balance_start}
+                                    end={balance_end}
+                                    duration={5}
+                                    useEasing={true}
+                                    useGrouping={true}
+                                    separator=","
+                                />
+                            </HeadBalanceNumber>
+                        </HeadBalance>
+                    </div>
+                </Head>
                 <Content>
                     <AssetList />
                 </Content>
@@ -131,9 +148,9 @@ const Background = styled.div`
         transition: 0.4s ease all;
         width: 100%;
         height: 100%;
-        pointer-events: ${props=>props.open ? 'auto' : 'none'};
+        pointer-events: ${props => (props.open ? 'auto' : 'none')};
         display: block;
-        background-color: rgba(0, 0, 0, ${props=>props.open ? .35 : 0});
+        background-color: rgba(0, 0, 0, ${props => (props.open ? 0.35 : 0)});
     }
 `
 
@@ -145,21 +162,59 @@ const Menu = styled.div`
     left: ${styles.paddingOut};
     top: ${styles.headerHeight};
     ${styles.media.first} {
-        transition: .4s ease all;
-        box-shadow: 4px 0 9px 0px rgba(0,0,0,${props=>props.open? .2 : 0});
+        transition: 0.4s ease all;
+        box-shadow: 4px 0 9px 0px
+            rgba(0, 0, 0, ${props => (props.open ? 0.2 : 0)});
         width: ${styles.leftColumnMobile};
         position: fixed;
-        left: ${props=>props.open? 0 : '-'+styles.leftColumnMobile};
+        left: ${props => (props.open ? 0 : '-' + styles.leftColumnMobile)};
         top: 0;
         height: 100%;
         background: white;
     }
 `
 
+const Head = styled.div`
+    height: 75px;
+    background: white;
+    margin-top: -45px;
+    border-radius: 50% 50% 0 0;
+    border-bottom: 1px solid #e5e9eb;
+    & > div {
+        padding-top: 13px;
+    }
+    ${styles.media.first} {
+        margin-top: 0;
+    }
+`
 
+const HeadBalance = styled.div`text-align: center;`
+
+const HeadBalanceNumber = styled.span`
+    color: ${styles.color.black};
+    font-weight: 900;
+    font-size: 25px;
+    line-height: 25px;
+`
+const HeadBalanceAscii = styled.span`
+    position: relative;
+    top: -7px;
+    font-size: 15px;
+    font-weight: bold;
+    padding-right: 1px;
+    color: ${styles.color.black};
+`
+
+const HeadAssets = styled.div`
+    color: ${styles.color.grey1};
+    font-size: 13px;
+    font-weight: 100;
+    letter-spacing: 0.5px;
+    text-align: center;
+`
 
 const Content = styled.div`
-    height: calc(100% - 60px);
+    height: calc(100% - (60px + (75px - 45px)));
     overflow-y: auto;
     width: 100%;
     &::-webkit-scrollbar {
@@ -173,17 +228,15 @@ const Content = styled.div`
     &::-webkit-scrollbar-track {
         background: transparent;
     }
+    ${styles.media.first} {
+        height: calc(100% - (60px + (75px)));
+    }
 `
 
 const Footer = styled.div`
     width: calc(100% - 20px);
     padding: 10px;
 `
-
-
-
-
-
 
 // const balance_start = this.state.balance_start
 // this.state.balance_start = state.balance
@@ -199,7 +252,6 @@ const Footer = styled.div`
 // onImport: this.onImport,
 // onClose: this.onClose,
 // totalAssets: state.totalAssets
-
 
 // <Chart onClick={e => setHref(routes.home())}>
 // <ChartBalance>
@@ -241,9 +293,6 @@ const Footer = styled.div`
 // <HeaderRight />
 // </Header>
 
-
-
-
 // const Chart = styled.div`cursor: pointer;`
 // const ChartChart = styled.div``
 
@@ -261,8 +310,6 @@ const Footer = styled.div`
 
 // const ChartNumber = styled.div`line-height: 35px;`
 
-
-
 // const Header = styled.div`
 // position: absolute;
 // top: 0;
@@ -273,8 +320,6 @@ const Footer = styled.div`
 // padding-top: 10px;
 // `
 // const HeaderRight = styled.div`float: right;`
-
-
 
 // const AmountSuper = styled.span`
 //     position: relative;

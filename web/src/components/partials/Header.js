@@ -103,8 +103,15 @@ export default class Header extends Component {
         setHref(routes.home())
     }
 
+    onAddAsset() {
+        setHref(routes.add())
+    }
+
     onSideMenu() {
-        state.sideMenuOpen = !state.sideMenuOpen
+        // if (window.location.hash === '') {
+            // window.history.pushState(null, null, '#menu')
+        // }
+        state.sideMenuOpen = true
     }
 
     onMenuOpen() {
@@ -120,6 +127,7 @@ export default class Header extends Component {
             sideMenuOpen: state.sideMenuOpen,
             onSideMenu: this.onSideMenu,
             menuOpen: state.menuOpen,
+            onAddAsset: this.onAddAsset,
             onMenuOpen: this.onMenuOpen,
             onMenuClose: this.onMenuClose,
             onExport: this.onExport,
@@ -135,6 +143,7 @@ function HeaderTemplate({
     sideMenuOpen,
     onSideMenu,
     menuOpen,
+    onAddAsset,
     onMenuOpen,
     onMenuClose,
     onExport,
@@ -174,6 +183,9 @@ function HeaderTemplate({
                     >
                         <IconMore size={30} color="white" />
                         <DropDownMenu right="0">
+                            <DropDownItem onClick={onAddAsset}>
+                                Add asset
+                            </DropDownItem>
                             <DropDownItem onClick={onImport}>
                                 Import backup
                             </DropDownItem>
