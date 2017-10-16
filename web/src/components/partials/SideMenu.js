@@ -34,7 +34,9 @@ export default class Left extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'sideMenuOpen')
-
+        this.observer.observe(state, 'balance')
+        this.observer.observe(state, 'totalAssets')
+        
         this.state = { balance_start: state.balance }
         this.createRef = this.createRef.bind(this)
     }
@@ -237,99 +239,3 @@ const Footer = styled.div`
     width: calc(100% - 20px);
     padding: 10px;
 `
-
-// const balance_start = this.state.balance_start
-// this.state.balance_start = state.balance
-// ascii: currencies[state.currency].ascii,
-// balance_start: balance_start,
-// balance_end: state.balance,
-// // balance: numberWithSeparation(round(state.balance)),
-// color: state.balance > 0 ? Assets.BTC.color : '#DDDDDD',
-// menuOpen: state.menuOpen,
-// onMenuOpen: this.onMenuOpen,
-// onMenuClose: this.onMenuClose,
-// onExport: this.onExport,
-// onImport: this.onImport,
-// onClose: this.onClose,
-// totalAssets: state.totalAssets
-
-// <Chart onClick={e => setHref(routes.home())}>
-// <ChartBalance>
-//     <ChartLabel>
-//         Total balance
-//     </ChartLabel>
-//     <ChartNumber>
-//         <AmountSuper>{ascii}</AmountSuper>
-//         <Amount>
-//             <CountUp
-//                 start={balance_start}
-//                 end={balance_end}
-//                 duration={5}
-//                 useEasing={true}
-//                 useGrouping={true}
-//                 separator=","
-//             />
-//         </Amount>
-//         {/* <AmountSuper>.52</AmountSuper>  */}
-//     </ChartNumber>
-// </ChartBalance>
-// <ChartChart>
-//     <svg width="100%" height="200" viewBox="0 0 28 28">
-//         <circle
-//             cx="14"
-//             cy="15"
-//             r="12.3"
-//             fill="transparent"
-//             stroke={color}
-//             strokeWidth="1.3"
-//         />
-//     </svg>
-// </ChartChart>
-// </Chart>
-// <Header>
-// <HeaderLeft>
-//     <IconMore size={35} color={styles.color.front2} />
-// </HeaderLeft>
-// <HeaderRight />
-// </Header>
-
-// const Chart = styled.div`cursor: pointer;`
-// const ChartChart = styled.div``
-
-// const ChartBalance = styled.div`
-//     position: absolute;
-//     text-align: center;
-//     width: 100%;
-//     padding-top: 80px;
-// `
-
-// const ChartLabel = styled.div`
-//     font-size: 12px;
-//     color: ${styles.color.front2};
-// `
-
-// const ChartNumber = styled.div`line-height: 35px;`
-
-// const Header = styled.div`
-// position: absolute;
-// top: 0;
-// `
-// const HeaderLeft = styled.div`
-// float: left;
-// padding-left: 5px;
-// padding-top: 10px;
-// `
-// const HeaderRight = styled.div`float: right;`
-
-// const AmountSuper = styled.span`
-//     position: relative;
-//     top: -10px;
-//     font-size: 20px;
-//     font-weight: bold;
-//     color: ${styles.color.front3};
-// `
-// const Amount = styled.span`
-//     font-size: 36px;
-//     font-weight: bold;
-//     color: ${styles.color.front3};
-// `

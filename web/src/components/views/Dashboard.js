@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
+import CountUp from 'react-countup'
 
 import styles from '/const/styles'
 import { currencies } from '/const/currencies'
@@ -23,6 +24,8 @@ export default class Dashboard extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'balance')
+
+        this.state = { balance_start: state.balance }
     }
     componentWillUnmount() {
         // this.observer.destroy()
@@ -101,18 +104,65 @@ export default class Dashboard extends Component {
 
         data = sortBy(data, '-balance_currency_number')
 
+        const balance_start = this.state.balance_start
+        this.state.balance_start = state.balance
+
         return React.createElement(DashboardTemplate, {
             data: data,
-            onClick: this.onClick
+            onClick: this.onClick,
+            ascii: currencies[state.currency].ascii,
+            balance_start: balance_start,
+            balance_end: state.balance,
         })
     }
 }
 
-function DashboardTemplate({ data, onClick }) {
+function DashboardTemplate({ 
+    data,
+    onClick,
+    ascii,
+    balance_start,
+    balance_end,
+ }) {
     return (
         <Container>
             <div>
-                <Left />
+                <Left>
+                    <Chart>
+                        <ChartBalance>
+                            <ChartLabel>
+                                Total balance
+                            </ChartLabel>
+                            <ChartNumber>
+                                <AmountSuper>{ascii}</AmountSuper>
+                                <Amount>
+                                    <CountUp
+                                        start={balance_start}
+                                        end={balance_end}
+                                        duration={5}
+                                        useEasing={true}
+                                        useGrouping={true}
+                                        separator=","
+                                    />
+                                </Amount>
+                                {/* <AmountSuper>.52</AmountSuper>  */}
+                            </ChartNumber>
+                        </ChartBalance>
+                        <ChartChart>
+                            <Circle
+                                size={200}
+                                strokeWidth="1.5"
+                                segments={
+                                    /* [{percentage:70,color:'red'},{percentage:30,color:'blue'}] */
+                                    data.map(category => ({
+                                        percentage: category.percentage,
+                                        color: category.color
+                                    }))
+                                }
+                            ></Circle>
+                        </ChartChart>
+                    </Chart>
+                </Left>
                 <Right>
                     {data.map(category => {
                         return (
@@ -121,7 +171,7 @@ function DashboardTemplate({ data, onClick }) {
                                     <HeaderLeft>
                                         <HeaderLeftPercentage>
                                             <Circle
-                                                size={50}
+                                                size={45}
                                                 strokeWidth="2.5"
                                                 segments={[
                                                     {
@@ -260,8 +310,53 @@ const Container = styled.div`
         padding: ${styles.paddingContent};
     }
 `
-const Left = styled.div``
-const Right = styled.div``
+const Left = styled.div`
+float:left;
+width: 200px;
+position: relative;
+`
+const Right = styled.div`
+float:left;
+width:calc(100% - 200px);
+`
+
+
+const Chart = styled.div`
+width:200px;
+`
+const ChartChart = styled.div``
+
+const ChartBalance = styled.div`
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    padding-top: 75px;
+`
+
+const ChartLabel = styled.div`
+    font-size: 12px;
+    color: ${styles.color.front2};
+`
+
+const ChartNumber = styled.div`line-height: 35px;`
+
+
+const AmountSuper = styled.span`
+    position: relative;
+    top: -10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: ${styles.color.black};
+`
+const Amount = styled.span`
+    font-size: 36px;
+    font-weight: bold;
+    color: ${styles.color.black};
+`
+
+
+
+
 
 const Category = styled.div`
     clear: both;
