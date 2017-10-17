@@ -4,11 +4,14 @@ export default {
     paddingOut: '50px',
     paddingOutMobile: '15px',
     paddingContent: '40px',
+    paddingContentMobile: '25px',
     leftColumn: '250px',
     leftColumnMobile: '300px',
     media: {
         first: '@media screen and (max-width: 1000px)',
-        second: '@media screen and (max-width: 850px)'
+        second: '@media screen and (max-width: 850px)',
+        third: '@media screen and (max-width: 750px)',
+        fourth: '@media screen and (max-width: 500px)',
     },
     notificationColor: {
         red: '#DD0044',

@@ -72,7 +72,9 @@ export default class Left extends Component {
                 return
 
             let xDiff = xDown - evt.touches[0].clientX
+            // this.menuElement.style.left = `-${xDiff}px`
             if (xDiff > minPixels) {
+                // this.menuElement.style.left = ''
                 state.sideMenuOpen = false
                 xDown = null
             }

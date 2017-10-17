@@ -172,7 +172,7 @@ function DashboardTemplate({
                         </ChartChart>
                     </Chart>
                     <Currencies>
-                        {Object.keys(cryptoPrices).map(symbol => (
+                        {/* {Object.keys(cryptoPrices).map(symbol => (
                             <Currency>
                                 <CurrencyIco><img src={`/static/image/${symbol}.svg`} width="25" /></CurrencyIco>
                                 <CurrencyText>
@@ -180,8 +180,8 @@ function DashboardTemplate({
                                     <CurrencyValue>{symbol} ≈ <span>{currencies[currency].format(cryptoPrices[symbol], Assets[symbol].price_decimals)}</span></CurrencyValue>
                                 </CurrencyText>
                             </Currency>
-                        ))}
-                        {/* <Currency>
+                        ))} */}
+                        <Currency>
                             <CurrencyIco><img src={`/static/image/BTC.svg`} width="25" /></CurrencyIco>
                             <CurrencyText>
                                 <CurrencyLabel>Bitcoin</CurrencyLabel>
@@ -194,10 +194,11 @@ function DashboardTemplate({
                                 <CurrencyLabel>Ethereum</CurrencyLabel>
                                 <CurrencyValue>ETH ≈ <span>$5,235</span></CurrencyValue>
                             </CurrencyText>
-                        </Currency> */}
+                        </Currency>
                     </Currencies>
                 </Left>
                 <Right>
+                    <div>
                     {data.map(category => {
                         return (
                             <Category>
@@ -258,17 +259,17 @@ function DashboardTemplate({
                                             </AssetIcon>
                                             <AssetText>
                                                 <AssetLeft>
-                                                    <AssetTitle>
+                                                    <AssetTitle1>
                                                         {asset.label}
-                                                    </AssetTitle>
+                                                    </AssetTitle1>
                                                     <AssetSubtitle>
                                                         {asset.address}
                                                     </AssetSubtitle>
                                                 </AssetLeft>
                                                 <AssetRight>
-                                                    <AssetTitle>
+                                                    <AssetTitle2>
                                                         {asset.balance_currency}
-                                                    </AssetTitle>
+                                                    </AssetTitle2>
                                                     <AssetSubtitle>
                                                         {asset.balance_asset}
                                                     </AssetSubtitle>
@@ -333,6 +334,7 @@ function DashboardTemplate({
                             </Asset>
                         </Assets>
                     </Category> */}
+                    </div>
                 </Right>
             </div>
         </Container>
@@ -345,26 +347,50 @@ const Container = styled.div`
     & > div {
         padding: ${styles.paddingContent};
     }
+    ${styles.media.third} {
+        & > div {
+            padding: ${styles.paddingContentMobile};
+        }
+    }        
 `
 const Left = styled.div`
     float: left;
     width: 200px;
     position: relative;
+    ${styles.media.fourth} {
+        width: 100%;
+        float: none;
+    }        
 `
 const Right = styled.div`
     float: left;
     width: calc(100% - 230px);
     padding-left: 30px;
     padding-top: 5px;
+    ${styles.media.fourth} {
+        width: 100%;
+        float: none;
+        padding-left: 0;
+        margin-top: 40px;
+        clear: both;
+        & > div {
+        }
+    }  
 `
 
-const Chart = styled.div`width: 200px;`
-const ChartChart = styled.div``
+const Chart = styled.div`
+width: 200px;
+${styles.media.fourth} {
+    margin: 0 auto;
+}    
+`
+const ChartChart = styled.div`
+`
 
 const ChartBalance = styled.div`
     position: absolute;
     text-align: center;
-    width: 100%;
+    width: 200px;
     padding-top: 75px;
 `
 
@@ -373,7 +399,9 @@ const ChartLabel = styled.div`
     color: ${styles.color.front2};
 `
 
-const ChartNumber = styled.div`line-height: 35px;`
+const ChartNumber = styled.div`
+line-height: 35px;
+`
 
 const AmountSuper = styled.span`
     position: relative;
@@ -399,17 +427,33 @@ const Category = styled.div`
 const HeaderAsset = styled.div`height: 50px;`
 
 const HeaderLeft = styled.div``
-const HeaderLeftPercentage = styled.div`float: left;`
+const HeaderLeftPercentage = styled.div`
+float: left;
+${styles.media.third} {
+    & > svg {
+        width: 30px;
+        height: 30px;
+    }
+}  
+`
 const HeaderLeftText = styled.div`
     float: left;
     padding-top: 3px;
     padding-left: 18px;
+    ${styles.media.third} {
+        padding-left: 10px;
+        padding-top: 0;
+    }        
 `
 const HeaderLeftTitle = styled.div`
     color: ${styles.color.black};
     font-weight: 900;
     font-size: 25px;
     line-height: 25px;
+    ${styles.media.third} {
+        font-size: 22px;
+        line-height: 22px;
+    }
 `
 const HeaderLeftSubtitle = styled.div`
     color: ${styles.color.grey1};
@@ -421,6 +465,9 @@ const HeaderLeftSubtitle = styled.div`
 const HeaderRight = styled.div`
     float: right;
     padding-top: 3px;
+    ${styles.media.third} {
+        padding-top: 0;
+    }        
 `
 
 const HeaderRightTitle = styled.div`
@@ -429,6 +476,10 @@ const HeaderRightTitle = styled.div`
     font-size: 20px;
     line-height: 25px;
     text-align: right;
+    ${styles.media.third} {
+        font-size: 15px;
+        line-height: 22px;
+    }  
 `
 
 const HeaderRightSubtitle = styled.div`
@@ -470,6 +521,10 @@ const Asset = styled.div`
         background-color: ${styles.color.background1};
         box-shadow: 0 0 0px 15px ${styles.color.background1};
     }
+    ${styles.media.third} {
+        margin-left: 10px;
+        height: 95px;
+    }
 `
 const AssetIcon = styled.div`
     padding-top: 5px;
@@ -477,18 +532,47 @@ const AssetIcon = styled.div`
     text-align: right;
     float: left;
 `
-const AssetText = styled.div`margin-left: 38px;`
+const AssetText = styled.div`
+margin-left: 38px;
+${styles.media.third} {
+    margin-left: 31px;
+}
+`
 
-const AssetLeft = styled.div`float: left;`
+const AssetLeft = styled.div`
+float: left;
+${styles.media.third} {
+    width: 100%;
+}
+`
 const AssetRight = styled.div`
     float: right;
     text-align: right;
+    ${styles.media.third} {
+        clear: both;
+        text-align: left;
+        float: none;
+    }
 `
 
-const AssetTitle = styled.div`
+const AssetTitle1 = styled.div`
     color: ${styles.color.front3};
     font-weight: bold;
     font-size: 16px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+`
+const AssetTitle2 = styled.div`
+    color: ${styles.color.front3};
+    font-weight: bold;
+    font-size: 16px;
+    ${styles.media.third} {
+        color: #aaaaaa;
+        letter-spacing: 0.5px;
+        font-weight: bold;
+        font-size: 12px;
+        color: ${styles.color.grey1};
+    }
 `
 const AssetSubtitle = styled.div`
     padding-top: 3px;
@@ -497,10 +581,18 @@ const AssetSubtitle = styled.div`
     font-weight: 100;
     font-size: 12px;
     clear: both;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    ${styles.media.third} {
+        padding-top: 0;
+    }        
 `
 const AssetPercentage = styled.div`
     padding-top: 3px;
     clear: both;
+    ${styles.media.third} {
+        padding-top: 0;
+    }
 `
 const AssetPercentageLeft = styled.div`
     width: calc(${props => props.width} - 30px);
@@ -519,11 +611,17 @@ const AssetPercentageRight = styled.span`
 `
 
 const Currencies = styled.div`
-padding-left: 40px;
+width: 200px;
+margin: 0 auto;
 `
 const Currency = styled.div`
 clear: both;
 padding-top: 30px;
+padding-left: 35px;
+height: 42px;
+${styles.media.third} {
+    padding-top: 20px;
+}  
 `
 const CurrencyIco = styled.div`
 float: left;
