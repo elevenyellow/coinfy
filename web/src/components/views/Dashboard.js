@@ -465,6 +465,7 @@ const Asset = styled.div`
     margin-left: 23px;
     height: 55px;
     cursor: pointer;
+    border-radius: 1px;
     &:hover {
         background-color: ${styles.color.background1};
         box-shadow: 0 0 0px 15px ${styles.color.background1};

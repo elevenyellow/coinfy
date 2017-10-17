@@ -26,8 +26,8 @@ export default class Asset extends Component {
     componentWillUnmount() {
         this.observer.destroy()
     }
-    shouldComponentUpdate() {
-        return false
+    shouldComponentUpdate(nextProps) {
+        return this.props.asset !== nextProps.asset
     }
 
     onClick() {

@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import { Show } from '/doprouter/react'
 import IconMore from 'react-icons/lib/md/more-vert'
 
-
 import routes from '/const/routes'
 import styles from '/const/styles'
 import { currencies } from '/const/currencies'
@@ -36,7 +35,7 @@ export default class Left extends Component {
         this.observer.observe(state, 'sideMenuOpen')
         this.observer.observe(state, 'balance')
         this.observer.observe(state, 'totalAssets')
-        
+
         this.state = { balance_start: state.balance }
         this.createRef = this.createRef.bind(this)
     }
@@ -59,6 +58,25 @@ export default class Left extends Component {
         window.addEventListener('resize', function(e) {
             if (state.sideMenuOpen) state.sideMenuOpen = false
         })
+
+
+
+        let xDown
+        let minPixels = 50
+        this.menuElement.addEventListener('touchstart', evt => {
+            xDown = evt.touches[0].clientX
+        }, false)
+
+        this.menuElement.addEventListener('touchmove', evt => {
+            if (!xDown)
+                return
+
+            let xDiff = xDown - evt.touches[0].clientX
+            if (xDiff > minPixels) {
+                state.sideMenuOpen = false
+                xDown = null
+            }
+        }, false)
 
 
     }
