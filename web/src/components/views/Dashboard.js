@@ -62,7 +62,10 @@ export default class Dashboard extends Component {
                 label: asset.label || asset.address,
                 address: asset.address,
                 balance_asset: asset.balance + ' ' + asset.symbol,
-                balance_currency_number: convertBalance(asset.symbol, asset.balance),
+                balance_currency_number: convertBalance(
+                    asset.symbol,
+                    asset.balance
+                ),
                 percentage: 0,
                 id: id,
                 icon: `/static/image/${asset.symbol}.svg`
@@ -72,14 +75,17 @@ export default class Dashboard extends Component {
         // Ordering
         let data = Object.keys(dataUnformated).map(symbol => {
             let category = dataUnformated[symbol]
+
             category.balance_asset =
                 category.balance_asset_number + ' ' + symbol
+
             category.balance_currency = currencies[state.currency].format(
                 category.balance_currency_number,
                 0
             )
+
             category.percentage = round(
-                category.balance_currency_number * 100 / state.balance
+                category.balance_currency_number * 100 / state.balance || 0
             )
 
             category.assets = category.assets.map(asset => {
@@ -92,12 +98,15 @@ export default class Dashboard extends Component {
                         100 /
                         (byCategory
                             ? category.balance_currency_number
-                            : state.balance)
+                            : state.balance) || 0
                 )
                 return asset
             })
 
-            category.assets = sortBy(category.assets, '-balance_currency_number')
+            category.assets = sortBy(
+                category.assets,
+                '-balance_currency_number'
+            )
 
             return category
         })
@@ -113,26 +122,28 @@ export default class Dashboard extends Component {
             ascii: currencies[state.currency].ascii,
             balance_start: balance_start,
             balance_end: state.balance,
+            cryptoPrices: state.prices,
+            currency: state.currency
         })
     }
 }
 
-function DashboardTemplate({ 
+function DashboardTemplate({
     data,
     onClick,
     ascii,
     balance_start,
     balance_end,
- }) {
+    cryptoPrices,
+    currency
+}) {
     return (
         <Container>
             <div>
                 <Left>
                     <Chart>
                         <ChartBalance>
-                            <ChartLabel>
-                                Total balance
-                            </ChartLabel>
+                            <ChartLabel>Total balance</ChartLabel>
                             <ChartNumber>
                                 <AmountSuper>{ascii}</AmountSuper>
                                 <Amount>
@@ -152,16 +163,39 @@ function DashboardTemplate({
                             <Circle
                                 size={200}
                                 strokeWidth="1.5"
-                                segments={
-                                    /* [{percentage:70,color:'red'},{percentage:30,color:'blue'}] */
-                                    data.map(category => ({
-                                        percentage: category.percentage,
-                                        color: category.color
-                                    }))
-                                }
-                            ></Circle>
+                                segments={/* [{percentage:70,color:'red'},{percentage:30,color:'blue'}] */
+                                data.map(category => ({
+                                    percentage: category.percentage,
+                                    color: category.color
+                                }))}
+                            />
                         </ChartChart>
                     </Chart>
+                    <Currencies>
+                        {Object.keys(cryptoPrices).map(symbol => (
+                            <Currency>
+                                <CurrencyIco><img src={`/static/image/${symbol}.svg`} width="25" /></CurrencyIco>
+                                <CurrencyText>
+                                    <CurrencyLabel>{Assets[symbol].name}</CurrencyLabel>
+                                    <CurrencyValue>{symbol} ≈ <span>{currencies[currency].format(cryptoPrices[symbol], Assets[symbol].price_decimals)}</span></CurrencyValue>
+                                </CurrencyText>
+                            </Currency>
+                        ))}
+                        {/* <Currency>
+                            <CurrencyIco><img src={`/static/image/BTC.svg`} width="25" /></CurrencyIco>
+                            <CurrencyText>
+                                <CurrencyLabel>Bitcoin</CurrencyLabel>
+                                <CurrencyValue>BTC ≈ <span>$5,235</span></CurrencyValue>
+                            </CurrencyText>
+                        </Currency>
+                        <Currency>
+                            <CurrencyIco><img src={`/static/image/ETH.svg`} width="25" /></CurrencyIco>
+                            <CurrencyText>
+                                <CurrencyLabel>Ethereum</CurrencyLabel>
+                                <CurrencyValue>ETH ≈ <span>$5,235</span></CurrencyValue>
+                            </CurrencyText>
+                        </Currency> */}
+                    </Currencies>
                 </Left>
                 <Right>
                     {data.map(category => {
@@ -171,7 +205,7 @@ function DashboardTemplate({
                                     <HeaderLeft>
                                         <HeaderLeftPercentage>
                                             <Circle
-                                                size={45}
+                                                size={43}
                                                 strokeWidth="2.5"
                                                 segments={[
                                                     {
@@ -212,7 +246,9 @@ function DashboardTemplate({
                                 </HeaderAsset>
                                 <AssetsList>
                                     {category.assets.map(asset => (
-                                        <Asset onClick={()=>onClick(asset.id)}>
+                                        <Asset
+                                            onClick={() => onClick(asset.id)}
+                                        >
                                             <AssetIcon>
                                                 <img
                                                     src={asset.icon}
@@ -311,19 +347,18 @@ const Container = styled.div`
     }
 `
 const Left = styled.div`
-float:left;
-width: 200px;
-position: relative;
+    float: left;
+    width: 200px;
+    position: relative;
 `
 const Right = styled.div`
-float:left;
-width:calc(100% - 200px);
+    float: left;
+    width: calc(100% - 230px);
+    padding-left: 30px;
+    padding-top: 5px;
 `
 
-
-const Chart = styled.div`
-width:200px;
-`
+const Chart = styled.div`width: 200px;`
 const ChartChart = styled.div``
 
 const ChartBalance = styled.div`
@@ -340,7 +375,6 @@ const ChartLabel = styled.div`
 
 const ChartNumber = styled.div`line-height: 35px;`
 
-
 const AmountSuper = styled.span`
     position: relative;
     top: -10px;
@@ -353,10 +387,6 @@ const Amount = styled.span`
     font-weight: bold;
     color: ${styles.color.black};
 `
-
-
-
-
 
 const Category = styled.div`
     clear: both;
@@ -373,7 +403,7 @@ const HeaderLeftPercentage = styled.div`float: left;`
 const HeaderLeftText = styled.div`
     float: left;
     padding-top: 3px;
-    padding-left: 10px;
+    padding-left: 18px;
 `
 const HeaderLeftTitle = styled.div`
     color: ${styles.color.black};
@@ -432,7 +462,7 @@ const AssetsList = styled.div`clear: both;`
 const Asset = styled.div`
     clear: both;
     margin-top: 25px;
-    margin-left: 25px;
+    margin-left: 23px;
     height: 55px;
     cursor: pointer;
     &:hover {
@@ -485,4 +515,33 @@ const AssetPercentageRight = styled.span`
     font-weight: bold;
     color: ${props => props.color};
     margin-left: 5px;
+`
+
+const Currencies = styled.div`
+padding-left: 40px;
+`
+const Currency = styled.div`
+clear: both;
+padding-top: 30px;
+`
+const CurrencyIco = styled.div`
+float: left;
+padding-top: 5px;
+padding-right: 10px;
+`
+const CurrencyText = styled.div`
+float: left;
+`
+const CurrencyLabel = styled.div`
+font-weight: 900;
+color: ${styles.color.black};
+font-size: 18px;
+`
+const CurrencyValue = styled.div`
+color: ${styles.color.front3};
+font-size: 13px;
+font-weight: 200;
+& span {
+    font-weight: bold;
+}
 `
