@@ -128,6 +128,12 @@ const PopupStyled = styled.div`
         margin-left: auto;
         margin-right: auto;
         margin-top: -4%;
+
+        ${styles.media.fourth} {
+            width: calc(100% - 20px);
+            margin-right: 10px;
+            margin-left: 10px;
+        }
     }
 `
 // box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);

@@ -63,7 +63,7 @@ function AddAssetTemplate({
         <div>
             <RightHeader>
                 <RightHeaderInner>
-                    <Div float="left" padding-left="15px">
+                    <Div float="left">
                         <H1>Add asset</H1>
                         <H2>Create or Import assets</H2>
                     </Div>
@@ -71,7 +71,7 @@ function AddAssetTemplate({
                 </RightHeaderInner>
             </RightHeader>
             <RightContent>
-                <RightContentMenu>
+                {/* <RightContentMenu>
                     <RightContentMenuItem
                         selected={location.pathname === routesCreatebtc}
                         onClick={e => onClick(routesCreatebtc)}
@@ -103,7 +103,7 @@ function AddAssetTemplate({
                             Import Bitcoin Wallet
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
-                </RightContentMenu>
+                </RightContentMenu> */}
                 <RightContentContent>
                     <RightContentInner>
                         <Router source={location}>

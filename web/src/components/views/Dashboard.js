@@ -7,6 +7,7 @@ import styles from '/const/styles'
 import { currencies } from '/const/currencies'
 import routes from '/const/routes'
 
+
 import { round } from '/api/numbers'
 import { Assets } from '/api/Assets'
 import sortBy from '/api/sortBy'
@@ -14,6 +15,8 @@ import sortBy from '/api/sortBy'
 import state from '/store/state'
 import { convertBalance } from '/store/getters'
 import { setHref } from '/store/actions'
+
+import { RightContainerPadding } from '/components/styled/Right'
 
 import Circle from '/components/styled/Circle'
 
@@ -58,6 +61,7 @@ export default class Dashboard extends Component {
                 asset.symbol,
                 asset.balance
             )
+            console.log( asset.balance,  asset.symbol );
             assetUnformated.assets.push({
                 label: asset.label || asset.address,
                 address: asset.address,
@@ -138,221 +142,209 @@ function DashboardTemplate({
     currency
 }) {
     return (
-        <Container>
-            <div>
-                <Left>
-                    <Chart>
-                        <ChartBalance>
-                            <ChartLabel>Total balance</ChartLabel>
-                            <ChartNumber>
-                                <AmountSuper>{ascii}</AmountSuper>
-                                <Amount>
-                                    <CountUp
-                                        start={balance_start}
-                                        end={balance_end}
-                                        duration={5}
-                                        useEasing={true}
-                                        useGrouping={true}
-                                        separator=","
-                                    />
-                                </Amount>
-                                {/* <AmountSuper>.52</AmountSuper>  */}
-                            </ChartNumber>
-                        </ChartBalance>
-                        <ChartChart>
-                            <Circle
-                                size={200}
-                                strokeWidth="1.5"
-                                segments={/* [{percentage:70,color:'red'},{percentage:30,color:'blue'}] */
-                                data.map(category => ({
-                                    percentage: category.percentage,
-                                    color: category.color
-                                }))}
-                            />
-                        </ChartChart>
-                    </Chart>
-                    <Currencies>
-                        {/* {Object.keys(cryptoPrices).map(symbol => (
-                            <Currency>
-                                <CurrencyIco><img src={`/static/image/${symbol}.svg`} width="25" /></CurrencyIco>
-                                <CurrencyText>
-                                    <CurrencyLabel>{Assets[symbol].name}</CurrencyLabel>
-                                    <CurrencyValue>{symbol} ≈ <span>{currencies[currency].format(cryptoPrices[symbol], Assets[symbol].price_decimals)}</span></CurrencyValue>
-                                </CurrencyText>
-                            </Currency>
-                        ))} */}
+        <RightContainerPadding>
+            <Left>
+                <Chart>
+                    <ChartBalance>
+                        <ChartLabel>Total balance</ChartLabel>
+                        <ChartNumber>
+                            <AmountSuper>{ascii}</AmountSuper>
+                            <Amount>
+                                <CountUp
+                                    start={balance_start}
+                                    end={balance_end}
+                                    duration={5}
+                                    useEasing={true}
+                                    useGrouping={true}
+                                    separator=","
+                                />
+                            </Amount>
+                            {/* <AmountSuper>.52</AmountSuper>  */}
+                        </ChartNumber>
+                    </ChartBalance>
+                    <ChartChart>
+                        <Circle
+                            size={200}
+                            strokeWidth="1.5"
+                            segments={/* [{percentage:70,color:'red'},{percentage:30,color:'blue'}] */
+                            data.map(category => ({
+                                percentage: category.percentage,
+                                color: category.color
+                            }))}
+                        />
+                    </ChartChart>
+                </Chart>
+                <Currencies>
+                    {Object.keys(cryptoPrices).map(symbol => (
                         <Currency>
-                            <CurrencyIco><img src={`/static/image/BTC.svg`} width="25" /></CurrencyIco>
+                            <CurrencyIco><img src={`/static/image/${symbol}.svg`} width="25" /></CurrencyIco>
                             <CurrencyText>
-                                <CurrencyLabel>Bitcoin</CurrencyLabel>
-                                <CurrencyValue>BTC ≈ <span>$5,235</span></CurrencyValue>
+                                <CurrencyLabel>{Assets[symbol].name}</CurrencyLabel>
+                                <CurrencyValue>{symbol} ≈ <span>{currencies[currency].format(cryptoPrices[symbol], Assets[symbol].price_decimals)}</span></CurrencyValue>
                             </CurrencyText>
                         </Currency>
-                        <Currency>
-                            <CurrencyIco><img src={`/static/image/ETH.svg`} width="25" /></CurrencyIco>
-                            <CurrencyText>
-                                <CurrencyLabel>Ethereum</CurrencyLabel>
-                                <CurrencyValue>ETH ≈ <span>$5,235</span></CurrencyValue>
-                            </CurrencyText>
-                        </Currency>
-                    </Currencies>
-                </Left>
-                <Right>
-                    <div>
-                    {data.map(category => {
-                        return (
-                            <Category>
-                                <HeaderAsset>
-                                    <HeaderLeft>
-                                        <HeaderLeftPercentage>
-                                            <Circle
-                                                size={43}
-                                                strokeWidth="2.5"
-                                                segments={[
-                                                    {
-                                                        percentage:
-                                                            category.percentage,
-                                                        color: category.color
-                                                    }
-                                                ]}
-                                            >
-                                                <CircleText>
-                                                    <text
-                                                        x="50%"
-                                                        y="50%"
-                                                        class="chart-number"
-                                                    >
-                                                        {category.percentage}%
-                                                    </text>
-                                                </CircleText>
-                                            </Circle>
-                                        </HeaderLeftPercentage>
-                                        <HeaderLeftText>
-                                            <HeaderLeftTitle>
-                                                {category.label}
-                                            </HeaderLeftTitle>
-                                            <HeaderLeftSubtitle>
-                                                {category.assets.length} assets
-                                            </HeaderLeftSubtitle>
-                                        </HeaderLeftText>
-                                    </HeaderLeft>
-                                    <HeaderRight>
-                                        <HeaderRightTitle>
-                                            {category.balance_currency}
-                                        </HeaderRightTitle>
-                                        <HeaderRightSubtitle>
-                                            {category.balance_asset}
-                                        </HeaderRightSubtitle>
-                                    </HeaderRight>
-                                </HeaderAsset>
-                                <AssetsList>
-                                    {category.assets.map(asset => (
-                                        <Asset
-                                            onClick={() => onClick(asset.id)}
+                    ))}
+                    {/* <Currency>
+                        <CurrencyIco><img src={`/static/image/BTC.svg`} width="25" /></CurrencyIco>
+                        <CurrencyText>
+                            <CurrencyLabel>Bitcoin</CurrencyLabel>
+                            <CurrencyValue>BTC ≈ <span>$5,235</span></CurrencyValue>
+                        </CurrencyText>
+                    </Currency> */}
+                    <Currency>
+                        <CurrencyIco><img src={`/static/image/ETH.svg`} width="25" /></CurrencyIco>
+                        <CurrencyText>
+                            <CurrencyLabel>Ethereum</CurrencyLabel>
+                            <CurrencyValue>ETH ≈ <span>$342</span></CurrencyValue>
+                        </CurrencyText>
+                    </Currency>
+                </Currencies>
+            </Left>
+            <Right>
+                <div>
+                {data.map(category => {
+                    return (
+                        <Category>
+                            <HeaderAsset>
+                                <HeaderLeft>
+                                    <HeaderLeftPercentage>
+                                        <Circle
+                                            size={43}
+                                            strokeWidth="2.5"
+                                            segments={[
+                                                {
+                                                    percentage:
+                                                        category.percentage,
+                                                    color: category.color
+                                                }
+                                            ]}
                                         >
-                                            <AssetIcon>
-                                                <img
-                                                    src={asset.icon}
-                                                    width="20"
-                                                    height="20"
+                                            <CircleText>
+                                                <text
+                                                    x="50%"
+                                                    y="50%"
+                                                    class="chart-number"
+                                                >
+                                                    {category.percentage}%
+                                                </text>
+                                            </CircleText>
+                                        </Circle>
+                                    </HeaderLeftPercentage>
+                                    <HeaderLeftText>
+                                        <HeaderLeftTitle>
+                                            {category.label}
+                                        </HeaderLeftTitle>
+                                        <HeaderLeftSubtitle>
+                                            {category.assets.length} assets
+                                        </HeaderLeftSubtitle>
+                                    </HeaderLeftText>
+                                </HeaderLeft>
+                                <HeaderRight>
+                                    <HeaderRightTitle>
+                                        {category.balance_currency}
+                                    </HeaderRightTitle>
+                                    <HeaderRightSubtitle>
+                                        {category.balance_asset}
+                                    </HeaderRightSubtitle>
+                                </HeaderRight>
+                            </HeaderAsset>
+                            <AssetsList>
+                                {category.assets.map(asset => (
+                                    <Asset
+                                        onClick={() => onClick(asset.id)}
+                                    >
+                                        <AssetIcon>
+                                            <img
+                                                src={asset.icon}
+                                                width="20"
+                                                height="20"
+                                            />
+                                        </AssetIcon>
+                                        <AssetText>
+                                            <AssetLeft>
+                                                <AssetTitle1>
+                                                    {asset.label}
+                                                </AssetTitle1>
+                                                <AssetSubtitle>
+                                                    {asset.address}
+                                                </AssetSubtitle>
+                                            </AssetLeft>
+                                            <AssetRight>
+                                                <AssetTitle2>
+                                                    {asset.balance_currency}
+                                                </AssetTitle2>
+                                                <AssetSubtitle>
+                                                    {asset.balance_asset}
+                                                </AssetSubtitle>
+                                            </AssetRight>
+                                            <AssetPercentage>
+                                                <AssetPercentageLeft
+                                                    width={
+                                                        asset.percentage +
+                                                        '%'
+                                                    }
+                                                    color="#feb034"
                                                 />
-                                            </AssetIcon>
-                                            <AssetText>
-                                                <AssetLeft>
-                                                    <AssetTitle1>
-                                                        {asset.label}
-                                                    </AssetTitle1>
-                                                    <AssetSubtitle>
-                                                        {asset.address}
-                                                    </AssetSubtitle>
-                                                </AssetLeft>
-                                                <AssetRight>
-                                                    <AssetTitle2>
-                                                        {asset.balance_currency}
-                                                    </AssetTitle2>
-                                                    <AssetSubtitle>
-                                                        {asset.balance_asset}
-                                                    </AssetSubtitle>
-                                                </AssetRight>
-                                                <AssetPercentage>
-                                                    <AssetPercentageLeft
-                                                        width={
-                                                            asset.percentage +
-                                                            '%'
-                                                        }
-                                                        color="#feb034"
-                                                    />
-                                                    <AssetPercentageRight color="#feb034">
-                                                        {asset.percentage + '%'}
-                                                    </AssetPercentageRight>
-                                                </AssetPercentage>
-                                            </AssetText>
-                                        </Asset>
-                                    ))}
-                                </AssetsList>
-                            </Category>
-                        )
-                    })}
+                                                <AssetPercentageRight color="#feb034">
+                                                    {asset.percentage + '%'}
+                                                </AssetPercentageRight>
+                                            </AssetPercentage>
+                                        </AssetText>
+                                    </Asset>
+                                ))}
+                            </AssetsList>
+                        </Category>
+                    )
+                })}
 
-                    {/* <Category>
-                        <HeaderAsset>
-                            <HeaderLeft>
-                                <HeaderLeftPercentage>
-                                    <Circle size={50} strokeWidth="2.5" segments={[{percentage:10, color:'#7683c9'}]}>
-                                        <CircleText>
-                                            <text x="50%" y="50%" class="chart-number">10%</text>
-                                        </CircleText>
-                                    </Circle>
-                                </HeaderLeftPercentage>
-                                <HeaderLeftText>
-                                    <HeaderLeftTitle>Ethereum</HeaderLeftTitle>
-                                    <HeaderLeftSubtitle>1 assets</HeaderLeftSubtitle>
-                                </HeaderLeftText>
-                            </HeaderLeft>
-                            <HeaderRight>
-                                <HeaderRightTitle>$30,131</HeaderRightTitle>
-                                <HeaderRightSubtitle>10.313 ETH</HeaderRightSubtitle>
-                            </HeaderRight>
-                        </HeaderAsset>
-                        <Assets>
-                            <Asset>
-                                <AssetIcon><img src="/static/image/ETH.svg" width="20" height="20" /></AssetIcon>
-                                <AssetText>
-                                    <AssetLeft>
-                                        <AssetTitle>My wallet 1</AssetTitle>
-                                        <AssetSubtitle>1FA4aEo21ZxTXs1YEFhKD5gpPzNSQ45hQg</AssetSubtitle>
-                                    </AssetLeft>
-                                    <AssetRight>
-                                        <AssetTitle>$20,312</AssetTitle>
-                                        <AssetSubtitle>5.013 BTC</AssetSubtitle>
-                                    </AssetRight>
-                                    <AssetPercentage>
-                                        <AssetPercentageLeft width="10%" color="#7683c9" />
-                                        <AssetPercentageRight color="#7683c9">10%</AssetPercentageRight>
-                                    </AssetPercentage>
-                                </AssetText>
-                            </Asset>
-                        </Assets>
-                    </Category> */}
-                    </div>
-                </Right>
-            </div>
-        </Container>
+                {/* <Category>
+                    <HeaderAsset>
+                        <HeaderLeft>
+                            <HeaderLeftPercentage>
+                                <Circle size={50} strokeWidth="2.5" segments={[{percentage:10, color:'#7683c9'}]}>
+                                    <CircleText>
+                                        <text x="50%" y="50%" class="chart-number">10%</text>
+                                    </CircleText>
+                                </Circle>
+                            </HeaderLeftPercentage>
+                            <HeaderLeftText>
+                                <HeaderLeftTitle>Ethereum</HeaderLeftTitle>
+                                <HeaderLeftSubtitle>1 assets</HeaderLeftSubtitle>
+                            </HeaderLeftText>
+                        </HeaderLeft>
+                        <HeaderRight>
+                            <HeaderRightTitle>$30,131</HeaderRightTitle>
+                            <HeaderRightSubtitle>10.313 ETH</HeaderRightSubtitle>
+                        </HeaderRight>
+                    </HeaderAsset>
+                    <Assets>
+                        <Asset>
+                            <AssetIcon><img src="/static/image/ETH.svg" width="20" height="20" /></AssetIcon>
+                            <AssetText>
+                                <AssetLeft>
+                                    <AssetTitle>My wallet 1</AssetTitle>
+                                    <AssetSubtitle>1FA4aEo21ZxTXs1YEFhKD5gpPzNSQ45hQg</AssetSubtitle>
+                                </AssetLeft>
+                                <AssetRight>
+                                    <AssetTitle>$20,312</AssetTitle>
+                                    <AssetSubtitle>5.013 BTC</AssetSubtitle>
+                                </AssetRight>
+                                <AssetPercentage>
+                                    <AssetPercentageLeft width="10%" color="#7683c9" />
+                                    <AssetPercentageRight color="#7683c9">10%</AssetPercentageRight>
+                                </AssetPercentage>
+                            </AssetText>
+                        </Asset>
+                    </Assets>
+                </Category> */}
+                </div>
+            </Right>
+        </RightContainerPadding>
     )
 }
 
-const Container = styled.div`
-    height: 100%;
-    overflow-y: auto;
-    & > div {
-        padding: ${styles.paddingContent};
-    }
-    ${styles.media.third} {
-        & > div {
-            padding: ${styles.paddingContentMobile};
-        }
-    }        
-`
+
+
 const Left = styled.div`
     float: left;
     width: 200px;
@@ -522,8 +514,8 @@ const Asset = styled.div`
         box-shadow: 0 0 0px 15px ${styles.color.background1};
     }
     ${styles.media.third} {
+        height: 110px;
         margin-left: 10px;
-        height: 95px;
     }
 `
 const AssetIcon = styled.div`
@@ -568,6 +560,7 @@ const AssetTitle2 = styled.div`
     font-size: 16px;
     ${styles.media.third} {
         color: #aaaaaa;
+        line-height: 20px;
         letter-spacing: 0.5px;
         font-weight: bold;
         font-size: 12px;
@@ -583,6 +576,7 @@ const AssetSubtitle = styled.div`
     clear: both;
     text-overflow: ellipsis;
     overflow: hidden;
+    line-height: 20px;
     ${styles.media.third} {
         padding-top: 0;
     }        

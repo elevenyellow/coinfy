@@ -2,9 +2,9 @@ import styled from 'styled-components'
 import styles from '/const/styles'
 
 export default styled.h2`
-color: ${styles.color.front2};
+color: ${styles.color.grey1};
 margin: 0;
-font-size: 16px;
+font-size: 15px;
 font-weight: 300;
-letter-spacing: 1px;
+letter-spacing: 0.5px;
 `
