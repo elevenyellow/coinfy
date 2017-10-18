@@ -90,9 +90,7 @@ function AssetBTCTemplate({
                 <Router source={location}>
 
                     <Route pathname={routes_summaryAsset}>
-                        <RightContentInner>
-                            <SummaryBTC />
-                        </RightContentInner>
+                        <SummaryBTC />
                     </Route>
 
                     <Route pathname={routes_receiveAsset}>

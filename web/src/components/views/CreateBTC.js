@@ -18,7 +18,9 @@ import Address from '/components/styled/Address'
 import Help from '/components/styled/Help'
 import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
+import CenterElement from '/components/styled/CenterElement'
 import { Label, SubLabel } from '/components/styled/Label'
+import { FormField, FormFieldLeft, FormFieldRight } from '/components/styled/Form'
 
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 
@@ -132,34 +134,36 @@ function CreateBitcoinTemplate({
 }) {
     return (
         <div>
-            <Div padding-bottom="15px">
-                <QRCode>
-                    <Show if={isAddressDefined}>
-                        <img width="150" src={qrcodebase64} />
-                    </Show>
-                </QRCode>
-            </Div>
-            <Div padding-bottom="10px">
-                <CenterElement>
-                    <Address>
-                        {address}
-                    </Address>
-                </CenterElement>
-            </Div>
-            <Div padding-bottom="50px">
-                <CenterElement>
-                    <Button onClick={onGenerateAsset} width="100%">
-                        Generate address
-                    </Button>
-                </CenterElement>
-            </Div>
+            <FormField>
+                <Div>
+                    <QRCode>
+                        <Show if={isAddressDefined}>
+                            <img width="150" src={qrcodebase64} />
+                        </Show>
+                    </QRCode>
+                </Div>
+                <Div>
+                    <CenterElement>
+                        <Address>
+                            {address}
+                        </Address>
+                    </CenterElement>
+                </Div>
+                <Div padding-bottom="20px">
+                    <CenterElement>
+                        <Button onClick={onGenerateAsset} width="100%">
+                            Generate address
+                        </Button>
+                    </CenterElement>
+                </Div>
+            </FormField>
 
             <Show if={isAddressDefined}>
                 <form>
-                    <Div height="65px">
-                        <Div float="left" width="40%">
+                    <FormField>
+                        <FormFieldLeft>
                             <Label>Password</Label>
-                            <Help>
+                            <Help position="center">
                                 Make sure that you remember this. This password
                                 can't be restored because we don't store it. For
                                 security reasons you will be asked often for
@@ -168,8 +172,8 @@ function CreateBitcoinTemplate({
                             <SubLabel>
                                 This password encrypts your private key.
                             </SubLabel>
-                        </Div>
-                        <Div float="left" width="60%">
+                        </FormFieldLeft>
+                        <FormFieldRight>
                             <Password
                                 minlength={minpassword}
                                 value={password}
@@ -177,13 +181,13 @@ function CreateBitcoinTemplate({
                                 width="100%"
                                 type="password"
                             />
-                        </Div>
-                    </Div>
-                    <Div height="55px">
-                        <Div float="left" width="40%">
+                        </FormFieldRight>
+                    </FormField>
+                    <FormField>
+                        <FormFieldLeft>
                             <Label>Repeat Password</Label>
-                        </Div>
-                        <Div float="left" width="60%">
+                        </FormFieldLeft>
+                        <FormFieldRight>
                             <Input
                                 minlength={minpassword}
                                 error={
@@ -197,25 +201,22 @@ function CreateBitcoinTemplate({
                                 width="100%"
                                 type="password"
                             />
+                        </FormFieldRight>
+                    </FormField>
+                    <FormField>
+                        <Div float="right">
+                            <Button
+                                width="100px"
+                                disabled={!isFormValid}
+                                onClick={onSubmit}
+                            >
+                                Create
+                            </Button>
                         </Div>
-                    </Div>
-                    <Div float="right">
-                        <Button
-                            width="100px"
-                            disabled={!isFormValid}
-                            onClick={onSubmit}
-                        >
-                            Create
-                        </Button>
-                    </Div>
+                    </FormField>
                     <Div clear="both" />
                 </form>
             </Show>
         </div>
     )
 }
-
-const CenterElement = styled.div`
-    margin: 0 auto;
-    width: 360px;
-`

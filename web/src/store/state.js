@@ -83,7 +83,7 @@ observer.observe(state.assets)
 
 
 // implementing location router (special object)
-create(window.location.href, state)
+create(window.location.href, state, 'location')
 
 
 

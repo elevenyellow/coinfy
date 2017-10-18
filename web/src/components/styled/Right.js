@@ -60,6 +60,10 @@ height:100%;
 `
 
 export const RightHeader = styled.div`
+margin-bottom: ${styles.paddingContent};
+${styles.media.first} {
+    margin-bottom: ${styles.paddingContentMobile};
+}
 `
 
 export const RightContent = styled.div`

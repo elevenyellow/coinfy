@@ -3,20 +3,20 @@ import styled from 'styled-components';
 import styles from '/const/styles';
 
 export default function(props) {
-    let width = props.width || 300;
-    let sizeicon = 20;
-    let position = props.position || 'right';
-    let left, top;
+    let width = props.width || 200
+    let sizeicon = 20
+    let position = props.position
+    let left, top
     if (position === 'left') {
-        left = `${-width + 8}px`;
-        top = '-2px';
-    } else if (position === 'center') {
-        const halfwidth = -width / 2 + sizeicon / 2;
-        left = `${halfwidth}px`;
-        top = '16px';
+        left = `${-width + 8}px`
+        top = '-2px'
+    } else if (position === 'right') {
+        left = '16px'
+        top = '-2px'
     } else {
-        left = '16px';
-        top = '-2px';
+        const halfwidth = -width / 2 + sizeicon / 2
+        left = `${halfwidth}px`
+        top = '16px'
     }
     return (
         <Help width={width + 'px'} left={left} top={top} position={props.position}>

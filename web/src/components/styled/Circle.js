@@ -9,7 +9,7 @@ export default function Circle({
     children
 }) {
     let percentageUsed = 0
-    let c = 17
+    let c = 17.1
     let r = '15.91549430918952'
     return (
         <svg width={size} height={size} viewBox={`0 0 ${c*2} ${c*2}`}>

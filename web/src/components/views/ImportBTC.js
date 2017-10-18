@@ -29,6 +29,8 @@ import Input from '/components/styled/Input'
 import Select from '/components/styled/Select'
 import Password from '/components/styled/Password'
 import { Label, SubLabel } from '/components/styled/Label'
+import CenterElement from '/components/styled/CenterElement'
+import { FormField, FormFieldLeft, FormFieldRight } from '/components/styled/Form'
 
 import {
     setHref,
@@ -219,30 +221,32 @@ function ImportBitcoinTemplate({
 }) {
     return (
         <div>
-            <Div padding-bottom="15px">
-                <QRCode>
-                    <Show if={isValidInput}>
-                        <img width="150" src={qrcodebase64} />
-                    </Show>
-                </QRCode>
-            </Div>
-            <Div padding-bottom="50px">
-                <CenterElement>
-                    <Address>
-                        {address}
-                    </Address>
-                </CenterElement>
-            </Div>
+            <FormField>
+                <Div>
+                    <QRCode>
+                        <Show if={isValidInput}>
+                            <img width="150" src={qrcodebase64} />
+                        </Show>
+                    </QRCode>
+                </Div>
+                <Div>
+                    <CenterElement>
+                        <Address>
+                            {address}
+                        </Address>
+                    </CenterElement>
+                </Div>
+            </FormField>
 
             <form>
-                <Div height="65px">
-                    <Div float="left" width="40%">
+                <FormField>
+                    <FormFieldLeft>
                         <Label>I have my</Label>
                         <SubLabel>
                             Select the option you prefer to import.
                         </SubLabel>
-                    </Div>
-                    <Div float="left" width="60%">
+                    </FormFieldLeft>
+                    <FormFieldRight>
                         <Select width="100%" onChange={onChangeTypeImport}>
                             <option
                                 value={types_import.address}
@@ -267,16 +271,16 @@ function ImportBitcoinTemplate({
                                 Private key
                             </option>
                         </Select>
-                    </Div>
-                </Div>
+                    </FormFieldRight>
+                </FormField>
 
                 <Show if={type_import === types_import.address}>
-                    <Div height="65px">
-                        <Div float="left" width="40%">
+                    <FormField>
+                        <FormFieldLeft>
                             <Label>Address</Label>
                             <SubLabel>Type or paste your address.</SubLabel>
-                        </Div>
-                        <Div float="left" width="60%">
+                        </FormFieldLeft>
+                        <FormFieldRight>
                             <Input
                                 width="100%"
                                 value={input}
@@ -288,21 +292,21 @@ function ImportBitcoinTemplate({
                                 }
                                 invalid={isErrorInput || isRegistered}
                             />
-                        </Div>
-                    </Div>
+                        </FormFieldRight>
+                    </FormField>
                 </Show>
 
                 <Show if={type_import === types_import.public_key}>
-                    <Div height="65px">
-                        <Div float="left" width="40%">
+                    <FormField>
+                        <FormFieldLeft>
                             <Label>Public key</Label>
                             <Help>
                                 Your address can be calculated through public
                                 key.
                             </Help>
                             <SubLabel>Type or paste your public key.</SubLabel>
-                        </Div>
-                        <Div float="left" width="60%">
+                        </FormFieldLeft>
+                        <FormFieldRight>
                             <Input
                                 width="100%"
                                 value={input}
@@ -314,14 +318,14 @@ function ImportBitcoinTemplate({
                                 }
                                 invalid={isErrorInput || isRegistered}
                             />
-                        </Div>
-                    </Div>
+                        </FormFieldRight>
+                    </FormField>
                 </Show>
 
                 <Show if={type_import === types_import.private_key}>
                     <div>
-                        <Div height="65px">
-                            <Div float="left" width="40%">
+                        <FormField>
+                            <FormFieldLeft>
                                 <Label>Private key</Label>
                                 <Help>
                                     We will never store your private key.
@@ -329,8 +333,8 @@ function ImportBitcoinTemplate({
                                 <SubLabel>
                                     Type or paste your Private key in WIF format.
                                 </SubLabel>
-                            </Div>
-                            <Div float="left" width="60%">
+                            </FormFieldLeft>
+                            <FormFieldRight>
                                 <Input
                                     width="100%"
                                     value={input}
@@ -342,10 +346,10 @@ function ImportBitcoinTemplate({
                                     }
                                     invalid={isErrorInput || isRegistered}
                                 />
-                            </Div>
-                        </Div>
-                        <Div height="65px">
-                            <Div float="left" width="40%">
+                            </FormFieldRight>
+                        </FormField>
+                        <FormField>
+                            <FormFieldLeft>
                                 <Label>Password</Label>
                                 <Help>
                                     Make sure that you remember this. This
@@ -356,8 +360,8 @@ function ImportBitcoinTemplate({
                                 <SubLabel>
                                     This password encrypts your private key.
                                 </SubLabel>
-                            </Div>
-                            <Div float="left" width="60%">
+                            </FormFieldLeft>
+                            <FormFieldRight>
                                 <Password
                                     minlength={minpassword}
                                     value={password}
@@ -365,13 +369,13 @@ function ImportBitcoinTemplate({
                                     width="100%"
                                     type="password"
                                 />
-                            </Div>
-                        </Div>
-                        <Div height="55px">
-                            <Div float="left" width="40%">
+                            </FormFieldRight>
+                        </FormField>
+                        <FormField>
+                            <FormFieldLeft>
                                 <Label>Repeat Password</Label>
-                            </Div>
-                            <Div float="left" width="60%">
+                            </FormFieldLeft>
+                            <FormFieldRight>
                                 <Input
                                     minlength={minpassword}
                                     error={'Passwords do not match'}
@@ -381,27 +385,27 @@ function ImportBitcoinTemplate({
                                     width="100%"
                                     type="password"
                                 />
-                            </Div>
-                        </Div>
+                            </FormFieldRight>
+                        </FormField>
                     </div>
                 </Show>
 
-                <Div float="right">
-                    <Button
-                        width="100px"
-                        disabled={!isFormValid}
-                        onClick={onSubmit}
-                    >
-                        Import
-                    </Button>
-                </Div>
+                <FormField>
+                    <Div float="right">
+                        <Button
+                            width="100px"
+                            disabled={!isFormValid}
+                            onClick={onSubmit}
+                        >
+                            Import
+                        </Button>
+                    </Div>
+                </FormField>
+                
                 <Div clear="both" />
             </form>
         </div>
     )
 }
 
-const CenterElement = styled.div`
-    margin: 0 auto;
-    width: 360px;
-`
+

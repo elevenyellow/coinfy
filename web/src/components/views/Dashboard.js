@@ -363,7 +363,7 @@ const Right = styled.div`
         width: 100%;
         float: none;
         padding-left: 0;
-        margin-top: 40px;
+        margin-top: 100px;
         clear: both;
         & > div {
         }

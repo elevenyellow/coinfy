@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
+import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
+import styles from '/const/styles'
 
 import state from '/store/state'
 import { setHref } from '/store/actions'
@@ -70,11 +72,91 @@ function AddAssetTemplate({
                     <Route pathname={routesImportbtc}>
                         <ImportBTC />
                     </Route>
+                    <Route>
+                        <Items>
+                            <Item onClick={e => onClick(routesCreatebtc)}>
+                                <ItemIco>
+                                    <img src="/static/image/BTC.svg" width="20" height="20" />
+                                </ItemIco>
+                                <ItemText>
+                                    <ItemTitle>Bitcoin</ItemTitle>
+                                    <ItemSubtitle>Create a new wallet</ItemSubtitle>
+                                </ItemText>
+                            </Item>
+                            <Item onClick={e => onClick(routesImportbtc)}>
+                                <ItemIco>
+                                    <img src="/static/image/BTC.svg" width="20" height="20" />
+                                </ItemIco>
+                                <ItemText>
+                                    <ItemTitle>Bitcoin</ItemTitle>
+                                    <ItemSubtitle>Import wallet</ItemSubtitle>
+                                </ItemText>
+                            </Item>
+                            {/* <Item>
+                                <ItemIco>
+                                    <img src="/static/image/ETH.svg" width="20" height="20" />
+                                </ItemIco>
+                                <ItemText>
+                                    <ItemTitle>Ethereum</ItemTitle>
+                                    <ItemSubtitle>Import wallet</ItemSubtitle>
+                                </ItemText>
+                            </Item> */}
+                        </Items>
+                    </Route>
                 </Router>
             </RightContent>
         </RightContainerPadding>
     )
 }
+
+
+const Items = styled.div`
+`
+const Item = styled.div`
+height: 34px;
+width: calc(50% - 60px);
+float: left;
+margin-bottom: 20px;
+margin-right: 20px;
+padding: 20px;
+background-color:${styles.color.background1};
+border-radius: 5px;
+cursor: pointer;
+color: ${styles.color.black};
+&:hover {
+    color: white;
+    background-color:${styles.color.background3};
+}
+
+${styles.media.third} {
+    float: none;
+    clear: both;
+    width: calc(100% - 40px);
+    margin-right: 0;
+}
+`
+const ItemIco = styled.div`
+padding-top: 2px;
+float: left;
+`
+const ItemText = styled.div`
+float: left;
+padding-left: 10px;
+`
+const ItemTitle = styled.div`
+color: inherit;
+letter-spacing: 0.3px;
+font-size: 20px;
+font-weight: 900;
+line-height: 20px;
+`
+const ItemSubtitle = styled.div`
+font-size: 14px;
+`
+
+
+
+
 
 
 
