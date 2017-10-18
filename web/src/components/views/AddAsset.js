@@ -10,6 +10,7 @@ import Div from '/components/styled/Div'
 import H1 from '/components/styled/H1'
 import H2 from '/components/styled/H2'
 import {
+    RightContainerPadding,
     RightHeader,
     RightHeaderInner,
     RightContent,
@@ -60,7 +61,7 @@ function AddAssetTemplate({
     onClick
 }) {
     return (
-        <div>
+        <RightContainerPadding>
             <RightHeader>
                 <RightHeaderInner>
                     <Div float="left">
@@ -117,6 +118,6 @@ function AddAssetTemplate({
                     </RightContentInner>
                 </RightContentContent>
             </RightContent>
-        </div>
+        </RightContainerPadding>
     )
 }

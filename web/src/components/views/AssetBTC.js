@@ -27,7 +27,7 @@ import {
     RightContentMenuItemText,
     RightContentContent,
     RightContentInner,
-    RightContentMiddle
+    RightContainerMiddle
 } from '/components/styled/Right'
 
 import HeaderAsset from '/components/partials/HeaderAsset'
@@ -242,39 +242,39 @@ function AssetBTCTemplate({
                         </Route>
 
                         <Route pathname={routes_receiveAsset}>
-                            <RightContentMiddle>
+                            <RightContainerMiddle>
                                 <ReceiveBTC />
-                            </RightContentMiddle>
+                            </RightContainerMiddle>
                         </Route>
 
                         <Route pathname={routes_printAsset}>
-                            <RightContentMiddle>
+                            <RightContainerMiddle>
                                 <PrintBTC />
-                            </RightContentMiddle>
+                            </RightContainerMiddle>
                         </Route>
 
                         <Route pathname={routes_deleteAsset}>
-                            <RightContentMiddle>
+                            <RightContainerMiddle>
                                 <DeleteAsset />
-                            </RightContentMiddle>
+                            </RightContainerMiddle>
                         </Route>
 
                         <Route pathname={routes_changePasswordAsset}>
-                            <RightContentMiddle>
+                            <RightContainerMiddle>
                                 <ChangePasswordBTC />
-                            </RightContentMiddle>
+                            </RightContainerMiddle>
                         </Route>
 
                         <Route pathname={routes_setPrivateKeyAsset}>
-                            <RightContentMiddle>
+                            <RightContainerMiddle>
                                 <SetPrivateKeyBTC />
-                            </RightContentMiddle>
+                            </RightContainerMiddle>
                         </Route>
 
                         <Route>
-                            <RightContentMiddle>
+                            <RightContainerMiddle>
                                 <Message>In development</Message>
-                            </RightContentMiddle>
+                            </RightContainerMiddle>
                         </Route>
                     </Router>
                 </RightContentContent>

@@ -12,7 +12,7 @@ import styles from '/const/styles'
 import routes from '/const/routes'
 
 // styled
-import { RightContainer, RightContentMiddle } from '/components/styled/Right'
+import { RightContainer, RightContainerMiddle } from '/components/styled/Right'
 import Message from '/components/styled/Message'
 // views
 import Dashboard from '/components/views/Dashboard'
@@ -52,9 +52,9 @@ function RightTemplate({
         <RightContainer>
             <Router source={location}>
                 <Route pathname="/" if={totalAssets===0}>
-                    <RightContentMiddle>
+                    <RightContainerMiddle>
                         <Message>Add or Import assets to start working</Message>
-                    </RightContentMiddle>
+                    </RightContainerMiddle>
                 </Route>
                 <Route pathname="/">
                     <Dashboard />
@@ -66,7 +66,7 @@ function RightTemplate({
                     <AssetBTC />
                 </Route>
                 <Route>
-                    <RightContentMiddle><Message>Not found</Message></RightContentMiddle>
+                    <RightContainerMiddle><Message>Not found</Message></RightContainerMiddle>
                 </Route>
 
             </Router>

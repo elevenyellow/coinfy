@@ -61,7 +61,7 @@ export default class Dashboard extends Component {
                 asset.symbol,
                 asset.balance
             )
-            console.log( asset.balance,  asset.symbol );
+
             assetUnformated.assets.push({
                 label: asset.label || asset.address,
                 address: asset.address,
