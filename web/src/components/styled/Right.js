@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import styles from '/const/styles'
 
+
 export function RightContainer({ children }) {
     return (
         <RightContainerTemplate>
@@ -58,22 +59,21 @@ height:100%;
 }
 `
 
+export const RightHeader = styled.div`
+`
 
+export const RightContent = styled.div`
+`
 
+// export const RightContentContent = styled.div`
+// `
 
-
-
-// export const RightHeader = styled.div`
+// export const RightContentInner = styled.div`
+// padding-top: 40px;
 // `
 
 
-// export const RightHeaderInner = styled.div`
-// } 
-// `
 
-// export const RightContent = styled.div`
-// height: calc(100% - 108px);
-// `
 
 // export const RightContentMenu = styled.div`
 // float: left;
@@ -134,10 +134,4 @@ height:100%;
 // `
 
 
-// export const RightContentContent = styled.div`
-// `
-
-// export const RightContentInner = styled.div`
-// padding-top: 40px;
-// `
 

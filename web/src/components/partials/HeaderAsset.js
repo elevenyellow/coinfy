@@ -15,7 +15,6 @@ import Div from '/components/styled/Div'
 import H1Input from '/components/styled/H1Input'
 import H2 from '/components/styled/H2'
 import Opacity from '/components/styled/Opacity'
-import { RightHeader, RightHeaderInner } from '/components/styled/Right'
 
 export default class HeaderAsset extends Component {
     componentWillMount() {
@@ -86,34 +85,32 @@ export default class HeaderAsset extends Component {
 function HeaderAssetTemplate({ address, label, onChangeLabel, onBlur, qr }) {
     return (
         <RightHeader>
-            <RightHeaderInner>
-                <Div
-                    width="30px"
-                    float="left"
-                    padding-top="11px"
-                    padding-right="10px"
-                >
-                    <img src="/static/image/BTC.svg" width="30" height="30" />
+            <Div
+                width="30px"
+                float="left"
+                padding-top="11px"
+                padding-right="10px"
+            >
+                <img src="/static/image/BTC.svg" width="30" height="30" />
+            </Div>
+            <Div width="calc(100% - 40px)" float="left">
+                <H1Input
+                    value={label}
+                    onChange={onChangeLabel}
+                    onBlur={onBlur}
+                    width="100%"
+                    placeholder="Type a label..."
+                />
+                <H2>
+                    <strong>{address}</strong>
+                </H2>
+            </Div>
+            {/* <Opacity normal="1" hover=".7">
+                <Div float="right" cursor="pointer">
+                    <img width="70" height="70" src={qr} />
                 </Div>
-                <Div width="calc(100% - 40px)" float="left">
-                    <H1Input
-                        value={label}
-                        onChange={onChangeLabel}
-                        onBlur={onBlur}
-                        width="100%"
-                        placeholder="Type a label..."
-                    />
-                    <H2>
-                        <strong>{address}</strong>
-                    </H2>
-                </Div>
-                {/* <Opacity normal="1" hover=".7">
-                    <Div float="right" cursor="pointer">
-                        <img width="70" height="70" src={qr} />
-                    </Div>
-                </Opacity> */}
-                <Div clear="both" />
-            </RightHeaderInner>
+            </Opacity> */}
+            <Div clear="both" />
         </RightHeader>
     )
 }

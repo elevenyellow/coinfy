@@ -12,14 +12,7 @@ import H2 from '/components/styled/H2'
 import {
     RightContainerPadding,
     RightHeader,
-    RightHeaderInner,
     RightContent,
-    RightContentMenu,
-    RightContentMenuItem,
-    RightContentMenuItemImage,
-    RightContentMenuItemText,
-    RightContentContent,
-    RightContentInner
 } from '/components/styled/Right'
 
 import CreateBTC from '/components/views/CreateBTC'
@@ -63,16 +56,29 @@ function AddAssetTemplate({
     return (
         <RightContainerPadding>
             <RightHeader>
-                <RightHeaderInner>
-                    <Div float="left">
-                        <H1>Add asset</H1>
-                        <H2>Create or Import assets</H2>
-                    </Div>
-                    <Div clear="both" />
-                </RightHeaderInner>
+                <Div float="left">
+                    <H1>Add asset</H1>
+                    <H2>Create or Import assets</H2>
+                </Div>
+                <Div clear="both" />
             </RightHeader>
             <RightContent>
-                {/* <RightContentMenu>
+                <Router source={location}>
+                    <Route pathname={routesCreatebtc}>
+                        <CreateBTC />
+                    </Route>
+                    <Route pathname={routesImportbtc}>
+                        <ImportBTC />
+                    </Route>
+                </Router>
+            </RightContent>
+        </RightContainerPadding>
+    )
+}
+
+
+
+                /* <RightContentMenu>
                     <RightContentMenuItem
                         selected={location.pathname === routesCreatebtc}
                         onClick={e => onClick(routesCreatebtc)}
@@ -104,20 +110,4 @@ function AddAssetTemplate({
                             Import Bitcoin Wallet
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
-                </RightContentMenu> */}
-                <RightContentContent>
-                    <RightContentInner>
-                        <Router source={location}>
-                            <Route pathname={routesCreatebtc}>
-                                <CreateBTC />
-                            </Route>
-                            <Route pathname={routesImportbtc}>
-                                <ImportBTC />
-                            </Route>
-                        </Router>
-                    </RightContentInner>
-                </RightContentContent>
-            </RightContent>
-        </RightContainerPadding>
-    )
-}
+                </RightContentMenu> */

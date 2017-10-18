@@ -19,16 +19,7 @@ import IconKey from 'react-icons/lib/go/key'
 import IconDelete from 'react-icons/lib/md/delete'
 import Help from '/components/styled/Help'
 import Message from '/components/styled/Message'
-import {
-    RightContent,
-    RightContentMenu,
-    RightContentMenuItem,
-    RightContentMenuItemIcon,
-    RightContentMenuItemText,
-    RightContentContent,
-    RightContentInner,
-    RightContainerMiddle
-} from '/components/styled/Right'
+
 
 import HeaderAsset from '/components/partials/HeaderAsset'
 import SummaryBTC from '/components/views/SummaryBTC'
@@ -94,191 +85,195 @@ function AssetBTCTemplate({
         <div>
             <HeaderAsset />
             <RightContent>
-                <RightContentMenu>
-                    <RightContentMenuItem
-                        selected={
-                            location.pathname === routes_summaryAsset ||
-                            location.path.length === 2
-                        }
-                        onClick={e => onClick(routes_summaryAsset)}
-                    >
-                        <RightContentMenuItemIcon>
-                            <IconDashboard
-                                size={23}
-                                color={styles.color.front2}
-                            />
-                        </RightContentMenuItemIcon>
-                        <RightContentMenuItemText>
-                            Summary
-                        </RightContentMenuItemText>
-                    </RightContentMenuItem>
 
-                    <RightContentMenuItem
-                        selected={
-                            location.pathname === routes_receiveAsset ||
-                            location.path.length === 2
-                        }
-                        onClick={e => onClick(routes_receiveAsset)}
-                    >
-                        <RightContentMenuItemIcon>
-                            <IconReceive
-                                size={23}
-                                color={styles.color.front2}
-                            />
-                        </RightContentMenuItemIcon>
-                        <RightContentMenuItemText>
-                            Receive
-                        </RightContentMenuItemText>
-                    </RightContentMenuItem>
 
-                    <RightContentMenuItem
-                        disabled={!hasPrivateKey}
-                        selected={
-                            location.pathname === routes_sendAsset ||
-                            location.path.length === 2
-                        }
-                        onClick={e => {
-                            if (hasPrivateKey) onClick(routes_sendAsset)
-                        }}
-                    >
-                        <RightContentMenuItemIcon transform="rotate(-45deg) translateX(3px) translateY(-1px)">
-                            <IconSend
-                                size={23}
-                                color={
-                                    hasPrivateKey
-                                        ? styles.color.front2
-                                        : styles.color.disabled2
-                                }
-                            />
-                        </RightContentMenuItemIcon>
-                        <RightContentMenuItemText>
-                            Send{tooltipPrivatekey}
-                        </RightContentMenuItemText>
-                    </RightContentMenuItem>
+                <Router source={location}>
 
-                    <RightContentMenuItem
-                        disabled={!hasPrivateKey}
-                        selected={
-                            location.pathname === routes_printAsset ||
-                            location.path.length === 2
-                        }
-                        onClick={e => {
-                            if (hasPrivateKey) onClick(routes_printAsset)
-                        }}
-                    >
-                        <RightContentMenuItemIcon>
-                            <IconPrint
-                                size={23}
-                                color={
-                                    hasPrivateKey
-                                        ? styles.color.front2
-                                        : styles.color.disabled2
-                                }
-                            />
-                        </RightContentMenuItemIcon>
-                        <RightContentMenuItemText>
-                            Paper Wallet{tooltipPrivatekey}
-                        </RightContentMenuItemText>
-                    </RightContentMenuItem>
+                    <Route pathname={routes_summaryAsset}>
+                        <RightContentInner>
+                            <SummaryBTC />
+                        </RightContentInner>
+                    </Route>
 
-                    <Show if={!hasPrivateKey}>
-                        <RightContentMenuItem
-                            selected={
-                                location.pathname === routes_setPrivateKeyAsset
-                            }
-                            onClick={e => onClick(routes_setPrivateKeyAsset)}
-                        >
-                            <RightContentMenuItemIcon>
-                                <IconKey
-                                    size={23}
-                                    color={styles.color.front2}
-                                />
-                            </RightContentMenuItemIcon>
-                            <RightContentMenuItemText>
-                                Set private key
-                            </RightContentMenuItemText>
-                        </RightContentMenuItem>
-                    </Show>
+                    <Route pathname={routes_receiveAsset}>
+                        <RightContainerMiddle>
+                            <ReceiveBTC />
+                        </RightContainerMiddle>
+                    </Route>
 
-                    <Show if={hasPrivateKey}>
-                        <RightContentMenuItem
-                            selected={
-                                location.pathname ===
-                                routes_changePasswordAsset
-                            }
-                            onClick={e => onClick(routes_changePasswordAsset)}
-                        >
-                            <RightContentMenuItemIcon>
-                                <IconKey
-                                    size={23}
-                                    color={styles.color.front2}
-                                />
-                            </RightContentMenuItemIcon>
-                            <RightContentMenuItemText>
-                                Change password
-                            </RightContentMenuItemText>
-                        </RightContentMenuItem>
-                    </Show>
+                    <Route pathname={routes_printAsset}>
+                        <RightContainerMiddle>
+                            <PrintBTC />
+                        </RightContainerMiddle>
+                    </Route>
 
-                    <RightContentMenuItem
-                        selected={location.pathname === routes_deleteAsset}
-                        onClick={e => onClick(routes_deleteAsset)}
-                    >
-                        <RightContentMenuItemIcon>
-                            <IconDelete size={23} color={styles.color.front2} />
-                        </RightContentMenuItemIcon>
-                        <RightContentMenuItemText>
-                            Delete
-                        </RightContentMenuItemText>
-                    </RightContentMenuItem>
-                </RightContentMenu>
-                <RightContentContent>
-                    <Router source={location}>
+                    <Route pathname={routes_deleteAsset}>
+                        <RightContainerMiddle>
+                            <DeleteAsset />
+                        </RightContainerMiddle>
+                    </Route>
 
-                        <Route pathname={routes_summaryAsset}>
-                            <RightContentInner>
-                                <SummaryBTC />
-                            </RightContentInner>
-                        </Route>
+                    <Route pathname={routes_changePasswordAsset}>
+                        <RightContainerMiddle>
+                            <ChangePasswordBTC />
+                        </RightContainerMiddle>
+                    </Route>
 
-                        <Route pathname={routes_receiveAsset}>
-                            <RightContainerMiddle>
-                                <ReceiveBTC />
-                            </RightContainerMiddle>
-                        </Route>
+                    <Route pathname={routes_setPrivateKeyAsset}>
+                        <RightContainerMiddle>
+                            <SetPrivateKeyBTC />
+                        </RightContainerMiddle>
+                    </Route>
 
-                        <Route pathname={routes_printAsset}>
-                            <RightContainerMiddle>
-                                <PrintBTC />
-                            </RightContainerMiddle>
-                        </Route>
+                    <Route>
+                        <RightContainerMiddle>
+                            <Message>In development</Message>
+                        </RightContainerMiddle>
+                    </Route>
+                </Router>
 
-                        <Route pathname={routes_deleteAsset}>
-                            <RightContainerMiddle>
-                                <DeleteAsset />
-                            </RightContainerMiddle>
-                        </Route>
-
-                        <Route pathname={routes_changePasswordAsset}>
-                            <RightContainerMiddle>
-                                <ChangePasswordBTC />
-                            </RightContainerMiddle>
-                        </Route>
-
-                        <Route pathname={routes_setPrivateKeyAsset}>
-                            <RightContainerMiddle>
-                                <SetPrivateKeyBTC />
-                            </RightContainerMiddle>
-                        </Route>
-
-                        <Route>
-                            <RightContainerMiddle>
-                                <Message>In development</Message>
-                            </RightContainerMiddle>
-                        </Route>
-                    </Router>
-                </RightContentContent>
             </RightContent>
         </div>
     )
 }
+
+
+
+// <RightContentMenu>
+// <RightContentMenuItem
+//     selected={
+//         location.pathname === routes_summaryAsset ||
+//         location.path.length === 2
+//     }
+//     onClick={e => onClick(routes_summaryAsset)}
+// >
+//     <RightContentMenuItemIcon>
+//         <IconDashboard
+//             size={23}
+//             color={styles.color.front2}
+//         />
+//     </RightContentMenuItemIcon>
+//     <RightContentMenuItemText>
+//         Summary
+//     </RightContentMenuItemText>
+// </RightContentMenuItem>
+
+// <RightContentMenuItem
+//     selected={
+//         location.pathname === routes_receiveAsset ||
+//         location.path.length === 2
+//     }
+//     onClick={e => onClick(routes_receiveAsset)}
+// >
+//     <RightContentMenuItemIcon>
+//         <IconReceive
+//             size={23}
+//             color={styles.color.front2}
+//         />
+//     </RightContentMenuItemIcon>
+//     <RightContentMenuItemText>
+//         Receive
+//     </RightContentMenuItemText>
+// </RightContentMenuItem>
+
+// <RightContentMenuItem
+//     disabled={!hasPrivateKey}
+//     selected={
+//         location.pathname === routes_sendAsset ||
+//         location.path.length === 2
+//     }
+//     onClick={e => {
+//         if (hasPrivateKey) onClick(routes_sendAsset)
+//     }}
+// >
+//     <RightContentMenuItemIcon transform="rotate(-45deg) translateX(3px) translateY(-1px)">
+//         <IconSend
+//             size={23}
+//             color={
+//                 hasPrivateKey
+//                     ? styles.color.front2
+//                     : styles.color.disabled2
+//             }
+//         />
+//     </RightContentMenuItemIcon>
+//     <RightContentMenuItemText>
+//         Send{tooltipPrivatekey}
+//     </RightContentMenuItemText>
+// </RightContentMenuItem>
+
+// <RightContentMenuItem
+//     disabled={!hasPrivateKey}
+//     selected={
+//         location.pathname === routes_printAsset ||
+//         location.path.length === 2
+//     }
+//     onClick={e => {
+//         if (hasPrivateKey) onClick(routes_printAsset)
+//     }}
+// >
+//     <RightContentMenuItemIcon>
+//         <IconPrint
+//             size={23}
+//             color={
+//                 hasPrivateKey
+//                     ? styles.color.front2
+//                     : styles.color.disabled2
+//             }
+//         />
+//     </RightContentMenuItemIcon>
+//     <RightContentMenuItemText>
+//         Paper Wallet{tooltipPrivatekey}
+//     </RightContentMenuItemText>
+// </RightContentMenuItem>
+
+// <Show if={!hasPrivateKey}>
+//     <RightContentMenuItem
+//         selected={
+//             location.pathname === routes_setPrivateKeyAsset
+//         }
+//         onClick={e => onClick(routes_setPrivateKeyAsset)}
+//     >
+//         <RightContentMenuItemIcon>
+//             <IconKey
+//                 size={23}
+//                 color={styles.color.front2}
+//             />
+//         </RightContentMenuItemIcon>
+//         <RightContentMenuItemText>
+//             Set private key
+//         </RightContentMenuItemText>
+//     </RightContentMenuItem>
+// </Show>
+
+// <Show if={hasPrivateKey}>
+//     <RightContentMenuItem
+//         selected={
+//             location.pathname ===
+//             routes_changePasswordAsset
+//         }
+//         onClick={e => onClick(routes_changePasswordAsset)}
+//     >
+//         <RightContentMenuItemIcon>
+//             <IconKey
+//                 size={23}
+//                 color={styles.color.front2}
+//             />
+//         </RightContentMenuItemIcon>
+//         <RightContentMenuItemText>
+//             Change password
+//         </RightContentMenuItemText>
+//     </RightContentMenuItem>
+// </Show>
+
+// <RightContentMenuItem
+//     selected={location.pathname === routes_deleteAsset}
+//     onClick={e => onClick(routes_deleteAsset)}
+// >
+//     <RightContentMenuItemIcon>
+//         <IconDelete size={23} color={styles.color.front2} />
+//     </RightContentMenuItemIcon>
+//     <RightContentMenuItemText>
+//         Delete
+//     </RightContentMenuItemText>
+// </RightContentMenuItem>
+// </RightContentMenu>

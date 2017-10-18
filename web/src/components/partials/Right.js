@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 
-import { isAddress } from '/api/Assets/BTC'
 
 import state from '/store/state'
 import { isAssetRegistered } from '/store/getters'
@@ -66,10 +65,13 @@ function RightTemplate({
                     <AssetBTC />
                 </Route>
                 <Route>
-                    <RightContainerMiddle><Message>Not found</Message></RightContainerMiddle>
+                    <RightContainerMiddle>
+                        <Message>Not found</Message>
+                    </RightContainerMiddle>
                 </Route>
 
             </Router>
         </RightContainer>
     )
 }
+
