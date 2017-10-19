@@ -505,6 +505,7 @@ const AssetsList = styled.div`clear: both;`
 const Asset = styled.div`
     clear: both;
     margin-top: 25px;
+    margin-bottom: 35px;
     margin-left: 23px;
     height: 55px;
     cursor: pointer;
@@ -514,7 +515,8 @@ const Asset = styled.div`
         box-shadow: 0 0 0px 15px ${styles.color.background1};
     }
     ${styles.media.third} {
-        height: 110px;
+        height: 120px;
+        border-bottom: 1px solid ${styles.color.background4};
         margin-left: 10px;
     }
 `

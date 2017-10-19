@@ -15,6 +15,7 @@ import Div from '/components/styled/Div'
 import H1Input from '/components/styled/H1Input'
 import H2 from '/components/styled/H2'
 import Opacity from '/components/styled/Opacity'
+import { RightHeader } from '/components/styled/Right'
 
 export default class HeaderAsset extends Component {
     componentWillMount() {

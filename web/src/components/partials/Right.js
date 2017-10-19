@@ -10,15 +10,16 @@ import { BTC } from '/api/Assets'
 import styles from '/const/styles'
 import routes from '/const/routes'
 
-// styled
+// Styled
 import { RightContainer, RightContainerMiddle } from '/components/styled/Right'
 import Message from '/components/styled/Message'
-// views
+
+// Views
 import Dashboard from '/components/views/Dashboard'
 import AddAsset from '/components/views/AddAsset'
-import AssetBTC from '/components/views/AssetBTC'
 import CreateBTC from '/components/views/CreateBTC'
 import ImportBTC from '/components/views/ImportBTC'
+import ViewBTC from '/components/views/BTC/'
 
 export default class Right extends Component {
     componentWillMount() {
@@ -70,7 +71,7 @@ function RightTemplate({
                     <ImportBTC />
                 </Route>
                 <Route path-0="asset" if={isRegistered}>
-                    <AssetBTC />
+                    <ViewBTC />
                 </Route>
                 <Route>
                     <RightContainerMiddle>

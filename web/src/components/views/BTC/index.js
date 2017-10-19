@@ -19,17 +19,23 @@ import IconKey from 'react-icons/lib/go/key'
 import IconDelete from 'react-icons/lib/md/delete'
 import Help from '/components/styled/Help'
 import Message from '/components/styled/Message'
-
+import {
+    RightContainerPadding,
+    RightContainerMiddle,
+    RightHeader,
+    RightContent,
+} from '/components/styled/Right'
 
 import HeaderAsset from '/components/partials/HeaderAsset'
-import SummaryBTC from '/components/views/SummaryBTC'
-import ReceiveBTC from '/components/views/ReceiveBTC'
-import DeleteAsset from '/components/views/DeleteAsset'
-import ChangePasswordBTC from '/components/views/ChangePasswordBTC'
-import SetPrivateKeyBTC from '/components/views/SetPrivateKeyBTC'
-import PrintBTC from '/components/views/PrintBTC'
+import Summary from '/components/views/BTC/Summary'
+import Receive from '/components/views/BTC/Receive'
+import ChangePassword from '/components/views/BTC/ChangePassword'
+import SetPrivateKey from '/components/views/BTC/SetPrivateKey'
+import PrintBTC from '/components/views/BTC/Print'
+import Delete from '/components/views/BTC/Delete'
 
-export default class AssetBTC extends Component {
+
+export default class ViewBTC extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.location, 'pathname')
@@ -48,7 +54,7 @@ export default class AssetBTC extends Component {
     render() {
         const asset_id = state.location.path[1]
         const hasPrivateKey = isAssetWithPrivateKey(asset_id)
-        return React.createElement(AssetBTCTemplate, {
+        return React.createElement(ViewBTCTemplate, {
             location: state.location,
             hasPrivateKey: hasPrivateKey,
             routes_summaryAsset: routes.summaryAsset(asset_id),
@@ -63,7 +69,7 @@ export default class AssetBTC extends Component {
     }
 }
 
-function AssetBTCTemplate({
+function ViewBTCTemplate({
     location,
     isRegistered,
     hasPrivateKey,
@@ -82,7 +88,7 @@ function AssetBTCTemplate({
               Set your private key first
           </Help>
     return (
-        <div>
+        <RightContainerPadding>
             <HeaderAsset />
             <RightContent>
 
@@ -90,12 +96,12 @@ function AssetBTCTemplate({
                 <Router source={location}>
 
                     <Route pathname={routes_summaryAsset}>
-                        <SummaryBTC />
+                        <Summary />
                     </Route>
 
                     <Route pathname={routes_receiveAsset}>
                         <RightContainerMiddle>
-                            <ReceiveBTC />
+                            <Receive />
                         </RightContainerMiddle>
                     </Route>
 
@@ -107,19 +113,19 @@ function AssetBTCTemplate({
 
                     <Route pathname={routes_deleteAsset}>
                         <RightContainerMiddle>
-                            <DeleteAsset />
+                            <Delete />
                         </RightContainerMiddle>
                     </Route>
 
                     <Route pathname={routes_changePasswordAsset}>
                         <RightContainerMiddle>
-                            <ChangePasswordBTC />
+                            <ChangePassword />
                         </RightContainerMiddle>
                     </Route>
 
                     <Route pathname={routes_setPrivateKeyAsset}>
                         <RightContainerMiddle>
-                            <SetPrivateKeyBTC />
+                            <SetPrivateKey />
                         </RightContainerMiddle>
                     </Route>
 
@@ -131,7 +137,7 @@ function AssetBTCTemplate({
                 </Router>
 
             </RightContent>
-        </div>
+        </RightContainerPadding>
     )
 }
 
