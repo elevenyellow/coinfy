@@ -8,7 +8,7 @@ font-weight: 900;
 margin: 0;
 line-height: 35px;
 ${styles.media.first} {
-    font-size: 30px;
-    line-height: 30px;
+    font-size: 27px;
+    line-height: 27px;
 }    
 `

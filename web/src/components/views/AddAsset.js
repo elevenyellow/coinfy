@@ -17,8 +17,7 @@ import {
     RightContent,
 } from '/components/styled/Right'
 
-import CreateBTC from '/components/views/CreateBTC'
-import ImportBTC from '/components/views/ImportBTC'
+
 
 export default class AddAsset extends Component {
     componentWillMount() {
@@ -42,8 +41,6 @@ export default class AddAsset extends Component {
     render() {
         return React.createElement(AddAssetTemplate, {
             location: state.location,
-            routesCreatebtc: routes.createbtc(),
-            routesImportbtc: routes.importbtc(),
             onClick: this.onClick
         })
     }
@@ -51,8 +48,6 @@ export default class AddAsset extends Component {
 
 function AddAssetTemplate({
     location,
-    routesCreatebtc,
-    routesImportbtc,
     onClick
 }) {
     return (
@@ -65,45 +60,35 @@ function AddAssetTemplate({
                 <Div clear="both" />
             </RightHeader>
             <RightContent>
-                <Router source={location}>
-                    <Route pathname={routesCreatebtc}>
-                        <CreateBTC />
-                    </Route>
-                    <Route pathname={routesImportbtc}>
-                        <ImportBTC />
-                    </Route>
-                    <Route>
-                        <Items>
-                            <Item onClick={e => onClick(routesCreatebtc)}>
-                                <ItemIco>
-                                    <img src="/static/image/BTC.svg" width="20" height="20" />
-                                </ItemIco>
-                                <ItemText>
-                                    <ItemTitle>Bitcoin</ItemTitle>
-                                    <ItemSubtitle>Create a new wallet</ItemSubtitle>
-                                </ItemText>
-                            </Item>
-                            <Item onClick={e => onClick(routesImportbtc)}>
-                                <ItemIco>
-                                    <img src="/static/image/BTC.svg" width="20" height="20" />
-                                </ItemIco>
-                                <ItemText>
-                                    <ItemTitle>Bitcoin</ItemTitle>
-                                    <ItemSubtitle>Import wallet</ItemSubtitle>
-                                </ItemText>
-                            </Item>
-                            {/* <Item>
-                                <ItemIco>
-                                    <img src="/static/image/ETH.svg" width="20" height="20" />
-                                </ItemIco>
-                                <ItemText>
-                                    <ItemTitle>Ethereum</ItemTitle>
-                                    <ItemSubtitle>Import wallet</ItemSubtitle>
-                                </ItemText>
-                            </Item> */}
-                        </Items>
-                    </Route>
-                </Router>
+                <Items>
+                    <Item onClick={e => onClick(routes.createbtc())}>
+                        <ItemIco>
+                            <img src="/static/image/BTC.svg" width="20" height="20" />
+                        </ItemIco>
+                        <ItemText>
+                            <ItemTitle>Bitcoin</ItemTitle>
+                            <ItemSubtitle>Create a new wallet</ItemSubtitle>
+                        </ItemText>
+                    </Item>
+                    <Item onClick={e => onClick(routes.importbtc())}>
+                        <ItemIco>
+                            <img src="/static/image/BTC.svg" width="20" height="20" />
+                        </ItemIco>
+                        <ItemText>
+                            <ItemTitle>Bitcoin</ItemTitle>
+                            <ItemSubtitle>Import wallet</ItemSubtitle>
+                        </ItemText>
+                    </Item>
+                    {/* <Item>
+                        <ItemIco>
+                            <img src="/static/image/ETH.svg" width="20" height="20" />
+                        </ItemIco>
+                        <ItemText>
+                            <ItemTitle>Ethereum</ItemTitle>
+                            <ItemSubtitle>Import wallet</ItemSubtitle>
+                        </ItemText>
+                    </Item> */}
+                </Items>
             </RightContent>
         </RightContainerPadding>
     )

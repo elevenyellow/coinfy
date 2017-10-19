@@ -20,7 +20,18 @@ import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
 import CenterElement from '/components/styled/CenterElement'
 import { Label, SubLabel } from '/components/styled/Label'
-import { FormField, FormFieldLeft, FormFieldRight } from '/components/styled/Form'
+import {
+    FormField,
+    FormFieldLeft,
+    FormFieldRight
+} from '/components/styled/Form'
+import H1 from '/components/styled/H1'
+import H2 from '/components/styled/H2'
+import {
+    RightContainerPadding,
+    RightHeader,
+    RightContent
+} from '/components/styled/Right'
 
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 
@@ -71,7 +82,7 @@ export default class CreateBitcoin extends Component {
             const address = state.view.address
             const asset = createAsset(BTC.type, BTC.symbol, address)
             setPrivateKey(
-                getAssetId({symbol:BTC.symbol, address}),
+                getAssetId({ symbol: BTC.symbol, address }),
                 state.view.private_key,
                 state.view.password
             )
@@ -133,90 +144,98 @@ function CreateBitcoinTemplate({
     onSubmit
 }) {
     return (
-        <div>
-            <FormField>
-                <Div>
-                    <QRCode>
-                        <Show if={isAddressDefined}>
-                            <img width="150" src={qrcodebase64} />
-                        </Show>
-                    </QRCode>
+        <RightContainerPadding>
+            <RightHeader>
+                <Div float="left">
+                    <H1>Add asset</H1>
+                    <H2>Create a new Bitcoin Wallet</H2>
                 </Div>
-                <Div>
-                    <CenterElement>
-                        <Address>
-                            {address}
-                        </Address>
-                    </CenterElement>
-                </Div>
-                <Div padding-bottom="20px">
-                    <CenterElement>
-                        <Button onClick={onGenerateAsset} width="100%">
-                            Generate address
-                        </Button>
-                    </CenterElement>
-                </Div>
-            </FormField>
-
-            <Show if={isAddressDefined}>
-                <form>
-                    <FormField>
-                        <FormFieldLeft>
-                            <Label>Password</Label>
-                            <Help position="center">
-                                Make sure that you remember this. This password
-                                can't be restored because we don't store it. For
-                                security reasons you will be asked often for
-                                this password to operate with this asset.
-                            </Help>
-                            <SubLabel>
-                                This password encrypts your private key.
-                            </SubLabel>
-                        </FormFieldLeft>
-                        <FormFieldRight>
-                            <Password
-                                minlength={minpassword}
-                                value={password}
-                                onChange={onChangePassword}
-                                width="100%"
-                                type="password"
-                            />
-                        </FormFieldRight>
-                    </FormField>
-                    <FormField>
-                        <FormFieldLeft>
-                            <Label>Repeat Password</Label>
-                        </FormFieldLeft>
-                        <FormFieldRight>
-                            <Input
-                                minlength={minpassword}
-                                error={
-                                    isInvalidRepassword
-                                        ? 'Passwords do not match'
-                                        : null
-                                }
-                                invalid={isInvalidRepassword}
-                                value={repassword}
-                                onChange={onChangeRepassword}
-                                width="100%"
-                                type="password"
-                            />
-                        </FormFieldRight>
-                    </FormField>
-                    <FormField>
-                        <Div float="right">
-                            <Button
-                                width="100px"
-                                disabled={!isFormValid}
-                                onClick={onSubmit}
-                            >
-                                Create
+                <Div clear="both" />
+            </RightHeader>
+            <RightContent>
+                <FormField>
+                    <Div>
+                        <QRCode>
+                            <Show if={isAddressDefined}>
+                                <img width="150" src={qrcodebase64} />
+                            </Show>
+                        </QRCode>
+                    </Div>
+                    <Div>
+                        <CenterElement>
+                            <Address>{address}</Address>
+                        </CenterElement>
+                    </Div>
+                    <Div padding-bottom="20px">
+                        <CenterElement>
+                            <Button onClick={onGenerateAsset} width="100%">
+                                Generate address
                             </Button>
-                        </Div>
-                    </FormField>
-                    <Div clear="both" />
-                </form>
-            </Show>
-        </div>
+                        </CenterElement>
+                    </Div>
+                </FormField>
+
+                <Show if={isAddressDefined}>
+                    <form>
+                        <FormField>
+                            <FormFieldLeft>
+                                <Label>Password</Label>
+                                <Help position="center">
+                                    Make sure that you remember this. This
+                                    password can't be restored because we don't
+                                    store it. For security reasons you will be
+                                    asked often for this password to operate
+                                    with this asset.
+                                </Help>
+                                <SubLabel>
+                                    This password encrypts your private key.
+                                </SubLabel>
+                            </FormFieldLeft>
+                            <FormFieldRight>
+                                <Password
+                                    minlength={minpassword}
+                                    value={password}
+                                    onChange={onChangePassword}
+                                    width="100%"
+                                    type="password"
+                                />
+                            </FormFieldRight>
+                        </FormField>
+                        <FormField>
+                            <FormFieldLeft>
+                                <Label>Repeat Password</Label>
+                            </FormFieldLeft>
+                            <FormFieldRight>
+                                <Input
+                                    minlength={minpassword}
+                                    error={
+                                        isInvalidRepassword
+                                            ? 'Passwords do not match'
+                                            : null
+                                    }
+                                    invalid={isInvalidRepassword}
+                                    value={repassword}
+                                    onChange={onChangeRepassword}
+                                    width="100%"
+                                    type="password"
+                                />
+                            </FormFieldRight>
+                        </FormField>
+                        <FormField>
+                            <Div float="right">
+                                <Button
+                                    width="100px"
+                                    disabled={!isFormValid}
+                                    onClick={onSubmit}
+                                >
+                                    Create
+                                </Button>
+                            </Div>
+                        </FormField>
+                        <Div clear="both" />
+                    </form>
+                </Show>
+            </RightContent>
+        </RightContainerPadding>
     )
 }

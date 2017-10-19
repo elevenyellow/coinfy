@@ -30,7 +30,18 @@ import Select from '/components/styled/Select'
 import Password from '/components/styled/Password'
 import { Label, SubLabel } from '/components/styled/Label'
 import CenterElement from '/components/styled/CenterElement'
-import { FormField, FormFieldLeft, FormFieldRight } from '/components/styled/Form'
+import {
+    FormField,
+    FormFieldLeft,
+    FormFieldRight
+} from '/components/styled/Form'
+import H1 from '/components/styled/H1'
+import H2 from '/components/styled/H2'
+import {
+    RightContainerPadding,
+    RightHeader,
+    RightContent
+} from '/components/styled/Right'
 
 import {
     setHref,
@@ -105,7 +116,7 @@ export default class ImportBitcoin extends Component {
                 state.view.address = address
                 state.view.private_key = ''
             } catch (e) {
-                console.error( e );
+                console.error(e)
             }
         } else if (
             state.view.type_import === types_import.private_key &&
@@ -133,20 +144,20 @@ export default class ImportBitcoin extends Component {
     onSubmit(e) {
         e.preventDefault()
         // if (this.isFormValid) {
-            const collector = collect()
-            const address = state.view.address
-            const asset = createAsset(BTC.type, BTC.symbol, address)
-            // if (state.view.type_import === types_import.public_key)
-                // setPublicKey(getAssetId({symbol:BTC.symbol, address}), state.view.private_key)
-            if (state.view.type_import === types_import.private_key)
-                setPrivateKey(
-                    getAssetId({symbol:BTC.symbol, address}),
-                    state.view.private_key,
-                    state.view.password
-                )
+        const collector = collect()
+        const address = state.view.address
+        const asset = createAsset(BTC.type, BTC.symbol, address)
+        // if (state.view.type_import === types_import.public_key)
+        // setPublicKey(getAssetId({symbol:BTC.symbol, address}), state.view.private_key)
+        if (state.view.type_import === types_import.private_key)
+            setPrivateKey(
+                getAssetId({ symbol: BTC.symbol, address }),
+                state.view.private_key,
+                state.view.password
+            )
 
-            setHref(routes.asset(getAssetId(asset)))
-            collector.emit()
+        setHref(routes.asset(getAssetId(asset)))
+        collector.emit()
         // }
     }
 
@@ -184,7 +195,9 @@ export default class ImportBitcoin extends Component {
             isValidInput: this.isValidInput,
             isInvalidRepassword: this.isInvalidRepassword,
             isErrorInput: this.isErrorInput,
-            isRegistered: isAssetRegistered(getAssetId({symbol:BTC.symbol, address:state.view.address})),
+            isRegistered: isAssetRegistered(
+                getAssetId({ symbol: BTC.symbol, address: state.view.address })
+            ),
             isFormValid: this.isFormValid,
             type_import: state.view.type_import,
             address: state.view.address,
@@ -220,118 +233,100 @@ function ImportBitcoinTemplate({
     onSubmit
 }) {
     return (
-        <div>
-            <FormField>
-                <Div>
-                    <QRCode>
-                        <Show if={isValidInput}>
-                            <img width="150" src={qrcodebase64} />
-                        </Show>
-                    </QRCode>
+        <RightContainerPadding>
+            <RightHeader>
+                <Div float="left">
+                    <H1>Add asset</H1>
+                    <H2>Import Bitcoin Wallet</H2>
                 </Div>
-                <Div>
-                    <CenterElement>
-                        <Address>
-                            {address}
-                        </Address>
-                    </CenterElement>
-                </Div>
-            </FormField>
-
-            <form>
+                <Div clear="both" />
+            </RightHeader>
+            <RightContent>
                 <FormField>
-                    <FormFieldLeft>
-                        <Label>I have my</Label>
-                        <SubLabel>
-                            Select the option you prefer to import.
-                        </SubLabel>
-                    </FormFieldLeft>
-                    <FormFieldRight>
-                        <Select width="100%" onChange={onChangeTypeImport}>
-                            <option
-                                value={types_import.address}
-                                selected={type_import === types_import.address}
-                            >
-                                Address
-                            </option>
-                            <option
-                                value={types_import.public_key}
-                                selected={
-                                    type_import === types_import.public_key
-                                }
-                            >
-                                Public key
-                            </option>
-                            <option
-                                value={types_import.private_key}
-                                selected={
-                                    type_import === types_import.private_key
-                                }
-                            >
-                                Private key
-                            </option>
-                        </Select>
-                    </FormFieldRight>
+                    <Div>
+                        <QRCode>
+                            <Show if={isValidInput}>
+                                <img width="150" src={qrcodebase64} />
+                            </Show>
+                        </QRCode>
+                    </Div>
+                    <Div>
+                        <CenterElement>
+                            <Address>{address}</Address>
+                        </CenterElement>
+                    </Div>
                 </FormField>
 
-                <Show if={type_import === types_import.address}>
+                <form>
                     <FormField>
                         <FormFieldLeft>
-                            <Label>Address</Label>
-                            <SubLabel>Type or paste your address.</SubLabel>
+                            <Label>I have my</Label>
+                            <SubLabel>
+                                Select the option you prefer to import.
+                            </SubLabel>
                         </FormFieldLeft>
                         <FormFieldRight>
-                            <Input
-                                width="100%"
-                                value={input}
-                                onChange={onChangeInput}
-                                error={
-                                    isErrorInput
-                                        ? 'Invalid address'
-                                        : 'You already have this asset'
-                                }
-                                invalid={isErrorInput || isRegistered}
-                            />
+                            <Select width="100%" onChange={onChangeTypeImport}>
+                                <option
+                                    value={types_import.address}
+                                    selected={
+                                        type_import === types_import.address
+                                    }
+                                >
+                                    Address
+                                </option>
+                                <option
+                                    value={types_import.public_key}
+                                    selected={
+                                        type_import === types_import.public_key
+                                    }
+                                >
+                                    Public key
+                                </option>
+                                <option
+                                    value={types_import.private_key}
+                                    selected={
+                                        type_import === types_import.private_key
+                                    }
+                                >
+                                    Private key
+                                </option>
+                            </Select>
                         </FormFieldRight>
                     </FormField>
-                </Show>
 
-                <Show if={type_import === types_import.public_key}>
-                    <FormField>
-                        <FormFieldLeft>
-                            <Label>Public key</Label>
-                            <Help>
-                                Your address can be calculated through public
-                                key.
-                            </Help>
-                            <SubLabel>Type or paste your public key.</SubLabel>
-                        </FormFieldLeft>
-                        <FormFieldRight>
-                            <Input
-                                width="100%"
-                                value={input}
-                                onChange={onChangeInput}
-                                error={
-                                    isErrorInput
-                                        ? 'Invalid public key'
-                                        : 'You already have this asset'
-                                }
-                                invalid={isErrorInput || isRegistered}
-                            />
-                        </FormFieldRight>
-                    </FormField>
-                </Show>
-
-                <Show if={type_import === types_import.private_key}>
-                    <div>
+                    <Show if={type_import === types_import.address}>
                         <FormField>
                             <FormFieldLeft>
-                                <Label>Private key</Label>
+                                <Label>Address</Label>
+                                <SubLabel>Type or paste your address.</SubLabel>
+                            </FormFieldLeft>
+                            <FormFieldRight>
+                                <Input
+                                    width="100%"
+                                    value={input}
+                                    onChange={onChangeInput}
+                                    error={
+                                        isErrorInput
+                                            ? 'Invalid address'
+                                            : 'You already have this asset'
+                                    }
+                                    invalid={isErrorInput || isRegistered}
+                                />
+                            </FormFieldRight>
+                        </FormField>
+                    </Show>
+
+                    <Show if={type_import === types_import.public_key}>
+                        <FormField>
+                            <FormFieldLeft>
+                                <Label>Public key</Label>
                                 <Help>
-                                    We will never store your private key.
+                                    Your address can be calculated through
+                                    public key.
                                 </Help>
                                 <SubLabel>
-                                    Type or paste your Private key in WIF format.
+                                    Type or paste your public key.
                                 </SubLabel>
                             </FormFieldLeft>
                             <FormFieldRight>
@@ -341,71 +336,99 @@ function ImportBitcoinTemplate({
                                     onChange={onChangeInput}
                                     error={
                                         isErrorInput
-                                            ? 'Invalid private key'
+                                            ? 'Invalid public key'
                                             : 'You already have this asset'
                                     }
                                     invalid={isErrorInput || isRegistered}
                                 />
                             </FormFieldRight>
                         </FormField>
-                        <FormField>
-                            <FormFieldLeft>
-                                <Label>Password</Label>
-                                <Help>
-                                    Make sure that you remember this. This
-                                    password can't be restored because we don't
-                                    store it. For security reasons you will be
-                                    asked often for this password.
-                                </Help>
-                                <SubLabel>
-                                    This password encrypts your private key.
-                                </SubLabel>
-                            </FormFieldLeft>
-                            <FormFieldRight>
-                                <Password
-                                    minlength={minpassword}
-                                    value={password}
-                                    onChange={onChangePassword}
-                                    width="100%"
-                                    type="password"
-                                />
-                            </FormFieldRight>
-                        </FormField>
-                        <FormField>
-                            <FormFieldLeft>
-                                <Label>Repeat Password</Label>
-                            </FormFieldLeft>
-                            <FormFieldRight>
-                                <Input
-                                    minlength={minpassword}
-                                    error={'Passwords do not match'}
-                                    invalid={isInvalidRepassword}
-                                    value={repassword}
-                                    onChange={onChangeRepassword}
-                                    width="100%"
-                                    type="password"
-                                />
-                            </FormFieldRight>
-                        </FormField>
-                    </div>
-                </Show>
+                    </Show>
 
-                <FormField>
-                    <Div float="right">
-                        <Button
-                            width="100px"
-                            disabled={!isFormValid}
-                            onClick={onSubmit}
-                        >
-                            Import
-                        </Button>
-                    </Div>
-                </FormField>
-                
-                <Div clear="both" />
-            </form>
-        </div>
+                    <Show if={type_import === types_import.private_key}>
+                        <div>
+                            <FormField>
+                                <FormFieldLeft>
+                                    <Label>Private key</Label>
+                                    <Help>
+                                        We will never store your private key.
+                                    </Help>
+                                    <SubLabel>
+                                        Type or paste your Private key in WIF
+                                        format.
+                                    </SubLabel>
+                                </FormFieldLeft>
+                                <FormFieldRight>
+                                    <Input
+                                        width="100%"
+                                        value={input}
+                                        onChange={onChangeInput}
+                                        error={
+                                            isErrorInput
+                                                ? 'Invalid private key'
+                                                : 'You already have this asset'
+                                        }
+                                        invalid={isErrorInput || isRegistered}
+                                    />
+                                </FormFieldRight>
+                            </FormField>
+                            <FormField>
+                                <FormFieldLeft>
+                                    <Label>Password</Label>
+                                    <Help>
+                                        Make sure that you remember this. This
+                                        password can't be restored because we
+                                        don't store it. For security reasons you
+                                        will be asked often for this password.
+                                    </Help>
+                                    <SubLabel>
+                                        This password encrypts your private key.
+                                    </SubLabel>
+                                </FormFieldLeft>
+                                <FormFieldRight>
+                                    <Password
+                                        minlength={minpassword}
+                                        value={password}
+                                        onChange={onChangePassword}
+                                        width="100%"
+                                        type="password"
+                                    />
+                                </FormFieldRight>
+                            </FormField>
+                            <FormField>
+                                <FormFieldLeft>
+                                    <Label>Repeat Password</Label>
+                                </FormFieldLeft>
+                                <FormFieldRight>
+                                    <Input
+                                        minlength={minpassword}
+                                        error={'Passwords do not match'}
+                                        invalid={isInvalidRepassword}
+                                        value={repassword}
+                                        onChange={onChangeRepassword}
+                                        width="100%"
+                                        type="password"
+                                    />
+                                </FormFieldRight>
+                            </FormField>
+                        </div>
+                    </Show>
+
+                    <FormField>
+                        <Div float="right">
+                            <Button
+                                width="100px"
+                                disabled={!isFormValid}
+                                onClick={onSubmit}
+                            >
+                                Import
+                            </Button>
+                        </Div>
+                    </FormField>
+
+                    <Div clear="both" />
+                </form>
+            </RightContent>
+        </RightContainerPadding>
     )
 }
-
-
