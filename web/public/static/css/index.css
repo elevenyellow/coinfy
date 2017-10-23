@@ -23,3 +23,11 @@ a {
 strong,b {
     font-weight: bold;
 }
+
+strong,b,span,p,h1,h2,h3{
+    user-select: auto;
+    -webkit-user-select: auto;
+    -khtml-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+}

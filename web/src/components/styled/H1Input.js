@@ -3,14 +3,19 @@ import styles from '/const/styles'
 
 export default styled.input`
 width: ${props=>props.width||'auto'};
-color: ${styles.color.front3};
+color: ${styles.color.black};
 font-size: 35px;
+height: 43px;
 font-weight: 900;
 margin: 0;
 border:0;
 font-family: inherit;
 outline: none;
 border-radius: 2px;
+${styles.media.first} {
+    font-size: 27px;
+    height: 31px;
+}   
 :hover, :focus {
     background-color: ${styles.color.background1};
 }

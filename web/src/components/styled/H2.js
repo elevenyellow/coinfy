@@ -7,4 +7,7 @@ margin: 0;
 font-size: 15px;
 font-weight: 300;
 letter-spacing: 0.5px;
+text-overflow: ellipsis;
+overflow: hidden;
+white-space: nowrap;
 `

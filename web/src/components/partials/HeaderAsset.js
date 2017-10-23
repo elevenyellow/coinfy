@@ -1,18 +1,26 @@
 import React, { Component } from 'react'
+import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { Router, Route, Show } from '/doprouter/react'
 
-import { getAsset } from '/store/getters'
-import { setHref, saveAssetsLocalStorage, setAssetLabel, setAssetsExported } from '/store/actions'
+import { getAsset, convertBalance } from '/store/getters'
+import {
+    setHref,
+    saveAssetsLocalStorage,
+    setAssetLabel,
+    setAssetsExported
+} from '/store/actions'
 
-import { generateQRCode } from '/api/qr'
+import Assets from '/api/Assets'
 
+import { currencies } from '/const/currencies'
 import routes from '/const/routes'
 import styles from '/const/styles'
 import state from '/store/state'
 
 import Div from '/components/styled/Div'
 import H1Input from '/components/styled/H1Input'
+import H1 from '/components/styled/H1'
 import H2 from '/components/styled/H2'
 import Opacity from '/components/styled/Opacity'
 import { RightHeader } from '/components/styled/Right'
@@ -35,15 +43,24 @@ export default class HeaderAsset extends Component {
                     unobserveLabel()
                     unobserveBalance()
                 }
-                unobserveLabel = this.observer.observe(this.state.asset, 'label')
-                unobserveBalance = this.observer.observe(this.state.asset, 'balance')
+                unobserveLabel = this.observer.observe(
+                    this.state.asset,
+                    'label'
+                )
+                unobserveBalance = this.observer.observe(
+                    this.state.asset,
+                    'balance'
+                )
             }
             this.forceUpdate()
         })
         this.observer.observe(state.location, 'pathname')
         if (this.state.asset !== undefined) {
             unobserveLabel = this.observer.observe(this.state.asset, 'label')
-            unobserveBalance = this.observer.observe(this.state.asset, 'balance')
+            unobserveBalance = this.observer.observe(
+                this.state.asset,
+                'balance'
+            )
         }
 
         this.onChangeLabel = this.onChangeLabel.bind(this)
@@ -76,25 +93,39 @@ export default class HeaderAsset extends Component {
             address: this.state.asset.address,
             label: this.state.asset ? this.state.asset.label : '',
             symbol: this.state.asset.symbol,
+            balance_asset: this.state.asset.balance,
+            balance_currency: currencies[state.currency].format(
+                convertBalance(
+                    this.state.asset.symbol,
+                    this.state.asset.balance
+                ),
+                0
+            ),
             onChangeLabel: this.onChangeLabel,
-            onBlur: this.onBlur,
-            // qr: this.qr
+            onBlur: this.onBlur
         })
     }
 }
 
-function HeaderAssetTemplate({ address, label, onChangeLabel, onBlur, qr }) {
+function HeaderAssetTemplate({
+    address,
+    label,
+    symbol,
+    balance_asset,
+    balance_currency,
+    onChangeLabel,
+    onBlur
+}) {
     return (
         <RightHeader>
-            <Div
-                width="30px"
-                float="left"
-                padding-top="11px"
-                padding-right="10px"
-            >
-                <img src="/static/image/BTC.svg" width="30" height="30" />
-            </Div>
-            <Div width="calc(100% - 40px)" float="left">
+            <Icon>
+                <img
+                    src={`/static/image/${symbol}.svg`}
+                    width="30"
+                    height="30"
+                />
+            </Icon>
+            <Left>
                 <H1Input
                     value={label}
                     onChange={onChangeLabel}
@@ -105,13 +136,51 @@ function HeaderAssetTemplate({ address, label, onChangeLabel, onBlur, qr }) {
                 <H2>
                     <strong>{address}</strong>
                 </H2>
-            </Div>
-            {/* <Opacity normal="1" hover=".7">
-                <Div float="right" cursor="pointer">
-                    <img width="70" height="70" src={qr} />
-                </Div>
-            </Opacity> */}
+            </Left>
+            <Right>
+                <H1b>{balance_currency}</H1b>
+                <H2>{balance_asset} {symbol}</H2>
+            </Right>
             <Div clear="both" />
         </RightHeader>
     )
 }
+
+const Icon = styled.div`
+    width: 30px;
+    float: left;
+    padding-top: 11px;
+    padding-right: 10px;
+    ${styles.media.second} {
+        display:none
+    }  
+`
+const Left = styled.div`
+    width: 75%;
+    float: left;
+    ${styles.media.fourth} {
+        width: 100%;
+    }        
+`
+
+const Right = styled.div`
+    text-align: right;
+    padding-top: 10px;
+    float: right;
+    ${styles.media.fourth} {
+        display: none;
+    } 
+`
+
+const H1b = styled.div`
+color: ${styles.color.black};
+font-size: 23px;
+font-weight: 900;
+margin: 0;
+line-height: 35px; 
+
+${styles.media.first} {
+    font-size: 19px;
+    line-height: 23px; 
+} 
+`
