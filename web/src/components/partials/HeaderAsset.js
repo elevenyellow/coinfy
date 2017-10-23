@@ -121,8 +121,6 @@ function HeaderAssetTemplate({
             <Icon>
                 <img
                     src={`/static/image/${symbol}.svg`}
-                    width="30"
-                    height="30"
                 />
             </Icon>
             <Left>
@@ -151,6 +149,18 @@ const Icon = styled.div`
     float: left;
     padding-top: 11px;
     padding-right: 10px;
+    & > img {
+        width: 30px;
+        height: 30px;
+    }
+    ${styles.media.first} {
+        padding-top: 7px;
+        padding-right: 5px;
+        & > img {
+            width: 25px;
+            height: 25px;
+        }
+    }
     ${styles.media.second} {
         display:none
     }  

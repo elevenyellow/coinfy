@@ -191,13 +191,13 @@ function DashboardTemplate({
                             <CurrencyValue>BTC ≈ <span>$5,235</span></CurrencyValue>
                         </CurrencyText>
                     </Currency> */}
-                    <Currency>
+                    {/* <Currency>
                         <CurrencyIco><img src={`/static/image/ETH.svg`} width="25" /></CurrencyIco>
                         <CurrencyText>
                             <CurrencyLabel>Ethereum</CurrencyLabel>
                             <CurrencyValue>ETH ≈ <span>$342</span></CurrencyValue>
                         </CurrencyText>
-                    </Currency>
+                    </Currency> */}
                 </Currencies>
             </Left>
             <Right>
@@ -416,7 +416,9 @@ const Category = styled.div`
     }
 `
 
-const HeaderAsset = styled.div`height: 50px;`
+const HeaderAsset = styled.div`
+min-height: 50px;
+`
 
 const HeaderLeft = styled.div``
 const HeaderLeftPercentage = styled.div`
@@ -452,13 +454,19 @@ const HeaderLeftSubtitle = styled.div`
     font-size: 13px;
     font-weight: 100;
     letter-spacing: 0.5px;
+    ${styles.media.third} {
+        display: none;
+    }
 `
 
 const HeaderRight = styled.div`
     float: right;
     padding-top: 3px;
     ${styles.media.third} {
-        padding-top: 0;
+        float:none;
+        clear: both;
+        top: -15px;
+        position: relative;
     }        
 `
 
@@ -469,6 +477,8 @@ const HeaderRightTitle = styled.div`
     line-height: 25px;
     text-align: right;
     ${styles.media.third} {
+        padding-left: 40px;
+        text-align: left;
         font-size: 15px;
         line-height: 22px;
     }  
@@ -479,6 +489,10 @@ const HeaderRightSubtitle = styled.div`
     font-size: 13px;
     font-weight: bold;
     text-align: right;
+    ${styles.media.third} {
+        padding-left: 40px;
+        text-align: left;
+    }        
 `
 
 const CircleText = styled.g`
@@ -516,7 +530,6 @@ const Asset = styled.div`
     }
     ${styles.media.third} {
         height: 120px;
-        border-bottom: 1px solid ${styles.color.background4};
         margin-left: 10px;
     }
 `
