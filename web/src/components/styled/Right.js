@@ -79,63 +79,62 @@ export const RightContent = styled.div`
 
 
 
-// export const RightContentMenu = styled.div`
-// float: left;
-// width: 200px;
-// height: 100%;
-// border-right: 1px solid ${styles.color.background4};
-// overflow-y: auto;
-// `
+export const RightContentMenu = styled.div`
+width: 100%;
+height: 38px;
+clear: both;
+margin-bottom: ${styles.paddingContent};
+border-bottom: 2px solid ${styles.color.background1};
+`
 
 
-// export const RightContentMenuItem = styled.div`
-// clear:both;
-// width: calc(100% - 35px);
-// padding-bottom: 15px;
-// padding-right: 15px;
-// padding-left: 15px;
-// padding-top: 15px;
-// border-left: 5px solid transparent;
-// cursor: pointer;
-// color: ${styles.color.front3};
-// &:hover {
-//     border-left-color: ${styles.color.background2};
-// }
+export const RightContentMenuItem = styled.div`
+float:left;
+padding: 10px 20px;
+border-bottom: 2px solid transparent;
+cursor: pointer;
+color: ${styles.color.grey1};
+&:hover {
+    border-bottom-color: ${styles.color.background2};
+    color: ${styles.color.background2};
+}
 
-// ${props=>{
-//     if (props.disabled) {
-//       return `
-//       color: ${styles.color.disabled};
-//       cursor: default;
-//       border-left-color: transparent !important;
-//       `
-//     }
-//     else if (props.selected && props.disabled!==true) {
-//         return `
-//         background-color: ${styles.color.background1};
-//         border-left-color: ${styles.color.background2};
-//         `
-//     }
-// }}
-// `
-// export const RightContentMenuItemImage = styled.div`
-// float:left;
-// margin-right: 10px;
-// `
-// export const RightContentMenuItemIcon = styled.div`
-// float:left;
-// margin-right: 10px;
-// top: -3px;
-// position: relative;
-// transform: ${props=>props.transform||'auto'}
-// `
+${props=>{
+    if (props.disabled) {
+      return `
+      color: ${styles.color.disabled} !important;
+      cursor: default;
+      border-bottom-color: transparent !important;
+      `
+    }
+    else if (props.selected && props.disabled!==true) {
+        return `
+        border-bottom-color: ${styles.color.background2};
+        color: ${styles.color.background2};
+        `
+    }
+}}
+`
 
-// export const RightContentMenuItemText = styled.div`
-// color: ${props=>props.color||'inherit'};
-// font-weight: bold;
-// font-size: 14px;
-// line-height: 21px;
-// `
+export const RightContentMenuItemIcon = styled.div`
+display: none;
+float:left;
+margin-right: 10px;
+top: -2px;
+position: relative;
+transform: ${props=>props.transform||'auto'};
+& svg {
+    width: 15px;
+    height: 15px;
+}
+`
+
+export const RightContentMenuItemText = styled.div`
+color: ${props=>props.color||'inherit'};
+font-size: 13px;
+font-weight: 100;
+letter-spacing: 0.5px;
+`
 
 
 

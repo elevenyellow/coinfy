@@ -166,7 +166,7 @@ const Icon = styled.div`
     }  
 `
 const Left = styled.div`
-    width: 75%;
+    width: 60%;
     float: left;
     ${styles.media.fourth} {
         width: 100%;

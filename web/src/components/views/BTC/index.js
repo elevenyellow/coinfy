@@ -11,19 +11,19 @@ import { isAssetWithPrivateKey } from '/store/getters'
 
 import styles from '/const/styles'
 
-import IconDashboard from 'react-icons/lib/md/dashboard'
-import IconReceive from 'react-icons/lib/md/call-received'
-import IconSend from 'react-icons/lib/md/send'
-import IconPrint from 'react-icons/lib/fa/print'
-import IconKey from 'react-icons/lib/go/key'
-import IconDelete from 'react-icons/lib/md/delete'
+
 import Help from '/components/styled/Help'
+import Div from '/components/styled/Div'
 import Message from '/components/styled/Message'
 import {
     RightContainerPadding,
     RightContainerMiddle,
     RightHeader,
     RightContent,
+    RightContentMenu,
+    RightContentMenuItem,
+    RightContentMenuItemIcon,
+    RightContentMenuItemText
 } from '/components/styled/Right'
 
 import HeaderAsset from '/components/partials/HeaderAsset'
@@ -33,7 +33,6 @@ import ChangePassword from '/components/views/BTC/ChangePassword'
 import SetPrivateKey from '/components/views/BTC/SetPrivateKey'
 import PrintBTC from '/components/views/BTC/Print'
 import Delete from '/components/views/BTC/Delete'
-
 
 export default class ViewBTC extends Component {
     componentWillMount() {
@@ -82,19 +81,108 @@ function ViewBTCTemplate({
     routes_changePasswordAsset,
     routes_deleteAsset
 }) {
-    const tooltipPrivatekey = hasPrivateKey
-        ? null
-        : <Help position="center" width={175}>
-              Set your private key first
-          </Help>
+    const tooltipPrivatekey = hasPrivateKey ? null : (
+        <Help position="center" width={175}>
+            Set your private key first
+        </Help>
+    )
     return (
         <RightContainerPadding>
             <HeaderAsset />
             <RightContent>
+                <RightContentMenu>
+                    <RightContentMenuItem
+                        selected={
+                            location.pathname === routes_summaryAsset ||
+                            location.path.length === 2
+                        }
+                        onClick={e => onClick(routes_summaryAsset)}
+                    >
+                        <RightContentMenuItemText>
+                            Summary
+                        </RightContentMenuItemText>
+                    </RightContentMenuItem>
 
+                    <RightContentMenuItem
+                        selected={
+                            location.pathname === routes_receiveAsset ||
+                            location.path.length === 2
+                        }
+                        onClick={e => onClick(routes_receiveAsset)}
+                    >
+                        <RightContentMenuItemText>
+                            Receive
+                        </RightContentMenuItemText>
+                    </RightContentMenuItem>
+
+                    <RightContentMenuItem
+                        disabled={!hasPrivateKey}
+                        selected={
+                            location.pathname === routes_sendAsset ||
+                            location.path.length === 2
+                        }
+                        onClick={e => {
+                            if (hasPrivateKey) onClick(routes_sendAsset)
+                        }}
+                    >
+                        <RightContentMenuItemText>
+                            Send{tooltipPrivatekey}
+                        </RightContentMenuItemText>
+                    </RightContentMenuItem>
+
+                    <RightContentMenuItem
+                        disabled={!hasPrivateKey}
+                        selected={
+                            location.pathname === routes_printAsset ||
+                            location.path.length === 2
+                        }
+                        onClick={e => {
+                            if (hasPrivateKey) onClick(routes_printAsset)
+                        }}
+                    >
+                        <RightContentMenuItemText>
+                            Paper Wallet{tooltipPrivatekey}
+                        </RightContentMenuItemText>
+                    </RightContentMenuItem>
+
+                    <Show if={!hasPrivateKey}>
+                        <RightContentMenuItem
+                            selected={
+                                location.pathname === routes_setPrivateKeyAsset
+                            }
+                            onClick={e => onClick(routes_setPrivateKeyAsset)}
+                        >
+                            <RightContentMenuItemText>
+                                Set private key
+                            </RightContentMenuItemText>
+                        </RightContentMenuItem>
+                    </Show>
+
+                    <Show if={hasPrivateKey}>
+                        <RightContentMenuItem
+                            selected={
+                                location.pathname === routes_changePasswordAsset
+                            }
+                            onClick={e => onClick(routes_changePasswordAsset)}
+                        >
+                            <RightContentMenuItemText>
+                                Change password
+                            </RightContentMenuItemText>
+                        </RightContentMenuItem>
+                    </Show>
+
+                    <RightContentMenuItem
+                        selected={location.pathname === routes_deleteAsset}
+                        onClick={e => onClick(routes_deleteAsset)}
+                    >
+                        <RightContentMenuItemText>
+                            Delete
+                        </RightContentMenuItemText>
+                    </RightContentMenuItem>
+                </RightContentMenu>
+                
 
                 <Router source={location}>
-
                     <Route pathname={routes_summaryAsset}>
                         <Summary />
                     </Route>
@@ -135,149 +223,7 @@ function ViewBTCTemplate({
                         </RightContainerMiddle>
                     </Route>
                 </Router>
-
             </RightContent>
         </RightContainerPadding>
     )
 }
-
-
-
-// <RightContentMenu>
-// <RightContentMenuItem
-//     selected={
-//         location.pathname === routes_summaryAsset ||
-//         location.path.length === 2
-//     }
-//     onClick={e => onClick(routes_summaryAsset)}
-// >
-//     <RightContentMenuItemIcon>
-//         <IconDashboard
-//             size={23}
-//             color={styles.color.front2}
-//         />
-//     </RightContentMenuItemIcon>
-//     <RightContentMenuItemText>
-//         Summary
-//     </RightContentMenuItemText>
-// </RightContentMenuItem>
-
-// <RightContentMenuItem
-//     selected={
-//         location.pathname === routes_receiveAsset ||
-//         location.path.length === 2
-//     }
-//     onClick={e => onClick(routes_receiveAsset)}
-// >
-//     <RightContentMenuItemIcon>
-//         <IconReceive
-//             size={23}
-//             color={styles.color.front2}
-//         />
-//     </RightContentMenuItemIcon>
-//     <RightContentMenuItemText>
-//         Receive
-//     </RightContentMenuItemText>
-// </RightContentMenuItem>
-
-// <RightContentMenuItem
-//     disabled={!hasPrivateKey}
-//     selected={
-//         location.pathname === routes_sendAsset ||
-//         location.path.length === 2
-//     }
-//     onClick={e => {
-//         if (hasPrivateKey) onClick(routes_sendAsset)
-//     }}
-// >
-//     <RightContentMenuItemIcon transform="rotate(-45deg) translateX(3px) translateY(-1px)">
-//         <IconSend
-//             size={23}
-//             color={
-//                 hasPrivateKey
-//                     ? styles.color.front2
-//                     : styles.color.disabled2
-//             }
-//         />
-//     </RightContentMenuItemIcon>
-//     <RightContentMenuItemText>
-//         Send{tooltipPrivatekey}
-//     </RightContentMenuItemText>
-// </RightContentMenuItem>
-
-// <RightContentMenuItem
-//     disabled={!hasPrivateKey}
-//     selected={
-//         location.pathname === routes_printAsset ||
-//         location.path.length === 2
-//     }
-//     onClick={e => {
-//         if (hasPrivateKey) onClick(routes_printAsset)
-//     }}
-// >
-//     <RightContentMenuItemIcon>
-//         <IconPrint
-//             size={23}
-//             color={
-//                 hasPrivateKey
-//                     ? styles.color.front2
-//                     : styles.color.disabled2
-//             }
-//         />
-//     </RightContentMenuItemIcon>
-//     <RightContentMenuItemText>
-//         Paper Wallet{tooltipPrivatekey}
-//     </RightContentMenuItemText>
-// </RightContentMenuItem>
-
-// <Show if={!hasPrivateKey}>
-//     <RightContentMenuItem
-//         selected={
-//             location.pathname === routes_setPrivateKeyAsset
-//         }
-//         onClick={e => onClick(routes_setPrivateKeyAsset)}
-//     >
-//         <RightContentMenuItemIcon>
-//             <IconKey
-//                 size={23}
-//                 color={styles.color.front2}
-//             />
-//         </RightContentMenuItemIcon>
-//         <RightContentMenuItemText>
-//             Set private key
-//         </RightContentMenuItemText>
-//     </RightContentMenuItem>
-// </Show>
-
-// <Show if={hasPrivateKey}>
-//     <RightContentMenuItem
-//         selected={
-//             location.pathname ===
-//             routes_changePasswordAsset
-//         }
-//         onClick={e => onClick(routes_changePasswordAsset)}
-//     >
-//         <RightContentMenuItemIcon>
-//             <IconKey
-//                 size={23}
-//                 color={styles.color.front2}
-//             />
-//         </RightContentMenuItemIcon>
-//         <RightContentMenuItemText>
-//             Change password
-//         </RightContentMenuItemText>
-//     </RightContentMenuItem>
-// </Show>
-
-// <RightContentMenuItem
-//     selected={location.pathname === routes_deleteAsset}
-//     onClick={e => onClick(routes_deleteAsset)}
-// >
-//     <RightContentMenuItemIcon>
-//         <IconDelete size={23} color={styles.color.front2} />
-//     </RightContentMenuItemIcon>
-//     <RightContentMenuItemText>
-//         Delete
-//     </RightContentMenuItemText>
-// </RightContentMenuItem>
-// </RightContentMenu>
