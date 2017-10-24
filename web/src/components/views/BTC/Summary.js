@@ -18,14 +18,31 @@ import IconSend from 'react-icons/lib/md/send'
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
 
+import { generateQRCode } from '/api/qr'
+import { printTemplate } from '/api/window'
+
+import { selectContentElement, copyContentSelected } from '/api/window'
+import { Address as template } from '/const/paperwallets'
+
+import { deleteAsset } from '/store/actions'
+
+import QRCode from '/components/styled/QRCode'
+import Address from '/components/styled/Address'
+import Opacity from '/components/styled/Opacity'
+
+import IconCopy from 'react-icons/lib/md/content-copy'
+import IconPrint from 'react-icons/lib/fa/print'
+import IconEmail from 'react-icons/lib/md/email'
+import IconLink from 'react-icons/lib/md/insert-link'
+
 export default class SummaryBTC extends Component {
     componentWillMount() {
         let unobserveData
         let asset_id = state.location.path[1]
         let asset = getAsset(asset_id)
 
-        state.view = {fetchingMoreTxs:false}
-        
+        state.view = { fetchingMoreTxs: false }
+
         this.observer = createObserver(mutations => {
             if (mutations[0].prop === 'pathname') {
                 asset_id = state.location.path[1]
@@ -40,7 +57,11 @@ export default class SummaryBTC extends Component {
         this.observer.observe(state, 'currency')
         this.observer.observe(state.prices, BTC.symbol)
         this.observer.observe(state.view, 'fetchingMoreTxs')
-        
+
+        this.refaddress = this.refaddress.bind(this)
+        this.onCopy = this.onCopy.bind(this)
+        this.onPrint = this.onPrint.bind(this)
+
         this.fetchData()
     }
     componentWillUnmount() {
@@ -49,6 +70,23 @@ export default class SummaryBTC extends Component {
     shouldComponentUpdate() {
         this.fetchData()
         return false
+    }
+
+    refaddress(e) {
+        if (e) this.addressElement = e.base
+    }
+
+    onCopy(e) {
+        selectContentElement(this.addressElement)
+        copyContentSelected()
+    }
+
+    onPrint(e) {
+        const asset_id = state.location.path[1]
+        const asset = getAsset(asset_id)
+        const address = asset.address
+        const data = { address: address, address_qr: generateQRCode(address) }
+        printTemplate(template, data)
     }
 
     fetchData() {
@@ -60,8 +98,7 @@ export default class SummaryBTC extends Component {
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
         state.view.fetchingMoreTxs = true
-        BTC.fetchTxs(asset.address, asset.summary.txs.length)
-        .then(txs => {
+        BTC.fetchTxs(asset.address, asset.summary.txs.length).then(txs => {
             asset.summary.totalTransactions = txs.totalTxs
             asset.summary.txs = asset.summary.txs.concat(txs.txs)
             state.view.fetchingMoreTxs = false
@@ -71,6 +108,7 @@ export default class SummaryBTC extends Component {
     render() {
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
+        const address = asset.address
         return React.createElement(SummaryBTCTemplate, {
             balance_asset: asset.balance,
             balance_currency: currencies[state.currency].format(
@@ -83,7 +121,13 @@ export default class SummaryBTC extends Component {
             totalSent: round(asset.summary.totalSent || 0, 2),
             txs: asset.summary.txs || [],
             fetchingMoreTxs: state.view.fetchingMoreTxs,
-            fetchMoreTransactions: this.fetchMoreTransactions
+            fetchMoreTransactions: this.fetchMoreTransactions,
+            address: address,
+            qrcodebase64: generateQRCode(address),
+            refaddress: this.refaddress,
+            onCopy: this.onCopy,
+            onPrint: this.onPrint,
+            mailTo: `mailto:?subject=My Bitcoin Address&body=My Bitcoin address is: ${address}`
         })
     }
 }
@@ -97,10 +141,60 @@ function SummaryBTCTemplate({
     totalSent,
     txs,
     fetchingMoreTxs,
-    fetchMoreTransactions
+    fetchMoreTransactions,
+    address,
+    qrcodebase64,
+    refaddress,
+    onCopy,
+    onPrint,
+    mailTo
 }) {
     return (
         <div>
+            <div>
+                <Div padding-bottom="15px">
+                    <QRCode>
+                        <img width="150" src={qrcodebase64} />
+                    </QRCode>
+                </Div>
+                <Div padding-bottom="20px">
+                    <CenterElement>
+                        <Address ref={refaddress}>{address}</Address>
+                    </CenterElement>
+                </Div>
+                <Div>
+                    <CenterElement>
+                        <Icons>
+                            <Icon onClick={onCopy}>
+                                <IconCopy size={25} color={'white'} />
+                                <div class="hideOnActive">
+                                    Copy to Clipboard
+                                </div>
+                                <div class="showOnActive">Copied!</div>
+                            </Icon>
+
+                            <Icon onClick={onPrint}>
+                                <IconPrint size={25} color={'white'} />
+                                <div>Print this Address</div>
+                            </Icon>
+
+                            <Icon href={mailTo}>
+                                <IconEmail size={25} color={'white'} />
+                                <div>Email this Address</div>
+                            </Icon>
+
+                            <Icon
+                                target="_blank"
+                                href={`https://blockchain.info/address/${address}/`}
+                            >
+                                <IconLink size={25} color={'white'} />
+                                <div>View on Blockchain</div>
+                            </Icon>
+                        </Icons>
+                    </CenterElement>
+                </Div>
+            </div>
+
             <Header>
                 <HeaderValues>
                     <HeaderBalance>
@@ -143,7 +237,12 @@ function SummaryBTCTemplate({
                         : `- ${tx.value.toString().substr(1)}`
                     return (
                         <Transaction>
-                            <TransactionInner onClick={e => openUrl(`https://blockchain.info/tx/${tx.txid}`)}>
+                            <TransactionInner
+                                onClick={e =>
+                                    openUrl(
+                                        `https://blockchain.info/tx/${tx.txid}`
+                                    )}
+                            >
                                 <TransactionDate>
                                     <div>{month}</div>
                                     {day}
@@ -192,17 +291,97 @@ function SummaryBTCTemplate({
                         </Transaction>
                     )
                 })}
-
             </Transactions>
             <Div clear="both" />
-            <Show if={totalTransactions>txs.length}>
+            <Show if={totalTransactions > txs.length}>
                 <Div text-align="center" padding-top="20px">
-                    <Button loading={fetchingMoreTxs} onClick={fetchMoreTransactions} loadingIco="/static/image/loading.gif">Load more</Button>
+                    <Button
+                        loading={fetchingMoreTxs}
+                        onClick={fetchMoreTransactions}
+                        loadingIco="/static/image/loading.gif"
+                    >
+                        Load more
+                    </Button>
                 </Div>
             </Show>
         </div>
     )
 }
+
+const CenterElement = styled.div`
+    margin: 0 auto;
+    width: 360px;
+`
+
+const Icons = styled.div`
+    height: 100px;
+    & > * {
+        float: left;
+        margin-right: 42px;
+    }
+    & > *:last-child {
+        margin-right: 0;
+    }
+`
+
+const Icon = styled.a`
+    cursor: pointer;
+    display: block;
+    width: 50px;
+    height: 50px;
+    border: 4px solid ${BTC.color};
+    box-shadow: 0 0 0px 1px #fff inset;
+    background: ${BTC.color};
+    border-radius: 50%;
+    text-align: center;
+    line-height: 45px;
+    transition: 0.5s ease all;
+    position: relative;
+    text-decoration: none;
+    & > div {
+        width: 100%;
+        display: none;
+        font-size: 11px;
+        line-height: 15px;
+        padding-top: 15px;
+        color: ${styles.color.front2};
+    }
+    &:hover {
+        transition: 0.5s ease all;
+        background-color: ${styles.color.front2};
+        border-color: ${styles.color.front2};
+        box-shadow: 0 0 0px 100px rgba(255, 255, 255, 0) inset;
+    }
+    &:active {
+        transition: 0s;
+        box-shadow: 0 0 0px 1px #fff inset;
+    }
+    &:hover > div {
+        display: block;
+    }
+
+    & .hideOnActive {
+        opacity: 1;
+    }
+    &:active .hideOnActive {
+        opacity: 0;
+        transition: 5s ease all;
+    }
+
+    & .showOnActive {
+        padding-top: 5px;
+        opacity: 0;
+        display: none;
+        color: #44bb11;
+        font-size: 13px;
+        transition: 3s ease all;
+    }
+    &:active .showOnActive {
+        display: block;
+        transition: unset;
+        opacity: 1;
+    }
+`
 
 const Header = styled.div``
 
@@ -260,7 +439,7 @@ const Transaction = styled.div`
     clear: both;
     color: ${styles.color.front3};
     &:hover {
-        background-color: ${styles.color.background8}
+        background-color: ${styles.color.background8};
     }
 `
 

@@ -9,7 +9,6 @@ export default {
     // Assets
     asset: asset_id => `/asset/${asset_id}/summary`, // default
     summaryAsset: asset_id => `/asset/${asset_id}/summary`,
-    receiveAsset: asset_id => `/asset/${asset_id}/receive`,
     sendAsset: asset_id => `/asset/${asset_id}/send`,
     printAsset: asset_id => `/asset/${asset_id}/print`,
     setPrivateKeyAsset: asset_id => `/asset/${asset_id}/setprivatekey`,

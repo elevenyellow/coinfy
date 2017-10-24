@@ -84,18 +84,25 @@ width: 100%;
 height: 38px;
 clear: both;
 margin-bottom: ${styles.paddingContent};
-border-bottom: 2px solid ${styles.color.background1};
+border-bottom: 2px solid;
+border-color:  ${styles.color.background1};
+${styles.media.second} {
+    height: auto;
+    border-bottom: 0;
+}    
 `
 
 
 export const RightContentMenuItem = styled.div`
 float:left;
 padding: 10px 20px;
-border-bottom: 2px solid transparent;
+margin: 0 2px;
+border-bottom: 2px solid;
+border-color:  transparent;
 cursor: pointer;
 color: ${styles.color.grey1};
 &:hover {
-    border-bottom-color: ${styles.color.background2};
+    border-color: ${styles.color.background2};
     color: ${styles.color.background2};
 }
 
@@ -104,16 +111,26 @@ ${props=>{
       return `
       color: ${styles.color.disabled} !important;
       cursor: default;
-      border-bottom-color: transparent !important;
+      border-color: transparent !important;
       `
     }
     else if (props.selected && props.disabled!==true) {
         return `
-        border-bottom-color: ${styles.color.background2};
+        border-color: ${styles.color.background2};
         color: ${styles.color.background2};
         `
     }
 }}
+
+${styles.media.second} {
+    float: none;
+    width: calc(100% - 20px);
+    padding: 8px 10px;
+    border-bottom-width: 0;
+    border-left-style: solid;
+    border-left-width: 2px;
+}
+
 `
 
 export const RightContentMenuItemIcon = styled.div`

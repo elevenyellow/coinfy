@@ -28,7 +28,6 @@ import {
 
 import HeaderAsset from '/components/partials/HeaderAsset'
 import Summary from '/components/views/BTC/Summary'
-import Receive from '/components/views/BTC/Receive'
 import ChangePassword from '/components/views/BTC/ChangePassword'
 import SetPrivateKey from '/components/views/BTC/SetPrivateKey'
 import PrintBTC from '/components/views/BTC/Print'
@@ -57,7 +56,6 @@ export default class ViewBTC extends Component {
             location: state.location,
             hasPrivateKey: hasPrivateKey,
             routes_summaryAsset: routes.summaryAsset(asset_id),
-            routes_receiveAsset: routes.receiveAsset(asset_id),
             routes_sendAsset: routes.sendAsset(asset_id),
             routes_printAsset: routes.printAsset(asset_id),
             routes_setPrivateKeyAsset: routes.setPrivateKeyAsset(asset_id),
@@ -74,7 +72,6 @@ function ViewBTCTemplate({
     hasPrivateKey,
     onClick,
     routes_summaryAsset,
-    routes_receiveAsset,
     routes_sendAsset,
     routes_printAsset,
     routes_setPrivateKeyAsset,
@@ -100,18 +97,6 @@ function ViewBTCTemplate({
                     >
                         <RightContentMenuItemText>
                             Summary
-                        </RightContentMenuItemText>
-                    </RightContentMenuItem>
-
-                    <RightContentMenuItem
-                        selected={
-                            location.pathname === routes_receiveAsset ||
-                            location.path.length === 2
-                        }
-                        onClick={e => onClick(routes_receiveAsset)}
-                    >
-                        <RightContentMenuItemText>
-                            Receive
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
 
@@ -187,11 +172,7 @@ function ViewBTCTemplate({
                         <Summary />
                     </Route>
 
-                    <Route pathname={routes_receiveAsset}>
-                        <RightContainerMiddle>
-                            <Receive />
-                        </RightContainerMiddle>
-                    </Route>
+
 
                     <Route pathname={routes_printAsset}>
                         <RightContainerMiddle>
