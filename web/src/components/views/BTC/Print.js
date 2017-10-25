@@ -16,6 +16,7 @@ import styles from '/const/styles'
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
 import Input from '/components/styled/Input'
+import CenterElement from '/components/styled/CenterElement'
 
 import { BTC as template } from '/const/paperwallets'
 
@@ -101,8 +102,3 @@ function PrintBTCTemplate({ password, invalidPassword, onChangePassword, onPrint
     )
 }
 
-
-const CenterElement = styled.div`
-margin: 0 auto;
-width: 360px;
-`

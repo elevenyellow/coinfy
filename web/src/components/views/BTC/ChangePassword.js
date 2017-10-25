@@ -24,6 +24,8 @@ import {
     FormFieldRight,
     FormFieldButtons
 } from '/components/styled/Form'
+import CenterElement from '/components/styled/CenterElement'
+
 
 
 const minpassword = 8
@@ -206,8 +208,3 @@ function ChangePasswordBTCTemplate({
         </div>
     )
 }
-
-const CenterElement = styled.div`
-    margin: 0 auto;
-    width: 360px;
-`

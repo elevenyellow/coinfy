@@ -17,6 +17,7 @@ import IconReceive from 'react-icons/lib/md/call-received'
 import IconSend from 'react-icons/lib/md/send'
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
+import CenterElement from '/components/styled/CenterElement'
 
 import { generateQRCode } from '/api/qr'
 import { printTemplate } from '/api/window'
@@ -195,6 +196,7 @@ function SummaryBTCTemplate({
                 </Div>
             </div>
 
+            {/* 
             <Header>
                 <HeaderValues>
                     <HeaderBalance>
@@ -221,16 +223,16 @@ function SummaryBTCTemplate({
                         <ListItemValue>{totalSent}</ListItemValue>
                     </ListItem>
                 </List>
-            </Header>
+            </Header> */}
             <Transactions>
                 {txs.map(tx => {
                     let month = getMonthTextShort(tx.time)
                     let day = getDay(tx.time)
                     let received = Number(tx.value.toString()) > 0
                     let icon = received ? (
-                        <IconReceive size={23} color={BTC.color} />
+                        <IconReceive size={23} color="white" />
                     ) : (
-                        <IconSend size={23} color={BTC.color} />
+                        <IconSend size={23} color="white" />
                     )
                     let value = received
                         ? `+ ${tx.value.toString()}`
@@ -247,13 +249,15 @@ function SummaryBTCTemplate({
                                     <div>{month}</div>
                                     {day}
                                 </TransactionDate>
-                                <TransactionIco>{icon}</TransactionIco>
-                                <TransactionLabel>
-                                    {received ? 'Received' : 'Sent'}
-                                </TransactionLabel>
-                                <TransactionAmount>
-                                    {value} {BTC.symbol}
-                                </TransactionAmount>
+                                <TransactionIco color={BTC.color}>{icon}</TransactionIco>
+                                <TransactionData>
+                                    <TransactionLabel>
+                                        {received ? 'Received' : 'Sent'}
+                                    </TransactionLabel>
+                                    <TransactionAmount>
+                                        {value} {BTC.symbol}
+                                    </TransactionAmount>
+                                </TransactionData>
                             </TransactionInner>
                             {/* <TransactionDetail>
                                 <div>
@@ -308,10 +312,6 @@ function SummaryBTCTemplate({
     )
 }
 
-const CenterElement = styled.div`
-    margin: 0 auto;
-    width: 360px;
-`
 
 const Icons = styled.div`
     height: 100px;
@@ -321,6 +321,13 @@ const Icons = styled.div`
     }
     & > *:last-child {
         margin-right: 0;
+    }
+    ${styles.media.fourth} {
+        width: 222px;
+        margin: 0 auto;
+        & > * {
+            margin-right: 10px;
+        }
     }
 `
 
@@ -338,6 +345,15 @@ const Icon = styled.a`
     transition: 0.5s ease all;
     position: relative;
     text-decoration: none;
+    ${styles.media.fourth} {
+        width: 40px;
+        height: 40px;
+        line-height: 35px;
+        & > svg {
+            width: 18px;
+            height: 18px;
+        }
+    }
     & > div {
         width: 100%;
         display: none;
@@ -405,79 +421,101 @@ const ListItemValue = styled.div`
     float: right;
 `
 
-const HeaderValues = styled.div`float: left;`
-const HeaderBalance = styled.div`
-    font-size: 40px;
-    font-weight: 900;
-    text-align: left;
-    color: ${BTC.color};
-`
-const HeaderBalanceCurrency = styled.div`
-    text-align: left;
-    font-size: 20px;
-    font-weight: 900;
-    color: ${styles.color.front3};
-`
+// const HeaderValues = styled.div`float: left;`
+// const HeaderBalance = styled.div`
+//     font-size: 40px;
+//     font-weight: 900;
+//     text-align: left;
+//     color: ${BTC.color};
+// `
+// const HeaderBalanceCurrency = styled.div`
+//     text-align: left;
+//     font-size: 20px;
+//     font-weight: 900;
+//     color: ${styles.color.front3};
+// `
 
-const HeaderBalanceSymbol = styled.span`
-    font-size: 20px;
-    font-weight: 100;
-`
+// const HeaderBalanceSymbol = styled.span`
+//     font-size: 20px;
+//     font-weight: 100;
+// `
 
 const Transactions = styled.div`
     clear: both;
-    padding-top: 70px;
-    & > div {
-        border-top: 1px solid ${styles.color.background4};
-    }
-    & > div:last-child {
-        border-bottom: 1px solid ${styles.color.background4};
-    }
 `
 
 const Transaction = styled.div`
     clear: both;
     color: ${styles.color.front3};
+    border-radius: 5px;
+    margin-bottom: 10px;
     &:hover {
-        background-color: ${styles.color.background8};
+        background-color: ${styles.color.background1};
     }
 `
 
 const TransactionInner = styled.div`
-    height: 50px;
+    height: 45px;
     cursor: pointer;
 `
 
 const TransactionDate = styled.div`
     float: left;
     font-weight: bold;
-    font-size: 18px;
-    width: 50px;
+    font-size: 16px;
     text-align: center;
-    padding: 5px 0;
+    padding: 5px 20px 5px 15px;
+    line-height: 16px;
     & > div {
         font-weight: 100;
-        font-size: 12px;
+        font-size: 10px;
         text-transform: uppercase;
     }
 `
 
 const TransactionIco = styled.div`
     float: left;
-    padding: 13px 17px 13px 10px;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    margin-top: 9px;
+    margin-right: 15px;
+    background:${props=>props.color};
+    & > svg {
+        width: 16px;
+        height: 16px;
+        margin-top: 2px;
+        margin-left: 5px;
+    }
 `
-
+const TransactionData = styled.div`
+float: left;
+width: calc(100% - 100px);
+`
 const TransactionLabel = styled.div`
     float: left;
-    line-height: 50px;
+    line-height: 45px;
     font-weight: bold;
     color: ${styles.color.black};
+    font-size: 16px;
+    ${styles.media.fourth} {
+        float: none;
+        line-height: normal;
+        padding-top: 6px;
+        font-size: 14px;
+    }        
 `
 
 const TransactionAmount = styled.div`
     float: right;
-    line-height: 50px;
+    line-height: 45px;
     font-weight: bold;
+    padding-right: 14px;
+    ${styles.media.fourth} {
+        float: none;
+        font-size: 10px;
+        line-height: normal;
+    }
 `
 
 const TransactionDetail = styled.div`

@@ -18,6 +18,7 @@ import Help from '/components/styled/Help'
 import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
 import { Label, SubLabel } from '/components/styled/Label'
+import CenterElement from '/components/styled/CenterElement'
 import {
     FormField,
     FormFieldLeft,
@@ -203,8 +204,3 @@ function SetPrivateKeyBTCTemplate({
         </div>
     )
 }
-
-const CenterElement = styled.div`
-    margin: 0 auto;
-    width: 360px;
-`

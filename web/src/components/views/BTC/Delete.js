@@ -3,9 +3,11 @@ import styled from 'styled-components'
 
 import state from '/store/state'
 import { deleteAsset } from '/store/actions'
+import styles from '/const/styles'
 
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
+import CenterElement from '/components/styled/CenterElement'
 
 export default class DeleteAsset extends Component {
     onDelete() {
@@ -32,7 +34,3 @@ function DeleteAssetTemplate({ onDelete }) {
 }
 
 
-const CenterElement = styled.div`
-margin: 0 auto;
-width: 360px;
-`
