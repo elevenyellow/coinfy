@@ -17,7 +17,7 @@ import Div from '/components/styled/Div'
 import Message from '/components/styled/Message'
 import {
     RightContainerPadding,
-    RightContainerMiddle,
+    RightContainerMiddle2,
     RightHeader,
     RightContent,
     RightContentMenu,
@@ -181,21 +181,21 @@ function ViewBTCTemplate({
                     </Route>
 
                     <Route pathname={routes_printAsset}>
-                        <RightContainerMiddle>
+                        <RightContainerMiddle2>
                             <PrintBTC />
-                        </RightContainerMiddle>
+                        </RightContainerMiddle2>
                     </Route>
 
                     <Route pathname={routes_deleteAsset}>
-                        <RightContainerMiddle>
+                        <RightContainerMiddle2>
                             <Delete />
-                        </RightContainerMiddle>
+                        </RightContainerMiddle2>
                     </Route>
 
                     <Route>
-                        <RightContainerMiddle>
+                        <RightContainerMiddle2>
                             <Message>In development</Message>
-                        </RightContainerMiddle>
+                        </RightContainerMiddle2>
                     </Route>
                 </Router>
             </RightContent>

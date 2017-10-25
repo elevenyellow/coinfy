@@ -61,14 +61,16 @@ export const RightContent = styled.div`
 `
 
 export const RightContainerMiddle = styled.div`
-/*display:table;
+display:table;
 width: 100%;
 height:100%;
 & > * {
   display:table-cell;
   height: 100%;
   vertical-align: middle;
-}*/
+}
+`
+export const RightContainerMiddle2 = styled.div`
 padding-top: 100px;
 ${styles.media.second} {
     padding: 0;
