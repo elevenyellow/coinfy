@@ -18,6 +18,13 @@ import Help from '/components/styled/Help'
 import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
 import { Label, SubLabel } from '/components/styled/Label'
+import {
+    FormField,
+    FormFieldLeft,
+    FormFieldRight,
+    FormFieldButtons
+} from '/components/styled/Form'
+
 
 const minpassword = 8
 
@@ -130,12 +137,12 @@ function ChangePasswordBTCTemplate({
     onSubmit
 }) {
     return (
-        <Div padding="0 50px">
-            <Div height="65px">
-                <Div float="left" width="40%">
+        <div>
+            <FormField>
+                <FormFieldLeft>
                     <Label>Old password</Label>
-                </Div>
-                <Div float="left" width="60%">
+                </FormFieldLeft>
+                <FormFieldRight>
                     <Input
                         type="password"
                         width="100%"
@@ -144,10 +151,10 @@ function ChangePasswordBTCTemplate({
                         error={'Invalid old password'}
                         invalid={isInvalidOldpassword}
                     />
-                </Div>
-            </Div>
-            <Div height="65px">
-                <Div float="left" width="40%">
+                </FormFieldRight>
+            </FormField>
+            <FormField>
+                <FormFieldLeft>
                     <Label>Password</Label>
                     <Help>
                         Make sure that you remember this. This password can't be
@@ -157,8 +164,8 @@ function ChangePasswordBTCTemplate({
                     <SubLabel>
                         This password encrypts your private key.
                     </SubLabel>
-                </Div>
-                <Div float="left" width="60%">
+                </FormFieldLeft>
+                <FormFieldRight>
                     <Password
                         minlength={minpassword}
                         value={password}
@@ -166,13 +173,13 @@ function ChangePasswordBTCTemplate({
                         width="100%"
                         type="password"
                     />
-                </Div>
-            </Div>
-            <Div height="60px">
-                <Div float="left" width="40%">
+                </FormFieldRight>
+            </FormField>
+            <FormField>
+                <FormFieldLeft>
                     <Label>Repeat Password</Label>
-                </Div>
-                <Div float="left" width="60%">
+                </FormFieldLeft>
+                <FormFieldRight>
                     <Input
                         minlength={minpassword}
                         error={'Passwords do not match'}
@@ -182,19 +189,21 @@ function ChangePasswordBTCTemplate({
                         width="100%"
                         type="password"
                     />
-                </Div>
-            </Div>
-            <Div clear="both" />
-            <Div float="right">
-                <Button
-                    width="200px"
-                    disabled={!isValidForm}
-                    onClick={onSubmit}
-                >
-                    Change password
-                </Button>
-            </Div>
-        </Div>
+                </FormFieldRight>
+            </FormField>
+
+            <FormField>
+                <FormFieldButtons>
+                    <Button
+                        width="200px"
+                        disabled={!isValidForm}
+                        onClick={onSubmit}
+                    >
+                        Change password
+                    </Button>
+                </FormFieldButtons>
+            </FormField>
+        </div>
     )
 }
 

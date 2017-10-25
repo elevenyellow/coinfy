@@ -33,7 +33,8 @@ import CenterElement from '/components/styled/CenterElement'
 import {
     FormField,
     FormFieldLeft,
-    FormFieldRight
+    FormFieldRight,
+    FormFieldButtons
 } from '/components/styled/Form'
 import H1 from '/components/styled/H1'
 import H2 from '/components/styled/H2'
@@ -415,7 +416,7 @@ function ImportBitcoinTemplate({
                     </Show>
 
                     <FormField>
-                        <Div float="right">
+                        <FormFieldButtons>
                             <Button
                                 width="100px"
                                 disabled={!isFormValid}
@@ -423,7 +424,7 @@ function ImportBitcoinTemplate({
                             >
                                 Import
                             </Button>
-                        </Div>
+                        </FormFieldButtons>
                     </FormField>
 
                     <Div clear="both" />

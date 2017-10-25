@@ -172,7 +172,13 @@ function ViewBTCTemplate({
                         <Summary />
                     </Route>
 
+                    <Route pathname={routes_changePasswordAsset}>
+                        <ChangePassword />
+                    </Route>
 
+                    <Route pathname={routes_setPrivateKeyAsset}>
+                        <SetPrivateKey />
+                    </Route>
 
                     <Route pathname={routes_printAsset}>
                         <RightContainerMiddle>
@@ -183,18 +189,6 @@ function ViewBTCTemplate({
                     <Route pathname={routes_deleteAsset}>
                         <RightContainerMiddle>
                             <Delete />
-                        </RightContainerMiddle>
-                    </Route>
-
-                    <Route pathname={routes_changePasswordAsset}>
-                        <RightContainerMiddle>
-                            <ChangePassword />
-                        </RightContainerMiddle>
-                    </Route>
-
-                    <Route pathname={routes_setPrivateKeyAsset}>
-                        <RightContainerMiddle>
-                            <SetPrivateKey />
                         </RightContainerMiddle>
                     </Route>
 

@@ -23,7 +23,8 @@ import { Label, SubLabel } from '/components/styled/Label'
 import {
     FormField,
     FormFieldLeft,
-    FormFieldRight
+    FormFieldRight,
+    FormFieldButtons
 } from '/components/styled/Form'
 import H1 from '/components/styled/H1'
 import H2 from '/components/styled/H2'
@@ -222,7 +223,7 @@ function CreateBitcoinTemplate({
                             </FormFieldRight>
                         </FormField>
                         <FormField>
-                            <Div float="right">
+                            <FormFieldButtons>
                                 <Button
                                     width="100px"
                                     disabled={!isFormValid}
@@ -230,7 +231,7 @@ function CreateBitcoinTemplate({
                                 >
                                     Create
                                 </Button>
-                            </Div>
+                            </FormFieldButtons>
                         </FormField>
                         <Div clear="both" />
                     </form>

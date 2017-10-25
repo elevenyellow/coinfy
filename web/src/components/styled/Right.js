@@ -48,16 +48,7 @@ ${styles.media.first} {
 }
 `
 
-export const RightContainerMiddle = styled.div`
-display:table;
-width: 100%;
-height:100%;
-& > * {
-  display:table-cell;
-  height: 100%;
-  vertical-align: middle;
-}
-`
+
 
 export const RightHeader = styled.div`
 margin-bottom: ${styles.paddingContent};
@@ -67,6 +58,21 @@ ${styles.media.first} {
 `
 
 export const RightContent = styled.div`
+`
+
+export const RightContainerMiddle = styled.div`
+/*display:table;
+width: 100%;
+height:100%;
+& > * {
+  display:table-cell;
+  height: 100%;
+  vertical-align: middle;
+}*/
+padding-top: 100px;
+${styles.media.second} {
+    padding: 0;
+}
 `
 
 // export const RightContentContent = styled.div`

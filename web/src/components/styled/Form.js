@@ -37,3 +37,7 @@ ${styles.media.fourth} {
     width: 100%;
 }
 `
+
+export const FormFieldButtons = styled.div`
+float: right;
+`

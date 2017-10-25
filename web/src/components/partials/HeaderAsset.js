@@ -55,6 +55,8 @@ export default class HeaderAsset extends Component {
             this.forceUpdate()
         })
         this.observer.observe(state.location, 'pathname')
+        this.observer.observe(state.prices, this.state.asset.symbol)
+        
         if (this.state.asset !== undefined) {
             unobserveLabel = this.observer.observe(this.state.asset, 'label')
             unobserveBalance = this.observer.observe(

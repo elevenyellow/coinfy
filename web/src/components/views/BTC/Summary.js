@@ -185,7 +185,7 @@ function SummaryBTCTemplate({
 
                             <Icon
                                 target="_blank"
-                                href={`https://blockchain.info/address/${address}/`}
+                                href={`https://blockchain.info/address/${address}`}
                             >
                                 <IconLink size={25} color={'white'} />
                                 <div>View on Blockchain</div>
