@@ -157,6 +157,8 @@ export function fetchTxs(address, from=0, to=from+25) {
                     ++index
                 ) {
                     if (
+                        txRaw.vout[index].scriptPubKey &&
+                        txRaw.vout[index].scriptPubKey.addresses &&
                         txRaw.vout[index].scriptPubKey.addresses.indexOf(
                             address
                         ) > -1
