@@ -1,7 +1,7 @@
 import { createCipheriv, createDecipheriv } from 'browserify-cipher'
 import pbkdf2 from 'pbkdf2'
-// import bip38 from 'bip38'
-// import wif from 'wif'
+import bip38 from 'bip38'
+import wif from 'wif'
 
 export function encryptAES128CTR(string, password) {
     const string_buffer = new Buffer(string) // ethereum: new Buffer(string,'hex')
@@ -46,6 +46,17 @@ export function decryptAES128CTR(encryption, password) {
         seed = Buffer.concat([new Buffer([0x00]), seed]);
 
     return seed.toString() //ethereum seed.toString('hex')
+}
+
+
+export function encryptBIP38(privateKey, password, progressCallback) {
+    let decoded = wif.decode(privateKey)
+    return bip38.encrypt(decoded.privateKey, decoded.compressed, password, progressCallback)
+}
+
+export function decryptBIP38(encryptedKey, password, progressCallback, prefix=0x80) {
+    let decryptedKey = bip38.decrypt(encryptedKey, password, progressCallback)
+    return wif.encode(prefix, decryptedKey.privateKey, decryptedKey.compressed)
 }
 
 
@@ -328,6 +339,8 @@ function arraycopy (src, srcPos, dest, destPos, length) {
     }
   }
 }
+
+
 
 
 

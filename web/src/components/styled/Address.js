@@ -28,6 +28,8 @@ const Address = styled.div`
     text-overflow: ellipsis;
     font-weight: 500;
     text-align: center;
+    /*border: 1px solid ${styles.color.background1};
+    background: ${styles.color.background1};*/
 
     & span {
         display: inline-block;

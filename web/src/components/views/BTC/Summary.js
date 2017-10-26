@@ -502,7 +502,7 @@ width: calc(100% - 100px);
 `
 const TransactionLabel = styled.div`
     float: left;
-    line-height: 45px;
+    line-height: 43px;
     font-weight: bold;
     color: ${styles.color.black};
     font-size: 16px;
