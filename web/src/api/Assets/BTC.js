@@ -82,6 +82,7 @@ export function getAddressFromPublicKey(public_key) {
 export function getAllFormats(wallet) {
     const formats = {}
     if (typeof wallet == 'string') wallet = Bitcoin.ECPair.fromWIF(wallet)
+    formats.compressed = wallet.compressed
     wallet.compressed = false
     formats.address = wallet.getAddress()
     formats.public_key = wallet.getPublicKeyBuffer().toString('hex')

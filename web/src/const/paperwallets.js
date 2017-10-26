@@ -1,4 +1,29 @@
-export const BTC = `
+export const BTC = (qrs = []) => {
+    let areas = ''
+    qrs.forEach(qr => {
+        qr.red = qr.red ? 'red' : ''
+        areas += qr.img
+            ? `
+        <div class="area">
+            <div class="area-qr">
+                <img width="125" src="${qr.img}">
+            </div>
+            <div class="area-right ${qr.red}">
+                <div class="area-title">${qr.title}</div>
+                <div class="area-hash">${qr.hash}</div>
+                <div class="area-description">${qr.description}</div>
+            </div>
+        </div>
+        `
+            : `
+        <div class="area small ${qr.red}">
+            <div class="area-titlesmall">${qr.title}:</div>
+            <div class="area-long">${qr.hash}</div>
+        </div>
+        `
+    })
+
+    return `
 <html>
     <head>
     <style>
@@ -12,9 +37,12 @@ body {
 }
 .area {
     width: 95%;
+    height: 135px;
     clear: both;
-    height: 150px;
     margin: 0 auto 2.3em auto;
+}
+.area.small {
+    height: auto;
 }
 .area-qr {
     float: left;
@@ -60,139 +88,10 @@ body {
     </head>
     <body>
         <div id="content">
-
-            <div class="area">
-                <div class="area-qr">
-                    <img width="125" height="125" src="{{address_qr}}" width="150">
-                </div>
-                <div class="area-right">
-                    <div class="area-title">Address</div>
-                    <div class="area-hash">{{address}}</div>
-                    <div class="area-description">Share this address to receive funds.</div>
-                </div>
-            </div>
-            <div class="area">
-                <div class="area-qr">
-                    <img width="125" height="125" src="{{address_comp_qr}}" width="150">
-                </div>
-                <div class="area-right">
-                    <div class="area-title">Address compressed</div>
-                    <div class="area-hash">{{address_comp}}</div>
-                    <div class="area-description">This address is the compressed version. You can share it to receive funds.</div>
-                </div>
-            </div>
-
-
-            <div class="area">
-                <div class="area-qr">
-                    <img width="125" src="{{private_key_qr}}">
-                </div>
-                <div class="area-right red">
-                    <div class="area-title">Private Key</div>
-                    <div class="area-hash">{{private_key}}</div>
-                    <div class="area-description">This CAN NOT BE SHARED. If you share this private key you can lose your funds. WIF format, 51 characters base58, starts with a '5'</div>
-                </div>
-            </div>
-
-
-            <div class="area">
-                <div class="area-qr">
-                    <img width="125" src="{{private_key_comp_qr}}">
-                </div>
-                <div class="area-right red">
-                    <div class="area-title">Private Key compressed</div>
-                    <div class="area-hash">{{private_key_comp}}</div>
-                    <div class="area-description">This CAN NOT BE SHARED. If you share this private key you can lose your funds. WIF format, 52 characters base58, starts with a 'K' or 'L'</div>
-                </div>
-            </div>
-    
-            <div class="area">
-                <div class="area-right">
-                    <div class="area-titlesmall">Public Key (130 characters [0-9A-F]):</div>
-                    <div class="area-long">{{public_key}}</div>
-                    <br />
-                    <div class="area-titlesmall">Public Key (compressed, 66 characters [0-9A-F]):</div>
-                    <div class="area-long">{{public_key_comp}}</div>
-                </div>
-            </div>
-
+            ${areas}
             <div id="claim">COINFY.COM</div>
         </div>
     </body>
 </html>
 `
-
-
-
-
-
-export const Address = `
-<html>
-<head>
-<style>
-body {
-font-family: sans-serif;
-font-size: 1rem;
-color: black;
 }
-#content {
-}
-.area {
-width: 95%;
-clear: both;
-height: 150px;
-margin: 0 auto 2.3em auto;
-}
-.area-qr {
-float: left;
-padding-top: 0.7em;
-padding-right: 1em;
-}
-
-.area-title {
-font-weight: bold;
-font-size: 2em;
-padding-top: 0.5em;
-padding-bottom: 0.3em;
-}
-.area-hash {
-color:black;
-font-family: monospace;
-font-weight: bold;
-word-break: break-all;
-font-size: 1.3em;
-}
-.area-description {
-padding-top: 0.8em;
-font-size: 1em;
-font-weight: bold;
-opacity: 0.3;
-}
-
-
-
-#claim {
-text-align: center;
-color: #CCC
-}
-</style>
-</head>
-<body>
-    <div id="content">
-
-        <div class="area">
-            <div class="area-qr">
-                <img width="125" height="125" src="{{address_qr}}" width="150">
-            </div>
-            <div class="area-right">
-                <div class="area-title">Address</div>
-                <div class="area-hash">{{address}}</div>
-                <div class="area-description">Share this address to receive funds.</div>
-            </div>
-        </div>
-
-        <div id="claim">COINFY.COM</div>
-    </div>
-</body>
-</html>
-`

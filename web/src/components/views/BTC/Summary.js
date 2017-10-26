@@ -23,7 +23,7 @@ import { generateQRCode } from '/api/qr'
 import { printTemplate } from '/api/window'
 
 import { selectContentElement, copyContentSelected } from '/api/window'
-import { Address as template } from '/const/paperwallets'
+import { BTC as template } from '/const/paperwallets'
 
 import { deleteAsset } from '/store/actions'
 
@@ -86,8 +86,12 @@ export default class SummaryBTC extends Component {
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
         const address = asset.address
-        const data = { address: address, address_qr: generateQRCode(address) }
-        printTemplate(template, data)
+        printTemplate(template([{
+            title: 'Address',
+            img: generateQRCode(address),
+            hash: address,
+            description: 'Share this address to receive funds.'
+        }]))
     }
 
     fetchData() {
@@ -464,11 +468,12 @@ const TransactionDate = styled.div`
     font-weight: bold;
     font-size: 16px;
     text-align: center;
-    padding: 5px 20px 5px 15px;
+    padding: 7px 20px 0 15px;
     line-height: 16px;
     & > div {
         font-weight: 100;
         font-size: 10px;
+        line-height: 14px;
         text-transform: uppercase;
     }
 `
@@ -481,11 +486,14 @@ const TransactionIco = styled.div`
     margin-top: 9px;
     margin-right: 15px;
     background:${props=>props.color};
+    line-height: 16px;
+    text-align: center;
+    
     & > svg {
+        vertical-align: top !important;
         width: 16px;
         height: 16px;
-        margin-top: 2px;
-        margin-left: 5px;
+        padding-top: 6px;
     }
 `
 const TransactionData = styled.div`
@@ -501,7 +509,7 @@ const TransactionLabel = styled.div`
     ${styles.media.fourth} {
         float: none;
         line-height: normal;
-        padding-top: 6px;
+        padding-top: 7px;
         font-size: 14px;
     }        
 `
