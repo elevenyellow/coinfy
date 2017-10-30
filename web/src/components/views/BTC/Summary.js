@@ -177,7 +177,6 @@ function SummaryBTCTemplate({
     onPrint,
     mailTo
 }) {
-    console.log( fetchingSummary );
     return (
         <div>
             <div>

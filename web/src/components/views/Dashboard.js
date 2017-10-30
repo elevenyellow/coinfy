@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
+import Big from 'big.js'
 import CountUp from 'react-countup'
 
 import styles from '/const/styles'
@@ -50,6 +51,7 @@ export default class Dashboard extends Component {
                 dataUnformated[asset.symbol] = {
                     label: Assets[asset.symbol].name,
                     color: Assets[asset.symbol].color,
+                    balance_asset_big: Big(0),
                     balance_asset_number: 0,
                     balance_currency_number: 0,
                     assets: []
@@ -57,6 +59,7 @@ export default class Dashboard extends Component {
 
             let assetUnformated = dataUnformated[asset.symbol]
             assetUnformated.balance_asset_number += asset.balance
+            assetUnformated.balance_asset_big = assetUnformated.balance_asset_big.plus(asset.balance)
             assetUnformated.balance_currency_number += convertBalance(
                 asset.symbol,
                 asset.balance
@@ -81,7 +84,7 @@ export default class Dashboard extends Component {
             let category = dataUnformated[symbol]
 
             category.balance_asset =
-                category.balance_asset_number + ' ' + symbol
+                category.balance_asset_big.toString() + ' ' + symbol
 
             category.balance_currency = currencies[state.currency].format(
                 category.balance_currency_number,
