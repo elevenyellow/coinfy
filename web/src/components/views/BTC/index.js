@@ -181,9 +181,7 @@ function ViewBTCTemplate({
                     </Route>
 
                     <Route pathname={routes_printAsset}>
-                        <RightContainerMiddle2>
-                            <PrintBTC />
-                        </RightContainerMiddle2>
+                        <PrintBTC />
                     </Route>
 
                     <Route pathname={routes_deleteAsset}>

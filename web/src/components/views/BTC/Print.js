@@ -6,6 +6,7 @@ import { generateQRCode } from '/api/qr'
 import { BTC } from '/api/Assets'
 import { getAllFormats } from '/api/Assets/BTC'
 import { printTemplate } from '/api/window'
+import { encryptBIP38 } from '/api/security'
 
 import state from '/store/state'
 import { getAsset } from '/store/getters'
@@ -16,7 +17,11 @@ import styles from '/const/styles'
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
 import Input from '/components/styled/Input'
+import Checkbox from '/components/styled/Checkbox'
 import CenterElement from '/components/styled/CenterElement'
+import {
+    FormField
+} from '/components/styled/Form'
 
 import { BTC as template } from '/const/paperwallets'
 
@@ -27,11 +32,13 @@ export default class PrintBTC extends Component {
 
         // Initial state
         state.view = {
+            encrypted: true,
             password: '',
             invalidPassword: false
         }
 
         // binding
+        this.onChangeEncryption = this.onChangeEncryption.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onPrint = this.onPrint.bind(this)
     }
@@ -42,6 +49,9 @@ export default class PrintBTC extends Component {
         return false
     }
 
+    onChangeEncryption(e) {
+        state.view.encrypted = !state.view.encrypted
+    }
     onChangePassword(e) {
         const collector = collect()
         state.view.password = e.target.value
@@ -53,14 +63,22 @@ export default class PrintBTC extends Component {
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
         const address = asset.address
+        const password = state.view.password
         const private_key_encrypted = asset.private_key
         const private_key = BTC.unlock(
             address,
             private_key_encrypted,
-            state.view.password
+            password
         )
         if (private_key) {
+            const isEncrypted = state.view.encrypted
             const formats = getAllFormats(private_key)
+            let private_key1 = private_key
+            let private_key2 = formats.compressed ? formats.private_key : formats.private_key_comp
+            if ( isEncrypted ) {
+                private_key1 = encryptBIP38(private_key1, password)
+                private_key2 = encryptBIP38(private_key2, password)
+            }
             const qrs = [
                 {
                     img: generateQRCode(address),
@@ -70,15 +88,15 @@ export default class PrintBTC extends Component {
                 },
                 {
                     img: generateQRCode(
-                        private_key,
+                        private_key1,
                         undefined,
-                        styles.color.red3
+                        isEncrypted?'black':styles.color.red3
                     ),
-                    hash: private_key,
-                    red: true,
+                    hash: private_key1,
+                    red: !isEncrypted,
                     title: 'Private Key',
                     description:
-                        'This CAN NOT BE SHARED. If you share this you will lose your funds. WIF format.'
+                        'This CAN NOT BE SHARED. If you share this you will lose your funds. ' + (isEncrypted?'Encrypted (BIP38)':'Unencrypted (WIF)')
                 },
                 {
                     title: `Address ${formats.compressed
@@ -89,13 +107,9 @@ export default class PrintBTC extends Component {
                         : formats.address_comp
                 },
                 {
-                    title: `Private Key ${formats.compressed
-                        ? 'uncompressed'
-                        : 'compressed'}. DO NOT SHARE THIS OR YOU WILL LOSE YOUR FUNDS`,
-                    hash: formats.compressed
-                        ? formats.private_key
-                        : formats.private_key_comp,
-                    red: true
+                    title: `Private Key ${formats.compressed?'uncompressed':'compressed'} ${isEncrypted?'(BIP38)':'(WIF)'}. DO NOT SHARE THIS OR YOU WILL LOSE YOUR FUNDS`,
+                    hash: private_key2,
+                    red: !isEncrypted
                 },
                 {
                     title: `Public Key`,
@@ -116,8 +130,10 @@ export default class PrintBTC extends Component {
     }
     render() {
         return React.createElement(PrintBTCTemplate, {
+            encrypted: state.view.encrypted,
             password: state.view.password,
             invalidPassword: state.view.invalidPassword,
+            onChangeEncryption: this.onChangeEncryption,
             onChangePassword: this.onChangePassword,
             onPrint: this.onPrint
         })
@@ -125,16 +141,21 @@ export default class PrintBTC extends Component {
 }
 
 function PrintBTCTemplate({
+    encrypted,
     password,
     invalidPassword,
+    onChangeEncryption,
     onChangePassword,
     onPrint
 }) {
     return (
-        <div>
+        <Div padding-top="30px">
             <CenterElement>
                 <form>
-                    <Div height="55px">
+                    <FormField>
+                        <Checkbox checked={encrypted} onChange={onChangeEncryption} label="Encrypted (BIP38)" />
+                    </FormField>
+                    <FormField>
                         <Input
                             width="100%"
                             value={password}
@@ -145,14 +166,14 @@ function PrintBTCTemplate({
                             error={'Invalid password'}
                             invalid={invalidPassword}
                         />
-                    </Div>
-                    <Div>
+                    </FormField>
+                    <FormField>
                         <Button onClick={onPrint} width="100%">
                             UNLOCK AND PRINT
                         </Button>
-                    </Div>
+                    </FormField>
                 </form>
             </CenterElement>
-        </div>
+        </Div>
     )
 }

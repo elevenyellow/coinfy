@@ -5,9 +5,6 @@ export function supplant(str) {
         t = args.length-1,
         i = 1;
 
-    if (t === 0)
-        return str
-
     return (function _supplant(i) {
         str = str.replace(/{{([^{}]*)}}/g,
             function (a, wordoptions) {
