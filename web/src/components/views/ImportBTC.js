@@ -164,9 +164,12 @@ export default class ImportBitcoin extends Component {
 
     // Getters
     get isFormValid() {
+        let isRegistered = isAssetRegistered(
+            getAssetId({ symbol: BTC.symbol, address: state.view.address })
+        )
         return (
             state.view.address.length > 0 &&
-            !this.isRegistered &&
+            !isRegistered &&
             (state.view.private_key === '' ||
                 (state.view.password.length >= minpassword &&
                     state.view.password === state.view.repassword))

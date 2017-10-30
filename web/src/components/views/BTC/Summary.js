@@ -17,6 +17,7 @@ import IconReceive from 'react-icons/lib/md/call-received'
 import IconSend from 'react-icons/lib/md/send'
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
+import Message from '/components/styled/Message'
 import CenterElement from '/components/styled/CenterElement'
 
 import { generateQRCode } from '/api/qr'
@@ -228,6 +229,11 @@ function SummaryBTCTemplate({
                     </ListItem>
                 </List>
             </Header> */}
+            <Show if={totalTransactions===0}>
+                <Div padding-top="50px" padding-bottom="50px">
+                    <Message>No transactions found for this address</Message>
+                </Div>
+            </Show>
             <Transactions>
                 {txs.map(tx => {
                     let month = getMonthTextShort(tx.time)

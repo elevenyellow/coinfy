@@ -279,10 +279,7 @@ function DashboardTemplate({
                                             </AssetRight>
                                             <AssetPercentage>
                                                 <AssetPercentageLeft
-                                                    width={
-                                                        asset.percentage +
-                                                        '%'
-                                                    }
+                                                    percentage={asset.percentage}
                                                     color="#feb034"
                                                 />
                                                 <AssetPercentageRight color="#feb034">
@@ -604,19 +601,19 @@ const AssetPercentage = styled.div`
     }
 `
 const AssetPercentageLeft = styled.div`
-    width: calc(${props => props.width} - 30px);
+    width: calc(${props => props.percentage+'%'} - 30px);
     background-color: ${props => props.color};
     height: 4px;
     border-radius: 100px;
     float: left;
     margin-top: 5px;
-`
+    margin-right: ${props => props.percentage>0 ? '5px' : 0};
+    `
 const AssetPercentageRight = styled.span`
     float: left;
     font-size: 10px;
     font-weight: bold;
     color: ${props => props.color};
-    margin-left: 5px;
 `
 
 const Currencies = styled.div`
