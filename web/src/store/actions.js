@@ -275,7 +275,11 @@ export function fetchSummaryAssetIfReady(asset_id) {
 export function fetchSummaryAsset(asset_id) {
     // console.log( 'fetchSummaryAsset', asset_id );
     const asset = state.assets[asset_id]
+    const collector = collect()
     asset.state.fetching_summary = true
+    asset.summary = {}
+    collector.emit()
+    
     return Assets[asset.symbol]
         .fetchSummary(asset.address)
         .then(summary => {

@@ -8,7 +8,7 @@ import { currencies } from '/const/currencies'
 import { BTC } from '/api/Assets'
 import { round } from '/api/numbers'
 import state from '/store/state'
-import { fetchSummaryAssetIfReady } from '/store/actions'
+import { fetchSummaryAsset, fetchSummaryAssetIfReady } from '/store/actions'
 import { convertBalance, getAsset } from '/store/getters'
 import { getDay, getMonthTextShort } from '/api/time'
 import { openUrl } from '/api/window'
@@ -39,30 +39,36 @@ import IconLink from 'react-icons/lib/md/insert-link'
 
 export default class SummaryBTC extends Component {
     componentWillMount() {
-        let unobserveData
+        let unobserveSummary
+        let unobserveFetching
         let asset_id = state.location.path[1]
         let asset = getAsset(asset_id)
 
-        state.view = { fetchingMoreTxs: false }
+        state.view = { fetchingTxs: false }
 
         this.observer = createObserver(mutations => {
             if (mutations[0].prop === 'pathname') {
                 asset_id = state.location.path[1]
                 asset = getAsset(asset_id)
-                unobserveData()
-                unobserveData = this.observer.observe(asset, 'summary')
+                unobserveSummary()
+                unobserveFetching()
+                unobserveSummary = this.observer.observe(asset, 'summary')
+                unobserveFetching = this.observer.observe(asset.state, 'fetching_summary')
             }
             this.forceUpdate()
         })
-        unobserveData = this.observer.observe(asset, 'summary')
+        unobserveSummary = this.observer.observe(asset, 'summary')
+        unobserveFetching = this.observer.observe(asset.state, 'fetching_summary')
         this.observer.observe(state.location, 'pathname')
         this.observer.observe(state, 'currency')
         this.observer.observe(state.prices, BTC.symbol)
-        this.observer.observe(state.view, 'fetchingMoreTxs')
+        this.observer.observe(state.view, 'fetchingTxs')
 
+        
         this.refaddress = this.refaddress.bind(this)
         this.onCopy = this.onCopy.bind(this)
         this.onPrint = this.onPrint.bind(this)
+        this.rescanOrLoad = this.rescanOrLoad.bind(this)
 
         this.fetchData()
     }
@@ -100,15 +106,29 @@ export default class SummaryBTC extends Component {
         fetchSummaryAssetIfReady(asset_id)
     }
 
-    fetchMoreTransactions() {
+    forceFetch() {
+        const asset_id = state.location.path[1]
+        fetchSummaryAsset(asset_id)
+    }
+
+    rescanOrLoad() {
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
-        state.view.fetchingMoreTxs = true
-        BTC.fetchTxs(asset.address, asset.summary.txs.length).then(txs => {
-            asset.summary.totalTransactions = txs.totalTxs
-            asset.summary.txs = asset.summary.txs.concat(txs.txs)
-            state.view.fetchingMoreTxs = false
-        })
+
+        const totalTransactions = asset.summary.totalTxs || 0
+        const txs = asset.summary.txs || []
+
+        if (totalTransactions === txs.length) {
+            this.forceFetch()
+        }
+        else {
+            state.view.fetchingTxs = true
+            BTC.fetchTxs(asset.address, asset.summary.txs.length).then(txs => {
+                asset.summary.totalTransactions = txs.totalTxs
+                asset.summary.txs = asset.summary.txs.concat(txs.txs)
+                state.view.fetchingTxs = false
+            })
+        }
     }
 
     render() {
@@ -126,8 +146,9 @@ export default class SummaryBTC extends Component {
             totalReceived: round(asset.summary.totalReceived || 0, 2),
             totalSent: round(asset.summary.totalSent || 0, 2),
             txs: asset.summary.txs || [],
-            fetchingMoreTxs: state.view.fetchingMoreTxs,
-            fetchMoreTransactions: this.fetchMoreTransactions,
+            fetchingSummary: asset.state.fetching_summary,
+            fetchingTxs: state.view.fetchingTxs,
+            rescanOrLoad: this.rescanOrLoad,
             address: address,
             qrcodebase64: generateQRCode(address),
             refaddress: this.refaddress,
@@ -146,8 +167,9 @@ function SummaryBTCTemplate({
     totalReceived,
     totalSent,
     txs,
-    fetchingMoreTxs,
-    fetchMoreTransactions,
+    fetchingSummary,
+    fetchingTxs,
+    rescanOrLoad,
     address,
     qrcodebase64,
     refaddress,
@@ -155,6 +177,7 @@ function SummaryBTCTemplate({
     onPrint,
     mailTo
 }) {
+    console.log( fetchingSummary );
     return (
         <div>
             <div>
@@ -229,7 +252,7 @@ function SummaryBTCTemplate({
                     </ListItem>
                 </List>
             </Header> */}
-            <Show if={totalTransactions===0}>
+            <Show if={totalTransactions===0 && !fetchingTxs && !fetchingSummary}>
                 <Div padding-top="50px" padding-bottom="50px">
                     <Message>No transactions found for this address</Message>
                 </Div>
@@ -306,18 +329,17 @@ function SummaryBTCTemplate({
                     )
                 })}
             </Transactions>
-            <Div clear="both" />
-            <Show if={totalTransactions > txs.length}>
-                <Div text-align="center" padding-top="20px">
-                    <Button
-                        loading={fetchingMoreTxs}
-                        onClick={fetchMoreTransactions}
-                        loadingIco="/static/image/loading.gif"
-                    >
-                        Load more
-                    </Button>
-                </Div>
-            </Show>
+            {/* <Show if={totalTransactions === txs.length || totalTransactions > txs.length}> */}
+            <Div clear="both" text-align="center" padding-top="20px">
+                <Button
+                    loading={fetchingTxs || fetchingSummary}
+                    onClick={rescanOrLoad}
+                    loadingIco="/static/image/loading.gif"
+                >
+                    {totalTransactions === txs.length ? 'Rescan all transactions' : 'Load more'}
+                </Button>
+            </Div>
+            {/* </Show> */}
         </div>
     )
 }
