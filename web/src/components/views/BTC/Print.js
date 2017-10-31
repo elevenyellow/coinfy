@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { createObserver, collect } from 'dop'
 import styled from 'styled-components'
+import { Show } from '/doprouter/react'
 
+// import { createWorker } from '/api/workers'
 import { generateQRCode } from '/api/qr'
 import { BTC } from '/api/Assets'
 import { getAllFormats } from '/api/Assets/BTC'
@@ -73,7 +75,8 @@ export default class PrintBTC extends Component {
         const private_key = BTC.unlock(address, private_key_encrypted, password)
         if (private_key) {
             state.view.loading = true
-            setTimeout(() => { // We need to do this trick in order to show the loading-button icon
+            setTimeout(() => {
+                // We need to do this trick in order to show the loading-button icon
                 const isEncrypted = state.view.encrypted
                 const formats = getAllFormats(private_key)
                 let private_key1 = private_key
@@ -89,7 +92,8 @@ export default class PrintBTC extends Component {
                         img: generateQRCode(address),
                         hash: address,
                         title: 'Address',
-                        description: 'You can share this address to receive funds.'
+                        description:
+                            'You can share this address to receive funds.'
                     },
                     {
                         img: generateQRCode(
@@ -139,12 +143,10 @@ export default class PrintBTC extends Component {
 
                 printTemplate(template(qrs))
                 state.view.loading = false
-            }, 100)
-        }
-        else { 
+            }, 500)
+        } else {
             state.view.invalidPassword = true
         }
-
     }
     render() {
         return React.createElement(PrintBTCTemplate, {
@@ -221,9 +223,20 @@ function PrintBTCTemplate({
                         >
                             Unlock and Print
                         </Button>
+                        <Show if={encrypted}>
+                            <Div font-size="10px" color={styles.color.grey1}>
+                                This might take several minutes
+                            </Div>
+                        </Show>
                     </FormFieldButtons>
                 </FormField>
             </form>
         </Div>
     )
 }
+
+// const myWorker = createWorker(encryptBIP38)
+// myWorker.postMessage(['5HsWaFzgZp2T5t3REnMFGMroTc3WvvsPGMbBejRinUnbWenCg9n', 'cacavaca'])
+// myWorker.addEventListener('message', e => {
+//     console.log('Message received from worker', e.data)
+// })
