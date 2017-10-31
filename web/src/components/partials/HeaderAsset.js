@@ -133,9 +133,7 @@ function HeaderAssetTemplate({
                     width="100%"
                     placeholder="Type a label..."
                 />
-                <H2>
-                    <strong>{address}</strong>
-                </H2>
+                <Div padding-left="2px"><H2><strong>{address}</strong></H2></Div>
             </Left>
             <Right>
                 <H1b>{balance_currency}</H1b>

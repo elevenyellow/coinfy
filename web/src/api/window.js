@@ -1,6 +1,6 @@
 import { supplant } from '/api/strings'
 
-export function printTemplate(template, data={}, printIn=2000) {
+export function printTemplate(template, data={}, printIn=1000) {
     const html = supplant(template, data)
     const win = window.open("about:blank", "_blank")
     win.document.write(html)

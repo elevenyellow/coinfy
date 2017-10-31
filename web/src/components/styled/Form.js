@@ -21,10 +21,12 @@ margin-bottom: 30px;
 
 export const FormFieldLeft = styled.div`
 float: left;
-width: 40%;
+width: calc(40% - 10px);
+padding-right: 10px;
 ${styles.media.fourth} {
     float: none;
     width: 100%;
+    padding-right: 0;
     padding-bottom: 5px;
 }
 `
