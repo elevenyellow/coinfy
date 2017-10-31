@@ -143,7 +143,7 @@ export default class PrintBTC extends Component {
 
                 printTemplate(template(qrs))
                 state.view.loading = false
-            }, 500)
+            }, 0)
         } else {
             state.view.invalidPassword = true
         }
@@ -223,9 +223,9 @@ function PrintBTCTemplate({
                         >
                             Unlock and Print
                         </Button>
-                        <Show if={encrypted}>
-                            <Div font-size="10px" color={styles.color.grey1}>
-                                This might take several minutes
+                        <Show if={loading && encrypted}>
+                            <Div font-size="10px" color={styles.color.red}>
+                                This might take several minutes<br/>and can freeze your browser
                             </Div>
                         </Show>
                     </FormFieldButtons>

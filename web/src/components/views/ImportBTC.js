@@ -8,6 +8,7 @@ import {
     isAddress,
     isPublicKey,
     isPrivateKey,
+    isPrivateKeyBip,
     getAddressFromPublicKey,
     getAddressFromPrivateKey
 } from '/api/Assets/BTC'
@@ -55,7 +56,8 @@ const minpassword = 8
 const types_import = {
     address: 0,
     public_key: 1,
-    private_key: 2
+    private_key: 2,
+    private_key_bip: 3,
 }
 
 export default class ImportBitcoin extends Component {
@@ -130,7 +132,14 @@ export default class ImportBitcoin extends Component {
             } catch (e) {
                 //console.log( e );
             }
-        } else {
+        } else if (
+            state.view.type_import === types_import.private_key_bip &&
+            isPrivateKeyBip(value)
+        ) {
+            console.log( 'yes!' );
+            
+        }
+        else {
             state.view.address = ''
             state.view.private_key = ''
         }
@@ -236,6 +245,7 @@ function ImportBitcoinTemplate({
     onChangeRepassword,
     onSubmit
 }) {
+    console.log( isErrorInput, isRegistered );
     return (
         <RightContainerPadding>
             <RightHeader>
@@ -293,7 +303,15 @@ function ImportBitcoinTemplate({
                                         type_import === types_import.private_key
                                     }
                                 >
-                                    Private key
+                                    Private key unencrypted (WIF)
+                                </option>
+                                <option
+                                    value={types_import.private_key_bip}
+                                    selected={
+                                        type_import === types_import.private_key_bip
+                                    }
+                                >
+                                    Private key encrypted (BIP38)
                                 </option>
                             </Select>
                         </FormFieldRight>
@@ -417,6 +435,54 @@ function ImportBitcoinTemplate({
                             </FormField>
                         </div>
                     </Show>
+
+
+                    <Show if={type_import === types_import.private_key_bip}>
+                        <div>
+                            <FormField>
+                                <FormFieldLeft>
+                                    <Label>Private key</Label>
+                                    <Help>
+                                        We will never store your private key.
+                                    </Help>
+                                    <SubLabel>
+                                        Type or paste your Private key in BIP38
+                                        format.
+                                    </SubLabel>
+                                </FormFieldLeft>
+                                <FormFieldRight>
+                                    <Input
+                                        width="100%"
+                                        value={input}
+                                        onChange={onChangeInput}
+                                        error="You already have this asset"
+                                        invalid={isRegistered}
+                                    />
+                                </FormFieldRight>
+                            </FormField>
+                            
+                            <FormField>
+                                <FormFieldLeft>
+                                    <Label>Password</Label>
+                                    <SubLabel>
+                                        The password that you used to encrypt the private key.
+                                    </SubLabel>
+                                </FormFieldLeft>
+                                <FormFieldRight>
+                                    <Input
+                                        error={'Invalid password'}
+                                        invalid={false}
+                                        value={password}
+                                        onChange={onChangePassword}
+                                        width="100%"
+                                        type="password"
+                                    />
+                                </FormFieldRight>
+                            </FormField>
+                        </div>
+                    </Show>
+
+
 
                     <FormField>
                         <FormFieldButtons>

@@ -13,5 +13,5 @@ font-size: 15px;
 export const SubLabel = styled.div`
 color: ${styles.color.front2};
 font-size: 12px;
-line-height: 12px;
+line-height: 15px;
 `

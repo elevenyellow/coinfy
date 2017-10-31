@@ -44,9 +44,13 @@ export function isPrivateKey(private_key) {
     )
 }
 
-export function isWalletImportFormat(key) {
+export function isPrivateKeyBip(private_key) {
+    return (/^6P[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{56}$/.test(private_key))
+}
+
+export function isWalletImportFormat(key, prefix=0x80) {
     key = key.toString()
-    return privateKeyPrefix == 0x80
+    return privateKeyPrefix == prefix
         ? /^5[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
               key
           )
