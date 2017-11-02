@@ -26,7 +26,11 @@ export default class ImportAddress extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
+        const collector = collect()
         state.view.validForm = false
+        state.view.address_input = ''
+        state.view.address_input_error = ''
+        collector.destroy()
         this.onChangeInput = this.onChangeInput.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
@@ -105,7 +109,7 @@ function ImportAddressTemplate({
                         value={address_input}
                         onChange={onChangeInput}
                         error={address_input_error}
-                        invalid={address_input_error}
+                        invalid={address_input_error && address_input.length>0}
                     />
                 </FormFieldRight>
             </FormField>

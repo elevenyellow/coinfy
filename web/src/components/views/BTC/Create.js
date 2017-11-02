@@ -5,6 +5,7 @@ import { Show } from '/doprouter/react'
 
 import { generateQRCode } from '/api/qr'
 import { generateRandomWallet } from '/api/Assets/BTC'
+import { minpassword } from '/api/security'
 
 import { BTC, getAssetId } from '/api/Assets'
 import routes from '/const/routes'
@@ -36,7 +37,6 @@ import {
 
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 
-const minpassword = 8
 export default class CreateBitcoin extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())

@@ -26,7 +26,11 @@ export default class ImportPublic extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
+        const collector = collect()
         state.view.validForm = false
+        state.view.public_input = ''
+        state.view.public_input_error = ''
+        collector.destroy()
         this.onChangeInput = this.onChangeInput.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
@@ -114,7 +118,7 @@ function ImportPublicTemplate({
                         value={public_input}
                         onChange={onChangeInput}
                         error={public_input_error}
-                        invalid={public_input_error}
+                        invalid={public_input_error && public_input.length>0}
                     />
                 </FormFieldRight>
             </FormField>

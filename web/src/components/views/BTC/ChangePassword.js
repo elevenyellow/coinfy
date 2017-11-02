@@ -7,6 +7,7 @@ import styles from '/const/styles'
 
 import { BTC } from '/api/Assets'
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/Assets/BTC'
+import { minpassword } from '/api/security'
 
 import state from '/store/state'
 import { setHref, setPrivateKey, addNotification } from '/store/actions'
@@ -28,7 +29,7 @@ import CenterElement from '/components/styled/CenterElement'
 
 
 
-const minpassword = 8
+
 
 export default class ChangePasswordBTC extends Component {
     componentWillMount() {

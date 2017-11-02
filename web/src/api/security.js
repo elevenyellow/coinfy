@@ -3,6 +3,9 @@ import pbkdf2 from 'pbkdf2'
 import bip38 from 'bip38'
 import wif from 'wif'
 
+
+export const minpassword = 8
+
 export function encryptAES128CTR(string, password) {
     const string_buffer = new Buffer(string) // ethereum: new Buffer(string,'hex')
     const ciphertype = 'aes-128-ctr'

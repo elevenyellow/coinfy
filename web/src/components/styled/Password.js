@@ -22,7 +22,7 @@ const strenghs = {
 
 export default function Password(props) {
     const minpassword = props.minlength
-    const password = props.value
+    const password = props.value || ''
     const strength = getPasswordStrength(
         password,
         minpassword,

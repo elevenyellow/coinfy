@@ -2,24 +2,22 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
-
-import routes from '/const/routes'
-import { BTC } from '/api/Assets'
+import { minpassword } from '/api/security'
+import { setHref, createAsset, setPrivateKey } from '/store/actions'
+import state from '/store/state'
 
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/Assets/BTC'
-import { minpassword } from '/api/security'
+import { isAssetRegistered } from '/store/getters'
+import { BTC, getAssetId } from '/api/Assets'
 
-import state from '/store/state'
-import { setHref, setPrivateKey } from '/store/actions'
-import { getAsset } from '/store/getters'
+import styles from '/const/styles'
+import routes from '/const/routes'
 
-import Div from '/components/styled/Div'
-import Button from '/components/styled/Button'
-import Help from '/components/styled/Help'
 import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
+import Button from '/components/styled/Button'
+import Help from '/components/styled/Help'
 import { Label, SubLabel } from '/components/styled/Label'
-import CenterElement from '/components/styled/CenterElement'
 import {
     FormField,
     FormFieldLeft,
@@ -27,21 +25,17 @@ import {
     FormFieldButtons
 } from '/components/styled/Form'
 
-
-
-export default class SetPrivateKeyBTC extends Component {
+export default class ImportWif extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
-
-        // Initial state
-        state.view = {
-            input: '',
-            password: '',
-            repassword: ''
-        }
-
-        // binding
+        const collector = collect()
+        state.view.validInput = false
+        state.view.wif_input = ''
+        state.view.wif_input_error = ''
+        state.view.wif_password = ''
+        state.view.wif_repassword = ''
+        collector.destroy()
         this.onChangeInput = this.onChangeInput.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onChangeRepassword = this.onChangeRepassword.bind(this)
@@ -54,67 +48,88 @@ export default class SetPrivateKeyBTC extends Component {
         return false
     }
 
-
-    // Actions
     onChangeInput(e) {
-        state.view.input = e.target.value.trim()
-    }
-    onChangePassword(e) {
-        state.view.password = e.target.value
-    }
-    onChangeRepassword(e) {
-        state.view.repassword = e.target.value
-    }
-    onSubmit(e) {
-        e.preventDefault()
-        const asset_id = state.location.path[1]
         const collector = collect()
-        setPrivateKey(asset_id, state.view.input, state.view.password)
-        setHref(routes.asset(asset_id))
+        const value = e.target.value.trim()
+        state.view.wif_input = value
+
+        if (isPrivateKey(value)) {
+            try {
+                const address = getAddressFromPrivateKey(value)
+                state.view.address = address
+
+                if (
+                    isAssetRegistered(
+                        getAssetId({ symbol: BTC.symbol, address: address })
+                    )
+                ) {
+                    state.view.wif_input_error = 'You already have this asset'
+                    state.view.validInput = false
+                } else {
+                    state.view.wif_input_error = ''
+                    state.view.validInput = true
+                }
+            } catch (e) {
+                state.view.address = ''
+                state.view.validInput = false
+                state.view.wif_input_error = 'Invalid private key'
+            }
+        } else {
+            state.view.address = ''
+            state.view.wif_input_error = 'Invalid private key'
+            state.view.validInput = false
+        }
+
         collector.emit()
     }
 
-    // // Getters
+    onChangePassword(e) {
+        state.view.wif_password = e.target.value
+    }
+    onChangeRepassword(e) {
+        state.view.wif_repassword = e.target.value
+    }
+
+    onSubmit(e) {
+        e.preventDefault()
+        const collector = collect()
+        const address = state.view.address
+        const asset = createAsset(BTC.type, BTC.symbol, address)
+        setPrivateKey(
+            getAssetId({ symbol: BTC.symbol, address }),
+            state.view.wif_input,
+            state.view.wif_password
+        )
+        setHref(routes.asset(getAssetId(asset)))
+        collector.emit()
+    }
+
     get isInvalidRepassword() {
         return (
-            state.view.password.length > 0 &&
-            state.view.repassword.length > 0 &&
-            state.view.password.length === state.view.repassword.length &&
-            state.view.password !== state.view.repassword
+            state.view.wif_password.length > 0 &&
+            state.view.wif_repassword.length > 0 &&
+            state.view.wif_password.length ===
+                state.view.wif_repassword.length &&
+            state.view.wif_password !== state.view.wif_repassword
         )
     }
-    get isTheRightPrivateKey() {
-        const input = state.view.input
-        const asset_id = state.location.path[1]
-        const address = getAsset(asset_id).address
-        let isTheRightPrivateKey = false
-        if (isPrivateKey(input)) {
-            try {
-                const newaddress = getAddressFromPrivateKey(input)
-                if (newaddress === address) isTheRightPrivateKey = true
-            } catch (e) {}
-        }
-        return isTheRightPrivateKey
+
+    get isValidForm() {
+        return (
+            state.view.validInput &&
+            state.view.wif_password.length >= minpassword &&
+            state.view.wif_password === state.view.wif_repassword
+        )
     }
 
     render() {
-        const isInvalidPrivateKey =
-            !this.isTheRightPrivateKey && state.view.input.length > 0
-        const isInvalidRepassword = this.isInvalidRepassword
-        const isValidForm =
-            state.view.input.length > 0 &&
-            state.view.password.length >= minpassword &&
-            state.view.password === state.view.repassword &&
-            !isInvalidPrivateKey &&
-            !isInvalidRepassword
-
-        return React.createElement(SetPrivateKeyBTCTemplate, {
-            input: state.view.input,
-            password: state.view.password,
-            repassword: state.view.repassword,
-            isInvalidPrivateKey: isInvalidPrivateKey,
-            isInvalidRepassword: isInvalidRepassword,
-            isValidForm: isValidForm,
+        return React.createElement(ImportWifTemplate, {
+            wif_input: state.view.wif_input,
+            wif_input_error: state.view.wif_input_error,
+            wif_password: state.view.wif_password,
+            wif_repassword: state.view.wif_repassword,
+            isValidForm: this.isValidForm,
+            isInvalidRepassword: this.isInvalidRepassword,
             onChangeInput: this.onChangeInput,
             onChangePassword: this.onChangePassword,
             onChangeRepassword: this.onChangeRepassword,
@@ -123,13 +138,13 @@ export default class SetPrivateKeyBTC extends Component {
     }
 }
 
-function SetPrivateKeyBTCTemplate({
-    input,
-    password,
-    repassword,
-    isInvalidPrivateKey,
-    isInvalidRepassword,
+function ImportWifTemplate({
+    wif_input,
+    wif_input_error,
+    wif_password,
+    wif_repassword,
     isValidForm,
+    isInvalidRepassword,
     onChangeInput,
     onChangePassword,
     onChangeRepassword,
@@ -140,18 +155,21 @@ function SetPrivateKeyBTCTemplate({
             <FormField>
                 <FormFieldLeft>
                     <Label>Private key</Label>
-                    <SubLabel>Type or paste your Private key in WIF format.</SubLabel>
+                    <SubLabel>
+                        Type or paste your private key in WIF format.
+                    </SubLabel>
                 </FormFieldLeft>
                 <FormFieldRight>
                     <Input
                         width="100%"
-                        value={input}
+                        value={wif_input}
                         onChange={onChangeInput}
-                        error={'Invalid private key'}
-                        invalid={isInvalidPrivateKey}
+                        error={wif_input_error}
+                        invalid={wif_input_error && wif_input.length > 0}
                     />
                 </FormFieldRight>
             </FormField>
+
             <FormField>
                 <FormFieldLeft>
                     <Label>Password</Label>
@@ -167,13 +185,14 @@ function SetPrivateKeyBTCTemplate({
                 <FormFieldRight>
                     <Password
                         minlength={minpassword}
-                        value={password}
+                        value={wif_password}
                         onChange={onChangePassword}
                         width="100%"
                         type="password"
                     />
                 </FormFieldRight>
             </FormField>
+
             <FormField>
                 <FormFieldLeft>
                     <Label>Repeat Password</Label>
@@ -183,7 +202,7 @@ function SetPrivateKeyBTCTemplate({
                         minlength={minpassword}
                         error={'Passwords do not match'}
                         invalid={isInvalidRepassword}
-                        value={repassword}
+                        value={wif_repassword}
                         onChange={onChangeRepassword}
                         width="100%"
                         type="password"
@@ -194,11 +213,11 @@ function SetPrivateKeyBTCTemplate({
             <FormField>
                 <FormFieldButtons>
                     <Button
-                        width="200px"
+                        width="100px"
                         disabled={!isValidForm}
                         onClick={onSubmit}
                     >
-                        Set private key
+                        Import
                     </Button>
                 </FormFieldButtons>
             </FormField>
