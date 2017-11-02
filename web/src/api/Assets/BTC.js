@@ -44,7 +44,7 @@ export function isPrivateKey(private_key) {
     )
 }
 
-export function isPrivateKeyBip(private_key) {
+export function isPrivateKeyBip(private_key) { // https://github.com/pointbiz/bitaddress.org/blob/67e167930c4ebd9cf91047c36792c4e32dc41f11/src/ninja.key.js#L38
     return (/^6P[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{56}$/.test(private_key))
 }
 

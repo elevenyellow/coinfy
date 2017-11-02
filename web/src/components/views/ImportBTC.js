@@ -68,7 +68,8 @@ export default class ImportBitcoin extends Component {
         // Initial state
         state.view = {
             type_import: types_import.address,
-            input: '',
+            error: {},
+            isValidForm: false,
             address: '',
             private_key: '',
             password: '',
@@ -77,9 +78,9 @@ export default class ImportBitcoin extends Component {
 
         // binding
         this.onChangeTypeImport = this.onChangeTypeImport.bind(this)
-        this.onChangeInput = this.onChangeInput.bind(this)
-        this.onChangePassword = this.onChangePassword.bind(this)
-        this.onChangeRepassword = this.onChangeRepassword.bind(this)
+        this.onChangeAddress = this.onChangeAddress.bind(this)
+        // this.onChangePassword = this.onChangePassword.bind(this)
+        // this.onChangeRepassword = this.onChangeRepassword.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
     componentWillUnmount() {
@@ -93,145 +94,100 @@ export default class ImportBitcoin extends Component {
     onChangeTypeImport(e) {
         const collector = collect()
         state.view.type_import = Number(e.target.value)
+        state.view.isValidInput = false
         state.view.address = ''
-        state.view.input = ''
         state.view.password = ''
         state.view.repassword = ''
         collector.emit()
     }
-    onChangeInput(e) {
+
+    onChangeAddress(e) {
         const collector = collect()
         const value = e.target.value.trim()
-        state.view.input = value
-
-        if (
-            state.view.type_import === types_import.address &&
-            isAddress(value)
-        ) {
-            state.view.address = value
-            state.view.private_key = ''
-        } else if (
-            state.view.type_import === types_import.public_key &&
-            isPublicKey(value)
-        ) {
-            try {
-                const address = getAddressFromPublicKey(value)
-                state.view.address = address
-                state.view.private_key = ''
-            } catch (e) {
-                console.error(e)
+        state.view.address = value
+        
+        if (isAddress(value)) {
+            if (isAssetRegistered(getAssetId({ symbol: BTC.symbol, address: state.view.address }))) {
+                state.view.error[0] = 'You already have this asset'
             }
-        } else if (
-            state.view.type_import === types_import.private_key &&
-            isPrivateKey(value)
-        ) {
-            try {
-                const address = getAddressFromPrivateKey(value)
-                state.view.address = address
-                state.view.private_key = value
-            } catch (e) {
-                //console.log( e );
+            else {
+                state.view.isValidForm = true
             }
-        } else if (
-            state.view.type_import === types_import.private_key_bip &&
-            isPrivateKeyBip(value)
-        ) {
-            console.log( 'yes!' );
-            
         }
         else {
-            state.view.address = ''
-            state.view.private_key = ''
+            state.view.error[0] = 'Invalid address'
+            state.view.isValidForm = false
         }
+
+
         collector.emit()
     }
-    onChangePassword(e) {
-        state.view.password = e.target.value
-    }
-    onChangeRepassword(e) {
-        state.view.repassword = e.target.value
-    }
+
+
+
+    // onChangePassword(e) {
+    //     state.view.password = e.target.value
+    // }
+    // onChangeRepassword(e) {
+    //     state.view.repassword = e.target.value
+    // }
+
+
     onSubmit(e) {
-        e.preventDefault()
-        // if (this.isFormValid) {
-        const collector = collect()
-        const address = state.view.address
-        const asset = createAsset(BTC.type, BTC.symbol, address)
-        // if (state.view.type_import === types_import.public_key)
-        // setPublicKey(getAssetId({symbol:BTC.symbol, address}), state.view.private_key)
-        if (state.view.type_import === types_import.private_key)
-            setPrivateKey(
-                getAssetId({ symbol: BTC.symbol, address }),
-                state.view.private_key,
-                state.view.password
-            )
+        // e.preventDefault()
+        // // if (this.isFormValid) {
+        // const collector = collect()
+        // const address = state.view.address
+        // const asset = createAsset(BTC.type, BTC.symbol, address)
+        // // if (state.view.type_import === types_import.public_key)
+        // // setPublicKey(getAssetId({symbol:BTC.symbol, address}), state.view.private_key)
+        // if (state.view.type_import === types_import.private_key)
+        //     setPrivateKey(
+        //         getAssetId({ symbol: BTC.symbol, address }),
+        //         state.view.private_key,
+        //         state.view.password
+        //     )
 
-        setHref(routes.asset(getAssetId(asset)))
-        collector.emit()
-        // }
+        // setHref(routes.asset(getAssetId(asset)))
+        // collector.emit()
+        // // }
     }
 
-    // Getters
-    get isFormValid() {
-        let isRegistered = isAssetRegistered(
-            getAssetId({ symbol: BTC.symbol, address: state.view.address })
-        )
-        return (
-            state.view.address.length > 0 &&
-            !isRegistered &&
-            (state.view.private_key === '' ||
-                (state.view.password.length >= minpassword &&
-                    state.view.password === state.view.repassword))
-        )
+    get isValidAddress() {
+        return isAddress(state.view.address)
     }
-    get isValidInput() {
-        return state.view.input.length > 0 && state.view.address.length > 0
-    }
-    get isErrorInput() {
-        return state.view.input.length > 0 && state.view.address.length === 0
-    }
-    get isInvalidRepassword() {
-        return (
-            state.view.password.length > 0 &&
-            state.view.repassword.length > 0 &&
-            state.view.password.length === state.view.repassword.length &&
-            state.view.password !== state.view.repassword
-        )
-    }
+
+    // get isInvalidRepassword() {
+    //     return (
+    //         state.view.password.length > 0 &&
+    //         state.view.repassword.length > 0 &&
+    //         state.view.password.length === state.view.repassword.length &&
+    //         state.view.password !== state.view.repassword
+    //     )
+    // }
 
     render() {
-        // console.log( this.isValidInput, state.view.address );
+        const isValidAddress = this.isValidAddress
+        // console.log( isValidAddress, state.view.address );
         return React.createElement(ImportBitcoinTemplate, {
-            qrcodebase64: this.isValidInput
-                ? generateQRCode(state.view.address)
-                : '',
-            isValidInput: this.isValidInput,
-            isInvalidRepassword: this.isInvalidRepassword,
-            isErrorInput: this.isErrorInput,
-            isRegistered: isAssetRegistered(
-                getAssetId({ symbol: BTC.symbol, address: state.view.address })
-            ),
-            isFormValid: this.isFormValid,
+            qrcodebase64: isValidAddress ? generateQRCode(state.view.address) : '',
             type_import: state.view.type_import,
+            error: state.view.error,
             address: state.view.address,
-            input: state.view.input,
-            password: state.view.password,
-            repassword: state.view.repassword,
+            isValidAddress: isValidAddress,
             onChangeTypeImport: this.onChangeTypeImport,
-            onChangeInput: this.onChangeInput,
-            onChangePassword: this.onChangePassword,
-            onChangeRepassword: this.onChangeRepassword,
+            onChangeAddress: this.onChangeAddress,
             onSubmit: this.onSubmit,
-            minpassword: minpassword
         })
     }
 }
 
 function ImportBitcoinTemplate({
+    error,
     qrcodebase64,
     isValidInput,
+    isValidAddress,
     isInvalidRepassword,
-    isErrorInput,
     isRegistered,
     isFormValid,
     type_import,
@@ -240,12 +196,12 @@ function ImportBitcoinTemplate({
     password,
     repassword,
     onChangeTypeImport,
-    onChangeInput,
+    onChangeAddress,
     onChangePassword,
     onChangeRepassword,
     onSubmit
 }) {
-    console.log( isErrorInput, isRegistered );
+    console.log( isValidAddress  );
     return (
         <RightContainerPadding>
             <RightHeader>
@@ -259,7 +215,7 @@ function ImportBitcoinTemplate({
                 <FormField>
                     <Div>
                         <QRCode>
-                            <Show if={isValidInput}>
+                            <Show if={isValidAddress}>
                                 <img width="150" src={qrcodebase64} />
                             </Show>
                         </QRCode>
@@ -326,19 +282,15 @@ function ImportBitcoinTemplate({
                             <FormFieldRight>
                                 <Input
                                     width="100%"
-                                    value={input}
-                                    onChange={onChangeInput}
-                                    error={
-                                        isErrorInput
-                                            ? 'Invalid address'
-                                            : 'You already have this asset'
-                                    }
-                                    invalid={isErrorInput || isRegistered}
+                                    value={address}
+                                    onChange={onChangeAddress}
+                                    error={error[0]}
+                                    invalid={!isValidAddress}
                                 />
                             </FormFieldRight>
                         </FormField>
                     </Show>
-
+{/* 
                     <Show if={type_import === types_import.public_key}>
                         <FormField>
                             <FormFieldLeft>
@@ -357,11 +309,11 @@ function ImportBitcoinTemplate({
                                     value={input}
                                     onChange={onChangeInput}
                                     error={
-                                        isErrorInput
-                                            ? 'Invalid public key'
-                                            : 'You already have this asset'
+                                        isRegistered
+                                            ? 'You already have this asset'
+                                            : 'Invalid public key'
                                     }
-                                    invalid={isErrorInput || isRegistered}
+                                    invalid={!isValidInput || !isRegistered}
                                 />
                             </FormFieldRight>
                         </FormField>
@@ -386,11 +338,11 @@ function ImportBitcoinTemplate({
                                         value={input}
                                         onChange={onChangeInput}
                                         error={
-                                            isErrorInput
-                                                ? 'Invalid private key'
-                                                : 'You already have this asset'
-                                        }
-                                        invalid={isErrorInput || isRegistered}
+                                        isRegistered
+                                            ? 'You already have this asset'
+                                            : 'Invalid private key'
+                                    }
+                                    invalid={!isValidInput || !isRegistered}
                                     />
                                 </FormFieldRight>
                             </FormField>
@@ -455,8 +407,8 @@ function ImportBitcoinTemplate({
                                         width="100%"
                                         value={input}
                                         onChange={onChangeInput}
-                                        error="You already have this asset"
-                                        invalid={isRegistered}
+                                        error="Invalid private key"
+                                        invalid={!isValidInput}
                                     />
                                 </FormFieldRight>
                             </FormField>
@@ -480,7 +432,7 @@ function ImportBitcoinTemplate({
                                 </FormFieldRight>
                             </FormField>
                         </div>
-                    </Show>
+                    </Show> */}
 
 
 

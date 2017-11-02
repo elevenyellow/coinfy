@@ -18,7 +18,7 @@ import Message from '/components/styled/Message'
 import Dashboard from '/components/views/Dashboard'
 import AddAsset from '/components/views/AddAsset'
 import CreateBTC from '/components/views/CreateBTC'
-import ImportBTC from '/components/views/ImportBTC'
+import Import from '/components/views/BTC/Import'
 import ViewBTC from '/components/views/BTC/'
 
 export default class Right extends Component {
@@ -68,7 +68,7 @@ function RightTemplate({
                     <CreateBTC />
                 </Route>
                 <Route pathname={routes.importbtc()}>
-                    <ImportBTC />
+                    <Import />
                 </Route>
                 <Route path-0="asset" if={isRegistered}>
                     <ViewBTC />
