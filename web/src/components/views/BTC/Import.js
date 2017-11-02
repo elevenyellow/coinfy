@@ -30,6 +30,7 @@ import {
     FormFieldButtons
 } from '/components/styled/Form'
 import ImportAddress from '/components/views/BTC/ImportAddress'
+import ImportPublic from '/components/views/BTC/ImportPublic'
 
 
 const types_import = {
@@ -163,6 +164,9 @@ function ImportTemplate({
                     <Router>
                         <Route if={type_import===types_import.address}>
                             <ImportAddress />
+                        </Route>
+                        <Route if={type_import===types_import.public_key}>
+                            <ImportPublic />
                         </Route>
                     </Router>
 

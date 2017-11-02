@@ -58,20 +58,21 @@ export default class Dashboard extends Component {
                 }
 
             let assetUnformated = dataUnformated[asset.symbol]
-            assetUnformated.balance_asset_number += asset.balance
-            assetUnformated.balance_asset_big = assetUnformated.balance_asset_big.plus(asset.balance)
+            let balance = asset.balance || 0
+            assetUnformated.balance_asset_number += balance
+            assetUnformated.balance_asset_big = assetUnformated.balance_asset_big.plus(balance)
             assetUnformated.balance_currency_number += convertBalance(
                 asset.symbol,
-                asset.balance
+                balance
             )
 
             assetUnformated.assets.push({
                 label: asset.label || asset.address,
                 address: asset.address,
-                balance_asset: asset.balance + ' ' + asset.symbol,
+                balance_asset: balance + ' ' + asset.symbol,
                 balance_currency_number: convertBalance(
                     asset.symbol,
-                    asset.balance
+                    balance
                 ),
                 percentage: 0,
                 id: id,

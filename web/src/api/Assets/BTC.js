@@ -31,7 +31,7 @@ export function isAddress(address) {
     return /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
 }
 
-export function isAddressValid(address) {
+export function isAddressCheck(address) {
     try {
         Bitcoin.address.fromBase58Check(address)
         
