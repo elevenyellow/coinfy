@@ -27,7 +27,7 @@ export default class ImportPublic extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
         const collector = collect()
-        state.view.validForm = false
+        state.view.isValidInput = false
         state.view.public_input = ''
         state.view.public_input_error = ''
         collector.destroy()
@@ -58,21 +58,21 @@ export default class ImportPublic extends Component {
                     )
                 ) {
                     state.view.public_input_error = 'You already have this asset'
-                    state.view.validForm = false
+                    state.view.isValidInput = false
                 } else {
                     state.view.public_input_error = ''
-                    state.view.validForm = true
+                    state.view.isValidInput = true
                 }
                 
             } catch (e) {
                 state.view.address = ''
-                state.view.validForm = false
+                state.view.isValidInput = false
                 state.view.public_input_error = 'Invalid public key'
             }
         } else {
             state.view.address = ''
             state.view.public_input_error = 'Invalid public key'
-            state.view.validForm = false
+            state.view.isValidInput = false
         }
 
         collector.emit()
@@ -87,11 +87,15 @@ export default class ImportPublic extends Component {
         collector.emit()
     }
 
+    get isValidForm() {
+        return state.view.isValidInput
+    }
+
     render() {
         return React.createElement(ImportPublicTemplate, {
             public_input: state.view.public_input,
             public_input_error: state.view.public_input_error,
-            validForm: state.view.validForm,
+            isValidForm: this.isValidForm,
             onChangeInput: this.onChangeInput,
             onSubmit: this.onSubmit
         })
@@ -101,7 +105,7 @@ export default class ImportPublic extends Component {
 function ImportPublicTemplate({
     public_input,
     public_input_error,
-    validForm,
+    isValidForm,
     onChangeInput,
     onSubmit
 }) {
@@ -127,7 +131,7 @@ function ImportPublicTemplate({
                 <FormFieldButtons>
                     <Button
                         width="100px"
-                        disabled={!validForm}
+                        disabled={!isValidForm}
                         onClick={onSubmit}
                     >
                         Import

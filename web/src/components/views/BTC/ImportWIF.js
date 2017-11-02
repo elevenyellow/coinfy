@@ -25,12 +25,12 @@ import {
     FormFieldButtons
 } from '/components/styled/Form'
 
-export default class ImportWif extends Component {
+export default class ImportWIF extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
         const collector = collect()
-        state.view.validInput = false
+        state.view.isValidInput = false
         state.view.wif_input = ''
         state.view.wif_input_error = ''
         state.view.wif_password = ''
@@ -64,20 +64,20 @@ export default class ImportWif extends Component {
                     )
                 ) {
                     state.view.wif_input_error = 'You already have this asset'
-                    state.view.validInput = false
+                    state.view.isValidInput = false
                 } else {
                     state.view.wif_input_error = ''
-                    state.view.validInput = true
+                    state.view.isValidInput = true
                 }
             } catch (e) {
                 state.view.address = ''
-                state.view.validInput = false
+                state.view.isValidInput = false
                 state.view.wif_input_error = 'Invalid private key'
             }
         } else {
             state.view.address = ''
             state.view.wif_input_error = 'Invalid private key'
-            state.view.validInput = false
+            state.view.isValidInput = false
         }
 
         collector.emit()
@@ -116,14 +116,14 @@ export default class ImportWif extends Component {
 
     get isValidForm() {
         return (
-            state.view.validInput &&
+            state.view.isValidInput &&
             state.view.wif_password.length >= minpassword &&
             state.view.wif_password === state.view.wif_repassword
         )
     }
 
     render() {
-        return React.createElement(ImportWifTemplate, {
+        return React.createElement(ImportWIFTemplate, {
             wif_input: state.view.wif_input,
             wif_input_error: state.view.wif_input_error,
             wif_password: state.view.wif_password,
@@ -138,7 +138,7 @@ export default class ImportWif extends Component {
     }
 }
 
-function ImportWifTemplate({
+function ImportWIFTemplate({
     wif_input,
     wif_input_error,
     wif_password,
@@ -154,7 +154,7 @@ function ImportWifTemplate({
         <div>
             <FormField>
                 <FormFieldLeft>
-                    <Label>Private key</Label>
+                    <Label>Private key WIF</Label>
                     <SubLabel>
                         Type or paste your private key in WIF format.
                     </SubLabel>

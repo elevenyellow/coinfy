@@ -27,7 +27,7 @@ export default class ImportAddress extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
         const collector = collect()
-        state.view.validForm = false
+        state.view.isValidInput = false
         state.view.address_input = ''
         state.view.address_input_error = ''
         collector.destroy()
@@ -55,15 +55,15 @@ export default class ImportAddress extends Component {
                 )
             ) {
                 state.view.address_input_error = 'You already have this asset'
-                state.view.validForm = false
+                state.view.isValidInput = false
             } else {
                 state.view.address_input_error = ''
-                state.view.validForm = true
+                state.view.isValidInput = true
             }
         } else {
             state.view.address = ''
             state.view.address_input_error = 'Invalid address'
-            state.view.validForm = false
+            state.view.isValidInput = false
         }
 
         collector.emit()
@@ -78,11 +78,16 @@ export default class ImportAddress extends Component {
         collector.emit()
     }
 
+
+    get isValidForm() {
+        return state.view.isValidInput
+    }
+    
     render() {
         return React.createElement(ImportAddressTemplate, {
             address_input: state.view.address_input,
             address_input_error: state.view.address_input_error,
-            validForm: state.view.validForm,
+            isValidForm: this.isValidForm,
             onChangeInput: this.onChangeInput,
             onSubmit: this.onSubmit
         })
@@ -92,7 +97,7 @@ export default class ImportAddress extends Component {
 function ImportAddressTemplate({
     address_input,
     address_input_error,
-    validForm,
+    isValidForm,
     onChangeInput,
     onSubmit
 }) {
@@ -118,7 +123,7 @@ function ImportAddressTemplate({
                 <FormFieldButtons>
                     <Button
                         width="100px"
-                        disabled={!validForm}
+                        disabled={!isValidForm}
                         onClick={onSubmit}
                     >
                         Import

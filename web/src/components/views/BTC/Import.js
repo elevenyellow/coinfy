@@ -32,6 +32,7 @@ import {
 import ImportAddress from '/components/views/BTC/ImportAddress'
 import ImportPublic from '/components/views/BTC/ImportPublic'
 import ImportWIF from '/components/views/BTC/ImportWIF'
+import ImportBIP from '/components/views/BTC/ImportBIP'
 
 
 const types_import = {
@@ -171,6 +172,9 @@ function ImportTemplate({
                         </Route>
                         <Route if={type_import===types_import.private_key}>
                             <ImportWIF />
+                        </Route>
+                        <Route if={type_import===types_import.private_key_bip}>
+                            <ImportBIP />
                         </Route>
                     </Router>
 
