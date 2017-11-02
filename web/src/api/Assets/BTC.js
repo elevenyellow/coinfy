@@ -31,6 +31,17 @@ export function isAddress(address) {
     return /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
 }
 
+export function isAddressValid(address) {
+    try {
+        Bitcoin.address.fromBase58Check(address)
+        
+    } catch(e) {
+        return false
+    }
+
+    return true
+}
+
 export function isPublicKey(public_key) {
     return /^([0-9a-fA-F]{66}|[0-9a-fA-F]{130})$/.test(public_key)
 }

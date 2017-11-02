@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
-import { Show } from '/doprouter/react'
+import { Router, Route, Show } from '/doprouter/react'
 
 import { generateQRCode } from '/api/qr'
 import { isAddress } from '/api/Assets/BTC'
@@ -29,6 +29,8 @@ import {
     FormFieldRight,
     FormFieldButtons
 } from '/components/styled/Form'
+import ImportAddress from '/components/views/BTC/ImportAddress'
+
 
 const types_import = {
     address: 0,
@@ -157,6 +159,12 @@ function ImportTemplate({
                             </Select>
                         </FormFieldRight>
                     </FormField>
+
+                    <Router>
+                        <Route if={type_import===types_import.address}>
+                            <ImportAddress />
+                        </Route>
+                    </Router>
 
                     <Div clear="both" />
                 </form>

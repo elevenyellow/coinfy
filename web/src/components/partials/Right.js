@@ -17,7 +17,7 @@ import Message from '/components/styled/Message'
 // Views
 import Dashboard from '/components/views/Dashboard'
 import AddAsset from '/components/views/AddAsset'
-import CreateBTC from '/components/views/CreateBTC'
+import Create from '/components/views/BTC/Create'
 import Import from '/components/views/BTC/Import'
 import ViewBTC from '/components/views/BTC/'
 
@@ -65,7 +65,7 @@ function RightTemplate({
                     <AddAsset />
                 </Route>
                 <Route pathname={routes.createbtc()}>
-                    <CreateBTC />
+                    <Create />
                 </Route>
                 <Route pathname={routes.importbtc()}>
                     <Import />
