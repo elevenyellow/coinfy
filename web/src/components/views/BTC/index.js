@@ -11,21 +11,21 @@ import routes from '/const/routes'
 import state from '/store/state'
 import { isAssetWithPrivateKey } from '/store/getters'
 
-
-
 import Help from '/components/styled/Help'
+import Select from '/components/styled/Select'
 import Div from '/components/styled/Div'
 import Message from '/components/styled/Message'
 import {
     RightContainerPadding,
     RightContainerMiddle2,
     RightHeader,
-    RightContent,
-    RightContentMenu,
-    RightContentMenuItem,
-    RightContentMenuItemIcon,
-    RightContentMenuItemText
+    RightContent
 } from '/components/styled/Right'
+import {
+    Menu,
+    MenuContentItem,
+    MenuContentItemText
+} from '/components/styled/Menu'
 
 import HeaderAsset from '/components/partials/HeaderAsset'
 import Summary from '/components/views/BTC/Summary'
@@ -87,71 +87,68 @@ function ViewBTCTemplate({
         <RightContainerPadding>
             <HeaderAsset />
             <RightContent>
-                <RightContentMenu>
-                    <RightContentMenuItem
-                        selected={
-                            location.pathname === routes_summaryAsset ||
-                            location.path.length === 2
-                        }
-                        onClick={e => onClick(routes_summaryAsset)}
-                    >
-                        <RightContentMenuItemText>
-                            Summary
-                        </RightContentMenuItemText>
-                    </RightContentMenuItem>
+                <Div margin-bottom={styles.paddingContent}>
+                    <Menu>
+                        <MenuContentItem
+                            selected={
+                                location.pathname === routes_summaryAsset ||
+                                location.path.length === 2
+                            }
+                            onClick={e => onClick(routes_summaryAsset)}
+                        >
+                            <MenuContentItemText>Summary</MenuContentItemText>
+                        </MenuContentItem>
 
-                    <RightContentMenuItem
-                        disabled={!hasPrivateKey}
-                        selected={
-                            location.pathname === routes_sendAsset ||
-                            location.path.length === 2
-                        }
-                        onClick={e => {
-                            if (hasPrivateKey) onClick(routes_sendAsset)
-                        }}
-                    >
-                        <RightContentMenuItemText>
-                            Send{tooltipPrivatekey}
-                        </RightContentMenuItemText>
-                    </RightContentMenuItem>
+                        <MenuContentItem
+                            disabled={!hasPrivateKey}
+                            selected={
+                                location.pathname === routes_sendAsset ||
+                                location.path.length === 2
+                            }
+                            onClick={e => {
+                                if (hasPrivateKey) onClick(routes_sendAsset)
+                            }}
+                        >
+                            <MenuContentItemText>
+                                Send{tooltipPrivatekey}
+                            </MenuContentItemText>
+                        </MenuContentItem>
 
-                    <RightContentMenuItem
-                        disabled={!hasPrivateKey}
-                        selected={
-                            location.pathname === routes_printAsset ||
-                            location.path.length === 2
-                        }
-                        onClick={e => {
-                            if (hasPrivateKey) onClick(routes_printAsset)
-                        }}
-                    >
-                        <RightContentMenuItemText>
-                            Paper Wallet{tooltipPrivatekey}
-                        </RightContentMenuItemText>
-                    </RightContentMenuItem>
+                        <MenuContentItem
+                            disabled={!hasPrivateKey}
+                            selected={
+                                location.pathname === routes_printAsset ||
+                                location.path.length === 2
+                            }
+                            onClick={e => {
+                                if (hasPrivateKey) onClick(routes_printAsset)
+                            }}
+                        >
+                            <MenuContentItemText>
+                                Paper Wallet{tooltipPrivatekey}
+                            </MenuContentItemText>
+                        </MenuContentItem>
 
-                    <RightContentMenuItem
-                        disabled={!hasPrivateKey}
-                        selected={
-                            location.pathname === routes_changePasswordAsset
-                        }
-                        onClick={e => onClick(routes_changePasswordAsset)}
-                    >
-                        <RightContentMenuItemText>
-                            Change password{tooltipPrivatekey}
-                        </RightContentMenuItemText>
-                    </RightContentMenuItem>
+                        <MenuContentItem
+                            disabled={!hasPrivateKey}
+                            selected={
+                                location.pathname === routes_changePasswordAsset
+                            }
+                            onClick={e => onClick(routes_changePasswordAsset)}
+                        >
+                            <MenuContentItemText>
+                                Change password{tooltipPrivatekey}
+                            </MenuContentItemText>
+                        </MenuContentItem>
 
-                    <RightContentMenuItem
-                        selected={location.pathname === routes_deleteAsset}
-                        onClick={e => onClick(routes_deleteAsset)}
-                    >
-                        <RightContentMenuItemText>
-                            Delete
-                        </RightContentMenuItemText>
-                    </RightContentMenuItem>
-                </RightContentMenu>
-                
+                        <MenuContentItem
+                            selected={location.pathname === routes_deleteAsset}
+                            onClick={e => onClick(routes_deleteAsset)}
+                        >
+                            <MenuContentItemText>Delete</MenuContentItemText>
+                        </MenuContentItem>
+                    </Menu>
+                </Div>
 
                 <Router source={location}>
                     <Route pathname={routes_summaryAsset}>
@@ -183,9 +180,8 @@ function ViewBTCTemplate({
     )
 }
 
-
 const HideMobile = styled.span`
 ${styles.media.second} {
-    display: none
+    display: none;
 }
 `

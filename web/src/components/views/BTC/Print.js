@@ -171,7 +171,7 @@ function PrintBTCTemplate({
     onPrint
 }) {
     return (
-        <Div padding-top="30px">
+        <Div>
             <form>
                 <FormField>
                     <FormFieldLeft>
