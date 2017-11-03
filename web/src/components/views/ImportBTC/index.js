@@ -29,10 +29,10 @@ import {
     FormFieldRight,
     FormFieldButtons
 } from '/components/styled/Form'
-import ImportAddress from '/components/views/BTC/ImportAddress'
-import ImportPublic from '/components/views/BTC/ImportPublic'
-import ImportWIF from '/components/views/BTC/ImportWIF'
-import ImportBIP from '/components/views/BTC/ImportBIP'
+import ImportAddress from '/components/views/ImportBTC/ImportAddress'
+import ImportPublic from '/components/views/ImportBTC/ImportPublic'
+import ImportWIF from '/components/views/ImportBTC/ImportWIF'
+import ImportBIP from '/components/views/ImportBTC/ImportBIP'
 
 
 const types_import = {

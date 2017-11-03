@@ -17,8 +17,8 @@ import Message from '/components/styled/Message'
 // Views
 import Dashboard from '/components/views/Dashboard'
 import AddAsset from '/components/views/AddAsset'
-import Create from '/components/views/BTC/Create'
-import Import from '/components/views/BTC/Import'
+import Create from '/components/views/CreateBTC'
+import Import from '/components/views/ImportBTC'
 import ViewBTC from '/components/views/BTC/'
 
 export default class Right extends Component {
