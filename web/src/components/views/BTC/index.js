@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import { Router, Route, Show } from '/doprouter/react'
+import styled from 'styled-components'
 
 import { setHref } from '/store/actions'
+import styles from '/const/styles'
 
 import { BTC } from '/api/Assets'
 import routes from '/const/routes'
 import state from '/store/state'
 import { isAssetWithPrivateKey } from '/store/getters'
 
-import styles from '/const/styles'
 
 
 import Help from '/components/styled/Help'
@@ -29,7 +30,6 @@ import {
 import HeaderAsset from '/components/partials/HeaderAsset'
 import Summary from '/components/views/BTC/Summary'
 import ChangePassword from '/components/views/BTC/ChangePassword'
-import SetPrivateKey from '/components/views/BTC/SetPrivateKey'
 import PrintBTC from '/components/views/BTC/Print'
 import Delete from '/components/views/BTC/Delete'
 
@@ -58,7 +58,6 @@ export default class ViewBTC extends Component {
             routes_summaryAsset: routes.summaryAsset(asset_id),
             routes_sendAsset: routes.sendAsset(asset_id),
             routes_printAsset: routes.printAsset(asset_id),
-            routes_setPrivateKeyAsset: routes.setPrivateKeyAsset(asset_id),
             routes_changePasswordAsset: routes.changePasswordAsset(asset_id),
             routes_deleteAsset: routes.deleteAsset(asset_id),
             onClick: this.onClick
@@ -74,14 +73,15 @@ function ViewBTCTemplate({
     routes_summaryAsset,
     routes_sendAsset,
     routes_printAsset,
-    routes_setPrivateKeyAsset,
     routes_changePasswordAsset,
     routes_deleteAsset
 }) {
     const tooltipPrivatekey = hasPrivateKey ? null : (
-        <Help position="center" width={175}>
-            Set your private key first
-        </Help>
+        <HideMobile>
+            <Help position="center" width={175}>
+                This wallet does not have private key
+            </Help>
+        </HideMobile>
     )
     return (
         <RightContainerPadding>
@@ -130,31 +130,17 @@ function ViewBTCTemplate({
                         </RightContentMenuItemText>
                     </RightContentMenuItem>
 
-                    <Show if={!hasPrivateKey}>
-                        <RightContentMenuItem
-                            selected={
-                                location.pathname === routes_setPrivateKeyAsset
-                            }
-                            onClick={e => onClick(routes_setPrivateKeyAsset)}
-                        >
-                            <RightContentMenuItemText>
-                                Set private key
-                            </RightContentMenuItemText>
-                        </RightContentMenuItem>
-                    </Show>
-
-                    <Show if={hasPrivateKey}>
-                        <RightContentMenuItem
-                            selected={
-                                location.pathname === routes_changePasswordAsset
-                            }
-                            onClick={e => onClick(routes_changePasswordAsset)}
-                        >
-                            <RightContentMenuItemText>
-                                Change password
-                            </RightContentMenuItemText>
-                        </RightContentMenuItem>
-                    </Show>
+                    <RightContentMenuItem
+                        disabled={!hasPrivateKey}
+                        selected={
+                            location.pathname === routes_changePasswordAsset
+                        }
+                        onClick={e => onClick(routes_changePasswordAsset)}
+                    >
+                        <RightContentMenuItemText>
+                            Change password{tooltipPrivatekey}
+                        </RightContentMenuItemText>
+                    </RightContentMenuItem>
 
                     <RightContentMenuItem
                         selected={location.pathname === routes_deleteAsset}
@@ -174,10 +160,6 @@ function ViewBTCTemplate({
 
                     <Route pathname={routes_changePasswordAsset}>
                         <ChangePassword />
-                    </Route>
-
-                    <Route pathname={routes_setPrivateKeyAsset}>
-                        <SetPrivateKey />
                     </Route>
 
                     <Route pathname={routes_printAsset}>
@@ -200,3 +182,10 @@ function ViewBTCTemplate({
         </RightContainerPadding>
     )
 }
+
+
+const HideMobile = styled.span`
+${styles.media.second} {
+    display: none
+}
+`

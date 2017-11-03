@@ -11,7 +11,6 @@ export default {
     summaryAsset: asset_id => `/asset/${asset_id}/summary`,
     sendAsset: asset_id => `/asset/${asset_id}/send`,
     printAsset: asset_id => `/asset/${asset_id}/print`,
-    setPrivateKeyAsset: asset_id => `/asset/${asset_id}/setprivatekey`,
     changePasswordAsset: asset_id => `/asset/${asset_id}/changepassword`,
     deleteAsset: asset_id => `/asset/${asset_id}/delete`
 }
