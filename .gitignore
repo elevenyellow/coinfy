@@ -1,5 +1,5 @@
-experiments/node_modules
-web/public/static/bundle
-web/node_modules
-design/all
+miscellaneous/experiments/node_modules
+miscellaneous/design/all
+public/static/bundle
+node_modules
 .vscode
