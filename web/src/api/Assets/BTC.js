@@ -147,11 +147,13 @@ export function fetchTxs(address, from=0, to=from+25) {
             }
             json.items.forEach(txRaw => {
                 let index, total
+                let value = Big(0)
                 let tx = {
                     txid: txRaw.txid,
                     fees: Big(txRaw.fees),
                     time: txRaw.time,
-                    confirmations: txRaw.confirmations
+                    confirmations: txRaw.confirmations,
+                    value: Big(0)
                     // raw: txRaw,
                 }
 
@@ -161,10 +163,10 @@ export function fetchTxs(address, from=0, to=from+25) {
                     ++index
                 ) {
                     if (txRaw.vin[index].addr === address) {
-                        tx.value = Big(txRaw.vin[index].value).times(-1)
-                        break
+                        tx.value = tx.value.minus(txRaw.vin[index].value)
                     }
                 }
+
 
                 for (
                     index = 0, total = txRaw.vout.length;
@@ -178,8 +180,8 @@ export function fetchTxs(address, from=0, to=from+25) {
                             address
                         ) > -1
                     ) {
-                        tx.value = Big(txRaw.vout[index].value)
-                        break
+                        tx.value = tx.value.add(txRaw.vout[index].value)
+                        // break // maybe
                     }
                 }
 
