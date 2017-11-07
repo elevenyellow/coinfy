@@ -284,9 +284,9 @@ function DashboardTemplate({
                                             <AssetPercentage>
                                                 <AssetPercentageLeft
                                                     percentage={asset.percentage}
-                                                    color="#feb034"
+                                                    color={category.color}
                                                 />
-                                                <AssetPercentageRight color="#feb034">
+                                                <AssetPercentageRight color={category.color}>
                                                     {asset.percentage + '%'}
                                                 </AssetPercentageRight>
                                             </AssetPercentage>

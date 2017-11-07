@@ -1,14 +1,14 @@
 import * as btc from '/api/Assets/BTC'
-import * as bch from '/api/Assets/BCH'
+import * as eth from '/api/Assets/ETH'
 
 
 export const Assets = {
     BTC: btc,
-    // BCH: bch,
+    ETH: eth,
 }
 
 export const BTC = btc
-export const BCH = bch
+export const ETH = eth
 
 
 

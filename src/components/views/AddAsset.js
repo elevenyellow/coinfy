@@ -79,7 +79,16 @@ function AddAssetTemplate({
                             <ItemSubtitle>Import wallet</ItemSubtitle>
                         </ItemText>
                     </Item>
-                    {/* <Item>
+                    <Item>
+                        <ItemIco>
+                            <img src="/static/image/ETH.svg" width="20" height="20" />
+                        </ItemIco>
+                        <ItemText>
+                            <ItemTitle>Ethereum</ItemTitle>
+                            <ItemSubtitle>Create a new wallet</ItemSubtitle>
+                        </ItemText>
+                    </Item>
+                    <Item onClick={e => onClick(routes.importeth())}>
                         <ItemIco>
                             <img src="/static/image/ETH.svg" width="20" height="20" />
                         </ItemIco>
@@ -87,7 +96,7 @@ function AddAssetTemplate({
                             <ItemTitle>Ethereum</ItemTitle>
                             <ItemSubtitle>Import wallet</ItemSubtitle>
                         </ItemText>
-                    </Item> */}
+                    </Item>
                 </Items>
             </RightContent>
         </RightContainerPadding>
