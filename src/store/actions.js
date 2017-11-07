@@ -25,7 +25,7 @@ export function createAsset(type, symbol, address) {
     state.assets[asset_id] = asset
     saveAssetsLocalStorage()
     setAssetsExported(false)
-    fetchSummaryAsset(asset_id)
+    fetchBalanceAsset(asset_id)
     return asset
 }
 
@@ -298,6 +298,19 @@ export function fetchSummaryAsset(asset_id) {
 }
 
 
+
+export function fetchBalanceAsset(asset_id) {
+    // console.log( 'fetchSummaryAsset', asset_id );
+    const asset = state.assets[asset_id]
+    return Assets[asset.symbol]
+        .fetchBalance(asset.address)
+        .then(balance => {
+            asset.balance = balance
+        })
+        .catch(e => {
+            console.error(asset.symbol, 'fetchBalanceAsset', e)
+        })
+}
 
 
 
