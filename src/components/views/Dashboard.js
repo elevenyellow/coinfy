@@ -549,6 +549,7 @@ ${styles.media.third} {
 
 const AssetLeft = styled.div`
 float: left;
+width: 60%;
 ${styles.media.third} {
     width: 100%;
 }
