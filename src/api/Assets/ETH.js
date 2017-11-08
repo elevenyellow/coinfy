@@ -1,4 +1,4 @@
-// import { createHash } from 'crypto'
+import { isValidAddress, privateToAddress } from 'ethereumjs-util'
 
 const api_url = 'https://ropsten.etherscan.io/api'
 const api_key = 'GY9KKYEJF1HDEPIAIRGA66R2RIQWQXV9UZ'
@@ -17,8 +17,18 @@ export function format(value) {
     return `${value} ${symbol}`
 }
 
-export function isAddress(address) {
-    return /^(0x)?[0-9a-fA-F]{40}$/.test(address)
+export function isAddress(string) {
+    return isValidAddress(string)
+}
+
+
+export function isPrivateKey(string) {
+    return /^([0-9a-fA-F]{64}|[0-9a-fA-F]{66}|[0-9a-fA-F]{128}|[0-9a-fA-F]{13})$/.test(string)
+}
+
+
+export function getAddressFromPrivateKey(private_key) {
+    return /^([0-9a-fA-F]{64}|[0-9a-fA-F]{66}|[0-9a-fA-F]{128}|[0-9a-fA-F]{13})$/.test(string)
 }
 
 export function fetchBalance(address) {
@@ -27,7 +37,7 @@ export function fetchBalance(address) {
     )
         .then(response => response.json())
         .then(response => {
-            console.log( response.result );
+            // console.log( response.result );
             return Number(response.result)
         })
 }

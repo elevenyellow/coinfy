@@ -30,10 +30,12 @@ import {
     FormFieldButtons
 } from '/components/styled/Form'
 import ImportAddress from '/components/views/ImportETH/ImportAddress'
+import ImportPrivate from '/components/views/ImportETH/ImportPrivate'
 
 
 const types_import = {
     address: 0,
+    private: 1,
 }
 
 export default class ImportEthereum extends Component {
@@ -126,6 +128,14 @@ function ImportTemplate({
                                 >
                                     Address
                                 </option>
+                                <option
+                                    value={types_import.private}
+                                    selected={
+                                        type_import === types_import.private
+                                    }
+                                >
+                                    Private key
+                                </option>
                             </Select>
                         </FormFieldRight>
                     </FormField>
@@ -133,6 +143,9 @@ function ImportTemplate({
                     <Router>
                         <Route if={type_import===types_import.address}>
                             <ImportAddress />
+                        </Route>
+                        <Route if={type_import===types_import.private}>
+                            <ImportPrivate />
                         </Route>
                     </Router>
 
