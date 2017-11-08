@@ -52,7 +52,6 @@ export default class ImportPrivate extends Component {
         const collector = collect()
         const value = e.target.value.trim()
         state.view.private_input = value
-
         if (isPrivateKey(value)) {
             try {
                 const address = getAddressFromPrivateKey(value)
@@ -154,7 +153,7 @@ function ImportPrivateTemplate({
         <div>
             <FormField>
                 <FormFieldLeft>
-                    <Label>Private key Private</Label>
+                    <Label>Private key</Label>
                     <SubLabel>
                         Type or paste your private key.
                     </SubLabel>

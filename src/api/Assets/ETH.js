@@ -1,34 +1,53 @@
-import { isValidAddress, privateToAddress } from 'ethereumjs-util'
+import {
+    addHexPrefix,
+    isValidAddress,
+    isValidPrivate,
+    privateToAddress
+} from 'ethereumjs-util'
+import Big from 'big.js'
+import { decimalsMax } from '/api/numbers'
 
-const api_url = 'https://ropsten.etherscan.io/api'
+const api_url = 'https://api.etherscan.io/api'
 const api_key = 'GY9KKYEJF1HDEPIAIRGA66R2RIQWQXV9UZ'
 
 export const type = 'wallet'
 export const symbol = 'ETH'
 export const name = 'Ethereum'
-export const color = '#7a8aec'//'#9c86fe'
+export const color = '#7a8aec' //'#9c86fe'
 export const ascii = ''
 export const price_decimals = 0
-export const satoshis = 100000000
+export const satoshis = 1000000000000000000
 
-export function format(value) {
+export function format(value, dec=18) {
     const tof = typeof value
     if (tof != 'number' && tof != 'string') value = '0'
-    return `${value} ${symbol}`
+    return `${decimalsMax(value, dec)} ${symbol}`
 }
 
 export function isAddress(string) {
+    return /^(0x)?[0-9a-fA-F]{40}$/.test(string)
+}
+
+export function isAddressCheck(string) {
     return isValidAddress(string)
 }
 
-
 export function isPrivateKey(string) {
-    return /^([0-9a-fA-F]{64}|[0-9a-fA-F]{66}|[0-9a-fA-F]{128}|[0-9a-fA-F]{13})$/.test(string)
+    return /^([0-9a-fA-F]{64}|[0-9a-fA-F]{66}|[0-9a-fA-F]{128}|[0-9a-fA-F]{13})$/.test(
+        string
+    )
 }
 
+export function isPrivateKeyCheck(string) {
+    return isValidPrivate(stringToBuffer(string))
+}
 
 export function getAddressFromPrivateKey(private_key) {
-    return /^([0-9a-fA-F]{64}|[0-9a-fA-F]{66}|[0-9a-fA-F]{128}|[0-9a-fA-F]{13})$/.test(string)
+    return addHexPrefix(privateToAddress(stringToBuffer(private_key)).toString('hex'))
+}
+
+export function stringToBuffer(string) {
+    return new Buffer(string, 'hex')
 }
 
 export function fetchBalance(address) {
@@ -37,16 +56,10 @@ export function fetchBalance(address) {
     )
         .then(response => response.json())
         .then(response => {
-            // console.log( response.result );
-            return Number(response.result)
+            // return Number(response.result)/satoshis
+            return Big(response.result).div(satoshis).toString()
         })
 }
-
-
-
-
-
-
 
 // function fetchMyEtherScan(extraBody) {
 //     const body = {

@@ -44,7 +44,7 @@ export default class Asset extends Component {
                 convertBalance(asset.symbol, asset.balance),
                 0
             ),
-            balance_asset: Assets[asset.symbol].format(asset.balance),
+            balance_asset: Assets[asset.symbol].format(asset.balance, 5),
             onClick: this.onClick
         })
     }

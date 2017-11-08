@@ -1,6 +1,7 @@
 import Bitcoin from 'bitcoinjs-lib'
 import Big from 'big.js'
 import { decryptAES128CTR } from '/api/security'
+import { decimalsMax } from '/api/numbers'
 
 // private
 const privateKeyPrefix = 0x80 // mainnet 0x80    testnet 0xEF
@@ -15,10 +16,10 @@ export const ascii = 'Ƀ'
 export const price_decimals = 0
 export const satoshis = 100000000
 
-export function format(value) {
+export function format(value, dec=18) {
     const tof = typeof value
     if (tof != 'number' && tof != 'string') value = '0'
-    return `${value} ${symbol}`
+    return `${decimalsMax(value, dec)} ${symbol}`
 }
 
 export function generateRandomWallet() {
@@ -34,11 +35,9 @@ export function isAddress(address) {
 export function isAddressCheck(address) {
     try {
         Bitcoin.address.fromBase58Check(address)
-        
     } catch(e) {
         return false
     }
-
     return true
 }
 
@@ -125,7 +124,8 @@ export function fetchBalance(address) {
     return fetch(`${api_url}/addr/${address}/balance`)
         .then(response => response.text())
         .then(balance => {
-            return Number(balance) / satoshis
+            // return Number(balance) / satoshis
+            return Big(balance).div(satoshis).toString()
         })
 }
 
