@@ -7,7 +7,7 @@ import styles from '/const/styles'
 
 import { BTC } from '/api/Assets'
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/Assets/BTC'
-import { minpassword } from '/api/security'
+import { minpassword } from '/api/crypto'
 
 import state from '/store/state'
 import { setHref, setPrivateKey, addNotification } from '/store/actions'

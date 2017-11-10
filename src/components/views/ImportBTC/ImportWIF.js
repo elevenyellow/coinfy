@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
-import { minpassword } from '/api/security'
+import { minpassword } from '/api/crypto'
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
 

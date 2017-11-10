@@ -5,7 +5,7 @@ import { Show } from '/doprouter/react'
 
 import { generateQRCode } from '/api/qr'
 import { generateRandomWallet } from '/api/Assets/ETH'
-import { minpassword } from '/api/security'
+import { minpassword } from '/api/crypto'
 
 import { ETH, getAssetId } from '/api/Assets'
 import routes from '/const/routes'

@@ -60,7 +60,7 @@ export function generateRandomWallet() {
     const bytes = randomBytes(32)
     const private_key = new Buffer(bytes, 'hex')
     const address = privateToAddress(private_key)
-    console.log( private_key.toString('hex') );
+    // console.log( private_key.toString('hex') );
     return { 
         address: addHexPrefix(address.toString('hex')),
         private_key: private_key.toString('hex')

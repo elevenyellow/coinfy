@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
 import { readFile } from '/api/browser'
-import { decryptAES128CTR } from '/api/security'
+import { decryptAES128CTR } from '/api/crypto'
 
 import { setHref, createAsset } from '/store/actions'
 import state from '/store/state'

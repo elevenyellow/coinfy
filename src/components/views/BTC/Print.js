@@ -8,7 +8,7 @@ import { generateQRCode } from '/api/qr'
 import { BTC } from '/api/Assets'
 import { getAllFormats } from '/api/Assets/BTC'
 import { printTemplate } from '/api/browser'
-import { encryptBIP38 } from '/api/security'
+import { encryptBIP38 } from '/api/crypto'
 
 import state from '/store/state'
 import { getAsset } from '/store/getters'

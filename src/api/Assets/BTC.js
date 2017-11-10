@@ -1,6 +1,6 @@
 import Bitcoin from 'bitcoinjs-lib'
 import Big from 'big.js'
-import { decryptAES128CTR } from '/api/security'
+import { decryptAES128CTR } from '/api/crypto'
 import { decimalsMax } from '/api/numbers'
 
 // private

@@ -5,7 +5,7 @@ import { Show } from '/doprouter/react'
 
 import { generateQRCode } from '/api/qr'
 import { generateRandomWallet } from '/api/Assets/BTC'
-import { minpassword } from '/api/security'
+import { minpassword } from '/api/crypto'
 
 import { BTC, getAssetId } from '/api/Assets'
 import routes from '/const/routes'

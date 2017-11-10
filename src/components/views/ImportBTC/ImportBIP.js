@@ -7,7 +7,7 @@ import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
 
 import { isPrivateKeyBip, getAddressFromPrivateKey } from '/api/Assets/BTC'
-import { decryptBIP38 } from '/api/security'
+import { decryptBIP38 } from '/api/crypto'
 import { isAssetRegistered } from '/store/getters'
 import { BTC, getAssetId } from '/api/Assets'
 
