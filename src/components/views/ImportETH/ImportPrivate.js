@@ -97,7 +97,8 @@ export default class ImportPrivate extends Component {
         setPrivateKey(
             getAssetId({ symbol: ETH.symbol, address }),
             state.view.private_input,
-            state.view.private_password
+            state.view.private_password,
+            ETH.hexEncryption
         )
         setHref(routes.asset(getAssetId(asset)))
         collector.emit()

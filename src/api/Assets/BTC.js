@@ -15,6 +15,7 @@ export const color = '#fdb033'
 export const ascii = 'Ƀ'
 export const price_decimals = 0
 export const satoshis = 100000000
+export const hexEncryption = false
 
 export function format(value, dec=18) {
     const tof = typeof value

@@ -16,7 +16,8 @@ export const name = 'Ethereum'
 export const color = '#7a8aec' //'#9c86fe'
 export const ascii = ''
 export const price_decimals = 0
-export const satoshis = 1000000000000000000
+export const satoshis = 1000000000000000000 // this is WEI actually
+export const hexEncryption = true // encryptAES128CTR must be 'hex'
 
 export function format(value, dec=18) {
     const tof = typeof value

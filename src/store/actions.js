@@ -9,7 +9,7 @@ import state from '/store/state'
 import { getTotalAssets, getAssetsAsArray, generateDefaultAsset } from '/store/getters'
 import { encryptAES128CTR } from '/api/security'
 import { CryptoPriceManager } from '/api/prices'
-import { decimalsMax } from '/api/numbers'
+import { decimals } from '/api/numbers'
 import { localStorageSet, localStorageRemove } from '/api/window'
 
 export function setHref(href) {
@@ -34,8 +34,8 @@ export function setPublicKey(asset_id, public_key) {
     saveAssetsLocalStorage()
     setAssetsExported(false)
 }
-export function setPrivateKey(asset_id, private_key, password) {
-    state.assets[asset_id].private_key = encryptAES128CTR(private_key, password)
+export function setPrivateKey(asset_id, private_key, password, hexEncryption) {
+    state.assets[asset_id].private_key = encryptAES128CTR(private_key, password, hexEncryption)
     saveAssetsLocalStorage()
     setAssetsExported(false)
 }
@@ -192,7 +192,7 @@ export function changeCurrency(symbol) {
 export function updatePrice(symbol, value) {
     const collector = collect()
     state.prices[symbol] = value
-    localStorageSet(symbol, decimalsMax(value))
+    localStorageSet(symbol, decimals(value))
     collector.emit()
 }
 

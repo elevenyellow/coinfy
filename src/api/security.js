@@ -6,8 +6,8 @@ import wif from 'wif'
 
 export const minpassword = 8
 
-export function encryptAES128CTR(string, password) {
-    const string_buffer = new Buffer(string) // ethereum: new Buffer(string,'hex')
+export function encryptAES128CTR(string, password, hex=false) {
+    const string_buffer = new Buffer(string, hex?'hex':undefined) // ethereum: new Buffer(string,'hex')
     const ciphertype = 'aes-128-ctr'
     const salt = randomBytes(32)
     const iv = randomBytes(16)
@@ -36,7 +36,7 @@ export function encryptAES128CTR(string, password) {
     }
 }
 
-export function decryptAES128CTR(encryption, password) {
+export function decryptAES128CTR(encryption, password, hex=false) {
     const ciphertype = 'aes-128-ctr'
     const ciphertext = new Buffer(encryption.ciphertext, 'hex')
     const derivedKey = encryption.kdf==='scrypt' ?
@@ -48,7 +48,7 @@ export function decryptAES128CTR(encryption, password) {
     while (seed.length < 32)
         seed = Buffer.concat([new Buffer([0x00]), seed]);
 
-    return seed.toString() //ethereum seed.toString('hex')
+    return seed.toString(hex?'hex':undefined) //ethereum seed.toString('hex')
 }
 
 
