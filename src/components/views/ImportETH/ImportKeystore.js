@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
+import { openFile } from '/api/browser'
+
 import { setHref, createAsset } from '/store/actions'
 import state from '/store/state'
 
@@ -27,11 +29,10 @@ export default class ImportAddress extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
         const collector = collect()
-        state.view.isValidInput = false
-        state.view.address_input = ''
-        state.view.address_input_error = ''
+        state.view.keystore_invalid = false
+        state.view.keystore_message = ''
         collector.destroy()
-        this.onChangeInput = this.onChangeInput.bind(this)
+        this.onSelectFile = this.onSelectFile.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
     componentWillUnmount() {
@@ -41,32 +42,29 @@ export default class ImportAddress extends Component {
         return false
     }
 
-    onChangeInput(e) {
-        const collector = collect()
-        const value = e.target.value.trim()
-        state.view.address_input = value
-        
-        if (isAddress(value)) {
-            state.view.address = addHexPrefix(value)
-            
-            if (
-                isAssetRegistered(
-                    getAssetId({ symbol: ETH.symbol, address: value })
-                )
-            ) {
-                state.view.address_input_error = 'You already have this asset'
-                state.view.isValidInput = false
-            } else {
-                state.view.address_input_error = ''
-                state.view.isValidInput = true
-            }
-        } else {
-            state.view.address = ''
-            state.view.address_input_error = 'Invalid address'
-            state.view.isValidInput = false
-        }
 
-        collector.emit()
+    
+    onSelectFile(e) {
+        e.preventDefault()
+        openFile((dataString, file) => {
+            const collector = collect()
+            try {
+                const keystore = JSON.parse(dataString)
+                if (keystore.version === 3 && isAddress(keystore.address) && typeof keystore.Crypto == 'object') {
+                    state.view.address = addHexPrefix(keystore.address)
+                    state.view.keystore_invalid = false
+                    state.view.keystore_message = file.name
+                }
+                else {
+                    state.view.keystore_invalid = true
+                    state.view.keystore_message = 'Invalid Keystore file'
+                }
+            } catch(e) {
+                state.view.keystore_invalid = true
+                state.view.keystore_message = 'Invalid Keystore file'
+            }
+            collector.emit()
+        })
     }
 
     onSubmit(e) {
@@ -86,37 +84,32 @@ export default class ImportAddress extends Component {
     
     render() {
         return React.createElement(ImportAddressTemplate, {
-            address_input: state.view.address_input,
-            address_input_error: state.view.address_input_error,
+            keystore_message: state.view.keystore_message,
+            keystore_invalid: state.view.keystore_invalid,
             isValidForm: this.isValidForm,
-            onChangeInput: this.onChangeInput,
+            onSelectFile: this.onSelectFile,
             onSubmit: this.onSubmit
         })
     }
 }
 
 function ImportAddressTemplate({
-    address_input,
-    address_input_error,
+    keystore_message,
+    keystore_invalid,
     isValidForm,
-    onChangeInput,
+    onSelectFile,
     onSubmit
 }) {
     return (
         <div>
             <FormField>
                 <FormFieldLeft>
-                    <Label>Address</Label>
-                    <SubLabel>Type or paste your address.</SubLabel>
+                    <Label>Select file</Label>
+                    <SubLabel>Pick your Keystore file.</SubLabel>
                 </FormFieldLeft>
                 <FormFieldRight>
-                    <Input
-                        width="100%"
-                        value={address_input}
-                        onChange={onChangeInput}
-                        error={address_input_error}
-                        invalid={address_input_error && address_input.length>0}
-                    />
+                    <button onClick={onSelectFile}>Open</button>
+                    <MessageKeystoreFile invalid={keystore_invalid}>{keystore_message}</MessageKeystoreFile>
                 </FormFieldRight>
             </FormField>
 
@@ -134,3 +127,10 @@ function ImportAddressTemplate({
         </div>
     )
 }
+
+
+const MessageKeystoreFile = styled.div`
+font-size: 11px;
+font-weight: bold;
+color: ${props=>props.invalid ? styles.color.red3:styles.color.front6}
+`

@@ -10,7 +10,7 @@ import { getTotalAssets, getAssetsAsArray, generateDefaultAsset } from '/store/g
 import { encryptAES128CTR } from '/api/security'
 import { CryptoPriceManager } from '/api/prices'
 import { decimals } from '/api/numbers'
-import { localStorageSet, localStorageRemove } from '/api/window'
+import { localStorageSet, localStorageRemove, openFile } from '/api/browser'
 
 export function setHref(href) {
     const collector = collect()
@@ -98,22 +98,7 @@ export function importAssetsFromFile() {
 }
 
 export function openImportAssetsFromFile() {
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.addEventListener('change', e => {
-        const file = input.files[0]
-        // if ( file.type.indexOf('json') > -1 || file.type.indexOf('text') > -1 || file.type==='' ) {
-        const reader = new FileReader()
-        reader.onload = e => {
-            const dataString = e.target.result
-            importAssets(dataString)
-        }
-        reader.readAsText(file)
-        // }
-        // else
-        // addNotification('Invalid JSON file', styles.notificationColor.red)
-    })
-    input.click()
+    openFile(dataString => importAssets(dataString))
 }
 
 export function importAssets(dataString) {
@@ -228,7 +213,6 @@ export function updateBalance(asset_id, balance) {
         saveAssetsLocalStorage()
     }
 }
-
 
 
 

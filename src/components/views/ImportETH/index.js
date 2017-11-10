@@ -31,11 +31,13 @@ import {
 } from '/components/styled/Form'
 import ImportAddress from '/components/views/ImportETH/ImportAddress'
 import ImportPrivate from '/components/views/ImportETH/ImportPrivate'
+import ImportKeystore from '/components/views/ImportETH/ImportKeystore'
 
 
 const types_import = {
     address: 0,
     private: 1,
+    keystore: 2,
 }
 
 export default class ImportEthereum extends Component {
@@ -62,6 +64,7 @@ export default class ImportEthereum extends Component {
     // Actions
     onChangeTypeImport(e) {
         const collector = collect()
+        state.view.address = ''
         state.view.type_import = Number(e.target.value)
         collector.emit()
     }
@@ -136,6 +139,14 @@ function ImportTemplate({
                                 >
                                     Private key
                                 </option>
+                                <option
+                                    value={types_import.keystore}
+                                    selected={
+                                        type_import === types_import.keystore
+                                    }
+                                >
+                                    Keystore file (UTC / JSON)
+                                </option>
                             </Select>
                         </FormFieldRight>
                     </FormField>
@@ -146,6 +157,9 @@ function ImportTemplate({
                         </Route>
                         <Route if={type_import===types_import.private}>
                             <ImportPrivate />
+                        </Route>
+                        <Route if={type_import===types_import.keystore}>
+                            <ImportKeystore />
                         </Route>
                     </Router>
 

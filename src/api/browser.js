@@ -39,3 +39,21 @@ export function localStorageGet(key) {
 export function localStorageRemove(key) {
     return window.localStorage.removeItem(key)
 }
+
+
+export function openFile(onRead, onOpen) {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.addEventListener('change', e => {
+        for (let index in input.files) {
+            const file = input.files[index]
+            if (file !== null && typeof file === 'object') {
+                // if ( file.type.indexOf('json') > -1 || file.type.indexOf('text') > -1 || file.type==='' ) {
+                const reader = new FileReader()
+                reader.onload = e => onRead(e.target.result, file)
+                reader.readAsText(file)
+            }
+        }
+    })
+    input.click()
+}

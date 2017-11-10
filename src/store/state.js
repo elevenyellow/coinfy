@@ -3,7 +3,7 @@ import { create } from '/doprouter/core'
 import { Assets } from '/api/Assets'
 import { currencies, USD } from '/const/currencies'
 import { getTotalAssets, generateDefaultAsset } from '/store/getters'
-import { localStorageGet } from '/api/window'
+import { localStorageGet } from '/api/browser'
 
 
 // initial state

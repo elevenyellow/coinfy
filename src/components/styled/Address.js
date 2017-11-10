@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import styles from '/const/styles'
-import { selectContentElement } from '/api/window'
+import { selectContentElement } from '/api/browser'
 
 export default function(props) {
     return (

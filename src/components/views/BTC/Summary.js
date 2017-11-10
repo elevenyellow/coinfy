@@ -11,7 +11,7 @@ import state from '/store/state'
 import { fetchSummaryAsset, fetchSummaryAssetIfReady } from '/store/actions'
 import { convertBalance, getAsset } from '/store/getters'
 import { getDay, getMonthTextShort } from '/api/time'
-import { openUrl } from '/api/window'
+import { openUrl } from '/api/browser'
 
 import IconReceive from 'react-icons/lib/md/call-received'
 import IconSend from 'react-icons/lib/md/send'
@@ -21,9 +21,9 @@ import Message from '/components/styled/Message'
 import CenterElement from '/components/styled/CenterElement'
 
 import { generateQRCode } from '/api/qr'
-import { printTemplate } from '/api/window'
+import { printTemplate } from '/api/browser'
 
-import { selectContentElement, copyContentSelected } from '/api/window'
+import { selectContentElement, copyContentSelected } from '/api/browser'
 import { BTC as template } from '/const/paperwallets'
 
 import { deleteAsset } from '/store/actions'

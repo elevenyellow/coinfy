@@ -66,6 +66,7 @@ export default class ImportBitcoin extends Component {
     // Actions
     onChangeTypeImport(e) {
         const collector = collect()
+        state.view.address = ''
         state.view.type_import = Number(e.target.value)
         collector.emit()
     }

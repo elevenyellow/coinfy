@@ -19,6 +19,8 @@ export const price_decimals = 0
 export const satoshis = 1000000000000000000 // this is WEI actually
 export const hexEncryption = true // encryptAES128CTR must be 'hex'
 
+export { addHexPrefix } from 'ethereumjs-util'
+
 export function format(value, dec=18) {
     const tof = typeof value
     if (tof != 'number' && tof != 'string') value = '0'
@@ -50,6 +52,7 @@ export function getAddressFromPrivateKey(private_key) {
 export function stringToBuffer(string) {
     return new Buffer(string, 'hex')
 }
+
 
 export function fetchBalance(address) {
     return fetch(

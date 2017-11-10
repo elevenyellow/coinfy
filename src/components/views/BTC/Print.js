@@ -7,7 +7,7 @@ import { Show } from '/doprouter/react'
 import { generateQRCode } from '/api/qr'
 import { BTC } from '/api/Assets'
 import { getAllFormats } from '/api/Assets/BTC'
-import { printTemplate } from '/api/window'
+import { printTemplate } from '/api/browser'
 import { encryptBIP38 } from '/api/security'
 
 import state from '/store/state'
