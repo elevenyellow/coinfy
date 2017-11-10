@@ -3,7 +3,9 @@ import pbkdf2 from 'pbkdf2'
 import bip38 from 'bip38'
 import wif from 'wif'
 import scrypt from 'scryptsy'
+import { randomBytes } from 'crypto'
 
+export { randomBytes } from 'crypto'
 
 export const minpassword = 8
 
@@ -144,11 +146,11 @@ export const getPasswordStrength = (function() {
 // http://www.passwordmeter.com/
 
 
-export function randomBytes(size) {
-    var rawBytes = new global.Uint8Array(size)
-    // This will not work in older browsers: https://developer.mozilla.org/en-US/docs/Web/API/window.crypto.getRandomValues
-    if (size > 0)
-        // getRandomValues fails on IE if size == 0
-        crypto.getRandomValues(rawBytes)
-    return Buffer.from(rawBytes.buffer)
-}
+// export function randomBytes(size) {
+//     var rawBytes = new global.Uint8Array(size)
+//     // This will not work in older browsers: https://developer.mozilla.org/en-US/docs/Web/API/window.crypto.getRandomValues
+//     if (size > 0)
+//         // getRandomValues fails on IE if size == 0
+//         crypto.getRandomValues(rawBytes)
+//     return Buffer.from(rawBytes.buffer)
+// }
