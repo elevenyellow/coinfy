@@ -79,7 +79,7 @@ function AddAssetTemplate({
                             <ItemSubtitle>Import wallet</ItemSubtitle>
                         </ItemText>
                     </Item>
-                    <Item>
+                    <Item onClick={e => onClick(routes.createeth())}>
                         <ItemIco>
                             <img src="/static/image/ETH.svg" width="20" height="20" />
                         </ItemIco>

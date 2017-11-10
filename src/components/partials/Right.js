@@ -19,6 +19,7 @@ import Dashboard from '/components/views/Dashboard'
 import AddAsset from '/components/views/AddAsset'
 import CreateBTC from '/components/views/CreateBTC'
 import ImportBTC from '/components/views/ImportBTC'
+import CreateETH from '/components/views/CreateETH'
 import ImportETH from '/components/views/ImportETH'
 import ViewBTC from '/components/views/BTC/'
 
@@ -70,6 +71,9 @@ function RightTemplate({
                 </Route>
                 <Route pathname={routes.importbtc()}>
                     <ImportBTC />
+                </Route>
+                <Route pathname={routes.createeth()}>
+                    <CreateETH />
                 </Route>
                 <Route pathname={routes.importeth()}>
                     <ImportETH />

@@ -5,6 +5,7 @@ export default {
     add: () => `/add`,
     createbtc: () => `/add/create-bitcoin`,
     importbtc: () => `/add/import-bitcoin`,
+    createeth: () => `/add/create-ethereum`,
     importeth: () => `/add/import-ethereum`,
 
     // Assets

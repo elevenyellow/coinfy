@@ -2,10 +2,12 @@ import {
     addHexPrefix,
     isValidAddress,
     isValidPrivate,
-    privateToAddress
+    privateToAddress,
+    generateAddress
 } from 'ethereumjs-util'
 import Big from 'big.js'
 import { decimalsMax } from '/api/numbers'
+import { randomBytes } from '/api/crypto'
 
 const api_url = 'https://api.etherscan.io/api'
 const api_key = 'GY9KKYEJF1HDEPIAIRGA66R2RIQWQXV9UZ'
@@ -51,6 +53,18 @@ export function getAddressFromPrivateKey(private_key) {
 
 export function stringToBuffer(string) {
     return new Buffer(string, 'hex')
+}
+
+
+export function generateRandomWallet() {
+    const bytes = randomBytes(32)
+    const private_key = new Buffer(bytes, 'hex')
+    const address = privateToAddress(private_key)
+    console.log( private_key.toString('hex') );
+    return { 
+        address: addHexPrefix(address.toString('hex')),
+        private_key: private_key.toString('hex')
+    }
 }
 
 

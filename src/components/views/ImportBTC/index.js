@@ -30,14 +30,14 @@ import {
     FormFieldButtons
 } from '/components/styled/Form'
 import ImportAddress from '/components/views/ImportBTC/ImportAddress'
-import ImportPublic from '/components/views/ImportBTC/ImportPublic'
+// import ImportPublic from '/components/views/ImportBTC/ImportPublic'
 import ImportWIF from '/components/views/ImportBTC/ImportWIF'
 import ImportBIP from '/components/views/ImportBTC/ImportBIP'
 
 
 const types_import = {
     address: 0,
-    public_key: 1,
+    // public_key: 1,
     private_key: 2,
     private_key_bip: 3
 }
@@ -135,14 +135,14 @@ function ImportTemplate({
                                 >
                                     Address
                                 </option>
-                                <option
+                                {/* <option
                                     value={types_import.public_key}
                                     selected={
                                         type_import === types_import.public_key
                                     }
                                 >
                                     Public key
-                                </option>
+                                </option> */}
                                 <option
                                     value={types_import.private_key}
                                     selected={
@@ -168,9 +168,9 @@ function ImportTemplate({
                         <Route if={type_import===types_import.address}>
                             <ImportAddress />
                         </Route>
-                        <Route if={type_import===types_import.public_key}>
+                        {/* <Route if={type_import===types_import.public_key}>
                             <ImportPublic />
-                        </Route>
+                        </Route> */}
                         <Route if={type_import===types_import.private_key}>
                             <ImportWIF />
                         </Route>
