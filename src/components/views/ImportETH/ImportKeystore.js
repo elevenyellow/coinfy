@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
-import { openFile } from '/api/browser'
+import { readFile } from '/api/browser'
+import { decryptAES128CTR } from '/api/security'
 
 import { setHref, createAsset } from '/store/actions'
 import state from '/store/state'
 
-import { isAddress, addHexPrefix } from '/api/Assets/ETH'
+import { isAddress, addHexPrefix, getAddressFromPrivateKey } from '/api/Assets/ETH'
 import { isAssetRegistered } from '/store/getters'
 import { ETH, getAssetId } from '/api/Assets'
 
@@ -30,9 +31,12 @@ export default class ImportAddress extends Component {
         this.observer.observe(state.view)
         const collector = collect()
         state.view.keystore_invalid = false
-        state.view.keystore_message = ''
+        state.view.keystore_selected = false
+        state.view.keystore_password = ''
+        state.view.keystore_password_error = ''
         collector.destroy()
-        this.onSelectFile = this.onSelectFile.bind(this)
+        this.onChangeFile = this.onChangeFile.bind(this)
+        this.onChangePassword = this.onChangePassword.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
     componentWillUnmount() {
@@ -42,62 +46,87 @@ export default class ImportAddress extends Component {
         return false
     }
 
-
-    
-    onSelectFile(e) {
-        e.preventDefault()
-        openFile((dataString, file) => {
+    onChangeFile(e) {
+        // e.preventDefault()
+        const file = e.target.files[0]
+        readFile(file, dataString => {
             const collector = collect()
+            state.view.keystore_selected = true
             try {
                 const keystore = JSON.parse(dataString)
-                if (keystore.version === 3 && isAddress(keystore.address) && typeof keystore.Crypto == 'object') {
+                if (
+                    keystore.version === 3 &&
+                    isAddress(keystore.address) &&
+                    typeof keystore.Crypto == 'object'
+                ) {
+                    this.state.keystore = keystore
                     state.view.address = addHexPrefix(keystore.address)
                     state.view.keystore_invalid = false
-                    state.view.keystore_message = file.name
-                }
-                else {
+                } else {
                     state.view.keystore_invalid = true
-                    state.view.keystore_message = 'Invalid Keystore file'
                 }
-            } catch(e) {
+            } catch (e) {
                 state.view.keystore_invalid = true
-                state.view.keystore_message = 'Invalid Keystore file'
             }
             collector.emit()
         })
+    }
+
+    onChangePassword(e) {
+        state.view.keystore_password = e.target.value
+        state.view.keystore_password_error = ''
     }
 
     onSubmit(e) {
         e.preventDefault()
         const collector = collect()
         const address = state.view.address
-        const asset = createAsset(ETH.type, ETH.symbol, address)
-        setHref(routes.asset(getAssetId(asset)))
-        // setHref(routes.home())
+        const password = state.view.keystore_password
+        const private_key = decryptAES128CTR(this.state.keystore.Crypto, password, true)
+        if (addHexPrefix(getAddressFromPrivateKey(private_key)) === address) {
+            const asset = createAsset(ETH.type, ETH.symbol, address)
+            setPrivateKey(
+                getAssetId({ symbol: ETH.symbol, address }),
+                state.view.private_key,
+                password,
+                true
+            )
+            setHref(routes.asset(getAssetId(asset)))
+        }
+        else {
+            state.view.keystore_password_error = 'Invalid password'
+        }
         collector.emit()
     }
 
-
     get isValidForm() {
-        return state.view.isValidInput
+        return (
+            !state.view.keystore_invalid &&
+            state.view.keystore_selected &&
+            state.view.keystore_password.length > 0
+        )
     }
-    
+
     render() {
         return React.createElement(ImportAddressTemplate, {
-            keystore_message: state.view.keystore_message,
             keystore_invalid: state.view.keystore_invalid,
+            keystore_password: state.view.keystore_password,
+            keystore_password_error: state.view.keystore_password_error,
             isValidForm: this.isValidForm,
-            onSelectFile: this.onSelectFile,
+            onChangeFile: this.onChangeFile,
+            onChangePassword: this.onChangePassword,
             onSubmit: this.onSubmit
         })
     }
 }
 
 function ImportAddressTemplate({
-    keystore_message,
     keystore_invalid,
+    keystore_password,
+    keystore_password_error,
     isValidForm,
-    onSelectFile,
+    onChangeFile,
+    onChangePassword,
     onSubmit
 }) {
     return (
@@ -108,15 +137,41 @@ function ImportAddressTemplate({
                     <SubLabel>Pick your Keystore file.</SubLabel>
                 </FormFieldLeft>
                 <FormFieldRight>
-                    <button onClick={onSelectFile}>Open</button>
-                    <MessageKeystoreFile invalid={keystore_invalid}>{keystore_message}</MessageKeystoreFile>
+                    {/* <button onClick={onChangeFile}>Open</button>
+                    <MessageKeystoreFile invalid={keystore_invalid}>{keystore_message}</MessageKeystoreFile> */}
+                    <Input
+                        type="file"
+                        width="100%"
+                        onChange={onChangeFile}
+                        error="Invalid Keystore file"
+                        invalid={keystore_invalid}
+                    />
+                </FormFieldRight>
+            </FormField>
+
+            <FormField>
+                <FormFieldLeft>
+                    <Label>Password</Label>
+                    <SubLabel>
+                        The password you used to encrypt this private key.
+                    </SubLabel>
+                </FormFieldLeft>
+                <FormFieldRight>
+                    <Input
+                        error={keystore_password_error}
+                        invalid={keystore_password_error}
+                        value={keystore_password}
+                        onChange={onChangePassword}
+                        width="100%"
+                        type="password"
+                    />
                 </FormFieldRight>
             </FormField>
 
             <FormField>
                 <FormFieldButtons>
                     <Button
-                        width="100px"
+                        width="100%"
                         disabled={!isValidForm}
                         onClick={onSubmit}
                     >
@@ -128,9 +183,9 @@ function ImportAddressTemplate({
     )
 }
 
-
 const MessageKeystoreFile = styled.div`
-font-size: 11px;
-font-weight: bold;
-color: ${props=>props.invalid ? styles.color.red3:styles.color.front6}
+    font-size: 11px;
+    font-weight: bold;
+    color: ${props =>
+        props.invalid ? styles.color.red3 : styles.color.front6};
 `

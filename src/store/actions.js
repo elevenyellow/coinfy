@@ -10,7 +10,7 @@ import { getTotalAssets, getAssetsAsArray, generateDefaultAsset } from '/store/g
 import { encryptAES128CTR } from '/api/security'
 import { CryptoPriceManager } from '/api/prices'
 import { decimals } from '/api/numbers'
-import { localStorageSet, localStorageRemove, openFile } from '/api/browser'
+import { localStorageSet, localStorageRemove, openFile, readFile } from '/api/browser'
 
 export function setHref(href) {
     const collector = collect()
@@ -98,7 +98,9 @@ export function importAssetsFromFile() {
 }
 
 export function openImportAssetsFromFile() {
-    openFile(dataString => importAssets(dataString))
+    openFile(file => {
+        readFile(file, dataString => importAssets(dataString))
+    })
 }
 
 export function importAssets(dataString) {
