@@ -5,7 +5,7 @@ import { Router, Route } from '/doprouter/react'
 
 
 import state from '/store/state'
-import { isAssetRegistered } from '/store/getters'
+import { getAsset, isAssetRegistered } from '/store/getters'
 import { BTC } from '/api/Assets'
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -22,13 +22,13 @@ import ImportBTC from '/components/views/ImportBTC'
 import CreateETH from '/components/views/CreateETH'
 import ImportETH from '/components/views/ImportETH'
 import ViewBTC from '/components/views/BTC/'
+import ViewETH from '/components/views/ETH/'
 
 export default class Right extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'totalAssets')
-        this.observer.observe(state.location.path, 'length')
-        this.observer.observe(state.location.path, '0')
+        this.observer.observe(state.location, 'pathname')
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -38,10 +38,14 @@ export default class Right extends Component {
     }
 
     render() {
+        const asset = getAsset(state.location.path[1])
+        const symbol = (asset !== undefined) ? asset.symbol : false
+        console.log( symbol );
         return React.createElement(RightTemplate, {
             location: state.location,
             totalAssets: state.totalAssets,
-            isRegistered: isAssetRegistered(state.location.path[1])
+            isRegistered: isAssetRegistered(state.location.path[1]),
+            symbol: symbol
         })            
     }
 }
@@ -51,6 +55,7 @@ function RightTemplate({
     location,
     totalAssets,
     isRegistered,
+    symbol,
 }) {
     return (
         <RightContainer>
@@ -78,8 +83,11 @@ function RightTemplate({
                 <Route pathname={routes.importeth()}>
                     <ImportETH />
                 </Route>
-                <Route path-0="asset" if={isRegistered}>
+                <Route path-0="asset" if={isRegistered && symbol==='BTC'}>
                     <ViewBTC />
+                </Route>
+                <Route path-0="asset" if={isRegistered && symbol==='ETH'}>
+                    <ViewETH />
                 </Route>
                 <Route>
                     <RightContainerMiddle>

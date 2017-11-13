@@ -122,11 +122,15 @@ export function unlock(address, private_key_encrypted, password) {
 
 // fetchs
 export function fetchBalance(address) {
-    return fetch(`${api_url}/addr/${address}/balance`)
-        .then(response => response.text())
-        .then(balance => {
-            // return Number(balance) / satoshis
-            return Big(balance).div(satoshis).toString()
+    // return fetch(`${api_url}/addr/${address}/balance`)
+    //     .then(response => response.text())
+    //     .then(balance => {
+    //         // return Number(balance) / satoshis
+    //         return Big(balance).div(satoshis).toString()
+    //     })
+    return fetchTotals(address)
+        .then(data => {
+            return data.balance
         })
 }
 
