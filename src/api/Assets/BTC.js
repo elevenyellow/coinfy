@@ -134,7 +134,7 @@ export function fetchBalance(address) {
         })
 }
 
-export function fetchTotals(address, from = 0, to = 25) {
+export function fetchTotals(address) {
     return fetch(`${api_url}/addr/${address}`)
         .then(response => response.json())
         .then(totals => totals)

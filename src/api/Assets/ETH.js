@@ -8,6 +8,7 @@ import {
 import Big from 'big.js'
 import { decimalsMax } from '/api/numbers'
 import { randomBytes } from '/api/crypto'
+import { log } from 'util';
 
 
 const api_url = 'https://api.etherscan.io/api'
@@ -80,15 +81,47 @@ export function fetchBalance(address) {
         })
 }
 
-export function fetchSummary(address) {
+
+export function fetchTxs(address, from=0, to=from+100) {
     return fetch(
-        `${api_url}?apikey=${api_key}&module=account&action=balance&address=${address}&tag=latest`
+        `${api_url}?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${api_key}`
     )
         .then(response => response.json())
-        .then(response => {
-            return {balance:Big(response.result).div(satoshis).toString()}
+        .then(json => {
+            const data = {
+                totalTxs: json.result.length,
+                txs: []
+            }
+
+            json.result.slice(from, to).forEach(txRaw => {
+                let tx = {
+                    txid: txRaw.hash,
+                    fees: Big(txRaw.gasUsed),
+                    time: txRaw.timeStamp,
+                    confirmations: txRaw.confirmations,
+                    value: Big(txRaw.value).div(satoshis).toString()
+                    // raw: txRaw,
+                }
+                if (txRaw.from.toLowerCase() === address.toLowerCase())
+                    tx.value = '-'+tx.value
+
+                data.txs.push(tx)
+            })
+            return data
         })
 }
+
+
+export function fetchSummary(address) {
+    const totals = {}
+    return fetchBalance(address)
+        .then(balance => {
+            totals.balance = balance
+            return fetchTxs(address)
+        })
+        .then(txs => Object.assign(txs, totals))
+}
+
 
 // function fetchMyEtherScan(extraBody) {
 //     const body = {

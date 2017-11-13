@@ -170,7 +170,7 @@ export default class SummaryETH extends Component {
             refaddress: this.refaddress,
             onCopy: this.onCopy,
             onPrint: this.onPrint,
-            mailTo: `mailto:?subject=My Bitcoin Address&body=My Bitcoin address is: ${address}`
+            mailTo: `mailto:?subject=My Ethereum Address&body=My Ethereum address is: ${address}`
         })
     }
 }
@@ -228,7 +228,7 @@ function SummaryETHTemplate({
                             <CircleButton
                                 target="_blank"
                                 color={ETH.color}
-                                href={`https://blockchain.info/address/${address}`}
+                                href={`https://etherscan.io/address/${address}`}
                             >
                                 <IconLink size={25} color={'white'} />
                                 <div>View on Blockchain</div>
@@ -264,7 +264,7 @@ function SummaryETHTemplate({
                             <TransactionInner
                                 onClick={e =>
                                     openUrl(
-                                        `https://blockchain.info/tx/${tx.txid}`
+                                        `https://etherscan.io/tx/${tx.txid}`
                                     )}
                             >
                                 <TransactionDate>
