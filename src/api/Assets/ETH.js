@@ -80,6 +80,16 @@ export function fetchBalance(address) {
         })
 }
 
+export function fetchSummary(address) {
+    return fetch(
+        `${api_url}?apikey=${api_key}&module=account&action=balance&address=${address}&tag=latest`
+    )
+        .then(response => response.json())
+        .then(response => {
+            return {balance:Big(response.result).div(satoshis).toString()}
+        })
+}
+
 // function fetchMyEtherScan(extraBody) {
 //     const body = {
 //         apikey: 'GY9KKYEJF1HDEPIAIRGA66R2RIQWQXV9UZ',

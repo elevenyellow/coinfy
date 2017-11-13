@@ -28,7 +28,7 @@ import {
 } from '/components/styled/Menu'
 
 import HeaderAsset from '/components/partials/HeaderAsset'
-// import Summary from '/components/views/ETH/Summary'
+import Summary from '/components/views/ETH/Summary'
 // import ChangePassword from '/components/views/ETH/ChangePassword'
 // import PrintETH from '/components/views/ETH/Print'
 // import Delete from '/components/views/ETH/Delete'
@@ -50,7 +50,6 @@ export default class ViewETH extends Component {
     }
 
     render() {
-        console.log( 123 );
         const asset_id = state.location.path[1]
         const hasPrivateKey = isAssetWithPrivateKey(asset_id)
         return React.createElement(ViewETHTemplate, {
@@ -152,11 +151,11 @@ function ViewETHTemplate({
                 </Div>
 
                 <Router source={location}>
-                     {/* <Route pathname={routes_summaryAsset}>
+                    <Route pathname={routes_summaryAsset}>
                         <Summary />
                     </Route>
 
-                    <Route pathname={routes_changePasswordAsset}>
+                    {/* <Route pathname={routes_changePasswordAsset}>
                         <ChangePassword />
                     </Route>
 

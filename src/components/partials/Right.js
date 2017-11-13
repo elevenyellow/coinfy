@@ -40,7 +40,6 @@ export default class Right extends Component {
     render() {
         const asset = getAsset(state.location.path[1])
         const symbol = (asset !== undefined) ? asset.symbol : false
-        console.log( symbol );
         return React.createElement(RightTemplate, {
             location: state.location,
             totalAssets: state.totalAssets,

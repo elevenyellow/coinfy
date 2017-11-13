@@ -1,4 +1,4 @@
-export const BTC = (qrs = []) => {
+export const PrivateKey = (qrs = []) => {
     let areas = ''
     qrs.forEach(qr => {
         qr.red = qr.red ? 'red' : ''

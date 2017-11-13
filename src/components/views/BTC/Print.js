@@ -29,7 +29,7 @@ import {
 } from '/components/styled/Form'
 import { Label, SubLabel } from '/components/styled/Label'
 
-import { BTC as template } from '/const/paperwallets'
+import { PrivateKey as template } from '/const/paperwallets'
 
 export default class PrintBTC extends Component {
     componentWillMount() {
