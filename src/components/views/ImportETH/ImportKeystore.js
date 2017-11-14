@@ -54,18 +54,24 @@ export default class ImportAddress extends Component {
             state.view.keystore_selected = true
             try {
                 const keystore = JSON.parse(dataString)
+                const address = addHexPrefix(keystore.address)
                 if (
                     keystore.version === 3 &&
-                    isAddress(keystore.address) &&
+                    isAddress(address) &&
                     typeof keystore.Crypto == 'object'
                 ) {
-                    this.state.keystore = keystore
-                    state.view.address = addHexPrefix(keystore.address)
-                    state.view.keystore_invalid = false
+                    if (isAssetRegistered(getAssetId({symbol:ETH.symbol, address:address}))) {
+                        state.view.keystore_invalid = 'You already have this asset'
+                    } else {
+                        this.state.keystore = keystore
+                        state.view.address = address
+                        state.view.keystore_invalid = false
+                    }
                 } else {
                     state.view.keystore_invalid = true
                 }
             } catch (e) {
+                console.log( e )
                 state.view.keystore_invalid = true
             }
             collector.emit()
@@ -79,24 +85,27 @@ export default class ImportAddress extends Component {
 
     onSubmit(e) {
         e.preventDefault()
-        const collector = collect()
-        const address = state.view.address
-        const password = state.view.keystore_password
-        const private_key = ETH.decrypt(address, this.state.keystore.Crypto, password)
-        console.log( this.state.keystore.Crypto.mac );
-        if (private_key) {
-            const asset = createAsset(ETH.type, ETH.symbol, address)
-            setPrivateKey(
-                getAssetId({ symbol: ETH.symbol, address }),
-                private_key,
-                password
-            )
-            setHref(routes.asset(getAssetId(asset)))
+        console.log( this.state.keystore );
+        if (this.state.keystore) {
+            const collector = collect()
+            const address = state.view.address
+            const password = state.view.keystore_password
+            const private_key = ETH.decrypt(address, this.state.keystore.Crypto, password)
+
+            if (private_key) {
+                const asset = createAsset(ETH.type, ETH.symbol, address)
+                setPrivateKey(
+                    getAssetId({ symbol: ETH.symbol, address }),
+                    private_key,
+                    password
+                )
+                setHref(routes.asset(getAssetId(asset)))
+            }
+            else {
+                state.view.keystore_password_error = 'Invalid password'
+            }
+            collector.emit()
         }
-        else {
-            state.view.keystore_password_error = 'Invalid password'
-        }
-        collector.emit()
     }
 
     get isValidForm() {

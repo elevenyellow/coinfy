@@ -6,11 +6,20 @@ import routes from '/const/routes'
 import styles from '/const/styles'
 import timeouts from '/const/timeouts'
 import state from '/store/state'
-import { getTotalAssets, getAssetsAsArray, generateDefaultAsset } from '/store/getters'
+import {
+    getTotalAssets,
+    getAssetsAsArray,
+    generateDefaultAsset
+} from '/store/getters'
 import { encryptAES128CTR } from '/api/crypto'
 import { CryptoPriceManager } from '/api/prices'
 import { decimals } from '/api/numbers'
-import { localStorageSet, localStorageRemove, openFile, readFile } from '/api/browser'
+import {
+    localStorageSet,
+    localStorageRemove,
+    openFile,
+    readFile
+} from '/api/browser'
 
 export function setHref(href) {
     const collector = collect()
@@ -20,7 +29,7 @@ export function setHref(href) {
 }
 
 export function createAsset(type, symbol, address) {
-    const asset = generateDefaultAsset({type, symbol, address})
+    const asset = generateDefaultAsset({ type, symbol, address })
     const asset_id = getAssetId({ symbol, address, type })
     state.assets[asset_id] = asset
     saveAssetsLocalStorage()
@@ -36,7 +45,12 @@ export function setPublicKey(asset_id, public_key) {
 }
 export function setPrivateKey(asset_id, private_key, password) {
     const asset = state.assets[asset_id]
-    asset.private_key = Assets[asset.symbol].encrypt(private_key, password)
+    set(
+        asset,
+        'private_key',
+        Assets[asset.symbol].encrypt(private_key, password),
+        { deep: false }
+    )
     saveAssetsLocalStorage()
     setAssetsExported(false)
 }
@@ -57,7 +71,7 @@ export function deleteAsset(asset_id) {
 export function saveAssetsLocalStorage() {
     const assets = JSON.stringify(state.assets, (key, value) => {
         key = key.toLocaleLowerCase()
-        return key==='state' ? undefined : value
+        return key === 'state' ? undefined : value
     })
     localStorageSet('assets', assets)
 }
@@ -70,10 +84,14 @@ export function setAssetsExported(value) {
 const keysToRemoveWhenExporting = ['state', 'summary']
 export function exportAssets() {
     if (state.totalAssets > 0) {
-        const data = btoa(JSON.stringify(state.assets, (key, value) => {
-            key = key.toLocaleLowerCase()
-            return keysToRemoveWhenExporting.indexOf(key)>-1 ? undefined : value
-        })) // btoa
+        const data = btoa(
+            JSON.stringify(state.assets, (key, value) => {
+                key = key.toLocaleLowerCase()
+                return keysToRemoveWhenExporting.indexOf(key) > -1
+                    ? undefined
+                    : value
+            })
+        ) // btoa
         const a = document.createElement('a')
         const file = new Blob([data], { type: 'charset=UTF-8' }) //,
         // const date = new Date().toJSON().replace(/\..+$/,'')
@@ -184,7 +202,6 @@ export function updatePrice(symbol, value) {
     collector.emit()
 }
 
-
 let idNotificationNotConnection
 export function showNotConnectionNotification(value) {
     if (value && idNotificationNotConnection === undefined) {
@@ -205,7 +222,6 @@ export function setAssetLabel(asset_id, label) {
     collector.emit()
 }
 
-
 export function updateBalance(asset_id, balance) {
     const asset = state.assets[asset_id]
     if (asset.balance !== balance) {
@@ -216,11 +232,6 @@ export function updateBalance(asset_id, balance) {
         saveAssetsLocalStorage()
     }
 }
-
-
-
-
-
 
 // Fetchers
 
@@ -234,8 +245,6 @@ export function fetchAllBalances() {
     setTimeout(fetchAllBalances, timeouts.update_all_balances)
 }
 fetchAllBalances()
-
-
 
 export function fetchBalance(asset_id) {
     const asset = state.assets[asset_id]
@@ -251,13 +260,11 @@ export function fetchBalance(asset_id) {
         })
 }
 
-
 export function fetchSummaryAssetIfReady(asset_id) {
     const asset = state.assets[asset_id]
     if (asset.state.shall_we_fetch_summary && !asset.state.fetching_summary)
         return fetchSummaryAsset(asset_id)
 }
-
 
 export function fetchSummaryAsset(asset_id) {
     // console.log( 'fetchSummaryAsset', asset_id );
@@ -266,7 +273,7 @@ export function fetchSummaryAsset(asset_id) {
     asset.state.fetching_summary = true
     asset.summary = {}
     collector.emit()
-    
+
     return Assets[asset.symbol]
         .fetchSummary(asset.address)
         .then(summary => {
@@ -274,7 +281,7 @@ export function fetchSummaryAsset(asset_id) {
             asset.state.fetching_summary = false
             asset.state.shall_we_fetch_summary = false
             asset.balance = summary.balance
-            set(asset, 'summary', summary, {deep:false})
+            set(asset, 'summary', summary, { deep: false })
             collector.emit()
         })
         .catch(e => {
@@ -283,8 +290,6 @@ export function fetchSummaryAsset(asset_id) {
             console.error(asset.symbol, 'fetchSummaryAsset', e)
         })
 }
-
-
 
 export function fetchBalanceAsset(asset_id) {
     // console.log( 'fetchSummaryAsset', asset_id );
@@ -298,12 +303,6 @@ export function fetchBalanceAsset(asset_id) {
             console.error(asset.symbol, 'fetchBalanceAsset', e)
         })
 }
-
-
-
-
-
-
 
 export const fetchPrices = (function() {
     let assetsArray = Object.keys(Assets)

@@ -12,7 +12,7 @@
         "big.js": "^3.2.0",
         "bip38": "^2.0.1",
         "bitcoinjs-lib": "^3.1.1",
-        "crypto-js": "^3.1.9-1",
+        "crypto": "^1.0.1",
         "dop": "^0.26.0",
         "ethereumjs-util": "^5.1.2",
         "express": "4.14.0",
@@ -21,8 +21,9 @@
         "qrious": "^4.0.2",
         "react-countup": "^2.2.0",
         "react-icons": "^2.2.5",
-        "scryptsy": "^2.0.0",
-        "styled-components": "^2.2.0"
+        "scrypt.js": "^0.2.0",
+        "styled-components": "^2.2.0",
+        "wif": "^2.0.6"
     },
     "devDependencies": {
         "babel-core": "6.13.2",

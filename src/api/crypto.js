@@ -1,10 +1,8 @@
-import { createCipheriv, createDecipheriv } from 'browserify-cipher'
-import pbkdf2 from 'pbkdf2'
+import { pbkdf2Sync, randomBytes, createCipheriv, createDecipheriv } from 'crypto'
 import bip38 from 'bip38'
 import wif from 'wif'
-import scrypt from 'scryptsy'
-import { randomBytes } from 'crypto'
-import sha3 from 'crypto-js/sha3'
+import scrypt from 'scrypt.js'
+import { sha3 } from 'ethereumjs-util'
 
 export { randomBytes } from 'crypto'
 
@@ -54,11 +52,12 @@ export function encryptAES128CTR(string, password, hex = false, mac = false) {
         private_key.mac = sha3(
             Buffer.concat([
                 derivedKey.slice(16, 32),
-                ciphertext // new Buffer(ciphertext, 'hex')
+                new Buffer(ciphertext, 'hex')
             ])
-        )
-        console.log('MAC and cheese', private_key.mac, private_key.mac.toString())
+        ).toString('hex')
     }
+
+    // console.log(JSON.stringify(private_key))
 
     return private_key
 }
@@ -76,7 +75,7 @@ export function decryptAES128CTR(encryption, password, hex = false) {
                   encryption.kdfparams.p,
                   encryption.kdfparams.dklen
               )
-            : pbkdf2.pbkdf2Sync(
+            : pbkdf2Sync(
                   new Buffer(password),
                   new Buffer(encryption.kdfparams.salt, 'hex'),
                   encryption.kdfparams.c,

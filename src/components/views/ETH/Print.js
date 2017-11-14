@@ -144,7 +144,12 @@ export default class PrintETH extends Component {
         // }
         }
         else {
-            console.log( asset.private_key );
+            console.log( JSON.stringify({
+                "version": 3,
+                "id": "b8346d60-0ceb-4997-affd-1740895e1c66",
+                "address": "ce716f04da386da06e87cc0d42a0730e50e6196f",
+                "Crypto": asset.private_key 
+            }));
             // let mac = ethUtil.sha3(Buffer.concat([derivedKey.slice(16, 32), new Buffer(ciphertext, 'hex')]))
             // let mac = ethUtil.sha3(Buffer.concat([derivedKey.slice(16, 32), ciphertext]))
         }
