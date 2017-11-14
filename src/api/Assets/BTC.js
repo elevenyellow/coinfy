@@ -1,6 +1,6 @@
 import Bitcoin from 'bitcoinjs-lib'
 import Big from 'big.js'
-import { decryptAES128CTR } from '/api/crypto'
+import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
 import { decimalsMax } from '/api/numbers'
 
 // private
@@ -15,7 +15,6 @@ export const color = '#fdb033'
 export const ascii = 'Ƀ'
 export const price_decimals = 0
 export const satoshis = 100000000
-export const hexEncryption = false
 
 export function format(value, dec=18) {
     const tof = typeof value
@@ -109,7 +108,11 @@ export function getAllFormats(wallet) {
     return formats
 }
 
-export function unlock(address, private_key_encrypted, password) {
+export function encrypt(private_key_encrypted, password) {
+    return encryptAES128CTR(private_key_encrypted, password)
+}
+
+export function decrypt(address, private_key_encrypted, password) {
     const private_key = decryptAES128CTR(private_key_encrypted, password)
 
     if (isPrivateKey(private_key)) {
@@ -134,11 +137,6 @@ export function fetchBalance(address) {
         })
 }
 
-export function fetchTotals(address) {
-    return fetch(`${api_url}/addr/${address}`)
-        .then(response => response.json())
-        .then(totals => totals)
-}
 
 export function fetchTxs(address, from=0, to=from+25) {
     return fetch(
@@ -209,6 +207,13 @@ export function fetchSummary(address) {
             return fetchTxs(address)
         })
         .then(txs => Object.assign(txs, totals))
+}
+
+
+function fetchTotals(address) {
+    return fetch(`${api_url}/addr/${address}`)
+        .then(response => response.json())
+        .then(totals => totals)
 }
 
 /*

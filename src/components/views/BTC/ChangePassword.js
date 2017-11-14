@@ -75,7 +75,7 @@ export default class ChangePasswordBTC extends Component {
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
         const collector = collect()
-        const private_key = BTC.unlock(asset.address, asset.private_key, state.view.oldpassword)
+        const private_key = BTC.decrypt(asset.address, asset.private_key, state.view.oldpassword)
         if ( private_key ) {
             const name = asset.label || asset.address
             setPrivateKey(asset_id, private_key, state.view.password)

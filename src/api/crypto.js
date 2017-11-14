@@ -4,13 +4,14 @@ import bip38 from 'bip38'
 import wif from 'wif'
 import scrypt from 'scryptsy'
 import { randomBytes } from 'crypto'
+import sha3 from 'crypto-js/sha3'
 
 export { randomBytes } from 'crypto'
 
 export const minpassword = 8
 
-export function encryptAES128CTR(string, password, hex=false) {
-    const string_buffer = new Buffer(string, hex?'hex':undefined) // ethereum: new Buffer(string,'hex')
+export function encryptAES128CTR(string, password, hex = false, mac = false) {
+    const string_buffer = new Buffer(string, hex ? 'hex' : undefined) // ethereum: new Buffer(string,'hex')
     const ciphertype = 'aes-128-ctr'
     const salt = randomBytes(32)
     const iv = randomBytes(16)
@@ -20,16 +21,27 @@ export function encryptAES128CTR(string, password, hex=false) {
         salt: salt.toString('hex'),
         n: 1024,
         r: 8,
-        p: 1,
+        p: 1
     }
 
-    const derivedKey = scrypt(new Buffer(password), salt, kdfparams.n, kdfparams.r, kdfparams.p, kdfparams.dklen)
+    const derivedKey = scrypt(
+        new Buffer(password),
+        salt,
+        kdfparams.n,
+        kdfparams.r,
+        kdfparams.p,
+        kdfparams.dklen
+    )
     const cipher = createCipheriv(ciphertype, derivedKey.slice(0, 16), iv)
-    if (!cipher)
-        throw new Error('Unsupported cipher')
+    if (!cipher) throw new Error('Unsupported cipher')
 
-    return {
-        ciphertext: Buffer.concat([cipher.update(string_buffer), cipher.final()]).toString('hex'),
+    const ciphertext = Buffer.concat([
+        cipher.update(string_buffer),
+        cipher.final()
+    ])
+
+    const private_key = {
+        ciphertext: ciphertext.toString('hex'),
         cipherparams: {
             iv: iv.toString('hex')
         },
@@ -37,48 +49,81 @@ export function encryptAES128CTR(string, password, hex=false) {
         kdf: kdf,
         kdfparams: kdfparams
     }
+
+    if (mac) {
+        private_key.mac = sha3(
+            Buffer.concat([
+                derivedKey.slice(16, 32),
+                ciphertext // new Buffer(ciphertext, 'hex')
+            ])
+        )
+        console.log('MAC and cheese', private_key.mac, private_key.mac.toString())
+    }
+
+    return private_key
 }
 
-export function decryptAES128CTR(encryption, password, hex=false) {
+export function decryptAES128CTR(encryption, password, hex = false) {
     const ciphertype = 'aes-128-ctr'
     const ciphertext = new Buffer(encryption.ciphertext, 'hex')
-    const derivedKey = encryption.kdf==='scrypt' ?
-        scrypt(new Buffer(password), new Buffer(encryption.kdfparams.salt, 'hex'), encryption.kdfparams.n, encryption.kdfparams.r, encryption.kdfparams.p, encryption.kdfparams.dklen)
-    :
-        pbkdf2.pbkdf2Sync(new Buffer(password), new Buffer(encryption.kdfparams.salt, 'hex'), encryption.kdfparams.c, encryption.kdfparams.dklen, 'sha256')
-    const decipher = createDecipheriv(ciphertype, derivedKey.slice(0, 16), new Buffer(encryption.cipherparams.iv, 'hex'))
+    const derivedKey =
+        encryption.kdf === 'scrypt'
+            ? scrypt(
+                  new Buffer(password),
+                  new Buffer(encryption.kdfparams.salt, 'hex'),
+                  encryption.kdfparams.n,
+                  encryption.kdfparams.r,
+                  encryption.kdfparams.p,
+                  encryption.kdfparams.dklen
+              )
+            : pbkdf2.pbkdf2Sync(
+                  new Buffer(password),
+                  new Buffer(encryption.kdfparams.salt, 'hex'),
+                  encryption.kdfparams.c,
+                  encryption.kdfparams.dklen,
+                  'sha256'
+              )
+    const decipher = createDecipheriv(
+        ciphertype,
+        derivedKey.slice(0, 16),
+        new Buffer(encryption.cipherparams.iv, 'hex')
+    )
     let seed = Buffer.concat([decipher.update(ciphertext), decipher.final()])
-    while (seed.length < 32)
-        seed = Buffer.concat([new Buffer([0x00]), seed]);
+    while (seed.length < 32) seed = Buffer.concat([new Buffer([0x00]), seed])
 
-    return seed.toString(hex?'hex':undefined) //ethereum seed.toString('hex')
+    return seed.toString(hex ? 'hex' : undefined) //ethereum seed.toString('hex')
 }
-
 
 export function encryptBIP38(privateKey, password, progressCallback) {
     let decoded = wif.decode(privateKey)
-    return bip38.encrypt(decoded.privateKey, decoded.compressed, password, progressCallback)
+    return bip38.encrypt(
+        decoded.privateKey,
+        decoded.compressed,
+        password,
+        progressCallback
+    )
 }
 
-export function decryptBIP38(encryptedKey, password, progressCallback, prefix=0x80) {
+export function decryptBIP38(
+    encryptedKey,
+    password,
+    progressCallback,
+    prefix = 0x80
+) {
     let decryptedKey = bip38.decrypt(encryptedKey, password, progressCallback)
     return wif.encode(prefix, decryptedKey.privateKey, decryptedKey.compressed)
 }
 
-
 export const getPasswordStrength = (function() {
-
     function test(letters, regexp) {
         let count = 0
         letters.forEach(letter => {
-            if (regexp.test(letter))
-                count += 1
+            if (regexp.test(letter)) count += 1
         })
         return count
     }
 
     return function(password, minlength, messages) {
-
         let letters = password.split('')
         let data = {
             length: password.length,
@@ -91,28 +136,26 @@ export const getPasswordStrength = (function() {
         }
 
         data.lowercase = test(letters, /^[a-z]$/)
-        if (data.lowercase>0) {
+        if (data.lowercase > 0) {
             data.score += 1
         }
 
         data.numbers = test(letters, /^\d$/)
-        if (data.numbers>0) {
+        if (data.numbers > 0) {
             data.score += 1
         }
 
         data.uppercase = test(letters, /^[A-Z]$/)
-        if (data.uppercase>0) {
+        if (data.uppercase > 0) {
             data.score += 1
         }
 
         data.specials = test(letters, /^[^A-Za-z0-9]$/)
-        if (data.specials>0) {
+        if (data.specials > 0) {
             data.score += 1
         }
 
-        if (data.length<minlength)
-            data.score = 0
-
+        if (data.length < minlength) data.score = 0
 
         if (messages && typeof messages == 'object') {
             let messages_order = [
@@ -120,11 +163,16 @@ export const getPasswordStrength = (function() {
                 'lowercase',
                 'numbers',
                 'uppercase',
-                'specials',
+                'specials'
             ]
-            for (let index=0,total=messages_order.length; index<total; ++index) {
+            for (
+                let index = 0, total = messages_order.length;
+                index < total;
+                ++index
+            ) {
                 if (
-                    (messages_order[index] === 'length' && data.length<minlength) ||
+                    (messages_order[index] === 'length' &&
+                        data.length < minlength) ||
                     data[messages_order[index]] === 0
                 ) {
                     data.message = messages[messages_order[index]]
@@ -135,7 +183,7 @@ export const getPasswordStrength = (function() {
 
         return data
     }
-})();
+})()
 
 // - Very Weak "" // 0 rojo
 // - Weak "jos" // 1 naranja
@@ -144,7 +192,6 @@ export const getPasswordStrength = (function() {
 // - Excelent "Jos1" // 4 verde
 
 // http://www.passwordmeter.com/
-
 
 // export function randomBytes(size) {
 //     var rawBytes = new global.Uint8Array(size)

@@ -34,8 +34,9 @@ export function setPublicKey(asset_id, public_key) {
     saveAssetsLocalStorage()
     setAssetsExported(false)
 }
-export function setPrivateKey(asset_id, private_key, password, hexEncryption) {
-    state.assets[asset_id].private_key = encryptAES128CTR(private_key, password, hexEncryption)
+export function setPrivateKey(asset_id, private_key, password) {
+    const asset = state.assets[asset_id]
+    asset.private_key = Assets[asset.symbol].encrypt(private_key, password)
     saveAssetsLocalStorage()
     setAssetsExported(false)
 }

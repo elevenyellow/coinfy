@@ -5,7 +5,7 @@ import { createObserver, collect } from 'dop'
 import { readFile } from '/api/browser'
 import { decryptAES128CTR } from '/api/crypto'
 
-import { setHref, createAsset } from '/store/actions'
+import { setPrivateKey, setHref, createAsset } from '/store/actions'
 import state from '/store/state'
 
 import { isAddress, addHexPrefix, getAddressFromPrivateKey } from '/api/Assets/ETH'
@@ -82,14 +82,14 @@ export default class ImportAddress extends Component {
         const collector = collect()
         const address = state.view.address
         const password = state.view.keystore_password
-        const private_key = decryptAES128CTR(this.state.keystore.Crypto, password, true)
-        if (addHexPrefix(getAddressFromPrivateKey(private_key)) === address) {
+        const private_key = ETH.decrypt(address, this.state.keystore.Crypto, password)
+        console.log( this.state.keystore.Crypto.mac );
+        if (private_key) {
             const asset = createAsset(ETH.type, ETH.symbol, address)
             setPrivateKey(
                 getAssetId({ symbol: ETH.symbol, address }),
-                state.view.private_key,
-                password,
-                true
+                private_key,
+                password
             )
             setHref(routes.asset(getAssetId(asset)))
         }

@@ -7,8 +7,7 @@ import {
 } from 'ethereumjs-util'
 import Big from 'big.js'
 import { decimalsMax } from '/api/numbers'
-import { randomBytes } from '/api/crypto'
-import { log } from 'util';
+import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
 
 
 const api_url = 'https://api.etherscan.io/api'
@@ -21,7 +20,6 @@ export const color = '#7a8aec' //'#9c86fe'
 export const ascii = ''
 export const price_decimals = 0
 export const satoshis = 1000000000000000000 // this is WEI actually
-export const hexEncryption = true // encryptAES128CTR must be 'hex'
 
 export { addHexPrefix } from 'ethereumjs-util'
 
@@ -122,6 +120,20 @@ export function fetchSummary(address) {
         .then(txs => Object.assign(txs, totals))
 }
 
+export function encrypt(private_key_encrypted, password) {
+    return encryptAES128CTR(private_key_encrypted, password, true, true)
+}
+
+export function decrypt(address, private_key_encrypted, password) {
+    const private_key = decryptAES128CTR(private_key_encrypted, password, true)
+
+    if (isPrivateKey(private_key)) {
+        if (getAddressFromPrivateKey(private_key) === address)
+            return private_key
+    }
+
+    return false
+}
 
 // function fetchMyEtherScan(extraBody) {
 //     const body = {

@@ -76,7 +76,8 @@ export default class ImportBIP extends Component {
         setTimeout(e=>{ // Need this shitty hack to show loading effect
             const collector = collect()
             try {
-                const private_key = decryptBIP38(state.view.bip_input, state.view.bip_password)
+                const password = state.view.bip_password
+                const private_key = decryptBIP38(state.view.bip_input, password)
                 const address = getAddressFromPrivateKey(private_key)
                 const asset_id = getAssetId({ symbol: BTC.symbol, address: address })
                 state.view.address = address
@@ -89,7 +90,7 @@ export default class ImportBIP extends Component {
                     setPrivateKey(
                         asset_id,
                         private_key,
-                        state.view.bip_password
+                        password
                     )
                     setHref(routes.asset(getAssetId(asset)))
                 }

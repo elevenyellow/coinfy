@@ -72,7 +72,7 @@ export default class PrintBTC extends Component {
         const address = asset.address
         const password = state.view.password
         const private_key_encrypted = asset.private_key
-        const private_key = BTC.unlock(address, private_key_encrypted, password)
+        const private_key = BTC.decrypt(address, private_key_encrypted, password)
         if (private_key) {
             state.view.loading = true
             setTimeout(() => {

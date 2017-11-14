@@ -85,8 +85,7 @@ export default class CreateEthereum extends Component {
             setPrivateKey(
                 getAssetId({ symbol: ETH.symbol, address }),
                 state.view.private_key,
-                state.view.password,
-                true
+                state.view.password
             )
             setHref(routes.asset(getAssetId(asset)))
             collector.emit()

@@ -12,6 +12,7 @@
         "big.js": "^3.2.0",
         "bip38": "^2.0.1",
         "bitcoinjs-lib": "^3.1.1",
+        "crypto-js": "^3.1.9-1",
         "dop": "^0.26.0",
         "ethereumjs-util": "^5.1.2",
         "express": "4.14.0",

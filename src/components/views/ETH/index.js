@@ -29,8 +29,8 @@ import {
 
 import HeaderAsset from '/components/partials/HeaderAsset'
 import Summary from '/components/views/ETH/Summary'
+import PrintETH from '/components/views/ETH/Print'
 // import ChangePassword from '/components/views/ETH/ChangePassword'
-// import PrintETH from '/components/views/ETH/Print'
 // import Delete from '/components/views/ETH/Delete'
 
 export default class ViewETH extends Component {
@@ -125,7 +125,7 @@ function ViewETHTemplate({
                             }}
                         >
                             <MenuContentItemText>
-                                Paper Wallet{tooltipPrivatekey}
+                                Paper Wallet & Keystore{tooltipPrivatekey}
                             </MenuContentItemText>
                         </MenuContentItem>
 
@@ -155,13 +155,14 @@ function ViewETHTemplate({
                         <Summary />
                     </Route>
 
+                    <Route pathname={routes_printAsset}>
+                        <PrintETH />
+                    </Route>
+
                     {/* <Route pathname={routes_changePasswordAsset}>
                         <ChangePassword />
                     </Route>
 
-                    <Route pathname={routes_printAsset}>
-                        <PrintETH />
-                    </Route>
 
                     <Route pathname={routes_deleteAsset}>
                         <RightContainerMiddle2>
