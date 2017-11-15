@@ -2,6 +2,7 @@ import React from 'react'
 import { set, collect } from 'dop'
 import { Assets, getAssetId } from '/api/Assets'
 import { now } from '/api/time'
+import { keysToRemoveWhenExporting } from '/const/state'
 import routes from '/const/routes'
 import styles from '/const/styles'
 import timeouts from '/const/timeouts'
@@ -21,6 +22,8 @@ import {
     readFile,
     downloadFile
 } from '/api/browser'
+
+
 
 export function setHref(href) {
     const collector = collect()
@@ -44,6 +47,7 @@ export function setPublicKey(asset_id, public_key) {
     saveAssetsLocalStorage()
     setAssetsExported(false)
 }
+
 export function setPrivateKey(asset_id, private_key, password) {
     const asset = state.assets[asset_id]
     set(
@@ -55,6 +59,7 @@ export function setPrivateKey(asset_id, private_key, password) {
     saveAssetsLocalStorage()
     setAssetsExported(false)
 }
+
 export function deleteAsset(asset_id) {
     const collector = collect()
     const name = state.assets[asset_id].label || state.assets[asset_id].address
@@ -82,7 +87,6 @@ export function setAssetsExported(value) {
     localStorageSet('assetsExported', value)
 }
 
-const keysToRemoveWhenExporting = ['state', 'summary']
 export function exportAssets() {
     if (state.totalAssets > 0) {
         const data = btoa(

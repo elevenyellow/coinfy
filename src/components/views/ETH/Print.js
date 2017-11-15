@@ -6,7 +6,7 @@ import { Show } from '/doprouter/react'
 // import { createWorker } from '/api/workers'
 import { generateQRCode } from '/api/qr'
 import { ETH } from '/api/Assets'
-import { getAllFormats } from '/api/Assets/ETH'
+import { getPublicFromPrivateKey } from '/api/Assets/ETH'
 import { printTemplate, downloadFile } from '/api/browser'
 
 import state from '/store/state'
@@ -71,91 +71,56 @@ export default class PrintETH extends Component {
         const address = asset.address
         const password = state.view.password
         if (state.view.isPaperwallet) {
-        // const private_key_encrypted = asset.private_key
-        // const private_key = ETH.decrypt(address, private_key_encrypted, password)
-        // if (private_key) {
-        //         // We need to do this trick in order to show the loading-button icon
-        //         const isEncrypted = state.view.isPaperwallet
-        //         const formats = getAllFormats(private_key)
-        //         let private_key1 = private_key
-        //         let private_key2 = formats.compressed
-        //             ? formats.private_key
-        //             : formats.private_key_comp
-        //         if (isEncrypted) {
-        //             private_key1 = encryptBIP38(private_key1, password)
-        //             private_key2 = encryptBIP38(private_key2, password)
-        //         }
-        //         const qrs = [
-        //             {
-        //                 img: generateQRCode(address),
-        //                 hash: address,
-        //                 title: 'Address',
-        //                 description:
-        //                     'You can share this address to receive funds.'
-        //             },
-        //             {
-        //                 img: generateQRCode(
-        //                     private_key1,
-        //                     undefined,
-        //                     isEncrypted ? 'black' : styles.color.red3
-        //                 ),
-        //                 hash: private_key1,
-        //                 red: !isEncrypted,
-        //                 title: 'Private Key',
-        //                 description:
-        //                     'This CAN NOT BE SHARED. If you share this you will lose your funds. ' +
-        //                     (isEncrypted
-        //                         ? 'Encrypted (BIP38)'
-        //                         : 'UnisPaperwallet (WIF)')
-        //             },
-        //             {
-        //                 title: `Address ${formats.compressed
-        //                     ? 'uncompressed'
-        //                     : 'compressed'}`,
-        //                 hash: formats.compressed
-        //                     ? formats.address
-        //                     : formats.address_comp
-        //             },
-        //             {
-        //                 title: `Private Key (${isEncrypted
-        //                     ? 'Encrypted BIP38'
-        //                     : 'UnisPaperwallet WIF'} ${formats.compressed
-        //                     ? 'uncompressed'
-        //                     : 'compressed'}). DO NOT SHARE THIS OR YOU WILL LOSE YOUR FUNDS`,
-        //                 hash: private_key2,
-        //                 red: !isEncrypted
-        //             },
-        //             {
-        //                 title: `Public Key`,
-        //                 hash: formats.public_key
-        //             },
-        //             {
-        //                 title: `Public Key compressed`,
-        //                 hash: formats.public_key_comp
-        //             }
-        //         ]
-        //         // data.address_qr = generateQRCode(data.address)
-        //         // data.address_comp_qr = generateQRCode(data.address_comp)
-        //         // data.private_key_qr = generateQRCode(data.private_key, undefined, styles.color.red3)
-        //         // data.private_key_comp_qr = generateQRCode(data.private_key_comp, undefined, styles.color.red3)
-        //         printTemplate(template(qrs))
-        // } else {
-        //     state.view.invalidPassword = true
-        // }
-        }
-        else {
+            const private_key_encrypted = asset.private_key
+            const private_key = ETH.decrypt(
+                address,
+                private_key_encrypted,
+                password
+            )
+            if (private_key) {
+                const public_key = getPublicFromPrivateKey(private_key)
+                const qrs = [
+                    {
+                        img: generateQRCode(address),
+                        hash: address,
+                        title: 'Address',
+                        description:
+                            'You can share this address to receive funds.'
+                    },
+                    {
+                        img: generateQRCode(
+                            private_key,
+                            undefined,
+                            styles.color.red3
+                        ),
+                        hash: private_key,
+                        red: true,
+                        title: 'Private Key',
+                        description:
+                            'This CAN NOT BE SHARED. If you share this you will lose your funds.'
+                    },
+                    {
+                        title: `Public Key`,
+                        hash: public_key
+                    }
+                ]
+                printTemplate(template(qrs))
+            } else {
+                state.view.invalidPassword = true
+            }
+        } else {
             const fileString = JSON.stringify({
-                "version": 3,
-                "id": address,
-                "address": address,
-                "Crypto": asset.private_key 
+                version: 3,
+                id: address,
+                address: address,
+                Crypto: asset.private_key
             })
-            const name = 
+            const name =
                 'UTC--' +
                 new Date().toJSON().replace(/:/g, '-') +
                 '--' +
                 address
-            
+
             downloadFile(fileString, name)
         }
     }
@@ -201,7 +166,6 @@ function PrintETHTemplate({
                             </option>
                         </Select>
                     </FormFieldRight>
-
                 </FormField>
 
                 <Show if={isPaperwallet}>
@@ -223,13 +187,10 @@ function PrintETHTemplate({
                     </FormField>
                 </Show>
 
-
                 <FormField>
                     <FormFieldButtons>
-                        <Button
-                            onClick={onPrint}
-                        >
-                            {isPaperwallet?'Unlock and Print':'Download'}
+                        <Button onClick={onPrint}>
+                            {isPaperwallet ? 'Unlock and Print' : 'Download'}
                         </Button>
                     </FormFieldButtons>
                 </FormField>

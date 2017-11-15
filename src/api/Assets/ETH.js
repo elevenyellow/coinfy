@@ -3,7 +3,7 @@ import {
     isValidAddress,
     isValidPrivate,
     privateToAddress,
-    generateAddress
+    privateToPublic
 } from 'ethereumjs-util'
 import Big from 'big.js'
 import { decimalsMax } from '/api/numbers'
@@ -49,6 +49,10 @@ export function isPrivateKeyCheck(string) {
 
 export function getAddressFromPrivateKey(private_key) {
     return addHexPrefix(privateToAddress(stringToBuffer(private_key)).toString('hex'))
+}
+
+export function getPublicFromPrivateKey(private_key) {
+    return privateToPublic(stringToBuffer(private_key)).toString('hex')
 }
 
 export function stringToBuffer(string) {
