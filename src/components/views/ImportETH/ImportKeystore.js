@@ -30,10 +30,10 @@ export default class ImportAddress extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
         const collector = collect()
-        state.view.keystore_invalid = false
         state.view.keystore_selected = false
         state.view.keystore_password = ''
         state.view.keystore_password_error = ''
+        state.view.keystore_invalid_error = ''
         collector.destroy()
         this.onChangeFile = this.onChangeFile.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
@@ -51,6 +51,7 @@ export default class ImportAddress extends Component {
         const file = e.target.files[0]
         readFile(file, dataString => {
             const collector = collect()
+            state.view.keystore_password_error = ''
             state.view.keystore_selected = true
             try {
                 const keystore = JSON.parse(dataString)
@@ -61,18 +62,18 @@ export default class ImportAddress extends Component {
                     typeof keystore.Crypto == 'object'
                 ) {
                     if (isAssetRegistered(getAssetId({symbol:ETH.symbol, address:address}))) {
-                        state.view.keystore_invalid = 'You already have this asset'
+                        state.view.keystore_invalid_error = 'You already have this asset'
                     } else {
                         this.state.keystore = keystore
                         state.view.address = address
-                        state.view.keystore_invalid = false
+                        state.view.keystore_invalid_error = ''
                     }
                 } else {
-                    state.view.keystore_invalid = true
+                    state.view.keystore_invalid_error = 'Invalid Keystore file'
                 }
             } catch (e) {
                 console.log( e )
-                state.view.keystore_invalid = true
+                state.view.keystore_invalid_error = 'Invalid Keystore file'
             }
             collector.emit()
         })
@@ -110,7 +111,7 @@ export default class ImportAddress extends Component {
 
     get isValidForm() {
         return (
-            !state.view.keystore_invalid &&
+            state.view.keystore_invalid_error==='' &&
             state.view.keystore_selected &&
             state.view.keystore_password.length > 0
         )
@@ -118,7 +119,7 @@ export default class ImportAddress extends Component {
 
     render() {
         return React.createElement(ImportAddressTemplate, {
-            keystore_invalid: state.view.keystore_invalid,
+            keystore_invalid_error: state.view.keystore_invalid_error,
             keystore_password: state.view.keystore_password,
             keystore_password_error: state.view.keystore_password_error,
             isValidForm: this.isValidForm,
@@ -130,7 +131,7 @@ export default class ImportAddress extends Component {
 }
 
 function ImportAddressTemplate({
-    keystore_invalid,
+    keystore_invalid_error,
     keystore_password,
     keystore_password_error,
     isValidForm,
@@ -147,13 +148,13 @@ function ImportAddressTemplate({
                 </FormFieldLeft>
                 <FormFieldRight>
                     {/* <button onClick={onChangeFile}>Open</button>
-                    <MessageKeystoreFile invalid={keystore_invalid}>{keystore_message}</MessageKeystoreFile> */}
+                    <MessageKeystoreFile invalid={keystore_invalid_error}>{keystore_message}</MessageKeystoreFile> */}
                     <Input
                         type="file"
                         width="100%"
                         onChange={onChangeFile}
-                        error="Invalid Keystore file"
-                        invalid={keystore_invalid}
+                        error={keystore_invalid_error}
+                        invalid={keystore_invalid_error}
                     />
                 </FormFieldRight>
             </FormField>
