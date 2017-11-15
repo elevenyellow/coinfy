@@ -62,3 +62,13 @@ export function readFile(file, onRead) {
     reader.onload = e => onRead(e.target.result)
     reader.readAsText(file)
 }
+
+
+export function downloadFile(data, name, filetype='charset=UTF-8') {
+    const a = document.createElement('a')
+    const file = new Blob([data], { type: filetype }) //,
+    // const date = new Date().toJSON().replace(/\..+$/,'')
+    a.href = URL.createObjectURL(file)
+    a.download = name
+    a.click()
+}

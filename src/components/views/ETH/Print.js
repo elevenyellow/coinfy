@@ -7,7 +7,7 @@ import { Show } from '/doprouter/react'
 import { generateQRCode } from '/api/qr'
 import { ETH } from '/api/Assets'
 import { getAllFormats } from '/api/Assets/ETH'
-import { printTemplate } from '/api/browser'
+import { printTemplate, downloadFile } from '/api/browser'
 
 import state from '/store/state'
 import { getAsset } from '/store/getters'
@@ -144,14 +144,19 @@ export default class PrintETH extends Component {
         // }
         }
         else {
-            console.log( JSON.stringify({
+            const fileString = JSON.stringify({
                 "version": 3,
-                "id": "b8346d60-0ceb-4997-affd-1740895e1c66",
-                "address": "ce716f04da386da06e87cc0d42a0730e50e6196f",
+                "id": address,
+                "address": address,
                 "Crypto": asset.private_key 
-            }));
-            // let mac = ethUtil.sha3(Buffer.concat([derivedKey.slice(16, 32), new Buffer(ciphertext, 'hex')]))
-            // let mac = ethUtil.sha3(Buffer.concat([derivedKey.slice(16, 32), ciphertext]))
+            })
+            const name = 
+                'UTC--' +
+                new Date().toJSON().replace(/:/g, '-') +
+                '--' +
+                address
+            
+            downloadFile(fileString, name)
         }
     }
     render() {

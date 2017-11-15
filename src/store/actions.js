@@ -18,7 +18,8 @@ import {
     localStorageSet,
     localStorageRemove,
     openFile,
-    readFile
+    readFile,
+    downloadFile
 } from '/api/browser'
 
 export function setHref(href) {
@@ -92,12 +93,7 @@ export function exportAssets() {
                     : value
             })
         ) // btoa
-        const a = document.createElement('a')
-        const file = new Blob([data], { type: 'charset=UTF-8' }) //,
-        // const date = new Date().toJSON().replace(/\..+$/,'')
-        a.href = URL.createObjectURL(file)
-        a.download = 'YOU_MUST_RENAME_THIS_FOR_SECURITY'
-        a.click()
+        downloadFile(data, 'YOU_MUST_RENAME_THIS_FOR_SECURITY')
         setAssetsExported(true)
     }
 }

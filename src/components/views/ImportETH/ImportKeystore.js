@@ -16,6 +16,7 @@ import styles from '/const/styles'
 import routes from '/const/routes'
 
 import Input from '/components/styled/Input'
+import InputFile from '/components/styled/InputFile'
 import Button from '/components/styled/Button'
 import { Label, SubLabel } from '/components/styled/Label'
 import {
@@ -24,6 +25,7 @@ import {
     FormFieldRight,
     FormFieldButtons
 } from '/components/styled/Form'
+import { log } from 'util';
 
 export default class ImportAddress extends Component {
     componentWillMount() {
@@ -49,34 +51,37 @@ export default class ImportAddress extends Component {
     onChangeFile(e) {
         // e.preventDefault()
         const file = e.target.files[0]
-        readFile(file, dataString => {
-            const collector = collect()
-            state.view.keystore_password_error = ''
-            state.view.keystore_selected = true
-            try {
-                const keystore = JSON.parse(dataString)
-                const address = addHexPrefix(keystore.address)
-                if (
-                    keystore.version === 3 &&
-                    isAddress(address) &&
-                    typeof keystore.Crypto == 'object'
-                ) {
-                    if (isAssetRegistered(getAssetId({symbol:ETH.symbol, address:address}))) {
-                        state.view.keystore_invalid_error = 'You already have this asset'
+        if (file) {
+            // console.log( file.name );
+            readFile(file, dataString => {
+                const collector = collect()
+                state.view.keystore_password_error = ''
+                state.view.keystore_selected = true
+                try {
+                    const keystore = JSON.parse(dataString)
+                    const address = addHexPrefix(keystore.address)
+                    if (
+                        keystore.version === 3 &&
+                        isAddress(address) &&
+                        typeof keystore.Crypto == 'object'
+                    ) {
+                        if (isAssetRegistered(getAssetId({symbol:ETH.symbol, address:address}))) {
+                            state.view.keystore_invalid_error = 'You already have this asset'
+                        } else {
+                            this.state.keystore = keystore
+                            state.view.address = address
+                            state.view.keystore_invalid_error = ''
+                        }
                     } else {
-                        this.state.keystore = keystore
-                        state.view.address = address
-                        state.view.keystore_invalid_error = ''
+                        state.view.keystore_invalid_error = 'Invalid Keystore file'
                     }
-                } else {
+                } catch (e) {
+                    console.log( e )
                     state.view.keystore_invalid_error = 'Invalid Keystore file'
                 }
-            } catch (e) {
-                console.log( e )
-                state.view.keystore_invalid_error = 'Invalid Keystore file'
-            }
-            collector.emit()
-        })
+                collector.emit()
+            })
+        }
     }
 
     onChangePassword(e) {
@@ -86,7 +91,7 @@ export default class ImportAddress extends Component {
 
     onSubmit(e) {
         e.preventDefault()
-        console.log( this.state.keystore );
+        // console.log( this.state.keystore );
         if (this.state.keystore) {
             const collector = collect()
             const address = state.view.address
@@ -112,6 +117,7 @@ export default class ImportAddress extends Component {
     get isValidForm() {
         return (
             state.view.keystore_invalid_error==='' &&
+            state.view.keystore_password_error==='' &&
             state.view.keystore_selected &&
             state.view.keystore_password.length > 0
         )
@@ -149,8 +155,7 @@ function ImportAddressTemplate({
                 <FormFieldRight>
                     {/* <button onClick={onChangeFile}>Open</button>
                     <MessageKeystoreFile invalid={keystore_invalid_error}>{keystore_message}</MessageKeystoreFile> */}
-                    <Input
-                        type="file"
+                    <InputFile
                         width="100%"
                         onChange={onChangeFile}
                         error={keystore_invalid_error}
