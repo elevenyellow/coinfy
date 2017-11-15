@@ -3,3 +3,4 @@ miscellaneous/design/all
 public/static/bundle
 node_modules
 .vscode
+webpack-stats.json

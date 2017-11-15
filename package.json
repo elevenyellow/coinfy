@@ -2,6 +2,7 @@
     "name": "coinfy",
     "version": "1.0.0",
     "scripts": {
+        "webpack-visualize": "webpack --config=./webpack/production.js  --profile --json > webpack-stats.json",
         "build": "webpack --config=./webpack/production.js --optimize-minimize --progress --colors --display-error-details",
         "dev": "NODE_ENV=development node src/server",
         "prod": "NODE_ENV=production node src/server",
