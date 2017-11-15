@@ -4,6 +4,7 @@
   "description": "",
   "main": "generate.js",
   "dependencies": {
+    "bigi": "^1.4.2",
     "bip39": "^2.4.0",
     "bitcoinjs-lib": "^3.3.0",
     "crypto": "^1.0.1",
