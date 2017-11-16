@@ -30,7 +30,7 @@ import {
 import HeaderAsset from '/components/partials/HeaderAsset'
 import Summary from '/components/views/ETH/Summary'
 import PrintETH from '/components/views/ETH/Print'
-// import ChangePassword from '/components/views/ETH/ChangePassword'
+import ChangePassword from '/components/views/ETH/ChangePassword'
 import Delete from '/components/views/ETH/Delete'
 
 export default class ViewETH extends Component {
@@ -76,7 +76,6 @@ function ViewETHTemplate({
     routes_changePasswordAsset,
     routes_deleteAsset
 }) {
-    console.log( location.pathname );
     const tooltipPrivatekey = hasPrivateKey ? null : (
         <HideMobile>
             <Help position="center" width={175}>
@@ -160,9 +159,9 @@ function ViewETHTemplate({
                         <PrintETH />
                     </Route>
 
-                    {/* <Route pathname={routes_changePasswordAsset}>
+                    <Route pathname={routes_changePasswordAsset}>
                         <ChangePassword />
-                    </Route> */}
+                    </Route>
 
 
                     <Route pathname={routes_deleteAsset}>

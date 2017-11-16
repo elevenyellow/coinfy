@@ -5,8 +5,7 @@ import { createObserver, collect } from 'dop'
 import routes from '/const/routes'
 import styles from '/const/styles'
 
-import { BTC } from '/api/Assets'
-import { isPrivateKey, getAddressFromPrivateKey } from '/api/Assets/BTC'
+import { Assets } from '/api/Assets'
 import { minpassword } from '/api/crypto'
 
 import state from '/store/state'
@@ -31,8 +30,8 @@ import CenterElement from '/components/styled/CenterElement'
 
 
 
-export default class ChangePasswordBTC extends Component {
-    componentWillMount() {
+export default class ChangePassword extends Component {
+    componentWillMount() {        
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
 
@@ -74,8 +73,9 @@ export default class ChangePasswordBTC extends Component {
         e.preventDefault()
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
+        const Asset = Assets[asset.symbol]
         const collector = collect()
-        const private_key = BTC.decrypt(asset.address, asset.private_key, state.view.oldpassword)
+        const private_key = Asset.decrypt(asset.address, asset.private_key, state.view.oldpassword)
         if ( private_key ) {
             const name = asset.label || asset.address
             setPrivateKey(asset_id, private_key, state.view.password)
@@ -112,7 +112,7 @@ export default class ChangePasswordBTC extends Component {
             !state.view.isInvalidOldpassword &&
             !isInvalidRepassword
 
-        return React.createElement(ChangePasswordBTCTemplate, {
+        return React.createElement(ChangePasswordTemplate, {
             oldpassword: state.view.oldpassword,
             password: state.view.password,
             repassword: state.view.repassword,
@@ -127,7 +127,7 @@ export default class ChangePasswordBTC extends Component {
     }
 }
 
-function ChangePasswordBTCTemplate({
+function ChangePasswordTemplate({
     oldpassword,
     password,
     repassword,

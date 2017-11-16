@@ -12,7 +12,6 @@ import {
     getAssetsAsArray,
     generateDefaultAsset
 } from '/store/getters'
-import { encryptAES128CTR } from '/api/crypto'
 import { CryptoPriceManager } from '/api/prices'
 import { decimals } from '/api/numbers'
 import {

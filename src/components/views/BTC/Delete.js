@@ -9,19 +9,19 @@ import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
 import CenterElement from '/components/styled/CenterElement'
 
-export default class DeleteAsset extends Component {
+export default class Delete extends Component {
     onDelete() {
         const asset_id = state.location.path[1]
         deleteAsset(asset_id)
     }
     render() {
-        return React.createElement(DeleteAssetTemplate, {
+        return React.createElement(DeleteTemplate, {
             onDelete: this.onDelete
         })
     }
 }
 
-function DeleteAssetTemplate({ onDelete }) {
+function DeleteTemplate({ onDelete }) {
     return (
         <div>
             <CenterElement>
