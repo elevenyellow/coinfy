@@ -27,7 +27,7 @@ import {
 } from '/components/styled/Form'
 import { log } from 'util';
 
-export default class ImportAddress extends Component {
+export default class ImportKeystore extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
@@ -63,7 +63,7 @@ export default class ImportAddress extends Component {
                     if (
                         keystore.version === 3 &&
                         isAddress(address) &&
-                        typeof keystore.Crypto == 'object'
+                        (typeof keystore.Crypto == 'object' || typeof keystore.crypto == 'object')
                     ) {
                         if (isAssetRegistered(getAssetId({symbol:ETH.symbol, address:address}))) {
                             state.view.keystore_invalid_error = 'You already have this asset'
@@ -96,7 +96,16 @@ export default class ImportAddress extends Component {
             const collector = collect()
             const address = state.view.address
             const password = state.view.keystore_password
-            const private_key = ETH.decrypt(address, this.state.keystore.Crypto, password)
+            const crypto = this.state.keystore.Crypto || this.state.keystore.crypto
+
+            try {
+                const private_key = ETH.decrypt(address, crypto, password)
+            } catch(e) {
+                state.view.keystore_invalid_error = 'Invalid Keystore file'
+                collector.emit()
+                console.log( e )
+                return false
+            }
 
             if (private_key) {
                 const asset = createAsset(ETH.type, ETH.symbol, address)
@@ -124,7 +133,7 @@ export default class ImportAddress extends Component {
     }
 
     render() {
-        return React.createElement(ImportAddressTemplate, {
+        return React.createElement(ImportKeystoreTemplate, {
             keystore_invalid_error: state.view.keystore_invalid_error,
             keystore_password: state.view.keystore_password,
             keystore_password_error: state.view.keystore_password_error,
@@ -136,7 +145,7 @@ export default class ImportAddress extends Component {
     }
 }
 
-function ImportAddressTemplate({
+function ImportKeystoreTemplate({
     keystore_invalid_error,
     keystore_password,
     keystore_password_error,

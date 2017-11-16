@@ -1,1 +1,2 @@
-export * from '/components/views/BTC/ChangePassword'
+import ChangePassword from '/components/views/BTC/ChangePassword'
+export default ChangePassword
