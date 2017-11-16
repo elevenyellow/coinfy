@@ -71,6 +71,14 @@ export function generateRandomWallet() {
     }
 }
 
+export function urlInfo(address) {
+    return `https://etherscan.io/address/${address}`
+}
+
+export function urlInfoTx(txid) {
+    return `https://etherscan.io/tx/${txid}`
+}
+
 
 export function fetchBalance(address) {
     return fetch(

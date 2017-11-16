@@ -5,14 +5,24 @@ import { Show } from '/doprouter/react'
 
 import styles from '/const/styles'
 import { currencies } from '/const/currencies'
-import { BTC } from '/api/Assets'
+import { PrivateKey as template } from '/const/paperwallets'
+
+import { Assets } from '/api/Assets'
 import { round } from '/api/numbers'
+import { getDay, getMonthTextShort } from '/api/time'
+import { openUrl } from '/api/browser'
+import { generateQRCode } from '/api/qr'
+import { printTemplate } from '/api/browser'
+import { selectContentElement, copyContentSelected } from '/api/browser'
+
 import state from '/store/state'
 import { fetchSummaryAsset, fetchSummaryAssetIfReady } from '/store/actions'
 import { convertBalance, getAsset } from '/store/getters'
-import { getDay, getMonthTextShort } from '/api/time'
-import { openUrl } from '/api/browser'
 
+import IconCopy from 'react-icons/lib/md/content-copy'
+import IconPrint from 'react-icons/lib/fa/print'
+import IconEmail from 'react-icons/lib/md/email'
+import IconLink from 'react-icons/lib/md/insert-link'
 import IconReceive from 'react-icons/lib/md/call-received'
 import IconSend from 'react-icons/lib/md/send'
 import Div from '/components/styled/Div'
@@ -35,61 +45,46 @@ import {
 } from '/components/styled/Transactions'
 
 
-import { generateQRCode } from '/api/qr'
-import { printTemplate } from '/api/browser'
-
-import { selectContentElement, copyContentSelected } from '/api/browser'
-import { PrivateKey as template } from '/const/paperwallets'
 
 
-
-import IconCopy from 'react-icons/lib/md/content-copy'
-import IconPrint from 'react-icons/lib/fa/print'
-import IconEmail from 'react-icons/lib/md/email'
-import IconLink from 'react-icons/lib/md/insert-link'
-
-export default class SummaryBTC extends Component {
+export default class Summary extends Component {
     componentWillMount() {
-        let unobserveSummary
-        let unobserveFetching
-        let asset_id = state.location.path[1]
-        let asset = getAsset(asset_id)
-
-        state.view = { fetchingTxs: false }
-
-        this.observer = createObserver(mutations => {
-            if (mutations[0].prop === 'pathname') {
-                asset_id = state.location.path[1]
-                asset = getAsset(asset_id)
-                unobserveSummary()
-                unobserveFetching()
-                unobserveSummary = this.observer.observe(asset, 'summary')
-                unobserveFetching = this.observer.observe(asset.state, 'fetching_summary')
-            }
+        this.observerPath = createObserver(mutations => {
+            this.observer.destroy()
+            this.observeAll()
             this.forceUpdate()
         })
-        unobserveSummary = this.observer.observe(asset, 'summary')
-        unobserveFetching = this.observer.observe(asset.state, 'fetching_summary')
-        this.observer.observe(state.location, 'pathname')
-        this.observer.observe(state, 'currency')
-        this.observer.observe(state.prices, BTC.symbol)
-        this.observer.observe(state.view, 'fetchingTxs')
-
-        
+        this.observerPath.observe(state.location, 'pathname')
         this.refaddress = this.refaddress.bind(this)
         this.onCopy = this.onCopy.bind(this)
         this.onPrint = this.onPrint.bind(this)
         this.rescanOrLoad = this.rescanOrLoad.bind(this)
 
+        this.observeAll()
         this.fetchData()
     }
     componentWillUnmount() {
+        this.observerPath.destroy()
         this.observer.destroy()
     }
     shouldComponentUpdate() {
         this.fetchData()
         return false
     }
+
+    observeAll() {
+        state.view = { fetchingTxs: false }
+        const asset_id = state.location.path[1]
+        const asset = getAsset(asset_id)
+        this.Asset = Assets[asset.symbol] // Storing Asset api (Asset.BTC, Asset.ETH, ...)        
+        this.observer = createObserver(mutations => this.forceUpdate())
+        this.observer.observe(asset, 'summary')
+        this.observer.observe(asset.state, 'fetching_summary')
+        this.observer.observe(state, 'currency')
+        this.observer.observe(state.prices, asset.symbol)
+        this.observer.observe(state.view, 'fetchingTxs')
+    }
+
 
     refaddress(e) {
         if (e) this.addressElement = e.base
@@ -134,7 +129,7 @@ export default class SummaryBTC extends Component {
         }
         else {
             state.view.fetchingTxs = true
-            BTC.fetchTxs(asset.address, asset.summary.txs.length).then(txs => {
+            this.Asset.fetchTxs(asset.address, asset.summary.txs.length).then(txs => {
                 asset.summary.totalTransactions = txs.totalTxs
                 asset.summary.txs = asset.summary.txs.concat(txs.txs)
                 state.view.fetchingTxs = false
@@ -146,10 +141,10 @@ export default class SummaryBTC extends Component {
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
         const address = asset.address
-        return React.createElement(SummaryBTCTemplate, {
+        return React.createElement(SummaryTemplate, {
             balance_asset: asset.balance,
             balance_currency: currencies[state.currency].format(
-                convertBalance(BTC.symbol, asset.balance),
+                convertBalance(asset.symbol, asset.balance),
                 0
             ),
             symbol: currencies[state.currency].symbol,
@@ -163,14 +158,17 @@ export default class SummaryBTC extends Component {
             address: address,
             qrcodebase64: generateQRCode(address),
             refaddress: this.refaddress,
+            colorAsset: this.Asset.color,
+            urlInfo: this.Asset.urlInfo(address),
+            urlInfoTx: this.Asset.urlInfoTx,
             onCopy: this.onCopy,
             onPrint: this.onPrint,
-            mailTo: `mailto:?subject=My Bitcoin Address&body=My Bitcoin address is: ${address}`
+            mailTo: `mailto:?subject=My ${this.Asset.name} Address&body=My ${this.Asset.name} address is: ${address}`
         })
     }
 }
 
-function SummaryBTCTemplate({
+function SummaryTemplate({
     balance_asset,
     balance_currency,
     symbol,
@@ -184,6 +182,9 @@ function SummaryBTCTemplate({
     address,
     qrcodebase64,
     refaddress,
+    colorAsset,
+    urlInfo,
+    urlInfoTx,
     onCopy,
     onPrint,
     mailTo
@@ -204,7 +205,7 @@ function SummaryBTCTemplate({
                 <Div>
                     <CenterElement>
                         <CircleButtons>
-                            <CircleButton color={BTC.color} onClick={onCopy}>
+                            <CircleButton color={colorAsset} onClick={onCopy}>
                                 <IconCopy size={25} color={'white'} />
                                 <div class="hideOnActive">
                                     Copy to Clipboard
@@ -212,20 +213,20 @@ function SummaryBTCTemplate({
                                 <div class="showOnActive">Copied!</div>
                             </CircleButton>
 
-                            <CircleButton color={BTC.color} onClick={onPrint}>
+                            <CircleButton color={colorAsset} onClick={onPrint}>
                                 <IconPrint size={25} color={'white'} />
                                 <div>Print this Address</div>
                             </CircleButton>
 
-                            <CircleButton color={BTC.color} href={mailTo}>
+                            <CircleButton color={colorAsset} href={mailTo}>
                                 <IconEmail size={25} color={'white'} />
                                 <div>Email this Address</div>
                             </CircleButton>
 
                             <CircleButton
                                 target="_blank"
-                                color={BTC.color}
-                                href={`https://blockchain.info/address/${address}`}
+                                color={colorAsset}
+                                href={urlInfo}
                             >
                                 <IconLink size={25} color={'white'} />
                                 <div>View on Blockchain</div>
@@ -284,22 +285,19 @@ function SummaryBTCTemplate({
                     return (
                         <Transaction>
                             <TransactionInner
-                                onClick={e =>
-                                    openUrl(
-                                        `https://blockchain.info/tx/${tx.txid}`
-                                    )}
+                                onClick={e => openUrl(urlInfoTx(tx.txid))}
                             >
                                 <TransactionDate>
                                     <div>{month}</div>
                                     {day}
                                 </TransactionDate>
-                                <TransactionIco color={BTC.color}>{icon}</TransactionIco>
+                                <TransactionIco color={colorAsset}>{icon}</TransactionIco>
                                 <TransactionData>
                                     <TransactionLabel>
                                         {received ? 'Received' : 'Sent'}
                                     </TransactionLabel>
                                     <TransactionAmount>
-                                        {value} {BTC.symbol}
+                                        {value} {symbol}
                                     </TransactionAmount>
                                 </TransactionData>
                             </TransactionInner>
@@ -357,7 +355,7 @@ function SummaryBTCTemplate({
 
 
 
-const Header = styled.div``
+// const Header = styled.div``
 
 // const List = styled.div`
 //     width: 165px;
@@ -384,7 +382,7 @@ const Header = styled.div``
 //     font-size: 40px;
 //     font-weight: 900;
 //     text-align: left;
-//     color: ${BTC.color};
+//     color: ${colorAsset};
 // `
 // const HeaderBalanceCurrency = styled.div`
 //     text-align: left;

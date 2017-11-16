@@ -108,6 +108,16 @@ export function getAllFormats(wallet) {
     return formats
 }
 
+export function urlInfo(address) {
+    return `https://blockchain.info/address/${address}`
+}
+
+export function urlInfoTx(txid) {
+    return `https://blockchain.info/tx/${txid}`
+}
+
+
+
 export function encrypt(private_key_encrypted, password) {
     return encryptAES128CTR(private_key_encrypted, password)
 }
