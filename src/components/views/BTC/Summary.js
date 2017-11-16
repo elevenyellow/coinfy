@@ -55,10 +55,11 @@ export default class Summary extends Component {
             this.forceUpdate()
         })
         this.observerPath.observe(state.location, 'pathname')
-        this.refaddress = this.refaddress.bind(this)
+
+        this.refAddress = this.refAddress.bind(this)
+        this.rescanOrLoad = this.rescanOrLoad.bind(this)
         this.onCopy = this.onCopy.bind(this)
         this.onPrint = this.onPrint.bind(this)
-        this.rescanOrLoad = this.rescanOrLoad.bind(this)
 
         this.observeAll()
         this.fetchData()
@@ -86,7 +87,7 @@ export default class Summary extends Component {
     }
 
 
-    refaddress(e) {
+    refAddress(e) {
         if (e) this.addressElement = e.base
     }
 
@@ -157,7 +158,7 @@ export default class Summary extends Component {
             rescanOrLoad: this.rescanOrLoad,
             address: address,
             qrcodebase64: generateQRCode(address),
-            refaddress: this.refaddress,
+            refAddress: this.refAddress,
             colorAsset: this.Asset.color,
             urlInfo: this.Asset.urlInfo(address),
             urlInfoTx: this.Asset.urlInfoTx,
@@ -181,7 +182,7 @@ function SummaryTemplate({
     rescanOrLoad,
     address,
     qrcodebase64,
-    refaddress,
+    refAddress,
     colorAsset,
     urlInfo,
     urlInfoTx,
@@ -198,9 +199,7 @@ function SummaryTemplate({
                     </QRCode>
                 </Div>
                 <Div padding-bottom="20px">
-                    <CenterElement>
-                        <Address ref={refaddress}>{address}</Address>
-                    </CenterElement>
+                    <Address ref={refAddress}>{address}</Address>
                 </Div>
                 <Div>
                     <CenterElement>

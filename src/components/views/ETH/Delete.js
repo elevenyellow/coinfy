@@ -1,2 +1,1 @@
-import Delete from '/components/views/BTC/Delete'
-export default Delete
+export * from '/components/views/BTC/Delete'
