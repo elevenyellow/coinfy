@@ -30,7 +30,7 @@ import { Label, SubLabel } from '/components/styled/Label'
 
 import { PrivateKey as template } from '/const/paperwallets'
 
-export default class PrintETH extends Component {
+export default class ExportETH extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
@@ -46,7 +46,7 @@ export default class PrintETH extends Component {
         // binding
         this.onChangeEncryption = this.onChangeEncryption.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
-        this.onPrint = this.onPrint.bind(this)
+        this.onExport = this.onExport.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -64,7 +64,7 @@ export default class PrintETH extends Component {
         state.view.invalidPassword = false
         collector.emit()
     }
-    onPrint(e) {
+    onExport(e) {
         e.preventDefault()
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
@@ -125,24 +125,24 @@ export default class PrintETH extends Component {
         }
     }
     render() {
-        return React.createElement(PrintETHTemplate, {
+        return React.createElement(ExportETHTemplate, {
             isPaperwallet: state.view.isPaperwallet,
             password: state.view.password,
             invalidPassword: state.view.invalidPassword,
             onChangeEncryption: this.onChangeEncryption,
             onChangePassword: this.onChangePassword,
-            onPrint: this.onPrint
+            onExport: this.onExport
         })
     }
 }
 
-function PrintETHTemplate({
+function ExportETHTemplate({
     isPaperwallet,
     password,
     invalidPassword,
     onChangeEncryption,
     onChangePassword,
-    onPrint
+    onExport
 }) {
     return (
         <Div>
@@ -189,7 +189,7 @@ function PrintETHTemplate({
 
                 <FormField>
                     <FormFieldButtons>
-                        <Button onClick={onPrint}>
+                        <Button onClick={onExport}>
                             {isPaperwallet ? 'Unlock and Print' : 'Download'}
                         </Button>
                     </FormFieldButtons>

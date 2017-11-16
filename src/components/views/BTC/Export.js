@@ -31,7 +31,7 @@ import { Label, SubLabel } from '/components/styled/Label'
 
 import { PrivateKey as template } from '/const/paperwallets'
 
-export default class PrintBTC extends Component {
+export default class ExportBTC extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
@@ -47,7 +47,7 @@ export default class PrintBTC extends Component {
         // binding
         this.onChangeEncryption = this.onChangeEncryption.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
-        this.onPrint = this.onPrint.bind(this)
+        this.onExport = this.onExport.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -65,7 +65,7 @@ export default class PrintBTC extends Component {
         state.view.invalidPassword = false
         collector.emit()
     }
-    onPrint(e) {
+    onExport(e) {
         e.preventDefault()
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
@@ -149,26 +149,26 @@ export default class PrintBTC extends Component {
         }
     }
     render() {
-        return React.createElement(PrintBTCTemplate, {
+        return React.createElement(ExportBTCTemplate, {
             loading: state.view.loading,
             encrypted: state.view.encrypted,
             password: state.view.password,
             invalidPassword: state.view.invalidPassword,
             onChangeEncryption: this.onChangeEncryption,
             onChangePassword: this.onChangePassword,
-            onPrint: this.onPrint
+            onExport: this.onExport
         })
     }
 }
 
-function PrintBTCTemplate({
+function ExportBTCTemplate({
     loading,
     encrypted,
     password,
     invalidPassword,
     onChangeEncryption,
     onChangePassword,
-    onPrint
+    onExport
 }) {
     return (
         <Div>
@@ -217,7 +217,7 @@ function PrintBTCTemplate({
                 <FormField>
                     <FormFieldButtons>
                         <Button
-                            onClick={onPrint}
+                            onClick={onExport}
                             loading={loading}
                             loadingIco="/static/image/loading.gif"
                         >

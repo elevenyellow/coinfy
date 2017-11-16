@@ -30,7 +30,7 @@ import {
 import HeaderAsset from '/components/partials/HeaderAsset'
 import Summary from '/components/views/BTC/Summary'
 import ChangePassword from '/components/views/BTC/ChangePassword'
-import PrintBTC from '/components/views/BTC/Print'
+import ExportBTC from '/components/views/BTC/Export'
 import Delete from '/components/views/BTC/Delete'
 
 export default class ViewBTC extends Component {
@@ -160,7 +160,7 @@ function ViewBTCTemplate({
                     </Route>
 
                     <Route pathname={routes_printAsset}>
-                        <PrintBTC />
+                        <ExportBTC />
                     </Route>
 
                     <Route pathname={routes_deleteAsset}>
