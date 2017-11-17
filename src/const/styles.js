@@ -40,6 +40,7 @@ export default {
         red: '#e58777',
         red2: '#c83838',
         red3: '#DD0044',
+        red4: '#cc0033',
         green1: '#1aba6a',
         black: '#000',
 

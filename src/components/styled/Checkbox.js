@@ -15,7 +15,7 @@ export default function Checkbox(props) {
 const CheckboxStyled = styled.div`
 box-sizing: content-box;
 display:block;
-height: 25px;
+min-height: 25px;
 padding-top: 5px;
 
 & input {
@@ -78,10 +78,12 @@ padding-top: 5px;
 }
 
 & span {
+    margin-top: -3px;
+    line-height: normal;
+    font-size: 15px;
+
     display: block;
     padding-left: 25px;
-    font-size: 15px;
-    line-height: 16px;
     font-weight: bold;
     color: ${props=> {
       if (props.disabled)

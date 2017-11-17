@@ -165,9 +165,7 @@ function ViewETHTemplate({
 
 
                     <Route pathname={routes_deleteAsset}>
-                        <RightContainerMiddle2>
-                            <Delete />
-                        </RightContainerMiddle2>
+                        <Delete />
                     </Route>
 
                     <Route>
