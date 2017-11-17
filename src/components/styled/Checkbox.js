@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import styles from '/const/styles'
+import { log } from 'util';
 
 export default function Checkbox(props) {
     return (
@@ -15,8 +16,9 @@ export default function Checkbox(props) {
 const CheckboxStyled = styled.div`
 box-sizing: content-box;
 display:block;
-min-height: 25px;
-padding-top: 5px;
+border: 2px solid ${styles.color.background4};
+border-radius: 5px;
+padding: 10px 12px;
 
 & input {
   box-sizing: content-box;
@@ -78,7 +80,7 @@ padding-top: 5px;
 }
 
 & span {
-    margin-top: -3px;
+    margin-top: -2px;
     line-height: normal;
     font-size: 15px;
 
@@ -88,8 +90,8 @@ padding-top: 5px;
     color: ${props=> {
       if (props.disabled)
         return styles.color.grey1
-      else if (props.checked)
-        return styles.color.front3
+      /* else if (props.checked) */
+        /* return styles.color.background2 */
       else
         return styles.color.front3
     }};

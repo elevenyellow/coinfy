@@ -41,10 +41,15 @@ export function localStorageRemove(key) {
 }
 
 export function openFile(onOpen) {
-    const input = document.createElement('input')
-    input.type = 'file'
+    const input = createInputFile()
     input.addEventListener('change', e => forEachFile(input).forEach(onOpen))
     input.click()
+}
+
+export function createInputFile() {
+    const input = document.createElement('input')
+    input.type = 'file'
+    return input
 }
 
 export function forEachFile(input, onOpen) {

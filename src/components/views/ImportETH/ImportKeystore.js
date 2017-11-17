@@ -100,6 +100,19 @@ export default class ImportKeystore extends Component {
 
             try {
                 const private_key = ETH.decrypt(address, crypto, password)
+                if (private_key) {
+                    const asset = createAsset(ETH.type, ETH.symbol, address)
+                    setPrivateKey(
+                        getAssetId({ symbol: ETH.symbol, address }),
+                        private_key,
+                        password
+                    )
+                    setHref(routes.asset(getAssetId(asset)))
+                }
+                else {
+                    state.view.keystore_password_error = 'Invalid password'
+                }
+                collector.emit()
             } catch(e) {
                 state.view.keystore_invalid_error = 'Invalid Keystore file'
                 collector.emit()
@@ -107,19 +120,7 @@ export default class ImportKeystore extends Component {
                 return false
             }
 
-            if (private_key) {
-                const asset = createAsset(ETH.type, ETH.symbol, address)
-                setPrivateKey(
-                    getAssetId({ symbol: ETH.symbol, address }),
-                    private_key,
-                    password
-                )
-                setHref(routes.asset(getAssetId(asset)))
-            }
-            else {
-                state.view.keystore_password_error = 'Invalid password'
-            }
-            collector.emit()
+
         }
     }
 
