@@ -155,11 +155,11 @@ function ViewBTCTemplate({
                         <Summary />
                     </Route>
 
-                    <Route pathname={routes_changePasswordAsset}>
+                    <Route if={hasPrivateKey} pathname={routes_changePasswordAsset}>
                         <ChangePassword />
                     </Route>
 
-                    <Route pathname={routes_printAsset}>
+                    <Route if={hasPrivateKey} pathname={routes_printAsset}>
                         <ExportBTC />
                     </Route>
 
