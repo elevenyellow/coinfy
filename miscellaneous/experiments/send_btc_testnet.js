@@ -47,4 +47,5 @@ request(httpApi(aliceaddr,'/utxo'), (error, response, body)=> {
     }        
 })
 
-
+// https://bitcoinfees.21.co/api/v1/fees/recommended
+// https://insight.bitpay.com/api/utils/estimatefee
