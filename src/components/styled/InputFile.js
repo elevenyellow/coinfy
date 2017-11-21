@@ -57,7 +57,7 @@ const Container = styled.div`
         font-size: 12px;
         display: inline-block;
         line-height: 20px;
-        border-radius: 4px 0 0 5px;
+        border-radius: 5px 0 0 5px;
         border-right: 0;
         padding-top: 6px;
     }

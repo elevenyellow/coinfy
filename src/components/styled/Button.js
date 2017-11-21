@@ -7,6 +7,7 @@ import styles from '/const/styles'
 // border: 1px solid #bc1212;
 
 
+
 export default styled.button`
 color: ${props=>props.red ? '#fff' : styles.color.front5};
 background-image: ${props=>props.red ? `linear-gradient(${styles.color.red3},${styles.color.red4})` : `linear-gradient(#fff,${styles.color.background1})` };
@@ -15,9 +16,10 @@ padding: 8px 20px 8px;
 font-weight: bold;
 font-size: ${props=>props['font-size'] ? props['font-size'] : '12px'};
 display: inline-block;
-line-height: 20px;
+line-height: ${props=>props['line-height'] ? props['line-height'] : '20px'};
 cursor: pointer;
-border-radius: 4px;
+border-radius: ${props=>props['border-radius'] ? props['border-radius'] : '4px'};
+border-right: ${props=>props['border-right'] ? props['border-right'] : 'auto'};
 width: ${props=>props.width};
 margin: ${props=>props.margin};
 display: block;

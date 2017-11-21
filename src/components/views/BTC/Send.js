@@ -6,8 +6,11 @@ import state from '/store/state'
 import styles from '/const/styles'
 
 import Div from '/components/styled/Div'
+import Span from '/components/styled/Span'
 import Input from '/components/styled/Input'
+import InputDouble from '/components/styled/InputDouble'
 import Button from '/components/styled/Button'
+import ButtonBig from '/components/styled/ButtonBig'
 import CenterElement from '/components/styled/CenterElement'
 
 export default class Send extends Component {
@@ -16,35 +19,81 @@ export default class Send extends Component {
         this.observer.observe(state.view)
 
         // Initial state
-        state.view = {
-        }
+        state.view = {}
 
         // binding
         // this.onChangeEncryption = this.onChangeEncryption.bind(this)
     }
 
-
     render() {
-        return React.createElement(SendTemplate, {
-
-        })
+        return React.createElement(SendTemplate, {})
     }
 }
 
-function SendTemplate({  }) {
+function SendTemplate({}) {
     return (
-            <CenterElement width="500px">
-                <Div>
-                    <Input placeholder="Address" width="100%" text-align="center" />
-                </Div>
-                <Div padding-top="10px">
-                    double
-                </Div>
-                <Div padding-top="10px">
-                    <Button font-size="14px" width="300px" margin="0 auto" >
-                        Send
+        <CenterElement width="500px">
+            <Div>
+                <Input placeholder="Address" width="100%" text-align="center" />
+            </Div>
+            <Div padding-top="10px">
+                <Div float="left">
+                    <Button
+                        line-height="54px"
+                        width="72px"
+                        font-size="15px"
+                        border-radius="20px 0 0 20px"
+                        border-right="1px solid transparent"
+                    >
+                        All
                     </Button>
                 </Div>
-            </CenterElement>
+                <Div float="left" width="calc(100% - 75px)">
+                    <InputDouble
+                        value1="0.01"
+                        value2="341.1"
+                        color1="#fcaf43"
+                        color2="#000"
+                        label1="BTC"
+                        label2="USD"
+                    />
+                </Div>
+            </Div>
+            <Div clear="both" />
+
+            <Div text-align="center" padding-top="10px">
+                <TextFee href="#">
+                    <span>Recomended Network Fee </span>
+                    <Span color="#fcaf43" font-weight="bold">
+                        0.012{' '}
+                    </Span>
+                    <Span color="#000" font-weight="bold">
+                        $23.1
+                    </Span>
+                </TextFee>
+            </Div>
+
+            <Div padding-top="20px">
+                <Input
+                    placeholder="Password"
+                    type="password"
+                    width="100%"
+                    text-align="center"
+                />
+            </Div>
+
+
+            <Div padding-top="10px">
+                <ButtonBig font-size="14px" width="100%">
+                    Send
+                </ButtonBig>
+            </Div>
+
+        </CenterElement>
     )
 }
+
+const TextFee = styled.a`
+    font-size: 12px;
+    color: ${styles.color.grey1};
+`
