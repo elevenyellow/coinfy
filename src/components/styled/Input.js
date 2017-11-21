@@ -28,6 +28,7 @@ font-size: 14px;
 color:${styles.color.front6};
 box-shadow:0 1px 1px 0 rgba(0,0,0,0.05) inset;
 box-sizing: border-box;
+text-align: ${props=>props['text-align'] ? props['text-align'] : 'left'};
 
 &:focus {
     box-shadow: none !important;

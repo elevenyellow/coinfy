@@ -13,12 +13,14 @@ background-image: ${props=>props.red ? `linear-gradient(${styles.color.red3},${s
 border: 1px solid ${props=>props.red ? styles.color.red4 : styles.color.background5};
 padding: 8px 20px 8px;
 font-weight: bold;
-font-size: 12px;
+font-size: ${props=>props['font-size'] ? props['font-size'] : '12px'};
 display: inline-block;
 line-height: 20px;
 cursor: pointer;
 border-radius: 4px;
 width: ${props=>props.width};
+margin: ${props=>props.margin};
+display: block;
 outline: none;
 &:hover {
     ${props=>!props.red ? `

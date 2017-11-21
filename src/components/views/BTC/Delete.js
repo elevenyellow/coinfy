@@ -7,7 +7,7 @@ import { deleteAsset } from '/store/actions'
 import styles from '/const/styles'
 
 import Div from '/components/styled/Div'
-import ButtonBig from '/components/styled/ButtonBig'
+import Button from '/components/styled/Button'
 import Checkbox from '/components/styled/Checkbox'
 import CenterElement from '/components/styled/CenterElement'
 
@@ -52,9 +52,9 @@ function DeleteTemplate({ confirmed, onConfirm, onDelete }) {
                     />
                 </div>
                 <Div padding-top="10px">
-                    <ButtonBig disabled={!confirmed} onClick={onDelete} width="100%">
+                    <Button font-size="14px" disabled={!confirmed} onClick={onDelete} width="100%">
                         Delete this asset
-                    </ButtonBig>
+                    </Button>
                 </Div>
             </CenterElement>
         </Div>
