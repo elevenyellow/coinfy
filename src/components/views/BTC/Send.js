@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
+import Big from 'big.js'
 
 import { Assets } from '/api/Assets'
+import { parseNumber, round } from '/api/numbers'
 
 import state from '/store/state'
-import { convertBalance, getAsset } from '/store/getters'
+import { getAsset } from '/store/getters'
 
 import styles from '/const/styles'
 
@@ -31,8 +33,8 @@ export default class Send extends Component {
         state.view = {
             address_input: '',
             address_input_error: false,
-            amount1_input: '0.00', // BTC
-            amount2_input: '0.00', // FIAT
+            amount1_input: 0, // BTC
+            amount2_input: 0, // FIAT
         }
 
         // binding
@@ -54,10 +56,16 @@ export default class Send extends Component {
     }
 
     onChangeAmount1(e) {
-        console.log( e, 1 );
+        const collector = collect()
+        state.view.amount1_input = e.target.value
+        delete state.view.amount2_input
+        collector.emit()
     }        
     onChangeAmount2(e) {
-        console.log( e, 2 );
+        const collector = collect()
+        state.view.amount2_input = e.target.value
+        delete state.view.amount1_input
+        collector.emit()
     }       
 
 
@@ -69,12 +77,26 @@ export default class Send extends Component {
     }
 
     render() {
+        const symbol = this.asset.symbol
+        const price = state.prices[symbol]
+        let amount1 = state.view.amount1_input
+        let amount2 = state.view.amount2_input
+        if (state.view.amount1_input !== undefined) {
+            amount2 = state.prices[symbol] * parseNumber(state.view.amount1_input)
+            if (amount2 === Infinity)
+                amount2 = 0
+        }
+        else if (state.view.amount2_input !== undefined) {
+            amount1 = parseNumber(state.view.amount2_input) / state.prices[symbol]
+            if (amount1 === Infinity)
+                amount1 = 0
+        }
         return React.createElement(SendTemplate, {
             address_input: state.view.address_input,
             address_input_error: state.view.address_input_error,
-            amount1_input: state.view.amount1_input,
-            amount2_input: state.view.amount2_input,
-            crypto_symbol: this.asset.symbol,
+            amount1_input: amount1,
+            amount2_input: amount2,
+            crypto_symbol: symbol,
             currency_symbol: state.currency,
             color: this.Asset.color,
             isValidForm: this.isValidForm,
