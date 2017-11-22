@@ -338,11 +338,12 @@ function SummaryTemplate({
                 })}
             </Transactions>
             {/* <Show if={totalTransactions === txs.length || totalTransactions > txs.length}> */}
-            <Div clear="both" text-align="center" padding-top="20px">
+            <Div clear="both" padding-top="20px">
                 <Button
                     loading={fetchingTxs || fetchingSummary}
                     onClick={rescanOrLoad}
                     loadingIco="/static/image/loading.gif"
+                    margin="0 auto"
                 >
                     {totalTransactions === txs.length ? 'Rescan all transactions' : 'Load more'}
                 </Button>

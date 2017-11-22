@@ -17,4 +17,9 @@ box-shadow:0 1px 1px 0 rgba(0,0,0,0.05) inset;
 box-sizing: border-box;
 height: 38px;
 padding: 5px;
+
+font-weight: bold;
+font-size: 15px;
+color: #000;
+letter-spacing: 1px;
 `

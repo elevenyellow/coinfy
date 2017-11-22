@@ -42,13 +42,13 @@ function SendTemplate({}) {
                         line-height="54px"
                         width="72px"
                         font-size="15px"
-                        border-radius="20px 0 0 20px"
+                        border-radius="10px 0 0 10px"
                         border-right="1px solid transparent"
                     >
                         All
                     </Button>
                 </Div>
-                <Div float="left" width="calc(100% - 75px)">
+                <Div float="left" width="calc(100% - 72px)">
                     <InputDouble
                         value1="0.01"
                         value2="341.1"
