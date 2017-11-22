@@ -10,13 +10,13 @@ export default function InputDouble(props) {
         ) : null
     return (
         <div>
-            <InputDoubleStyled>
+            <InputDoubleStyled invalid={props.invalid}>
                 <div>
-                    <InputValue color={props.color1} value={props.value1} />
+                    <InputValue onChange={props.onChange1} color={props.color1} value={props.value1} />
                     <InputLabel color={props.color1}>{props.label1}</InputLabel>
                 </div>
                 <div>
-                    <InputValue color={props.color2} value={props.value2} />
+                    <InputValue onChange={props.onChange2} color={props.color2} value={props.value2} />
                     <InputLabel color={props.color2}>{props.label2}</InputLabel>
                 </div>
             </InputDoubleStyled>
@@ -28,7 +28,9 @@ export default function InputDouble(props) {
 const InputDoubleStyled = styled.div`
     ${props => {
         if (props.width) return 'width:' + props.width + ';'
-    }} border: 1px solid ${props =>
+    }} 
+    
+    border: 1px solid ${props =>
             props.invalid
                 ? `${styles.color.error} !important`
                 : styles.color.background4};
