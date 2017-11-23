@@ -16,7 +16,7 @@ export const ascii = 'Ƀ'
 export const price_decimals = 0
 export const satoshis = 100000000
 
-export function format(value, dec=18) {
+export function format(value, dec = 18) {
     const tof = typeof value
     if (tof != 'number' && tof != 'string') value = '0'
     return `${decimalsMax(value, dec)} ${symbol}`
@@ -35,7 +35,7 @@ export function isAddress(address) {
 export function isAddressCheck(address) {
     try {
         Bitcoin.address.fromBase58Check(address)
-    } catch(e) {
+    } catch (e) {
         return false
     }
     return true
@@ -54,11 +54,14 @@ export function isPrivateKey(private_key) {
     )
 }
 
-export function isPrivateKeyBip(private_key) { // https://github.com/pointbiz/bitaddress.org/blob/67e167930c4ebd9cf91047c36792c4e32dc41f11/src/ninja.key.js#L38
-    return (/^6P[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{56}$/.test(private_key))
+export function isPrivateKeyBip(private_key) {
+    // https://github.com/pointbiz/bitaddress.org/blob/67e167930c4ebd9cf91047c36792c4e32dc41f11/src/ninja.key.js#L38
+    return /^6P[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{56}$/.test(
+        private_key
+    )
 }
 
-export function isWalletImportFormat(key, prefix=0x80) {
+export function isWalletImportFormat(key, prefix = 0x80) {
     key = key.toString()
     return privateKeyPrefix == prefix
         ? /^5[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
@@ -116,8 +119,6 @@ export function urlInfoTx(txid) {
     return `https://blockchain.info/tx/${txid}`
 }
 
-
-
 export function encrypt(private_key_encrypted, password) {
     return encryptAES128CTR(private_key_encrypted, password)
 }
@@ -141,16 +142,34 @@ export function fetchBalance(address) {
     //         // return Number(balance) / satoshis
     //         return Big(balance).div(satoshis).toString()
     //     })
-    return fetchTotals(address)
-        .then(data => {
-            return data.balance
-        })
+    return fetchTotals(address).then(data => {
+        return data.balance
+    })
 }
 
+// In shatosis
+export function fetchBalanceAvailable(address) {
+    return fetchTotals(address).then(data => {
+        return data.unconfirmedBalanceSat < 0
+            ? data.balanceSat + data.unconfirmedBalanceSat
+            : data.balanceSat
+    })
+}
 
-export function fetchTxs(address, from=0, to=from+25) {
+// In shatosis
+export function fetchRecomendedFee() {
+    // https://btc-bitcore1.trezor.io/api/utils/estimatefee
+    // https://bitcoinfees.21.co/api/v1/fees/recommended
+    return fetch(`${api_url}/utils/estimatefee`)
+        .then(response => response.json())
+        .then(fees => fees[2])
+}
+
+export function fetchTxs(address, from = 0, to = from + 25) {
     return fetch(
-        `${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${from}&to=${to}`
+        `${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${
+            from
+        }&to=${to}`
     )
         .then(response => response.json())
         .then(json => {
@@ -179,7 +198,6 @@ export function fetchTxs(address, from=0, to=from+25) {
                         tx.value = tx.value.minus(txRaw.vin[index].value)
                     }
                 }
-
 
                 for (
                     index = 0, total = txRaw.vout.length;
@@ -219,9 +237,26 @@ export function fetchSummary(address) {
         .then(txs => Object.assign(txs, totals))
 }
 
-
 function fetchTotals(address) {
     return fetch(`${api_url}/addr/${address}`)
+        .then(response => response.json())
+        .then(totals => totals)
+}
+
+function sendTx(private_key, fee, outputs) {}
+
+function sendRawTx(rawTx) {
+    const fetchOptions = {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            rawtx: rawTx
+        })
+    }
+    return fetch(`${api_url}/tx/send`, fetchOptions)
         .then(response => response.json())
         .then(totals => totals)
 }

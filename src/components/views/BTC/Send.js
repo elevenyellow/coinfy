@@ -99,7 +99,7 @@ export default class Send extends Component {
             crypto_symbol: symbol,
             currency_symbol: state.currency,
             color: this.Asset.color,
-            isValidForm: this.isValidForm,
+            isValidForm: this.isValidForm && parseNumber(amount1)>0,
             onChangeAddress: this.onChangeAddress,
             onChangeAmount1: this.onChangeAmount1,
             onChangeAmount2: this.onChangeAmount2,
