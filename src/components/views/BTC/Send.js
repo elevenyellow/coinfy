@@ -4,7 +4,7 @@ import { createObserver, collect } from 'dop'
 import Big from 'big.js'
 
 import { Assets } from '/api/Assets'
-import { parseNumber, round } from '/api/numbers'
+import { parseNumber, decimalsMax } from '/api/numbers'
 
 import state from '/store/state'
 import { fetchBalance } from '/store/actions'
@@ -30,6 +30,7 @@ export default class Send extends Component {
         this.observer.observe(state.view)
 
         // Initial state
+        this.state = { amount: 0, fee: 0 }
         state.view = {
             address_input: '',
             address_input_error: false,
@@ -43,6 +44,7 @@ export default class Send extends Component {
         this.onChangeAddress = this.onChangeAddress.bind(this)
         this.onChangeAmount1 = this.onChangeAmount1.bind(this)
         this.onChangeAmount2 = this.onChangeAmount2.bind(this)
+        this.onMax = this.onMax.bind(this)
 
         this.fetchBalance()
         this.fetchRecomendedFee()
@@ -61,7 +63,7 @@ export default class Send extends Component {
     fetchRecomendedFee() {
         this.Asset.fetchRecomendedFee(this.asset.address).then(fee => {
             const collector = collect()
-            state.view.fee_input = state.view.fee_recomended = fee
+            state.view.fee_input = state.view.fee_recomended = Big(fee)
             collector.emit()
         })
     }
@@ -91,38 +93,53 @@ export default class Send extends Component {
         collector.emit()
     }
 
+    onMax(e) {
+        const collector = collect()
+        state.view.amount1_input = this.getMax()
+        delete state.view.amount2_input
+        collector.emit()
+    }
+
+    getMax() {
+        const max = Big(this.asset.balance).minus(this.state.fee)
+        return max.gt(0) ? max : 0
+    }
+
+    get isEnoughBalance() {
+        return this.state.amount.lte(this.getMax())
+    }
+
     get isValidForm() {
         return (
             !state.view.address_input_error &&
             state.view.address_input.length > 0 &&
-            parseNumber(state.view.fee_input) > 0
+            this.state.amount.gt(0) &&
+            this.state.fee.gt(0)
         )
-    }
-
-    isValidAmount(amount) {
-        return parseNumber(amount) > 0
     }
 
     render() {
+        let amount1, amount2
         const symbol = this.asset.symbol
         const price = state.prices[symbol]
-        const fee = parseNumber(state.view.fee_input)
-        const fee_fiat = formatCurrency(
-            convertBalance(this.asset.symbol, fee),
-            2
-        )
-        let amount1 = state.view.amount1_input
-        let amount2 = state.view.amount2_input
 
         if (state.view.amount1_input !== undefined) {
-            amount2 =
-                state.prices[symbol] * parseNumber(state.view.amount1_input)
-            if (amount2 === Infinity) amount2 = 0
-        } else if (state.view.amount2_input !== undefined) {
-            amount1 =
-                parseNumber(state.view.amount2_input) / state.prices[symbol]
-            if (amount1 === Infinity) amount1 = 0
+            amount1 = state.view.amount1_input
+            amount2 = decimalsMax(
+                Big(state.prices[symbol]).times(parseNumber(amount1)),
+                2
+            )
+        } else {
+            amount2 = state.view.amount2_input
+            amount1 = decimalsMax(
+                Big(parseNumber(amount2)).div(state.prices[symbol]),
+                10
+            )
         }
+
+        this.state.amount = Big(parseNumber(amount1))
+        this.state.fee = Big(parseNumber(state.view.fee_input))
+
         return React.createElement(SendTemplate, {
             color: this.Asset.color,
             address_input: state.view.address_input,
@@ -131,9 +148,13 @@ export default class Send extends Component {
             amount2_input: amount2,
             symbol_crypto: symbol,
             symbol_currency: state.currency,
-            fee: fee,
-            fee_fiat: fee_fiat,
-            isValidForm: this.isValidForm && this.isValidAmount(amount1),
+            fee: this.state.fee,
+            fee_fiat: formatCurrency(
+                convertBalance(this.asset.symbol, this.state.fee),
+                2
+            ),
+            isValidForm: this.isValidForm && this.isEnoughBalance,
+            onMax: this.onMax,
             onChangeAddress: this.onChangeAddress,
             onChangeAmount1: this.onChangeAmount1,
             onChangeAmount2: this.onChangeAmount2
@@ -152,6 +173,7 @@ function SendTemplate({
     fee,
     fee_fiat,
     isValidForm,
+    onMax,
     onChangeAddress,
     onChangeAmount1,
     onChangeAmount2
@@ -177,8 +199,9 @@ function SendTemplate({
                         font-size="15px"
                         border-radius="10px 0 0 10px"
                         border-right="1px solid transparent"
+                        onClick={onMax}
                     >
-                        All
+                        Max
                     </Button>
                 </Div>
                 <Div float="left" width="calc(100% - 72px)">

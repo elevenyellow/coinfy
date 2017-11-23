@@ -1,6 +1,5 @@
 import Big from 'big.js'
 
-
 export function decimals(value, max = 2) {
     return Number(value).toFixed(max)
 }
@@ -25,8 +24,9 @@ export function numberWithSeparation(value, separation = ',') {
 export function parseNumber(number) {
     const tof = typeof number
     if (tof == 'number' && !isNaN(number)) return number
-    if (tof != 'string') return 0
-    number = number.trim().replace(/,/g,'')
+    if (tof == 'object' && number !== null) number = number.toString()
+    if (typeof number != 'string') return 0
+    number = number.trim().replace(/,/g, '')
     number = Number(number)
     return isNaN(number) ? 0 : number
 }
