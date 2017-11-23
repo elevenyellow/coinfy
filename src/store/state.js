@@ -1,7 +1,7 @@
 import { computed, register, createObserver } from 'dop'
 import { create } from '/doprouter/core'
 import { Assets } from '/api/Assets'
-import { currencies, USD } from '/const/currencies'
+import { Currencies, USD } from '/api/Currencies'
 import { getTotalAssets, generateDefaultAsset } from '/store/getters'
 import { localStorageGet } from '/api/browser'
 

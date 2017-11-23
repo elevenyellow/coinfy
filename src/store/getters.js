@@ -2,14 +2,15 @@ import { util } from 'dop'
 import { Assets } from '/api/Assets'
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/Assets/BTC'
 import state from '/store/state'
+import { Currencies } from '/api/Currencies'
 
 // GETTERS
 export function getTotalAssets(assets) {
     return Object.keys(assets).length
 }
 
-export function convertBalance(symbol, balance) {
-    return state.prices[symbol] * (balance||0)
+export function convertBalance(symbol, value) {
+    return state.prices[symbol] * (value || 0)
 }
 
 export function getAsset(asset_id) {
@@ -17,9 +18,7 @@ export function getAsset(asset_id) {
 }
 
 export function isAssetRegistered(asset_id) {
-    return (
-        state.assets.hasOwnProperty(asset_id)
-    )
+    return state.assets.hasOwnProperty(asset_id)
 }
 
 export function isAssetWithPrivateKey(asset_id) {
@@ -29,8 +28,6 @@ export function isAssetWithPrivateKey(asset_id) {
     )
 }
 
-
-
 export function getAssetsAsArray() {
     const assets = []
     Object.keys(state.assets).forEach(asset_id => {
@@ -39,8 +36,7 @@ export function getAssetsAsArray() {
     return assets
 }
 
-
-export function generateDefaultAsset(object={}) {
+export function generateDefaultAsset(object = {}) {
     const asset = {
         // type: type,
         // symbol: symbol,
@@ -48,14 +44,19 @@ export function generateDefaultAsset(object={}) {
         label: '',
         balance: 0,
         printed: false, // wallet printed?
-        state: { // this must be removed when exporting or saving in localstorage
+        state: {
+            // this must be removed when exporting or saving in localstorage
             shall_we_fetch_summary: true,
             fetching_summary: false
         },
-        summary: { // summary data, must be removed when exporting
-
+        summary: {
+            // summary data, must be removed when exporting
         }
     }
 
     return util.merge(asset, object)
+}
+
+export function formatCurrency(value, n = 0, currencySymbol = state.currency) {
+    return Currencies[currencySymbol].format(value, n)
 }

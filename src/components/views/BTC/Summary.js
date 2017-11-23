@@ -4,7 +4,7 @@ import { createObserver } from 'dop'
 import { Show } from '/doprouter/react'
 
 import styles from '/const/styles'
-import { currencies } from '/const/currencies'
+import { Currencies } from '/api/Currencies'
 import { PrivateKey as template } from '/const/paperwallets'
 
 import { Assets } from '/api/Assets'
@@ -17,7 +17,7 @@ import { selectContentElement, copyContentSelected } from '/api/browser'
 
 import state from '/store/state'
 import { fetchSummaryAsset, fetchSummaryAssetIfReady } from '/store/actions'
-import { convertBalance, getAsset } from '/store/getters'
+import { convertBalance, getAsset, formatCurrency } from '/store/getters'
 
 import IconCopy from 'react-icons/lib/md/content-copy'
 import IconPrint from 'react-icons/lib/fa/print'
@@ -43,9 +43,6 @@ import {
     TransactionInner,
     TransactionLabel
 } from '/components/styled/Transactions'
-
-
-
 
 export default class Summary extends Component {
     componentWillMount() {
@@ -77,7 +74,7 @@ export default class Summary extends Component {
         state.view = { fetchingTxs: false }
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
-        this.Asset = Assets[asset.symbol] // Storing Asset api (Asset.BTC, Asset.ETH, ...)        
+        this.Asset = Assets[asset.symbol] // Storing Asset api (Asset.BTC, Asset.ETH, ...)
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(asset, 'summary')
         this.observer.observe(asset.state, 'fetching_summary')
@@ -85,7 +82,6 @@ export default class Summary extends Component {
         this.observer.observe(state.prices, asset.symbol)
         this.observer.observe(state.view, 'fetchingTxs')
     }
-
 
     refAddress(e) {
         if (e) this.addressElement = e.base
@@ -100,12 +96,16 @@ export default class Summary extends Component {
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
         const address = asset.address
-        printTemplate(template([{
-            title: 'Address',
-            img: generateQRCode(address),
-            hash: address,
-            description: 'Share this address to receive funds.'
-        }]))
+        printTemplate(
+            template([
+                {
+                    title: 'Address',
+                    img: generateQRCode(address),
+                    hash: address,
+                    description: 'Share this address to receive funds.'
+                }
+            ])
+        )
     }
 
     fetchData() {
@@ -127,14 +127,15 @@ export default class Summary extends Component {
 
         if (totalTransactions === txs.length) {
             this.forceFetch()
-        }
-        else {
+        } else {
             state.view.fetchingTxs = true
-            this.Asset.fetchTxs(asset.address, asset.summary.txs.length).then(txs => {
-                asset.summary.totalTransactions = txs.totalTxs
-                asset.summary.txs = asset.summary.txs.concat(txs.txs)
-                state.view.fetchingTxs = false
-            })
+            this.Asset.fetchTxs(asset.address, asset.summary.txs.length).then(
+                txs => {
+                    asset.summary.totalTransactions = txs.totalTxs
+                    asset.summary.txs = asset.summary.txs.concat(txs.txs)
+                    state.view.fetchingTxs = false
+                }
+            )
         }
     }
 
@@ -144,11 +145,10 @@ export default class Summary extends Component {
         const address = asset.address
         return React.createElement(SummaryTemplate, {
             balance_asset: asset.balance,
-            balance_currency: currencies[state.currency].format(
-                convertBalance(asset.symbol, asset.balance),
-                0
+            balance_currency: formatCurrency(
+                convertBalance(asset.symbol, asset.balance)
             ),
-            symbol: currencies[state.currency].symbol,
+            symbol: Currencies[state.currency].symbol,
             totalTransactions: asset.summary.totalTxs || 0,
             totalReceived: round(asset.summary.totalReceived || 0, 2),
             totalSent: round(asset.summary.totalSent || 0, 2),
@@ -164,7 +164,9 @@ export default class Summary extends Component {
             urlInfoTx: this.Asset.urlInfoTx,
             onCopy: this.onCopy,
             onPrint: this.onPrint,
-            mailTo: `mailto:?subject=My ${this.Asset.name} Address&body=My ${this.Asset.name} address is: ${address}`
+            mailTo: `mailto:?subject=My ${this.Asset.name} Address&body=My ${
+                this.Asset.name
+            } address is: ${address}`
         })
     }
 }
@@ -263,7 +265,9 @@ function SummaryTemplate({
                     </ListItem>
                 </List>
             </Header> */}
-            <Show if={totalTransactions===0 && !fetchingTxs && !fetchingSummary}>
+            <Show
+                if={totalTransactions === 0 && !fetchingTxs && !fetchingSummary}
+            >
                 <Div padding-top="50px" padding-bottom="50px">
                     <Message>No transactions found for this address</Message>
                 </Div>
@@ -290,7 +294,9 @@ function SummaryTemplate({
                                     <div>{month}</div>
                                     {day}
                                 </TransactionDate>
-                                <TransactionIco color={colorAsset}>{icon}</TransactionIco>
+                                <TransactionIco color={colorAsset}>
+                                    {icon}
+                                </TransactionIco>
                                 <TransactionData>
                                     <TransactionLabel>
                                         {received ? 'Received' : 'Sent'}
@@ -345,15 +351,15 @@ function SummaryTemplate({
                     loadingIco="/static/image/loading.gif"
                     margin="0 auto"
                 >
-                    {totalTransactions === txs.length ? 'Rescan all transactions' : 'Load more'}
+                    {totalTransactions === txs.length
+                        ? 'Rescan all transactions'
+                        : 'Load more'}
                 </Button>
             </Div>
             {/* </Show> */}
         </div>
     )
 }
-
-
 
 // const Header = styled.div``
 

@@ -8,7 +8,7 @@ import IconMenu from 'react-icons/lib/md/menu'
 import IconMore from 'react-icons/lib/md/more-vert'
 import IconHome from 'react-icons/lib/md/home'
 
-import { currencies } from '/const/currencies'
+import { Currencies } from '/api/Currencies'
 import { Assets } from '/api/Assets'
 import {
     setHref,

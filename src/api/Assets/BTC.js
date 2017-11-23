@@ -143,16 +143,9 @@ export function fetchBalance(address) {
     //         return Big(balance).div(satoshis).toString()
     //     })
     return fetchTotals(address).then(data => {
-        return data.balance
-    })
-}
-
-// In shatosis
-export function fetchBalanceAvailable(address) {
-    return fetchTotals(address).then(data => {
-        return data.unconfirmedBalanceSat < 0
-            ? data.balanceSat + data.unconfirmedBalanceSat
-            : data.balanceSat
+        return data.unconfirmedBalance < 0
+            ? data.balance + data.unconfirmedBalance
+            : data.balance
     })
 }
 

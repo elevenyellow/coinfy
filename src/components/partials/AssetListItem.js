@@ -5,10 +5,10 @@ import { Assets, getAssetId } from '/api/Assets'
 import { round } from '/api/numbers'
 import styles from '/const/styles'
 import routes from '/const/routes'
-import { currencies } from '/const/currencies'
+import { Currencies } from '/api/Currencies'
 import state from '/store/state'
 import { setHref } from '/store/actions'
-import { convertBalance } from '/store/getters'
+import { convertBalance, formatCurrency } from '/store/getters'
 
 export default class Asset extends Component {
     componentWillMount() {
@@ -40,9 +40,8 @@ export default class Asset extends Component {
         return React.createElement(AssetTemplate, {
             asset: this.props.asset,
             location: state.location,
-            balance_currency: currencies[state.currency].format(
-                convertBalance(asset.symbol, asset.balance),
-                0
+            balance_currency: formatCurrency(
+                convertBalance(asset.symbol, asset.balance)
             ),
             balance_asset: Assets[asset.symbol].format(asset.balance, 5),
             onClick: this.onClick
@@ -67,7 +66,11 @@ function AssetTemplate({
         >
             <div>
                 <AssetIcon>
-                    <img src={`/static/image/${asset.symbol}.svg`} width="22" height="22" />
+                    <img
+                        src={`/static/image/${asset.symbol}.svg`}
+                        width="22"
+                        height="22"
+                    />
                 </AssetIcon>
                 <AssetInfo>
                     <AssetLabel>
@@ -110,7 +113,9 @@ const AssetIcon = styled.div`
     float: left;
     padding-top: 3px;
 `
-const AssetInfo = styled.div`margin-left: 33px;`
+const AssetInfo = styled.div`
+    margin-left: 33px;
+`
 const AssetLabel = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;

@@ -22,8 +22,6 @@ import {
     downloadFile
 } from '/api/browser'
 
-
-
 export function setHref(href) {
     const collector = collect()
     state.location.href = href
@@ -252,6 +250,7 @@ export function fetchBalance(asset_id) {
         .then(balance => {
             showNotConnectionNotification(false)
             updateBalance(asset_id, balance)
+            return balance
         })
         .catch(e => {
             console.error(asset.symbol, 'fetchBalance', e)

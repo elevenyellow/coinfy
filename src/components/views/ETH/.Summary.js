@@ -4,7 +4,7 @@
 // import { Show } from '/doprouter/react'
 
 // import styles from '/const/styles'
-// import { currencies } from '/const/currencies'
+// import { Currencies } from '/api/Currencies'
 // import { round } from '/api/numbers'
 // import state from '/store/state'
 // import { fetchSummaryAsset, fetchSummaryAssetIfReady } from '/store/actions'
@@ -153,11 +153,11 @@
 //         const address = asset.address
 //         return React.createElement(SummaryETHTemplate, {
 //             balance_asset: asset.balance,
-//             balance_currency: currencies[state.currency].format(
+//             balance_currency: formatCurrency(
 //                 convertBalance(ETH.symbol, asset.balance),
 //                 0
 //             ),
-//             symbol: currencies[state.currency].symbol,
+//             symbol: Currencies[state.currency].symbol,
 //             totalTransactions: asset.summary.totalTxs || 0,
 //             totalReceived: round(asset.summary.totalReceived || 0, 2),
 //             totalSent: round(asset.summary.totalSent || 0, 2),

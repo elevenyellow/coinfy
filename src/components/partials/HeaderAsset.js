@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { Router, Route, Show } from '/doprouter/react'
 
-import { getAsset, convertBalance } from '/store/getters'
+import { getAsset, convertBalance, formatCurrency } from '/store/getters'
 import {
     setHref,
     saveAssetsLocalStorage,
@@ -13,7 +13,7 @@ import {
 
 import Assets from '/api/Assets'
 
-import { currencies } from '/const/currencies'
+import { Currencies } from '/api/Currencies'
 import routes from '/const/routes'
 import styles from '/const/styles'
 import state from '/store/state'
@@ -56,7 +56,7 @@ export default class HeaderAsset extends Component {
         })
         this.observer.observe(state.location, 'pathname')
         this.observer.observe(state.prices, this.state.asset.symbol)
-        
+
         if (this.state.asset !== undefined) {
             unobserveLabel = this.observer.observe(this.state.asset, 'label')
             unobserveBalance = this.observer.observe(
@@ -96,12 +96,11 @@ export default class HeaderAsset extends Component {
             label: this.state.asset ? this.state.asset.label : '',
             symbol: this.state.asset.symbol,
             balance_asset: this.state.asset.balance,
-            balance_currency: currencies[state.currency].format(
+            balance_currency: formatCurrency(
                 convertBalance(
                     this.state.asset.symbol,
                     this.state.asset.balance
-                ),
-                0
+                )
             ),
             onChangeLabel: this.onChangeLabel,
             onBlur: this.onBlur
@@ -121,9 +120,7 @@ function HeaderAssetTemplate({
     return (
         <RightHeader>
             <Icon>
-                <img
-                    src={`/static/image/${symbol}.svg`}
-                />
+                <img src={`/static/image/${symbol}.svg`} />
             </Icon>
             <Left>
                 <H1Input
@@ -133,11 +130,17 @@ function HeaderAssetTemplate({
                     width="100%"
                     placeholder="Type a label..."
                 />
-                <Div padding-left="2px"><H2><strong>{address}</strong></H2></Div>
+                <Div padding-left="2px">
+                    <H2>
+                        <strong>{address}</strong>
+                    </H2>
+                </Div>
             </Left>
             <Right>
                 <H1b>{balance_currency}</H1b>
-                <H2>{balance_asset} {symbol}</H2>
+                <H2>
+                    {balance_asset} {symbol}
+                </H2>
             </Right>
             <Div clear="both" />
         </RightHeader>
@@ -162,15 +165,15 @@ const Icon = styled.div`
         }
     }
     ${styles.media.second} {
-        display:none
-    }  
+        display: none;
+    }
 `
 const Left = styled.div`
     width: 60%;
     float: left;
     ${styles.media.fourth} {
         width: 100%;
-    }        
+    }
 `
 
 const Right = styled.div`
@@ -179,18 +182,18 @@ const Right = styled.div`
     float: right;
     ${styles.media.fourth} {
         display: none;
-    } 
+    }
 `
 
 const H1b = styled.div`
-color: ${styles.color.black};
-font-size: 23px;
-font-weight: 900;
-margin: 0;
-line-height: 35px; 
+    color: ${styles.color.black};
+    font-size: 23px;
+    font-weight: 900;
+    margin: 0;
+    line-height: 35px;
 
-${styles.media.first} {
-    font-size: 19px;
-    line-height: 23px; 
-} 
+    ${styles.media.first} {
+        font-size: 19px;
+        line-height: 23px;
+    }
 `

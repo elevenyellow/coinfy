@@ -5,16 +5,15 @@ import Big from 'big.js'
 import CountUp from 'react-countup'
 
 import styles from '/const/styles'
-import { currencies } from '/const/currencies'
+import { Currencies } from '/api/Currencies'
 import routes from '/const/routes'
-
 
 import { round } from '/api/numbers'
 import { Assets } from '/api/Assets'
 import sortBy from '/api/sortBy'
 
 import state from '/store/state'
-import { convertBalance } from '/store/getters'
+import { convertBalance, formatCurrency } from '/store/getters'
 import { setHref } from '/store/actions'
 
 import { RightContainerPadding } from '/components/styled/Right'
@@ -60,7 +59,9 @@ export default class Dashboard extends Component {
             let assetUnformated = dataUnformated[asset.symbol]
             let balance = asset.balance || 0
             assetUnformated.balance_asset_number += balance
-            assetUnformated.balance_asset_big = assetUnformated.balance_asset_big.plus(balance)
+            assetUnformated.balance_asset_big = assetUnformated.balance_asset_big.plus(
+                balance
+            )
             assetUnformated.balance_currency_number += convertBalance(
                 asset.symbol,
                 balance
@@ -70,10 +71,7 @@ export default class Dashboard extends Component {
                 label: asset.label || asset.address,
                 address: asset.address,
                 balance_asset: balance + ' ' + asset.symbol,
-                balance_currency_number: convertBalance(
-                    asset.symbol,
-                    balance
-                ),
+                balance_currency_number: convertBalance(asset.symbol, balance),
                 percentage: 0,
                 id: id,
                 icon: `/static/image/${asset.symbol}.svg`
@@ -87,9 +85,8 @@ export default class Dashboard extends Component {
             category.balance_asset =
                 category.balance_asset_big.toString() + ' ' + symbol
 
-            category.balance_currency = currencies[state.currency].format(
-                category.balance_currency_number,
-                0
+            category.balance_currency = formatCurrency(
+                category.balance_currency_number
             )
 
             category.percentage = round(
@@ -97,9 +94,8 @@ export default class Dashboard extends Component {
             )
 
             category.assets = category.assets.map(asset => {
-                asset.balance_currency = currencies[state.currency].format(
-                    asset.balance_currency_number,
-                    0
+                asset.balance_currency = formatCurrency(
+                    asset.balance_currency_number
                 )
                 asset.percentage = round(
                     asset.balance_currency_number *
@@ -127,7 +123,7 @@ export default class Dashboard extends Component {
         return React.createElement(DashboardTemplate, {
             data: data,
             onClick: this.onClick,
-            ascii: currencies[state.currency].ascii,
+            ascii: Currencies[state.currency].ascii,
             balance_start: balance_start,
             balance_end: state.balance,
             cryptoPrices: state.prices,
@@ -170,21 +166,38 @@ function DashboardTemplate({
                         <Circle
                             size={200}
                             strokeWidth="1.5"
-                            segments={/* [{percentage:70,color:'red'},{percentage:30,color:'blue'}] */
-                            data.map(category => ({
-                                percentage: category.percentage,
-                                color: category.color
-                            }))}
+                            segments={
+                                /* [{percentage:70,color:'red'},{percentage:30,color:'blue'}] */
+                                data.map(category => ({
+                                    percentage: category.percentage,
+                                    color: category.color
+                                }))
+                            }
                         />
                     </ChartChart>
                 </Chart>
-                <Currencies>
+                <CurrenciesStyled>
                     {Object.keys(cryptoPrices).map(symbol => (
                         <Currency>
-                            <CurrencyIco><img src={`/static/image/${symbol}.svg`} width="25" /></CurrencyIco>
+                            <CurrencyIco>
+                                <img
+                                    src={`/static/image/${symbol}.svg`}
+                                    width="25"
+                                />
+                            </CurrencyIco>
                             <CurrencyText>
-                                <CurrencyLabel>{Assets[symbol].name}</CurrencyLabel>
-                                <CurrencyValue>{symbol} ≈ <span>{currencies[currency].format(cryptoPrices[symbol], Assets[symbol].price_decimals)}</span></CurrencyValue>
+                                <CurrencyLabel>
+                                    {Assets[symbol].name}
+                                </CurrencyLabel>
+                                <CurrencyValue>
+                                    {symbol} ≈{' '}
+                                    <span>
+                                        {Currencies[currency].format(
+                                            cryptoPrices[symbol],
+                                            Assets[symbol].price_decimals
+                                        )}
+                                    </span>
+                                </CurrencyValue>
                             </CurrencyText>
                         </Currency>
                     ))}
@@ -202,103 +215,107 @@ function DashboardTemplate({
                             <CurrencyValue>ETH ≈ <span>$342</span></CurrencyValue>
                         </CurrencyText>
                     </Currency> */}
-                </Currencies>
+                </CurrenciesStyled>
             </Left>
             <Right>
                 <div>
-                {data.map(category => {
-                    return (
-                        <Category>
-                            <HeaderAsset>
-                                <HeaderLeft>
-                                    <HeaderLeftPercentage>
-                                        <Circle
-                                            size={43}
-                                            strokeWidth="2.5"
-                                            segments={[
-                                                {
-                                                    percentage:
-                                                        category.percentage,
-                                                    color: category.color
-                                                }
-                                            ]}
+                    {data.map(category => {
+                        return (
+                            <Category>
+                                <HeaderAsset>
+                                    <HeaderLeft>
+                                        <HeaderLeftPercentage>
+                                            <Circle
+                                                size={43}
+                                                strokeWidth="2.5"
+                                                segments={[
+                                                    {
+                                                        percentage:
+                                                            category.percentage,
+                                                        color: category.color
+                                                    }
+                                                ]}
+                                            >
+                                                <CircleText>
+                                                    <text
+                                                        x="50%"
+                                                        y="50%"
+                                                        class="chart-number"
+                                                    >
+                                                        {category.percentage}%
+                                                    </text>
+                                                </CircleText>
+                                            </Circle>
+                                        </HeaderLeftPercentage>
+                                        <HeaderLeftText>
+                                            <HeaderLeftTitle>
+                                                {category.label}
+                                            </HeaderLeftTitle>
+                                            <HeaderLeftSubtitle>
+                                                {category.assets.length} assets
+                                            </HeaderLeftSubtitle>
+                                        </HeaderLeftText>
+                                    </HeaderLeft>
+                                    <HeaderRight>
+                                        <HeaderRightTitle>
+                                            {category.balance_currency}
+                                        </HeaderRightTitle>
+                                        <HeaderRightSubtitle>
+                                            {category.balance_asset}
+                                        </HeaderRightSubtitle>
+                                    </HeaderRight>
+                                </HeaderAsset>
+                                <AssetsList>
+                                    {category.assets.map(asset => (
+                                        <Asset
+                                            onClick={() => onClick(asset.id)}
                                         >
-                                            <CircleText>
-                                                <text
-                                                    x="50%"
-                                                    y="50%"
-                                                    class="chart-number"
-                                                >
-                                                    {category.percentage}%
-                                                </text>
-                                            </CircleText>
-                                        </Circle>
-                                    </HeaderLeftPercentage>
-                                    <HeaderLeftText>
-                                        <HeaderLeftTitle>
-                                            {category.label}
-                                        </HeaderLeftTitle>
-                                        <HeaderLeftSubtitle>
-                                            {category.assets.length} assets
-                                        </HeaderLeftSubtitle>
-                                    </HeaderLeftText>
-                                </HeaderLeft>
-                                <HeaderRight>
-                                    <HeaderRightTitle>
-                                        {category.balance_currency}
-                                    </HeaderRightTitle>
-                                    <HeaderRightSubtitle>
-                                        {category.balance_asset}
-                                    </HeaderRightSubtitle>
-                                </HeaderRight>
-                            </HeaderAsset>
-                            <AssetsList>
-                                {category.assets.map(asset => (
-                                    <Asset
-                                        onClick={() => onClick(asset.id)}
-                                    >
-                                        <AssetIcon>
-                                            <img
-                                                src={asset.icon}
-                                                width="20"
-                                                height="20"
-                                            />
-                                        </AssetIcon>
-                                        <AssetText>
-                                            <AssetLeft>
-                                                <AssetTitle1>
-                                                    {asset.label}
-                                                </AssetTitle1>
-                                                <AssetSubtitle>
-                                                    {asset.address}
-                                                </AssetSubtitle>
-                                            </AssetLeft>
-                                            <AssetRight>
-                                                <AssetTitle2>
-                                                    {asset.balance_currency}
-                                                </AssetTitle2>
-                                                <AssetSubtitle>
-                                                    {asset.balance_asset}
-                                                </AssetSubtitle>
-                                            </AssetRight>
-                                            <AssetPercentage>
-                                                <AssetPercentageLeft
-                                                    percentage={asset.percentage}
-                                                    color={category.color}
+                                            <AssetIcon>
+                                                <img
+                                                    src={asset.icon}
+                                                    width="20"
+                                                    height="20"
                                                 />
-                                                <AssetPercentageRight color={category.color}>
-                                                    {asset.percentage + '%'}
-                                                </AssetPercentageRight>
-                                            </AssetPercentage>
-                                        </AssetText>
-                                    </Asset>
-                                ))}
-                            </AssetsList>
-                        </Category>
-                    )
-                })}
+                                            </AssetIcon>
+                                            <AssetText>
+                                                <AssetLeft>
+                                                    <AssetTitle1>
+                                                        {asset.label}
+                                                    </AssetTitle1>
+                                                    <AssetSubtitle>
+                                                        {asset.address}
+                                                    </AssetSubtitle>
+                                                </AssetLeft>
+                                                <AssetRight>
+                                                    <AssetTitle2>
+                                                        {asset.balance_currency}
+                                                    </AssetTitle2>
+                                                    <AssetSubtitle>
+                                                        {asset.balance_asset}
+                                                    </AssetSubtitle>
+                                                </AssetRight>
+                                                <AssetPercentage>
+                                                    <AssetPercentageLeft
+                                                        percentage={
+                                                            asset.percentage
+                                                        }
+                                                        color={category.color}
+                                                    />
+                                                    <AssetPercentageRight
+                                                        color={category.color}
+                                                    >
+                                                        {asset.percentage + '%'}
+                                                    </AssetPercentageRight>
+                                                </AssetPercentage>
+                                            </AssetText>
+                                        </Asset>
+                                    ))}
+                                </AssetsList>
+                            </Category>
+                        )
+                    })}
 
-                {/* <Category>
+                    {/* <Category>
                     <HeaderAsset>
                         <HeaderLeft>
                             <HeaderLeftPercentage>
@@ -344,8 +361,6 @@ function DashboardTemplate({
     )
 }
 
-
-
 const Left = styled.div`
     float: left;
     width: 200px;
@@ -353,7 +368,7 @@ const Left = styled.div`
     ${styles.media.fourth} {
         width: 100%;
         float: none;
-    }        
+    }
 `
 const Right = styled.div`
     float: left;
@@ -368,17 +383,16 @@ const Right = styled.div`
         clear: both;
         & > div {
         }
-    }  
+    }
 `
 
 const Chart = styled.div`
-width: 200px;
-${styles.media.fourth} {
-    margin: 0 auto;
-}    
+    width: 200px;
+    ${styles.media.fourth} {
+        margin: 0 auto;
+    }
 `
-const ChartChart = styled.div`
-`
+const ChartChart = styled.div``
 
 const ChartBalance = styled.div`
     position: absolute;
@@ -393,7 +407,7 @@ const ChartLabel = styled.div`
 `
 
 const ChartNumber = styled.div`
-line-height: 35px;
+    line-height: 35px;
 `
 
 const AmountSuper = styled.span`
@@ -418,18 +432,18 @@ const Category = styled.div`
 `
 
 const HeaderAsset = styled.div`
-min-height: 50px;
+    min-height: 50px;
 `
 
 const HeaderLeft = styled.div``
 const HeaderLeftPercentage = styled.div`
-float: left;
-${styles.media.third} {
-    & > svg {
-        width: 30px;
-        height: 30px;
+    float: left;
+    ${styles.media.third} {
+        & > svg {
+            width: 30px;
+            height: 30px;
+        }
     }
-}  
 `
 const HeaderLeftText = styled.div`
     float: left;
@@ -438,7 +452,7 @@ const HeaderLeftText = styled.div`
     ${styles.media.third} {
         padding-left: 10px;
         padding-top: 0;
-    }        
+    }
 `
 const HeaderLeftTitle = styled.div`
     color: ${styles.color.black};
@@ -464,11 +478,11 @@ const HeaderRight = styled.div`
     float: right;
     padding-top: 3px;
     ${styles.media.third} {
-        float:none;
+        float: none;
         clear: both;
         top: -15px;
         position: relative;
-    }        
+    }
 `
 
 const HeaderRightTitle = styled.div`
@@ -482,7 +496,7 @@ const HeaderRightTitle = styled.div`
         text-align: left;
         font-size: 15px;
         line-height: 22px;
-    }  
+    }
 `
 
 const HeaderRightSubtitle = styled.div`
@@ -493,7 +507,7 @@ const HeaderRightSubtitle = styled.div`
     ${styles.media.third} {
         padding-left: 40px;
         text-align: left;
-    }        
+    }
 `
 
 const CircleText = styled.g`
@@ -516,7 +530,9 @@ const CircleText = styled.g`
     }
 `
 
-const AssetsList = styled.div`clear: both;`
+const AssetsList = styled.div`
+    clear: both;
+`
 const Asset = styled.div`
     clear: both;
     margin-top: 25px;
@@ -541,18 +557,18 @@ const AssetIcon = styled.div`
     float: left;
 `
 const AssetText = styled.div`
-margin-left: 38px;
-${styles.media.third} {
-    margin-left: 31px;
-}
+    margin-left: 38px;
+    ${styles.media.third} {
+        margin-left: 31px;
+    }
 `
 
 const AssetLeft = styled.div`
-float: left;
-width: 60%;
-${styles.media.third} {
-    width: 100%;
-}
+    float: left;
+    width: 60%;
+    ${styles.media.third} {
+        width: 100%;
+    }
 `
 const AssetRight = styled.div`
     float: right;
@@ -596,7 +612,7 @@ const AssetSubtitle = styled.div`
     line-height: 20px;
     ${styles.media.third} {
         padding-top: 0;
-    }        
+    }
 `
 const AssetPercentage = styled.div`
     padding-top: 3px;
@@ -606,14 +622,14 @@ const AssetPercentage = styled.div`
     }
 `
 const AssetPercentageLeft = styled.div`
-    width: calc(${props => props.percentage+'%'} - 30px);
+    width: calc(${props => props.percentage + '%'} - 30px);
     background-color: ${props => props.color};
     height: 4px;
     border-radius: 100px;
     float: left;
     margin-top: 5px;
-    margin-right: ${props => props.percentage>0 ? '5px' : 0};
-    `
+    margin-right: ${props => (props.percentage > 0 ? '5px' : 0)};
+`
 const AssetPercentageRight = styled.span`
     float: left;
     font-size: 10px;
@@ -621,37 +637,37 @@ const AssetPercentageRight = styled.span`
     color: ${props => props.color};
 `
 
-const Currencies = styled.div`
-width: 200px;
-margin: 0 auto;
+const CurrenciesStyled = styled.div`
+    width: 200px;
+    margin: 0 auto;
 `
 const Currency = styled.div`
-clear: both;
-padding-top: 30px;
-padding-left: 35px;
-height: 42px;
-${styles.media.third} {
-    padding-top: 20px;
-}  
+    clear: both;
+    padding-top: 30px;
+    padding-left: 35px;
+    height: 42px;
+    ${styles.media.third} {
+        padding-top: 20px;
+    }
 `
 const CurrencyIco = styled.div`
-float: left;
-padding-top: 5px;
-padding-right: 10px;
+    float: left;
+    padding-top: 5px;
+    padding-right: 10px;
 `
 const CurrencyText = styled.div`
-float: left;
+    float: left;
 `
 const CurrencyLabel = styled.div`
-font-weight: 900;
-color: ${styles.color.black};
-font-size: 18px;
+    font-weight: 900;
+    color: ${styles.color.black};
+    font-size: 18px;
 `
 const CurrencyValue = styled.div`
-color: ${styles.color.front3};
-font-size: 13px;
-font-weight: 200;
-& span {
-    font-weight: bold;
-}
+    color: ${styles.color.front3};
+    font-size: 13px;
+    font-weight: 200;
+    & span {
+        font-weight: bold;
+    }
 `
