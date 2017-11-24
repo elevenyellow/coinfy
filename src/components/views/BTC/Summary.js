@@ -7,7 +7,7 @@ import styles from '/const/styles'
 import { Currencies } from '/api/Currencies'
 import { PrivateKey as template } from '/const/paperwallets'
 
-import { Assets } from '/api/Assets'
+import { Coins } from '/api/Coins'
 import { round } from '/api/numbers'
 import { getDay, getMonthTextShort } from '/api/time'
 import { openUrl } from '/api/browser'
@@ -74,7 +74,7 @@ export default class Summary extends Component {
         state.view = { fetchingTxs: false }
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
-        this.Asset = Assets[asset.symbol] // Storing Asset api (Asset.BTC, Asset.ETH, ...)
+        this.Coin = Coins[asset.symbol] // Storing Coin api (Coin.BTC, Coin.ETH, ...)
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(asset, 'summary')
         this.observer.observe(asset.state, 'fetching_summary')
@@ -129,7 +129,7 @@ export default class Summary extends Component {
             this.forceFetch()
         } else {
             state.view.fetchingTxs = true
-            this.Asset.fetchTxs(asset.address, asset.summary.txs.length).then(
+            this.Coin.fetchTxs(asset.address, asset.summary.txs.length).then(
                 txs => {
                     asset.summary.totalTransactions = txs.totalTxs
                     asset.summary.txs = asset.summary.txs.concat(txs.txs)
@@ -159,13 +159,13 @@ export default class Summary extends Component {
             address: address,
             qrcodebase64: generateQRCode(address),
             refAddress: this.refAddress,
-            colorAsset: this.Asset.color,
-            urlInfo: this.Asset.urlInfo(address),
-            urlInfoTx: this.Asset.urlInfoTx,
+            colorAsset: this.Coin.color,
+            urlInfo: this.Coin.urlInfo(address),
+            urlInfoTx: this.Coin.urlInfoTx,
             onCopy: this.onCopy,
             onPrint: this.onPrint,
-            mailTo: `mailto:?subject=My ${this.Asset.name} Address&body=My ${
-                this.Asset.name
+            mailTo: `mailto:?subject=My ${this.Coin.name} Address&body=My ${
+                this.Coin.name
             } address is: ${address}`
         })
     }

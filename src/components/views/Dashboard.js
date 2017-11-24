@@ -9,7 +9,7 @@ import { Currencies } from '/api/Currencies'
 import routes from '/const/routes'
 
 import { round } from '/api/numbers'
-import { Assets } from '/api/Assets'
+import { Coins } from '/api/Coins'
 import sortBy from '/api/sortBy'
 
 import state from '/store/state'
@@ -47,8 +47,8 @@ export default class Dashboard extends Component {
             let asset = state.assets[id]
             if (dataUnformated[asset.symbol] === undefined)
                 dataUnformated[asset.symbol] = {
-                    label: Assets[asset.symbol].name,
-                    color: Assets[asset.symbol].color,
+                    label: Coins[asset.symbol].name,
+                    color: Coins[asset.symbol].color,
                     balance_asset_big: Big(0),
                     balance_asset_number: 0,
                     balance_currency_number: 0,
@@ -186,14 +186,14 @@ function DashboardTemplate({
                             </CurrencyIco>
                             <CurrencyText>
                                 <CurrencyLabel>
-                                    {Assets[symbol].name}
+                                    {Coins[symbol].name}
                                 </CurrencyLabel>
                                 <CurrencyValue>
                                     {symbol} ≈{' '}
                                     <span>
                                         {Currencies[currency].format(
                                             cryptoPrices[symbol],
-                                            Assets[symbol].price_decimals
+                                            Coins[symbol].price_decimals
                                         )}
                                     </span>
                                 </CurrencyValue>

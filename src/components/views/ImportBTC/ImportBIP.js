@@ -6,10 +6,10 @@ import { Show } from '/doprouter/react'
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
 
-import { isPrivateKeyBip, getAddressFromPrivateKey } from '/api/Assets/BTC'
+import { isPrivateKeyBip, getAddressFromPrivateKey } from '/api/Coins/BTC'
 import { decryptBIP38 } from '/api/crypto'
 import { isAssetRegistered } from '/store/getters'
-import { BTC, getAssetId } from '/api/Assets'
+import { BTC, getCoinId } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -73,13 +73,17 @@ export default class ImportBIP extends Component {
     onSubmit(e) {
         e.preventDefault()
         state.view.bip_loading = true
-        setTimeout(e=>{ // Need this shitty hack to show loading effect
+        setTimeout(e => {
+            // Need this shitty hack to show loading effect
             const collector = collect()
             try {
                 const password = state.view.bip_password
                 const private_key = decryptBIP38(state.view.bip_input, password)
                 const address = getAddressFromPrivateKey(private_key)
-                const asset_id = getAssetId({ symbol: BTC.symbol, address: address })
+                const asset_id = getCoinId({
+                    symbol: BTC.symbol,
+                    address: address
+                })
                 state.view.address = address
                 // console.log( address );
                 if (isAssetRegistered(asset_id)) {
@@ -87,15 +91,11 @@ export default class ImportBIP extends Component {
                     state.view.isValidInput = false
                 } else {
                     const asset = createAsset(BTC.type, BTC.symbol, address)
-                    setPrivateKey(
-                        asset_id,
-                        private_key,
-                        password
-                    )
-                    setHref(routes.asset(getAssetId(asset)))
+                    setPrivateKey(asset_id, private_key, password)
+                    setHref(routes.asset(getCoinId(asset)))
                 }
-            } catch(e) {
-                if ( e.toString().indexOf("checksum")>-1 ) {
+            } catch (e) {
+                if (e.toString().indexOf('checksum') > -1) {
                     state.view.bip_input_error = 'Invalid private key'
                 } else {
                     state.view.bip_password_error = 'Invalid password'
@@ -107,7 +107,7 @@ export default class ImportBIP extends Component {
     }
 
     get isValidForm() {
-        return state.view.isValidInput && state.view.bip_password.length>0
+        return state.view.isValidInput && state.view.bip_password.length > 0
     }
 
     render() {
@@ -141,7 +141,9 @@ function ImportBIPTemplate({
             <FormField>
                 <FormFieldLeft>
                     <Label>Private key BIP38</Label>
-                    <SubLabel>Type or paste your private key in BIP38 format.</SubLabel>
+                    <SubLabel>
+                        Type or paste your private key in BIP38 format.
+                    </SubLabel>
                 </FormFieldLeft>
                 <FormFieldRight>
                     <Input
@@ -149,7 +151,7 @@ function ImportBIPTemplate({
                         value={bip_input}
                         onChange={onChangeInput}
                         error={bip_input_error}
-                        invalid={bip_input_error && bip_input.length>0}
+                        invalid={bip_input_error && bip_input.length > 0}
                     />
                 </FormFieldRight>
             </FormField>
@@ -157,7 +159,9 @@ function ImportBIPTemplate({
             <FormField>
                 <FormFieldLeft>
                     <Label>Password</Label>
-                    <SubLabel>The password you used to encrypt this private key.</SubLabel>
+                    <SubLabel>
+                        The password you used to encrypt this private key.
+                    </SubLabel>
                 </FormFieldLeft>
                 <FormFieldRight>
                     <Input

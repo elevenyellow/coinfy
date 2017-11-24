@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { setHref } from '/store/actions'
 import styles from '/const/styles'
 
-import { BTC } from '/api/Assets'
+import { BTC } from '/api/Coins'
 import routes from '/const/routes'
 import state from '/store/state'
 import { isAssetWithPrivateKey } from '/store/getters'

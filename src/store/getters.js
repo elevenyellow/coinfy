@@ -1,6 +1,6 @@
 import { util } from 'dop'
-import { Assets } from '/api/Assets'
-import { isPrivateKey, getAddressFromPrivateKey } from '/api/Assets/BTC'
+import { Coins } from '/api/Coins'
+import { isPrivateKey, getAddressFromPrivateKey } from '/api/Coins/BTC'
 import state from '/store/state'
 import { Currencies } from '/api/Currencies'
 

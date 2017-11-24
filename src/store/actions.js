@@ -1,6 +1,6 @@
 import React from 'react'
 import { set, collect } from 'dop'
-import { Assets, getAssetId } from '/api/Assets'
+import { Coins, getCoinId } from '/api/Coins'
 import { now } from '/api/time'
 import { keysToRemoveWhenExporting } from '/const/state'
 import routes from '/const/routes'
@@ -31,7 +31,7 @@ export function setHref(href) {
 
 export function createAsset(type, symbol, address) {
     const asset = generateDefaultAsset({ type, symbol, address })
-    const asset_id = getAssetId({ symbol, address, type })
+    const asset_id = getCoinId({ symbol, address, type })
     state.assets[asset_id] = asset
     saveAssetsLocalStorage()
     setAssetsExported(false)
@@ -50,7 +50,7 @@ export function setPrivateKey(asset_id, private_key, password) {
     set(
         asset,
         'private_key',
-        Assets[asset.symbol].encrypt(private_key, password),
+        Coins[asset.symbol].encrypt(private_key, password),
         { deep: false }
     )
     saveAssetsLocalStorage()
@@ -235,7 +235,7 @@ export function updateBalance(asset_id, balance) {
 export function fetchAllBalances() {
     getAssetsAsArray().forEach((asset, index) => {
         setTimeout(
-            () => fetchBalance(getAssetId(asset)),
+            () => fetchBalance(getCoinId(asset)),
             index * timeouts.between_each_getbalance
         )
     })
@@ -245,7 +245,7 @@ fetchAllBalances()
 
 export function fetchBalance(asset_id) {
     const asset = state.assets[asset_id]
-    Assets[asset.symbol]
+    Coins[asset.symbol]
         .fetchBalance(asset.address)
         .then(balance => {
             showNotConnectionNotification(false)
@@ -272,7 +272,7 @@ export function fetchSummaryAsset(asset_id) {
     asset.summary = {}
     collector.emit()
 
-    return Assets[asset.symbol]
+    return Coins[asset.symbol]
         .fetchSummary(asset.address)
         .then(summary => {
             const collector = collect()
@@ -292,7 +292,7 @@ export function fetchSummaryAsset(asset_id) {
 export function fetchBalanceAsset(asset_id) {
     // console.log( 'fetchSummaryAsset', asset_id );
     const asset = state.assets[asset_id]
-    return Assets[asset.symbol]
+    return Coins[asset.symbol]
         .fetchBalance(asset.address)
         .then(balance => {
             asset.balance = balance
@@ -303,7 +303,7 @@ export function fetchBalanceAsset(asset_id) {
 }
 
 export const fetchPrices = (function() {
-    let assetsArray = Object.keys(Assets)
+    let assetsArray = Object.keys(Coins)
     let timeout
     let manager = new CryptoPriceManager()
     manager.onUpdate = function(crypto, value, source) {

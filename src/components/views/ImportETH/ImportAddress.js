@@ -5,9 +5,9 @@ import { createObserver, collect } from 'dop'
 import { setHref, createAsset } from '/store/actions'
 import state from '/store/state'
 
-import { isAddress, addHexPrefix } from '/api/Assets/ETH'
+import { isAddress, addHexPrefix } from '/api/Coins/ETH'
 import { isAssetRegistered } from '/store/getters'
-import { ETH, getAssetId } from '/api/Assets'
+import { ETH, getCoinId } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -45,13 +45,13 @@ export default class ImportAddress extends Component {
         const collector = collect()
         const value = e.target.value.trim()
         state.view.address_input = value
-        
+
         if (isAddress(value)) {
             state.view.address = addHexPrefix(value)
-            
+
             if (
                 isAssetRegistered(
-                    getAssetId({ symbol: ETH.symbol, address: value })
+                    getCoinId({ symbol: ETH.symbol, address: value })
                 )
             ) {
                 state.view.address_input_error = 'You already have this asset'
@@ -74,16 +74,15 @@ export default class ImportAddress extends Component {
         const collector = collect()
         const address = state.view.address
         const asset = createAsset(ETH.type, ETH.symbol, address)
-        setHref(routes.asset(getAssetId(asset)))
+        setHref(routes.asset(getCoinId(asset)))
         // setHref(routes.home())
         collector.emit()
     }
 
-
     get isValidForm() {
         return state.view.isValidInput
     }
-    
+
     render() {
         return React.createElement(ImportAddressTemplate, {
             address_input: state.view.address_input,
@@ -115,7 +114,9 @@ function ImportAddressTemplate({
                         value={address_input}
                         onChange={onChangeInput}
                         error={address_input_error}
-                        invalid={address_input_error && address_input.length>0}
+                        invalid={
+                            address_input_error && address_input.length > 0
+                        }
                     />
                 </FormFieldRight>
             </FormField>

@@ -6,9 +6,9 @@ import { minpassword } from '/api/crypto'
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
 
-import { isPrivateKey, getAddressFromPrivateKey } from '/api/Assets/ETH'
+import { isPrivateKey, getAddressFromPrivateKey } from '/api/Coins/ETH'
 import { isAssetRegistered } from '/store/getters'
-import { ETH, getAssetId } from '/api/Assets'
+import { ETH, getCoinId } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -59,7 +59,7 @@ export default class ImportPrivate extends Component {
 
                 if (
                     isAssetRegistered(
-                        getAssetId({ symbol: ETH.symbol, address: address })
+                        getCoinId({ symbol: ETH.symbol, address: address })
                     )
                 ) {
                     state.view.private_input_error = 'You already have this asset'
@@ -95,11 +95,11 @@ export default class ImportPrivate extends Component {
         const address = state.view.address
         const asset = createAsset(ETH.type, ETH.symbol, address)
         setPrivateKey(
-            getAssetId({ symbol: ETH.symbol, address }),
+            getCoinId({ symbol: ETH.symbol, address }),
             state.view.private_input,
             state.view.private_password
         )
-        setHref(routes.asset(getAssetId(asset)))
+        setHref(routes.asset(getCoinId(asset)))
         collector.emit()
     }
 

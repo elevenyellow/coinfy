@@ -9,7 +9,7 @@ import IconMore from 'react-icons/lib/md/more-vert'
 import IconHome from 'react-icons/lib/md/home'
 
 import { Currencies } from '/api/Currencies'
-import { Assets } from '/api/Assets'
+import { Coins } from '/api/Coins'
 import {
     setHref,
     exportAssets,
@@ -109,7 +109,7 @@ export default class Header extends Component {
 
     onSideMenu() {
         // if (window.location.hash === '') {
-            // window.history.pushState(null, null, '#menu')
+        // window.history.pushState(null, null, '#menu')
         // }
         state.sideMenuOpen = true
     }
@@ -170,7 +170,7 @@ function HeaderTemplate({
                         if ( typeof cryptoPrices[symbol] == 'number' && cryptoPrices[symbol]>0 )
                             return(
                             <HeaderCrypto>
-                                {symbol} ≈ <strong>{currencies[currency].format(cryptoPrices[symbol], Assets[symbol].price_decimals)}</strong>
+                                {symbol} ≈ <strong>{currencies[currency].format(cryptoPrices[symbol], Coins[symbol].price_decimals)}</strong>
                             </HeaderCrypto>
                             )
                     })} */}
@@ -241,7 +241,9 @@ const HeaderDiv = styled.div`
         margin: 0 ${styles.paddingOutMobile};
     }
 `
-const HeaderContent = styled.div`padding-top: 25px;`
+const HeaderContent = styled.div`
+    padding-top: 25px;
+`
 const HeaderLeft = styled.div`
     float: left;
     text-align: center;

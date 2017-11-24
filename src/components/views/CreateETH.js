@@ -4,10 +4,10 @@ import { createObserver, collect } from 'dop'
 import { Show } from '/doprouter/react'
 
 import { generateQRCode } from '/api/qr'
-import { generateRandomWallet } from '/api/Assets/ETH'
+import { generateRandomWallet } from '/api/Coins/ETH'
 import { minpassword } from '/api/crypto'
 
-import { ETH, getAssetId } from '/api/Assets'
+import { ETH, getCoinId } from '/api/Coins'
 import routes from '/const/routes'
 import state from '/store/state'
 import styles from '/const/styles'
@@ -83,11 +83,11 @@ export default class CreateEthereum extends Component {
             const address = state.view.address
             const asset = createAsset(ETH.type, ETH.symbol, address)
             setPrivateKey(
-                getAssetId({ symbol: ETH.symbol, address }),
+                getCoinId({ symbol: ETH.symbol, address }),
                 state.view.private_key,
                 state.view.password
             )
-            setHref(routes.asset(getAssetId(asset)))
+            setHref(routes.asset(getCoinId(asset)))
             collector.emit()
         }
     }

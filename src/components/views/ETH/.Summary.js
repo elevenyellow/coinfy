@@ -10,7 +10,7 @@
 // import { fetchSummaryAsset, fetchSummaryAssetIfReady } from '/store/actions'
 // import { convertBalance, getAsset } from '/store/getters'
 
-// import { ETH } from '/api/Assets'
+// import { ETH } from '/api/Coins'
 // import { getDay, getMonthTextShort } from '/api/time'
 // import { openUrl } from '/api/browser'
 // import { generateQRCode } from '/api/qr'

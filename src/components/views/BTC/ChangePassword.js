@@ -5,7 +5,7 @@ import { createObserver, collect } from 'dop'
 import routes from '/const/routes'
 import styles from '/const/styles'
 
-import { Assets } from '/api/Assets'
+import { Coins } from '/api/Coins'
 import { minpassword } from '/api/crypto'
 
 import state from '/store/state'
@@ -26,12 +26,8 @@ import {
 } from '/components/styled/Form'
 import CenterElement from '/components/styled/CenterElement'
 
-
-
-
-
 export default class ChangePassword extends Component {
-    componentWillMount() {        
+    componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
 
@@ -73,10 +69,14 @@ export default class ChangePassword extends Component {
         e.preventDefault()
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
-        const Asset = Assets[asset.symbol]
+        const Coin = Coins[asset.symbol]
         const collector = collect()
-        const private_key = Asset.decrypt(asset.address, asset.private_key, state.view.oldpassword)
-        if ( private_key ) {
+        const private_key = Coin.decrypt(
+            asset.address,
+            asset.private_key,
+            state.view.oldpassword
+        )
+        if (private_key) {
             const name = asset.label || asset.address
             setPrivateKey(asset_id, private_key, state.view.password)
             addNotification(
@@ -84,9 +84,7 @@ export default class ChangePassword extends Component {
                 styles.notificationColor.green
             )
             setHref(routes.summaryAsset(asset_id))
-        }
-        else
-            state.view.isInvalidOldpassword = true
+        } else state.view.isInvalidOldpassword = true
 
         collector.emit()
     }
@@ -101,9 +99,7 @@ export default class ChangePassword extends Component {
         )
     }
 
-
     render() {
-
         const isInvalidRepassword = this.isInvalidRepassword
         const isValidForm =
             state.view.oldpassword.length > 0 &&

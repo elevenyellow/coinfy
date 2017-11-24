@@ -6,9 +6,9 @@ import { minpassword } from '/api/crypto'
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
 
-import { isPrivateKey, getAddressFromPrivateKey } from '/api/Assets/BTC'
+import { isPrivateKey, getAddressFromPrivateKey } from '/api/Coins/BTC'
 import { isAssetRegistered } from '/store/getters'
-import { BTC, getAssetId } from '/api/Assets'
+import { BTC, getCoinId } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -60,7 +60,7 @@ export default class ImportWIF extends Component {
 
                 if (
                     isAssetRegistered(
-                        getAssetId({ symbol: BTC.symbol, address: address })
+                        getCoinId({ symbol: BTC.symbol, address: address })
                     )
                 ) {
                     state.view.wif_input_error = 'You already have this asset'
@@ -96,11 +96,11 @@ export default class ImportWIF extends Component {
         const address = state.view.address
         const asset = createAsset(BTC.type, BTC.symbol, address)
         setPrivateKey(
-            getAssetId({ symbol: BTC.symbol, address }),
+            getCoinId({ symbol: BTC.symbol, address }),
             state.view.wif_input,
             state.view.wif_password
         )
-        setHref(routes.asset(getAssetId(asset)))
+        setHref(routes.asset(getCoinId(asset)))
         collector.emit()
     }
 

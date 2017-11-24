@@ -5,8 +5,8 @@ import { Show } from '/doprouter/react'
 
 // import { createWorker } from '/api/workers'
 import { generateQRCode } from '/api/qr'
-import { BTC } from '/api/Assets'
-import { getAllFormats } from '/api/Assets/BTC'
+import { BTC } from '/api/Coins'
+import { getAllFormats } from '/api/Coins/BTC'
 import { printTemplate } from '/api/browser'
 import { encryptBIP38 } from '/api/crypto'
 

@@ -12,9 +12,9 @@ import {
     isAddress,
     addHexPrefix,
     getAddressFromPrivateKey
-} from '/api/Assets/ETH'
+} from '/api/Coins/ETH'
 import { isAssetRegistered } from '/store/getters'
-import { ETH, getAssetId } from '/api/Assets'
+import { ETH, getCoinId } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -72,7 +72,7 @@ export default class ImportKeystore extends Component {
                     ) {
                         if (
                             isAssetRegistered(
-                                getAssetId({
+                                getCoinId({
                                     symbol: ETH.symbol,
                                     address: address
                                 })
@@ -117,11 +117,11 @@ export default class ImportKeystore extends Component {
                 if (private_key) {
                     const asset = createAsset(ETH.type, ETH.symbol, address)
                     setPrivateKey(
-                        getAssetId({ symbol: ETH.symbol, address }),
+                        getCoinId({ symbol: ETH.symbol, address }),
                         private_key,
                         password
                     )
-                    setHref(routes.asset(getAssetId(asset)))
+                    setHref(routes.asset(getCoinId(asset)))
                 } else {
                     state.view.keystore_password_error = 'Invalid password'
                 }

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 import Big from 'big.js'
 
-import { Assets } from '/api/Assets'
+import { Coins } from '/api/Coins'
 import { parseNumber, decimalsMax } from '/api/numbers'
 
 import state from '/store/state'
@@ -24,7 +24,7 @@ export default class Send extends Component {
     componentWillMount() {
         this.asset_id = state.location.path[1]
         this.asset = getAsset(this.asset_id)
-        this.Asset = Assets[this.asset.symbol] // Storing Asset api (Asset.BTC, Asset.ETH, ...)
+        this.Coin = Coins[this.asset.symbol] // Storing Asset api (Asset.BTC, Asset.ETH, ...)
 
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
@@ -64,7 +64,7 @@ export default class Send extends Component {
     }
 
     fetchRecomendedFee() {
-        this.Asset.fetchRecomendedFee(this.asset.address).then(fee => {
+        this.Coin.fetchRecomendedFee(this.asset.address).then(fee => {
             const collector = collect()
             state.view.fee_input = state.view.fee_recomended = Big(fee)
             collector.emit()
@@ -75,7 +75,7 @@ export default class Send extends Component {
         const collector = collect()
         const value = e.target.value.trim()
         state.view.address_input = value
-        if (this.Asset.isAddressCheck(value)) {
+        if (this.Coin.isAddressCheck(value)) {
             state.view.address_input_error = false
         } else {
             state.view.address_input_error = true
@@ -151,7 +151,7 @@ export default class Send extends Component {
         const isEnoughBalance = this.isEnoughBalance
 
         return React.createElement(SendTemplate, {
-            color: this.Asset.color,
+            color: this.Coin.color,
             address_input: state.view.address_input,
             address_input_error: state.view.address_input_error,
             amount1_input: amount1,

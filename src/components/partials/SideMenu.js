@@ -9,7 +9,7 @@ import styles from '/const/styles'
 import { Currencies } from '/api/Currencies'
 
 import { numberWithSeparation, round } from '/api/numbers'
-import { Assets } from '/api/Assets'
+import { Coins } from '/api/Coins'
 
 import state from '/store/state'
 import {
