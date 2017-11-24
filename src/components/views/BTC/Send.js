@@ -30,7 +30,8 @@ export default class Send extends Component {
         this.observer.observe(state.view)
 
         // Initial state
-        this.state = { amount: 0, fee: 0 }
+        this.amount = 0
+        this.fee = 0
         state.view = {
             address_input: '',
             address_input_error: false,
@@ -101,20 +102,20 @@ export default class Send extends Component {
     }
 
     getMax() {
-        const max = Big(this.asset.balance).minus(this.state.fee)
+        const max = Big(this.asset.balance).minus(this.fee)
         return max.gt(0) ? max : 0
     }
 
     get isEnoughBalance() {
-        return this.state.amount.lte(this.getMax())
+        return this.amount.lte(this.getMax())
     }
 
     get isValidForm() {
         return (
             !state.view.address_input_error &&
             state.view.address_input.length > 0 &&
-            this.state.amount.gt(0) &&
-            this.state.fee.gt(0)
+            this.amount.gt(0) &&
+            this.fee.gt(0)
         )
     }
 
@@ -137,8 +138,8 @@ export default class Send extends Component {
             )
         }
 
-        this.state.amount = Big(parseNumber(amount1))
-        this.state.fee = Big(parseNumber(state.view.fee_input))
+        this.amount = Big(parseNumber(amount1))
+        this.fee = Big(parseNumber(state.view.fee_input))
 
         return React.createElement(SendTemplate, {
             color: this.Asset.color,
@@ -148,9 +149,9 @@ export default class Send extends Component {
             amount2_input: amount2,
             symbol_crypto: symbol,
             symbol_currency: state.currency,
-            fee: this.state.fee,
+            fee: this.fee,
             fee_fiat: formatCurrency(
-                convertBalance(this.asset.symbol, this.state.fee),
+                convertBalance(this.asset.symbol, this.fee),
                 2
             ),
             isValidForm: this.isValidForm && this.isEnoughBalance,

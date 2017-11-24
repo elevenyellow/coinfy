@@ -36,7 +36,7 @@ export default class Left extends Component {
         this.observer.observe(state, 'balance')
         this.observer.observe(state, 'totalAssets')
 
-        this.state = { balance_start: state.balance }
+        this.balance_start = state.balance
         this.createRef = this.createRef.bind(this)
     }
     componentWillUnmount() {
@@ -95,8 +95,8 @@ export default class Left extends Component {
     }
 
     render() {
-        const balance_start = this.state.balance_start
-        this.state.balance_start = state.balance
+        const balance_start = this.balance_start
+        this.balance_start = state.balance
         return React.createElement(LeftTemplate, {
             open: state.sideMenuOpen,
             onClickBackground: this.onClickBackground,

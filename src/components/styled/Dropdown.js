@@ -6,7 +6,7 @@ export class DropDown extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = { eventJustCreated: false }
+        this.eventJustCreated = false
 
         // binding
         this.onOpen = this.onOpen.bind(this)
@@ -21,17 +21,17 @@ export class DropDown extends React.Component {
     }
 
     createEvent() {
-        this.state.eventJustCreated = true
+        this.eventJustCreated = true
         this.callback = e => {
             if (
-                !this.state.eventJustCreated &&
-                this.state.dropdownmenu &&
-                this.state.dropdownmenu.base !== e.target
+                !this.eventJustCreated &&
+                this.dropdownmenu &&
+                this.dropdownmenu.base !== e.target
             ) {
                 // this.removeEvent()
                 this.onClose(e)
             }
-            this.state.eventJustCreated = false
+            this.eventJustCreated = false
         }
         document.addEventListener('click', this.callback)
     }
@@ -55,14 +55,12 @@ export class DropDown extends React.Component {
             // won't work in react
             let constructor = child.nodeName // || child.type
             let attrs = child.attributes // || child.props
-            attrs.ref = element => (this.state.dropdownmenu = element)
+            attrs.ref = element => (this.dropdownmenu = element)
             attrs.visible = props.open
         })
 
         return (
-            <DropDownStyled onClick={this.onOpen}>
-                {childrens}
-            </DropDownStyled>
+            <DropDownStyled onClick={this.onOpen}>{childrens}</DropDownStyled>
         )
     }
 }
@@ -75,7 +73,7 @@ const DropDownStyled = styled.div`
 export const DropDownMenu = styled.div`
     position: absolute;
     background: white;
-    box-shadow: 0 1px 5px 0 rgba(0,0,0,.35);
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.35);
     border-radius: 3px;
     display: ${props => (props.visible ? 'block' : 'none')};
     left: ${props => props.left};

@@ -7,7 +7,7 @@ import IconMenu from 'react-icons/lib/md/folder-open'
 
 export default class ImportKeystore extends Component {
     componentWillMount(props) {
-        this.state = { fileName: 'Select file' }
+        this.fileName = 'Select file'
         this.input = createInputFile()
         this.input.addEventListener('change', e => {
             if (e.target.files && e.target.files[0])
@@ -23,18 +23,15 @@ export default class ImportKeystore extends Component {
 
     render() {
         return (
-            <Container
-                onClick={this.onClick}
-                invalid={this.props.invalid}
-            >
+            <Container onClick={this.onClick} invalid={this.props.invalid}>
                 <div className="icon">
-                    <IconMenu size={20} color={styles.color.front5}  />
+                    <IconMenu size={20} color={styles.color.front5} />
                 </div>
                 <div className="input">
                     <Input
                         {...this.props}
                         disabled={true}
-                        value={this.state.fileName}
+                        value={this.fileName}
                         onChange={null}
                     />
                 </div>

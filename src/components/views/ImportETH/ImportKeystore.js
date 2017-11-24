@@ -8,7 +8,11 @@ import { decryptAES128CTR } from '/api/crypto'
 import { setPrivateKey, setHref, createAsset } from '/store/actions'
 import state from '/store/state'
 
-import { isAddress, addHexPrefix, getAddressFromPrivateKey } from '/api/Assets/ETH'
+import {
+    isAddress,
+    addHexPrefix,
+    getAddressFromPrivateKey
+} from '/api/Assets/ETH'
 import { isAssetRegistered } from '/store/getters'
 import { ETH, getAssetId } from '/api/Assets'
 
@@ -25,7 +29,7 @@ import {
     FormFieldRight,
     FormFieldButtons
 } from '/components/styled/Form'
-import { log } from 'util';
+import { log } from 'util'
 
 export default class ImportKeystore extends Component {
     componentWillMount() {
@@ -63,20 +67,30 @@ export default class ImportKeystore extends Component {
                     if (
                         keystore.version === 3 &&
                         isAddress(address) &&
-                        (typeof keystore.Crypto == 'object' || typeof keystore.crypto == 'object')
+                        (typeof keystore.Crypto == 'object' ||
+                            typeof keystore.crypto == 'object')
                     ) {
-                        if (isAssetRegistered(getAssetId({symbol:ETH.symbol, address:address}))) {
-                            state.view.keystore_invalid_error = 'You already have this asset'
+                        if (
+                            isAssetRegistered(
+                                getAssetId({
+                                    symbol: ETH.symbol,
+                                    address: address
+                                })
+                            )
+                        ) {
+                            state.view.keystore_invalid_error =
+                                'You already have this asset'
                         } else {
-                            this.state.keystore = keystore
+                            this.keystore = keystore
                             state.view.address = address
                             state.view.keystore_invalid_error = ''
                         }
                     } else {
-                        state.view.keystore_invalid_error = 'Invalid Keystore file'
+                        state.view.keystore_invalid_error =
+                            'Invalid Keystore file'
                     }
                 } catch (e) {
-                    console.log( e )
+                    console.log(e)
                     state.view.keystore_invalid_error = 'Invalid Keystore file'
                 }
                 collector.emit()
@@ -91,12 +105,12 @@ export default class ImportKeystore extends Component {
 
     onSubmit(e) {
         e.preventDefault()
-        // console.log( this.state.keystore );
-        if (this.state.keystore) {
+        // console.log( this.keystore );
+        if (this.keystore) {
             const collector = collect()
             const address = state.view.address
             const password = state.view.keystore_password
-            const crypto = this.state.keystore.Crypto || this.state.keystore.crypto
+            const crypto = this.keystore.Crypto || this.keystore.crypto
 
             try {
                 const private_key = ETH.decrypt(address, crypto, password)
@@ -108,26 +122,23 @@ export default class ImportKeystore extends Component {
                         password
                     )
                     setHref(routes.asset(getAssetId(asset)))
-                }
-                else {
+                } else {
                     state.view.keystore_password_error = 'Invalid password'
                 }
                 collector.emit()
-            } catch(e) {
+            } catch (e) {
                 state.view.keystore_invalid_error = 'Invalid Keystore file'
                 collector.emit()
-                console.log( e )
+                console.log(e)
                 return false
             }
-
-
         }
     }
 
     get isValidForm() {
         return (
-            state.view.keystore_invalid_error==='' &&
-            state.view.keystore_password_error==='' &&
+            state.view.keystore_invalid_error === '' &&
+            state.view.keystore_password_error === '' &&
             state.view.keystore_selected &&
             state.view.keystore_password.length > 0
         )

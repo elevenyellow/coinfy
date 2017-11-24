@@ -27,8 +27,7 @@ export default class Dashboard extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'balance')
-
-        this.state = { balance_start: state.balance }
+        this.balance_start = state.balance
     }
     componentWillUnmount() {
         // this.observer.destroy()
@@ -117,8 +116,8 @@ export default class Dashboard extends Component {
 
         data = sortBy(data, '-balance_currency_number')
 
-        const balance_start = this.state.balance_start
-        this.state.balance_start = state.balance
+        const balance_start = this.balance_start
+        this.balance_start = state.balance
 
         return React.createElement(DashboardTemplate, {
             data: data,
