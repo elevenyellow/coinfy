@@ -6,7 +6,7 @@ import IconMore from 'react-icons/lib/md/more-vert'
 
 import routes from '/const/routes'
 import styles from '/const/styles'
-import { Currencies } from '/api/Currencies'
+import { Fiats } from '/api/Fiats'
 
 import { numberWithSeparation, round } from '/api/numbers'
 import { Coins } from '/api/Coins'
@@ -101,7 +101,7 @@ export default class Left extends Component {
             open: state.sideMenuOpen,
             onClickBackground: this.onClickBackground,
             createRef: this.createRef,
-            ascii: Currencies[state.currency].ascii,
+            ascii: Fiats[state.currency].ascii,
             balance_start: balance_start,
             balance_end: state.balance,
             totalAssets: state.totalAssets

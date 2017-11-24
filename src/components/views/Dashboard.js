@@ -5,7 +5,7 @@ import Big from 'big.js'
 import CountUp from 'react-countup'
 
 import styles from '/const/styles'
-import { Currencies } from '/api/Currencies'
+import { Fiats } from '/api/Fiats'
 import routes from '/const/routes'
 
 import { round } from '/api/numbers'
@@ -122,7 +122,7 @@ export default class Dashboard extends Component {
         return React.createElement(DashboardTemplate, {
             data: data,
             onClick: this.onClick,
-            ascii: Currencies[state.currency].ascii,
+            ascii: Fiats[state.currency].ascii,
             balance_start: balance_start,
             balance_end: state.balance,
             cryptoPrices: state.prices,
@@ -191,7 +191,7 @@ function DashboardTemplate({
                                 <CurrencyValue>
                                     {symbol} ≈{' '}
                                     <span>
-                                        {Currencies[currency].format(
+                                        {Fiats[currency].format(
                                             cryptoPrices[symbol],
                                             Coins[symbol].price_decimals
                                         )}

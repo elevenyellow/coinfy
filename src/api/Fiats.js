@@ -72,7 +72,7 @@ export const SGD = {
         `$${numberWithSeparation(decimals(value, n), separation)}`
 }
 
-export const Currencies = {
+export const Fiats = {
     USD: USD,
     EUR: EUR,
     GBP: GBP,

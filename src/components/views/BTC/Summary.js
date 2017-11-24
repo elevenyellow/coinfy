@@ -4,7 +4,7 @@ import { createObserver } from 'dop'
 import { Show } from '/doprouter/react'
 
 import styles from '/const/styles'
-import { Currencies } from '/api/Currencies'
+import { Fiats } from '/api/Fiats'
 import { PrivateKey as template } from '/const/paperwallets'
 
 import { Coins } from '/api/Coins'
@@ -148,7 +148,7 @@ export default class Summary extends Component {
             balance_currency: formatCurrency(
                 convertBalance(asset.symbol, asset.balance)
             ),
-            symbol: Currencies[state.currency].symbol,
+            symbol: Fiats[state.currency].symbol,
             totalTransactions: asset.summary.totalTxs || 0,
             totalReceived: round(asset.summary.totalReceived || 0, 2),
             totalSent: round(asset.summary.totalSent || 0, 2),

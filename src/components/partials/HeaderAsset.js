@@ -13,7 +13,7 @@ import {
 
 import Coins from '/api/Coins'
 
-import { Currencies } from '/api/Currencies'
+import { Fiats } from '/api/Fiats'
 import routes from '/const/routes'
 import styles from '/const/styles'
 import state from '/store/state'

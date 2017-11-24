@@ -4,7 +4,7 @@
 // import { Show } from '/doprouter/react'
 
 // import styles from '/const/styles'
-// import { Currencies } from '/api/Currencies'
+// import { Fiats } from '/api/Fiats'
 // import { round } from '/api/numbers'
 // import state from '/store/state'
 // import { fetchSummaryAsset, fetchSummaryAssetIfReady } from '/store/actions'
@@ -157,7 +157,7 @@
 //                 convertBalance(ETH.symbol, asset.balance),
 //                 0
 //             ),
-//             symbol: Currencies[state.currency].symbol,
+//             symbol: Fiats[state.currency].symbol,
 //             totalTransactions: asset.summary.totalTxs || 0,
 //             totalReceived: round(asset.summary.totalReceived || 0, 2),
 //             totalSent: round(asset.summary.totalSent || 0, 2),

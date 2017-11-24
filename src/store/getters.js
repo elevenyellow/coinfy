@@ -2,7 +2,7 @@ import { util } from 'dop'
 import { Coins } from '/api/Coins'
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/Coins/BTC'
 import state from '/store/state'
-import { Currencies } from '/api/Currencies'
+import { Fiats } from '/api/Fiats'
 
 // GETTERS
 export function getTotalAssets(assets) {
@@ -58,5 +58,5 @@ export function generateDefaultAsset(object = {}) {
 }
 
 export function formatCurrency(value, n = 0, currencySymbol = state.currency) {
-    return Currencies[currencySymbol].format(value, n)
+    return Fiats[currencySymbol].format(value, n)
 }
