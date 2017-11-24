@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 import Big from 'big.js'
+import { Show } from '/doprouter/react'
 
 import { Coins } from '/api/Coins'
 import { parseNumber, decimalsMax } from '/api/numbers'
@@ -32,13 +33,14 @@ export default class Send extends Component {
         // Initial state
         this.amount = 0
         this.fee = 0
+        this.fee_recomended = 0
         state.view = {
             address_input: '',
             address_input_error: false,
             amount1_input: 0, // BTC
             amount2_input: 0, // FIAT
-            fee_recomended: 0,
             fee_input: 0,
+            fee_input_visible: false,
             password_input: ''
         }
 
@@ -48,6 +50,7 @@ export default class Send extends Component {
         this.onChangeAmount2 = this.onChangeAmount2.bind(this)
         this.onChangeMax = this.onChangeMax.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
+        this.onClickFee = this.onClickFee.bind(this)
 
         this.fetchBalance()
         this.fetchRecomendedFee()
@@ -65,9 +68,7 @@ export default class Send extends Component {
 
     fetchRecomendedFee() {
         this.Coin.fetchRecomendedFee(this.asset.address).then(fee => {
-            const collector = collect()
-            state.view.fee_input = state.view.fee_recomended = Big(fee)
-            collector.emit()
+            state.view.fee_input = this.fee_recomended = Big(fee)
         })
     }
 
@@ -101,6 +102,23 @@ export default class Send extends Component {
         state.view.amount1_input = this.getMax()
         delete state.view.amount2_input
         collector.emit()
+    }
+
+    onClickFee(e) {
+        e.preventDefault()
+        if (!state.view.fee_input_visible) state.view.fee_input_visible = true
+        else state.view.fee_input = this.fee_recomended.toString()
+    }
+
+    // createRefInputFee(e) {
+    //     // console.log(e.target, e.base)
+    //     // e.base.focus() // is a div not an input
+    //     // console.log(document.getElementsByClassName('fee_input')[0])
+    //     // document.getElementsByClassName('fee_input')[0].focus()
+    // }
+
+    onChangeFee(e) {
+        state.view.fee_input = e.target.value
     }
 
     onChangePassword(e) {
@@ -158,18 +176,27 @@ export default class Send extends Component {
             amount2_input: amount2,
             symbol_crypto: symbol,
             symbol_currency: state.currency,
-            fee: this.fee,
+            fee_input: state.view.fee_input,
+            fee_input_visible: state.view.fee_input_visible,
             fee_fiat: formatCurrency(
                 convertBalance(this.asset.symbol, this.fee),
+                2
+            ),
+            fee_recomended: this.fee_recomended,
+            fee_recomended_fiat: formatCurrency(
+                convertBalance(this.asset.symbol, this.fee_recomended),
                 2
             ),
             password_input: state.view.password_input,
             isEnoughBalance: isEnoughBalance,
             isValidForm: this.isValidForm && this.isEnoughBalance,
+            isFeeLowerThanRecomended: this.fee.lt(this.fee_recomended),
             onChangeAddress: this.onChangeAddress,
             onChangeAmount1: this.onChangeAmount1,
             onChangeAmount2: this.onChangeAmount2,
             onChangeMax: this.onChangeMax,
+            onClickFee: this.onClickFee,
+            onChangeFee: this.onChangeFee,
             onChangePassword: this.onChangePassword
         })
     }
@@ -183,15 +210,21 @@ function SendTemplate({
     amount2_input,
     symbol_crypto,
     symbol_currency,
-    fee,
     fee_fiat,
+    fee_input,
+    fee_input_visible,
+    fee_recomended,
+    fee_recomended_fiat,
     password_input,
     isEnoughBalance,
     isValidForm,
+    isFeeLowerThanRecomended,
     onChangeAddress,
     onChangeAmount1,
     onChangeAmount2,
     onChangeMax,
+    onClickFee,
+    onChangeFee,
     onChangePassword
 }) {
     return (
@@ -237,19 +270,35 @@ function SendTemplate({
             </Div>
             <Div clear="both" />
 
-            <Div text-align="center" padding-top="10px">
-                <TextFee href="#">
+            <Show if={fee_input_visible}>
+                <Div text-align="center" padding-top="10px" position="relative">
+                    <DivOverInput>{fee_fiat}</DivOverInput>
+                    <Input
+                        value={fee_input}
+                        error="Very low fee"
+                        color={color}
+                        invalid={false}
+                        onChange={onChangeFee}
+                        placeholder="Network fee"
+                        width="100%"
+                        text-align="center"
+                    />
+                </Div>
+            </Show>
+
+            <Div text-align="center" padding="10px 0">
+                <TextFee href="#" onClick={onClickFee}>
                     <span>Recomended Network Fee </span>
                     <Span color={color} font-weight="bold">
-                        {fee}{' '}
+                        {fee_recomended}{' '}
                     </Span>
                     <Span color="#000" font-weight="bold">
-                        {fee_fiat}
+                        {fee_recomended_fiat}
                     </Span>
                 </TextFee>
             </Div>
 
-            <Div padding-top="20px">
+            <Div padding-top="10px">
                 <Input
                     placeholder="Password"
                     type="password"
@@ -269,6 +318,10 @@ function SendTemplate({
                     Next
                 </ButtonBig>
             </Div>
+
+            <Show if={isFeeLowerThanRecomended}>
+                <Div>Yes is lower!!</Div>
+            </Show>
         </CenterElement>
     )
 }
@@ -279,4 +332,15 @@ const TextFee = styled.a`
     &:hover {
         color: #000;
     }
+`
+
+const DivOverInput = styled.div`
+    position: absolute;
+    line-height: 34px;
+    font-weight: bold;
+    font-size: 12px;
+    right: 10px;
+    top: 13px;
+    color: #000;
+    pointer-events: none;
 `
