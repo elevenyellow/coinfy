@@ -38,14 +38,16 @@ export default class Send extends Component {
             amount1_input: 0, // BTC
             amount2_input: 0, // FIAT
             fee_recomended: 0,
-            fee_input: 0
+            fee_input: 0,
+            password_input: ''
         }
 
         // binding
         this.onChangeAddress = this.onChangeAddress.bind(this)
         this.onChangeAmount1 = this.onChangeAmount1.bind(this)
         this.onChangeAmount2 = this.onChangeAmount2.bind(this)
-        this.onMax = this.onMax.bind(this)
+        this.onChangeMax = this.onChangeMax.bind(this)
+        this.onChangePassword = this.onChangePassword.bind(this)
 
         this.fetchBalance()
         this.fetchRecomendedFee()
@@ -94,11 +96,16 @@ export default class Send extends Component {
         collector.emit()
     }
 
-    onMax(e) {
+    onChangeMax(e) {
         const collector = collect()
         state.view.amount1_input = this.getMax()
         delete state.view.amount2_input
         collector.emit()
+    }
+
+    onChangePassword(e) {
+        const value = e.target.value.trim()
+        state.view.password_input = value
     }
 
     getMax() {
@@ -114,6 +121,7 @@ export default class Send extends Component {
         return (
             !state.view.address_input_error &&
             state.view.address_input.length > 0 &&
+            state.view.password_input.length > 0 &&
             this.amount.gt(0) &&
             this.fee.gt(0)
         )
@@ -140,6 +148,7 @@ export default class Send extends Component {
 
         this.amount = Big(parseNumber(amount1))
         this.fee = Big(parseNumber(state.view.fee_input))
+        const isEnoughBalance = this.isEnoughBalance
 
         return React.createElement(SendTemplate, {
             color: this.Asset.color,
@@ -154,11 +163,14 @@ export default class Send extends Component {
                 convertBalance(this.asset.symbol, this.fee),
                 2
             ),
+            password_input: state.view.password_input,
+            isEnoughBalance: isEnoughBalance,
             isValidForm: this.isValidForm && this.isEnoughBalance,
-            onMax: this.onMax,
             onChangeAddress: this.onChangeAddress,
             onChangeAmount1: this.onChangeAmount1,
-            onChangeAmount2: this.onChangeAmount2
+            onChangeAmount2: this.onChangeAmount2,
+            onChangeMax: this.onChangeMax,
+            onChangePassword: this.onChangePassword
         })
     }
 }
@@ -173,11 +185,14 @@ function SendTemplate({
     symbol_currency,
     fee,
     fee_fiat,
+    password_input,
+    isEnoughBalance,
     isValidForm,
-    onMax,
     onChangeAddress,
     onChangeAmount1,
-    onChangeAmount2
+    onChangeAmount2,
+    onChangeMax,
+    onChangePassword
 }) {
     return (
         <CenterElement width="500px" media={styles.media.third}>
@@ -200,18 +215,19 @@ function SendTemplate({
                         font-size="15px"
                         border-radius="10px 0 0 10px"
                         border-right="1px solid transparent"
-                        onClick={onMax}
+                        onClick={onChangeMax}
                     >
                         Max
                     </Button>
                 </Div>
                 <Div float="left" width="calc(100% - 72px)">
                     <InputDouble
+                        invalid={!isEnoughBalance}
+                        error="Not enough funds"
                         value1={amount1_input}
                         value2={amount2_input}
                         color1={color}
                         color2="#000"
-                        error="No mola"
                         label1={symbol_crypto}
                         label2={symbol_currency}
                         onChange1={onChangeAmount1}
@@ -239,6 +255,8 @@ function SendTemplate({
                     type="password"
                     width="100%"
                     text-align="center"
+                    value={password_input}
+                    onChange={onChangePassword}
                 />
             </Div>
 
@@ -248,7 +266,7 @@ function SendTemplate({
                     font-size="14px"
                     width="100%"
                 >
-                    Send
+                    Next
                 </ButtonBig>
             </Div>
         </CenterElement>
