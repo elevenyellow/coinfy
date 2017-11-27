@@ -237,7 +237,27 @@ function fetchTotals(address) {
         .then(totals => totals)
 }
 
-function sendTx(private_key, fee, outputs) {}
+function createSimpleTxOutputs(from, to, balance, amount, fee) {}
+
+function createTx(private_key, outputs) {
+    const address = getAddressFromPrivateKey(private_key)
+    return fetch(`${api_url}/addr/${address}/utxo`)
+        .then(response => response.json())
+        .then(txs => {
+            const lastTx = txs[0]
+            const txid = lastTx.txid
+            const vout = lastTx.vout
+            const tx = new Bitcoin.TransactionBuilder(testnet)
+
+            tx.addInput(txid, vout)
+            outputs.forEach(output => {
+                tx.addOutput(output.address, output.amount)
+            })
+            tx.sign(0, Bitcoin.ECPair.fromWIF(private_key, testnet))
+
+            return tx.build()
+        })
+}
 
 function sendRawTx(rawTx) {
     const fetchOptions = {

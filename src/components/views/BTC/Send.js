@@ -21,6 +21,7 @@ import Button from '/components/styled/Button'
 import ButtonBig from '/components/styled/ButtonBig'
 import CenterElement from '/components/styled/CenterElement'
 import Alert from '/components/styled/Alert'
+import SwitchView from '/components/styled/SwitchView'
 
 export default class Send extends Component {
     componentWillMount() {
@@ -143,6 +144,13 @@ export default class Send extends Component {
         )
         if (private_key) {
             console.log('Next!')
+            this.Coin.createSimpleTxOutputs(
+                address,
+                state.view.address_input,
+                asset.balance,
+                this.amount,
+                this.fee
+            )
         } else {
             state.view.password_input_invalid = true
         }
@@ -256,107 +264,117 @@ function SendTemplate({
 }) {
     return (
         <CenterElement width="500px" media={styles.media.third}>
-            <Div>
-                <Input
-                    value={address_input}
-                    error="Invalid address"
-                    invalid={address_input_error}
-                    onChange={onChangeAddress}
-                    placeholder="Address"
-                    width="100%"
-                    text-align="center"
-                />
-            </Div>
-            <Div padding-top="10px">
-                <Div float="left">
-                    <Button
-                        line-height="54px"
-                        width="72px"
-                        font-size="15px"
-                        border-radius="10px 0 0 10px"
-                        border-right="1px solid transparent"
-                        onClick={onChangeMax}
-                    >
-                        Max
-                    </Button>
+            <SwitchView>
+                <Div width="50%" float="left">
+                    <Div>
+                        <Input
+                            value={address_input}
+                            error="Invalid address"
+                            invalid={address_input_error}
+                            onChange={onChangeAddress}
+                            placeholder="Address"
+                            width="100%"
+                            text-align="center"
+                        />
+                    </Div>
+                    <Div padding-top="10px">
+                        <Div float="left">
+                            <Button
+                                line-height="54px"
+                                width="72px"
+                                font-size="15px"
+                                border-radius="10px 0 0 10px"
+                                border-right="1px solid transparent"
+                                onClick={onChangeMax}
+                            >
+                                Max
+                            </Button>
+                        </Div>
+                        <Div float="left" width="calc(100% - 72px)">
+                            <InputDouble
+                                invalid={!isEnoughBalance}
+                                error="Not enough funds"
+                                value1={amount1_input}
+                                value2={amount2_input}
+                                color1={color}
+                                color2="#000"
+                                label1={symbol_crypto}
+                                label2={symbol_currency}
+                                onChange1={onChangeAmount1}
+                                onChange2={onChangeAmount2}
+                            />
+                        </Div>
+                    </Div>
+                    <Div clear="both" />
+
+                    <Show if={fee_input_visible}>
+                        <Div
+                            text-align="center"
+                            padding-top="10px"
+                            position="relative"
+                        >
+                            <DivOverInput>{fee_fiat}</DivOverInput>
+                            <Input
+                                value={fee_input}
+                                error="Very low fee"
+                                color={color}
+                                invalid={false}
+                                onChange={onChangeFee}
+                                placeholder="Network fee"
+                                width="100%"
+                                text-align="center"
+                            />
+                        </Div>
+                    </Show>
+
+                    <Show if={isFeeLowerThanRecomended}>
+                        <Div padding-top="10px">
+                            <Alert>
+                                If you don’t apply enough funds for the network
+                                fee, is probably that your transaction would
+                                never be confirmed.
+                            </Alert>
+                        </Div>
+                    </Show>
+
+                    <Div text-align="center" padding="10px 0">
+                        <TextFee href="#" onClick={onClickFee}>
+                            <span>Recommended Network Fee </span>
+                            <Span color={color} font-weight="bold">
+                                {fee_recomended}{' '}
+                            </Span>
+                            <Span color="#000" font-weight="bold">
+                                {fee_recomended_fiat}
+                            </Span>
+                        </TextFee>
+                    </Div>
+
+                    <Div padding-top="10px">
+                        <Input
+                            invalid={password_input_invalid}
+                            error="Invalid password"
+                            placeholder="Password"
+                            type="password"
+                            width="100%"
+                            text-align="center"
+                            value={password_input}
+                            onChange={onChangePassword}
+                        />
+                    </Div>
+
+                    <Div padding-top="10px">
+                        <ButtonBig
+                            onClick={onNext}
+                            disabled={!isValidForm}
+                            font-size="14px"
+                            width="100%"
+                        >
+                            Next
+                        </ButtonBig>
+                    </Div>
                 </Div>
-                <Div float="left" width="calc(100% - 72px)">
-                    <InputDouble
-                        invalid={!isEnoughBalance}
-                        error="Not enough funds"
-                        value1={amount1_input}
-                        value2={amount2_input}
-                        color1={color}
-                        color2="#000"
-                        label1={symbol_crypto}
-                        label2={symbol_currency}
-                        onChange1={onChangeAmount1}
-                        onChange2={onChangeAmount2}
-                    />
-                </Div>
-            </Div>
-            <Div clear="both" />
-
-            <Show if={fee_input_visible}>
-                <Div text-align="center" padding-top="10px" position="relative">
-                    <DivOverInput>{fee_fiat}</DivOverInput>
-                    <Input
-                        value={fee_input}
-                        error="Very low fee"
-                        color={color}
-                        invalid={false}
-                        onChange={onChangeFee}
-                        placeholder="Network fee"
-                        width="100%"
-                        text-align="center"
-                    />
-                </Div>
-            </Show>
-
-            <Div text-align="center" padding="10px 0">
-                <TextFee href="#" onClick={onClickFee}>
-                    <span>Recommended Network Fee </span>
-                    <Span color={color} font-weight="bold">
-                        {fee_recomended}{' '}
-                    </Span>
-                    <Span color="#000" font-weight="bold">
-                        {fee_recomended_fiat}
-                    </Span>
-                </TextFee>
-            </Div>
-
-            <Div padding-top="10px">
-                <Input
-                    invalid={password_input_invalid}
-                    error="Invalid password"
-                    placeholder="Password"
-                    type="password"
-                    width="100%"
-                    text-align="center"
-                    value={password_input}
-                    onChange={onChangePassword}
-                />
-            </Div>
-
-            <Div padding-top="10px">
-                <ButtonBig
-                    onClick={onNext}
-                    disabled={!isValidForm}
-                    font-size="14px"
-                    width="100%"
-                >
-                    Next
-                </ButtonBig>
-            </Div>
-
-            <Show if={isFeeLowerThanRecomended}>
-                <Div padding-top="10px">
-                    <Alert>
-                        If you don’t put enough funds for the network fee, is
-                        probably that your transaction would never be confirmed.
-                    </Alert>
-                </Div>
-            </Show>
+                <Div width="50%" float="left" height="100px" />
+            </SwitchView>
         </CenterElement>
     )
 }
