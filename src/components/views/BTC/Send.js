@@ -20,6 +20,7 @@ import InputDouble from '/components/styled/InputDouble'
 import Button from '/components/styled/Button'
 import ButtonBig from '/components/styled/ButtonBig'
 import CenterElement from '/components/styled/CenterElement'
+import Alert from '/components/styled/Alert'
 
 export default class Send extends Component {
     componentWillMount() {
@@ -41,7 +42,8 @@ export default class Send extends Component {
             amount2_input: 0, // FIAT
             fee_input: 0,
             fee_input_visible: false,
-            password_input: ''
+            password_input: '',
+            password_input_invalid: false
         }
 
         // binding
@@ -49,8 +51,9 @@ export default class Send extends Component {
         this.onChangeAmount1 = this.onChangeAmount1.bind(this)
         this.onChangeAmount2 = this.onChangeAmount2.bind(this)
         this.onChangeMax = this.onChangeMax.bind(this)
-        this.onChangePassword = this.onChangePassword.bind(this)
         this.onClickFee = this.onClickFee.bind(this)
+        this.onChangePassword = this.onChangePassword.bind(this)
+        this.onNext = this.onNext.bind(this)
 
         this.fetchBalance()
         this.fetchRecomendedFee()
@@ -122,8 +125,27 @@ export default class Send extends Component {
     }
 
     onChangePassword(e) {
-        const value = e.target.value.trim()
-        state.view.password_input = value
+        const collector = collect()
+        state.view.password_input_invalid = false
+        state.view.password_input = e.target.value.trim()
+        collector.emit()
+    }
+
+    onNext(e) {
+        const asset = this.asset
+        const address = asset.address
+        const password = state.view.password_input
+        const private_key_encrypted = asset.private_key
+        const private_key = this.Coin.decrypt(
+            address,
+            private_key_encrypted,
+            password
+        )
+        if (private_key) {
+            console.log('Next!')
+        } else {
+            state.view.password_input_invalid = true
+        }
     }
 
     getMax() {
@@ -141,7 +163,8 @@ export default class Send extends Component {
             state.view.address_input.length > 0 &&
             state.view.password_input.length > 0 &&
             this.amount.gt(0) &&
-            this.fee.gt(0)
+            this.fee.gt(0) &&
+            !state.view.password_input_invalid
         )
     }
 
@@ -188,6 +211,7 @@ export default class Send extends Component {
                 2
             ),
             password_input: state.view.password_input,
+            password_input_invalid: state.view.password_input_invalid,
             isEnoughBalance: isEnoughBalance,
             isValidForm: this.isValidForm && this.isEnoughBalance,
             isFeeLowerThanRecomended: this.fee.lt(this.fee_recomended),
@@ -197,7 +221,8 @@ export default class Send extends Component {
             onChangeMax: this.onChangeMax,
             onClickFee: this.onClickFee,
             onChangeFee: this.onChangeFee,
-            onChangePassword: this.onChangePassword
+            onChangePassword: this.onChangePassword,
+            onNext: this.onNext
         })
     }
 }
@@ -216,6 +241,7 @@ function SendTemplate({
     fee_recomended,
     fee_recomended_fiat,
     password_input,
+    password_input_invalid,
     isEnoughBalance,
     isValidForm,
     isFeeLowerThanRecomended,
@@ -225,7 +251,8 @@ function SendTemplate({
     onChangeMax,
     onClickFee,
     onChangeFee,
-    onChangePassword
+    onChangePassword,
+    onNext
 }) {
     return (
         <CenterElement width="500px" media={styles.media.third}>
@@ -288,7 +315,7 @@ function SendTemplate({
 
             <Div text-align="center" padding="10px 0">
                 <TextFee href="#" onClick={onClickFee}>
-                    <span>Recomended Network Fee </span>
+                    <span>Recommended Network Fee </span>
                     <Span color={color} font-weight="bold">
                         {fee_recomended}{' '}
                     </Span>
@@ -300,6 +327,8 @@ function SendTemplate({
 
             <Div padding-top="10px">
                 <Input
+                    invalid={password_input_invalid}
+                    error="Invalid password"
                     placeholder="Password"
                     type="password"
                     width="100%"
@@ -311,6 +340,7 @@ function SendTemplate({
 
             <Div padding-top="10px">
                 <ButtonBig
+                    onClick={onNext}
                     disabled={!isValidForm}
                     font-size="14px"
                     width="100%"
@@ -320,7 +350,12 @@ function SendTemplate({
             </Div>
 
             <Show if={isFeeLowerThanRecomended}>
-                <Div>Yes is lower!!</Div>
+                <Div padding-top="10px">
+                    <Alert>
+                        If you don’t put enough funds for the network fee, is
+                        probably that your transaction would never be confirmed.
+                    </Alert>
+                </Div>
             </Show>
         </CenterElement>
     )

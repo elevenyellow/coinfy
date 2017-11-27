@@ -148,7 +148,7 @@ export default class Summary extends Component {
             balance_currency: formatCurrency(
                 convertBalance(asset.symbol, asset.balance)
             ),
-            symbol: Fiats[state.currency].symbol,
+            symbol: asset.symbol,
             totalTransactions: asset.summary.totalTxs || 0,
             totalReceived: round(asset.summary.totalReceived || 0, 2),
             totalSent: round(asset.summary.totalSent || 0, 2),

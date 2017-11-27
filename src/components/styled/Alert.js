@@ -1,40 +1,36 @@
-import React from 'react';
-import styled from 'styled-components';
-import styles from '/const/styles';
+import React from 'react'
+import styled from 'styled-components'
+import styles from '/const/styles'
+import IconInfo from 'react-icons/lib/ti/info-large'
 
-export default function(props) {
+export default function Alert({ children }) {
     return (
-        <Alert {...props}>!</Alert>
-    );
+        <AlertStyled>
+            <div className="icon">
+                <IconInfo size={20} color="#d7b584" />
+            </div>
+            <div className="text">{children}</div>
+        </AlertStyled>
+    )
 }
 
-const Alert = styled.div`
-    left: ${props=>props.left||0};
-    top: ${props=>props.top||0};
-    display: inline-block;
-    position: absolute;
-    line-height: 16px;
-    background: #f80f24;
-    color: #fff;
-    text-align: center;
-    border-radius: 50%;
-    font-weight: bold;
-    width: 16px;
-    height: 16px;
-    z-index: 2;
-    border: 1px solid white;
-    font-size: 11px;
-`;
-
-// & div:before {
-//     content: '?';
-//     background: ${styles.color.front3};
-//     position: absolute;
-//     left: -16px;
-//     border-radius: 50%;
-//     font-weight: bold;
-//     border: 3px solid white;
-//     width: 16px;
-//     text-align: center;
-//     top: 0px;
-//     }
+const AlertStyled = styled.div`
+    & > div {
+    }
+    & .icon {
+        width: 20px;
+        /* margin-right: 8px; */
+        padding: 2px;
+        border-radius: 50%;
+        /* box-shadow: 0px 1px 0.1px rgba(0, 0, 0, 0.3); */
+        float: left;
+    }
+    & .text {
+        color: #d7b584;
+        font-weight: bold;
+        font-size: 11px;
+        letter-spacing: 0.3px;
+        padding-top: 7px;
+        padding-left: 10px;
+    }
+`
