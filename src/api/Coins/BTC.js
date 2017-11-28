@@ -4,7 +4,7 @@ import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
 import { decimalsMax } from '/api/numbers'
 
 // private
-const privateKeyPrefix = 0x80 // mainnet 0x80    testnet 0xEF
+const network = 0x80 // mainnet 0x80    testnet 0xEF
 const api_url = 'https://insight.bitpay.com/api' // https://github.com/bitpay/insight-api
 
 // exports
@@ -63,7 +63,7 @@ export function isPrivateKeyBip(private_key) {
 
 export function isWalletImportFormat(key, prefix = 0x80) {
     key = key.toString()
-    return privateKeyPrefix == prefix
+    return network == prefix
         ? /^5[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
               key
           )
@@ -74,7 +74,7 @@ export function isWalletImportFormat(key, prefix = 0x80) {
 
 export function isCompressedWalletImportFormat(key) {
     key = key.toString()
-    return privateKeyPrefix == 0x80
+    return network == 0x80
         ? /^[LK][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(
               key
           )
@@ -231,15 +231,27 @@ export function fetchSummary(address) {
         .then(txs => Object.assign(txs, totals))
 }
 
-function fetchTotals(address) {
+export function fetchTotals(address) {
     return fetch(`${api_url}/addr/${address}`)
         .then(response => response.json())
         .then(totals => totals)
 }
 
-function createSimpleTxOutputs(from, to, balance, amount, fee) {}
+export function createSimpleTxOutputs(from, to, balance, amount, fee) {
+    const outputs = []
+    amount = Big(amount)
+    const moneyBack = Big(balance)
+        .minus(amount)
+        .minus(Big(fee))
 
-function createTx(private_key, outputs) {
+    outputs.push({ address: to, amount: amount.toString() })
+    if (moneyBack.gt(0))
+        outputs.push({ address: from, amount: moneyBack.toString() })
+
+    return outputs
+}
+
+export function createTx(private_key, outputs) {
     const address = getAddressFromPrivateKey(private_key)
     return fetch(`${api_url}/addr/${address}/utxo`)
         .then(response => response.json())
@@ -247,19 +259,19 @@ function createTx(private_key, outputs) {
             const lastTx = txs[0]
             const txid = lastTx.txid
             const vout = lastTx.vout
-            const tx = new Bitcoin.TransactionBuilder(testnet)
+            const tx = new Bitcoin.TransactionBuilder(network)
 
             tx.addInput(txid, vout)
             outputs.forEach(output => {
                 tx.addOutput(output.address, output.amount)
             })
-            tx.sign(0, Bitcoin.ECPair.fromWIF(private_key, testnet))
+            tx.sign(0, Bitcoin.ECPair.fromWIF(private_key, network))
 
             return tx.build()
         })
 }
 
-function sendRawTx(rawTx) {
+export function sendRawTx(rawTx) {
     const fetchOptions = {
         method: 'POST',
         headers: {
@@ -317,7 +329,7 @@ function base64ToBytes(base64) {
 
 function getBitcoinWalletImportFormat(bytes) {
     if (bytes == null) return "";
-    bytes.unshift(privateKeyPrefix); // prepend 0x80 byte
+    bytes.unshift(network); // prepend 0x80 byte
     var checksum = Crypto.SHA256(Crypto.SHA256(bytes, { asBytes: true }), { asBytes: true });
     bytes = bytes.concat(checksum.slice(0, 4));
     var privWif = Bitcoin.Base58.encode(bytes);

@@ -143,14 +143,15 @@ export default class Send extends Component {
             password
         )
         if (private_key) {
-            console.log('Next!')
-            this.Coin.createSimpleTxOutputs(
+            const outputs = this.Coin.createSimpleTxOutputs(
                 address,
                 state.view.address_input,
                 asset.balance,
                 this.amount,
                 this.fee
             )
+            const tx = this.Coin.createTx(private_key, outputs)
+            console.log(tx)
         } else {
             state.view.password_input_invalid = true
         }
