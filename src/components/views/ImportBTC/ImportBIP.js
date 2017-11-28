@@ -78,7 +78,10 @@ export default class ImportBIP extends Component {
             const collector = collect()
             try {
                 const password = state.view.bip_password
-                const private_key = decryptBIP38(state.view.bip_input, password)
+                const private_key = BTC.decryptBIP38(
+                    state.view.bip_input,
+                    password
+                )
                 const address = getAddressFromPrivateKey(private_key)
                 const asset_id = getCoinId({
                     symbol: BTC.symbol,
@@ -100,6 +103,7 @@ export default class ImportBIP extends Component {
                 } else {
                     state.view.bip_password_error = 'Invalid password'
                 }
+                console.log(e)
             }
             state.view.bip_loading = false
             collector.emit()

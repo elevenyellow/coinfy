@@ -6,9 +6,8 @@ import { Show } from '/doprouter/react'
 // import { createWorker } from '/api/workers'
 import { generateQRCode } from '/api/qr'
 import { BTC } from '/api/Coins'
-import { getAllFormats } from '/api/Coins/BTC'
+import { getAllFormats, encryptBIP38 } from '/api/Coins/BTC'
 import { printTemplate } from '/api/browser'
-import { encryptBIP38 } from '/api/crypto'
 
 import state from '/store/state'
 import { getAsset } from '/store/getters'
@@ -72,7 +71,11 @@ export default class ExportBTC extends Component {
         const address = asset.address
         const password = state.view.password
         const private_key_encrypted = asset.private_key
-        const private_key = BTC.decrypt(address, private_key_encrypted, password)
+        const private_key = BTC.decrypt(
+            address,
+            private_key_encrypted,
+            password
+        )
         if (private_key) {
             state.view.loading = true
             setTimeout(() => {
@@ -111,19 +114,19 @@ export default class ExportBTC extends Component {
                                 : 'Unencrypted (WIF)')
                     },
                     {
-                        title: `Address ${formats.compressed
-                            ? 'uncompressed'
-                            : 'compressed'}`,
+                        title: `Address ${
+                            formats.compressed ? 'uncompressed' : 'compressed'
+                        }`,
                         hash: formats.compressed
                             ? formats.address
                             : formats.address_comp
                     },
                     {
-                        title: `Private Key (${isEncrypted
-                            ? 'Encrypted BIP38'
-                            : 'Unencrypted WIF'} ${formats.compressed
-                            ? 'uncompressed'
-                            : 'compressed'}). DO NOT SHARE THIS OR YOU WILL LOSE YOUR FUNDS`,
+                        title: `Private Key (${
+                            isEncrypted ? 'Encrypted BIP38' : 'Unencrypted WIF'
+                        } ${
+                            formats.compressed ? 'uncompressed' : 'compressed'
+                        }). DO NOT SHARE THIS OR YOU WILL LOSE YOUR FUNDS`,
                         hash: private_key2,
                         red: !isEncrypted
                     },
@@ -225,7 +228,8 @@ function ExportBTCTemplate({
                         </Button>
                         <Show if={loading && encrypted}>
                             <Div font-size="10px" color={styles.color.red}>
-                                This might take several minutes<br/>and can freeze your browser
+                                This might take several minutes<br />and can
+                                freeze your browser
                             </Div>
                         </Show>
                     </FormFieldButtons>

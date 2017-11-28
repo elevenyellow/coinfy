@@ -2,10 +2,20 @@ import Bitcoin from 'bitcoinjs-lib'
 import Big from 'big.js'
 import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
 import { decimalsMax } from '/api/numbers'
+import {
+    decryptBIP38 as _decryptBIP38,
+    encryptBIP38 as _encryptBIP38
+} from '/api/crypto'
 
 // private
-const network = 0x80 // mainnet 0x80    testnet 0xEF
-const api_url = 'https://insight.bitpay.com/api' // https://github.com/bitpay/insight-api
+const debug = false
+const mainnet = Bitcoin.networks.bitcoin // 0x80
+const testnet = Bitcoin.networks.testnet // 0xef
+const network = debug ? testnet : mainnet
+const url = debug
+    ? 'https://test-insight.bitpay.com'
+    : 'https://insight.bitpay.com'
+const api_url = `${url}/api` // https://github.com/bitpay/insight-api
 
 // exports
 export const type = 'wallet'
@@ -23,27 +33,31 @@ export function format(value, dec = 18) {
 }
 
 export function generateRandomWallet() {
-    const wallet = Bitcoin.ECPair.makeRandom()
+    const wallet = Bitcoin.ECPair.makeRandom({ network: network })
     wallet.compressed = false
     return { address: wallet.getAddress(), private_key: wallet.toWIF() }
 }
 
+// https://en.bitcoin.it/wiki/List_of_address_prefixes
 export function isAddress(address) {
-    return /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
+    return network === mainnet
+        ? /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
+        : /^[mn][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
 }
 
 export function isAddressCheck(address) {
     try {
         Bitcoin.address.fromBase58Check(address)
     } catch (e) {
+        console.log(e)
         return false
     }
     return true
 }
 
-export function isPublicKey(public_key) {
-    return /^([0-9a-fA-F]{66}|[0-9a-fA-F]{130})$/.test(public_key)
-}
+// export function isPublicKey(public_key) {
+//     return /^([0-9a-fA-F]{66}|[0-9a-fA-F]{130})$/.test(public_key)
+// }
 
 export function isPrivateKey(private_key) {
     return (
@@ -61,9 +75,9 @@ export function isPrivateKeyBip(private_key) {
     )
 }
 
-export function isWalletImportFormat(key, prefix = 0x80) {
+export function isWalletImportFormat(key) {
     key = key.toString()
-    return network == prefix
+    return network === mainnet
         ? /^5[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
               key
           )
@@ -74,7 +88,7 @@ export function isWalletImportFormat(key, prefix = 0x80) {
 
 export function isCompressedWalletImportFormat(key) {
     key = key.toString()
-    return network == 0x80
+    return network === mainnet
         ? /^[LK][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(
               key
           )
@@ -84,7 +98,7 @@ export function isCompressedWalletImportFormat(key) {
 }
 
 export function getAddressFromPrivateKey(private_key) {
-    const wallet = Bitcoin.ECPair.fromWIF(private_key)
+    const wallet = Bitcoin.ECPair.fromWIF(private_key, network)
     return wallet.getAddress().toString()
 }
 
@@ -98,7 +112,8 @@ export function getAddressFromPublicKey(public_key) {
 
 export function getAllFormats(wallet) {
     const formats = {}
-    if (typeof wallet == 'string') wallet = Bitcoin.ECPair.fromWIF(wallet)
+    if (typeof wallet == 'string')
+        wallet = Bitcoin.ECPair.fromWIF(wallet, network)
     formats.compressed = wallet.compressed
     wallet.compressed = false
     formats.address = wallet.getAddress()
@@ -112,11 +127,11 @@ export function getAllFormats(wallet) {
 }
 
 export function urlInfo(address) {
-    return `https://blockchain.info/address/${address}`
+    return `${url}/address/${address}`
 }
 
 export function urlInfoTx(txid) {
-    return `https://blockchain.info/tx/${txid}`
+    return `${url}/tx/${txid}`
 }
 
 export function encrypt(private_key_encrypted, password) {
@@ -132,6 +147,14 @@ export function decrypt(address, private_key_encrypted, password) {
     }
 
     return false
+}
+
+export function encryptBIP38(privateKey, password, progressCallback) {
+    return _encryptBIP38(privateKey, password, progressCallback)
+}
+
+export function decryptBIP38(encryptedKey, password, progressCallback) {
+    return _decryptBIP38(encryptedKey, password, progressCallback, network)
 }
 
 // fetchs

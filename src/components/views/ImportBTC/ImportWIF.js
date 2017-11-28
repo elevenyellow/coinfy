@@ -73,6 +73,7 @@ export default class ImportWIF extends Component {
                 state.view.address = ''
                 state.view.isValidInput = false
                 state.view.wif_input_error = 'Invalid private key'
+                console.log(e)
             }
         } else {
             state.view.address = ''

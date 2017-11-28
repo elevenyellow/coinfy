@@ -1,4 +1,9 @@
-import { pbkdf2Sync, randomBytes, createCipheriv, createDecipheriv } from 'crypto'
+import {
+    pbkdf2Sync,
+    randomBytes,
+    createCipheriv,
+    createDecipheriv
+} from 'crypto'
 import bip38 from 'bip38'
 import wif from 'wif'
 import scrypt from 'scrypt.js' // or from 'scryptsy'
@@ -103,12 +108,7 @@ export function encryptBIP38(privateKey, password, progressCallback) {
     )
 }
 
-export function decryptBIP38(
-    encryptedKey,
-    password,
-    progressCallback,
-    prefix = 0x80
-) {
+export function decryptBIP38(encryptedKey, password, progressCallback, prefix) {
     let decryptedKey = bip38.decrypt(encryptedKey, password, progressCallback)
     return wif.encode(prefix, decryptedKey.privateKey, decryptedKey.compressed)
 }

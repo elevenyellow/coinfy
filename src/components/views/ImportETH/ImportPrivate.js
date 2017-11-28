@@ -62,7 +62,8 @@ export default class ImportPrivate extends Component {
                         getCoinId({ symbol: ETH.symbol, address: address })
                     )
                 ) {
-                    state.view.private_input_error = 'You already have this asset'
+                    state.view.private_input_error =
+                        'You already have this asset'
                     state.view.isValidInput = false
                 } else {
                     state.view.private_input_error = ''
@@ -72,6 +73,7 @@ export default class ImportPrivate extends Component {
                 state.view.address = ''
                 state.view.isValidInput = false
                 state.view.private_input_error = 'Invalid private key'
+                console.log(e)
             }
         } else {
             state.view.address = ''
@@ -154,9 +156,7 @@ function ImportPrivateTemplate({
             <FormField>
                 <FormFieldLeft>
                     <Label>Private key</Label>
-                    <SubLabel>
-                        Type or paste your private key.
-                    </SubLabel>
+                    <SubLabel>Type or paste your private key.</SubLabel>
                 </FormFieldLeft>
                 <FormFieldRight>
                     <Input
@@ -164,7 +164,9 @@ function ImportPrivateTemplate({
                         value={private_input}
                         onChange={onChangeInput}
                         error={private_input_error}
-                        invalid={private_input_error && private_input.length > 0}
+                        invalid={
+                            private_input_error && private_input.length > 0
+                        }
                     />
                 </FormFieldRight>
             </FormField>
