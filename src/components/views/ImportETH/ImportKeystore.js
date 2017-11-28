@@ -90,7 +90,7 @@ export default class ImportKeystore extends Component {
                             'Invalid Keystore file'
                     }
                 } catch (e) {
-                    console.log(e)
+                    console.error(e)
                     state.view.keystore_invalid_error = 'Invalid Keystore file'
                 }
                 collector.emit()
@@ -129,7 +129,7 @@ export default class ImportKeystore extends Component {
             } catch (e) {
                 state.view.keystore_invalid_error = 'Invalid Keystore file'
                 collector.emit()
-                console.log(e)
+                console.error(e)
                 return false
             }
         }

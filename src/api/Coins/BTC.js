@@ -2,13 +2,14 @@ import Bitcoin from 'bitcoinjs-lib'
 import Big from 'big.js'
 import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
 import { decimalsMax } from '/api/numbers'
+
 import {
     decryptBIP38 as _decryptBIP38,
     encryptBIP38 as _encryptBIP38
 } from '/api/crypto'
 
 // private
-const debug = false
+const debug = true
 const mainnet = Bitcoin.networks.bitcoin // 0x80
 const testnet = Bitcoin.networks.testnet // 0xef
 const network = debug ? testnet : mainnet
@@ -49,7 +50,7 @@ export function isAddressCheck(address) {
     try {
         Bitcoin.address.fromBase58Check(address)
     } catch (e) {
-        console.log(e)
+        console.error(e)
         return false
     }
     return true
@@ -102,13 +103,13 @@ export function getAddressFromPrivateKey(private_key) {
     return wallet.getAddress().toString()
 }
 
-export function getAddressFromPublicKey(public_key) {
-    const publicKeyBuffer = new Buffer(public_key, 'hex')
-    const wallet = Bitcoin.ECPair.fromPublicKeyBuffer(publicKeyBuffer)
-    return wallet.getAddress().toString()
-    // console.log(new Bitcoin.ECPair(null, wallet.Q, { compressed: true }).getAddress())
-    // console.log(new Bitcoin.ECPair(null, wallet.Q, { compressed: false }).getAddress())
-}
+// export function getAddressFromPublicKey(public_key) {
+//     const publicKeyBuffer = new Buffer(public_key, 'hex')
+//     const wallet = Bitcoin.ECPair.fromPublicKeyBuffer(publicKeyBuffer, network)
+//     return wallet.getAddress().toString()
+//     // console.log(new Bitcoin.ECPair(null, wallet.Q, { compressed: true }).getAddress())
+//     // console.log(new Bitcoin.ECPair(null, wallet.Q, { compressed: false }).getAddress())
+// }
 
 export function getAllFormats(wallet) {
     const formats = {}
@@ -267,30 +268,34 @@ export function createSimpleTxOutputs(from, to, balance, amount, fee) {
         .minus(amount)
         .minus(Big(fee))
 
-    outputs.push({ address: to, amount: amount.toString() })
+    outputs.push({ address: to, amount: Number(amount.times(satoshis)) })
     if (moneyBack.gt(0))
-        outputs.push({ address: from, amount: moneyBack.toString() })
+        outputs.push({
+            address: from,
+            amount: Number(moneyBack.times(satoshis))
+        })
 
     return outputs
 }
 
 export function createTx(private_key, outputs) {
     const address = getAddressFromPrivateKey(private_key)
-    return fetch(`${api_url}/addr/${address}/utxo`)
+    return fetch(`${api_url}/addr/${address}/utxo?noCache=1`)
         .then(response => response.json())
         .then(txs => {
             const lastTx = txs[0]
             const txid = lastTx.txid
             const vout = lastTx.vout
-            const tx = new Bitcoin.TransactionBuilder(network)
-
-            tx.addInput(txid, vout)
+            const txb = new Bitcoin.TransactionBuilder(network)
+            txb.addInput(txid, vout)
             outputs.forEach(output => {
-                tx.addOutput(output.address, output.amount)
+                txb.addOutput(output.address, output.amount)
             })
-            tx.sign(0, Bitcoin.ECPair.fromWIF(private_key, network))
-
-            return tx.build()
+            txb.sign(0, Bitcoin.ECPair.fromWIF(private_key, network))
+            const txHex = txb.build().toHex()
+            // let a = new TxDecoder(txHex, network) // https://github.com/you21979/node-multisig-wallet/blob/master/lib/txdecoder.js
+            // console.log(a.decode())
+            return txHex
         })
 }
 

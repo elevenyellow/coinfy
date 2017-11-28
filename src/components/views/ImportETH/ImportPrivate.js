@@ -73,7 +73,7 @@ export default class ImportPrivate extends Component {
                 state.view.address = ''
                 state.view.isValidInput = false
                 state.view.private_input_error = 'Invalid private key'
-                console.log(e)
+                console.error(e)
             }
         } else {
             state.view.address = ''

@@ -150,8 +150,14 @@ export default class Send extends Component {
                 this.amount,
                 this.fee
             )
-            const tx = this.Coin.createTx(private_key, outputs)
-            console.log(tx)
+            console.log(outputs)
+            this.Coin.createTx(private_key, outputs)
+                .then(tx => {
+                    console.log(tx)
+                })
+                .catch(e => {
+                    console.error(e)
+                })
         } else {
             state.view.password_input_invalid = true
         }

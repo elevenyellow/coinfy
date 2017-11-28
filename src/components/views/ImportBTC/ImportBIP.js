@@ -103,7 +103,7 @@ export default class ImportBIP extends Component {
                 } else {
                     state.view.bip_password_error = 'Invalid password'
                 }
-                console.log(e)
+                console.error(e)
             }
             state.view.bip_loading = false
             collector.emit()

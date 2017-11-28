@@ -17,7 +17,7 @@ const bob = 'cRkNqWAK64qSooKnadaFLa9uhSK1QtgkD5ezJQcsn1Fz5LQSnHT5'
 const aliceaddr = getAddressFromPrivateKey(alice) // msHdTrYq2UzALffqea4YjCudZd4AZ7nk2V
 const bobaddr = getAddressFromPrivateKey(bob) // mm42obtLkUesaHxj5i236B9hJ7m6yv4Ujg
 const fee = 1000
-const origin = alice
+const origin = bob
 
 const httpApi = (addr, path = '') =>
     `https://test-insight.bitpay.com/api/addr/${addr}${path}`
@@ -32,29 +32,32 @@ request(
                     ? data.balanceSat + data.unconfirmedBalanceSat
                     : data.balanceSat
 
-            request(httpApi(getAddressFromPrivateKey(origin),'/utxo'), (error, response, body)=> {
-                if (!error && response.statusCode === 200) {
-                    const txs = JSON.parse(body)
-                    const lastTx = txs[0]
-                    const txid = lastTx.txid
-                    const vout = lastTx.vout
+            request(
+                httpApi(getAddressFromPrivateKey(origin), '/utxo'),
+                (error, response, body) => {
+                    if (!error && response.statusCode === 200) {
+                        const txs = JSON.parse(body)
+                        const lastTx = txs[0]
+                        const txid = lastTx.txid
+                        const vout = lastTx.vout
 
-                    const balanceToSend = (balance-fee)/2
-                    const tx = new Bitcoin.TransactionBuilder(testnet)
-                    tx.addInput(txid, vout)
-                    tx.addOutput(bobaddr, balanceToSend);
-                    tx.addOutput(aliceaddr, balanceToSend);
-                    tx.sign(0, Bitcoin.ECPair.fromWIF(origin, testnet))
+                        const balanceToSend = (balance - fee) / 2
+                        const tx = new Bitcoin.TransactionBuilder(testnet)
+                        tx.addInput(txid, vout)
+                        tx.addOutput(bobaddr, balanceToSend)
+                        tx.addOutput(aliceaddr, balanceToSend)
+                        tx.sign(0, Bitcoin.ECPair.fromWIF(origin, testnet))
 
-                    const transaction = tx.build()
-                    console.log(`
+                        const transaction = tx.build()
+                        console.log(`
                     GO TO ANY OF THIS ADDRESS AND PUSH YOUR TRANSACTION:
                     https://test-insight.bitpay.com/tx/send`)
-                    console.log('==============')
-                    console.log(transaction.toHex())
-                    console.log('==============')
+                        console.log('==============')
+                        console.log(transaction.toHex())
+                        console.log('==============')
+                    }
                 }
-            })
+            )
         }
     }
 )
