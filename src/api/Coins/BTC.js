@@ -154,7 +154,7 @@ export function encryptBIP38(privateKey, password, progressCallback) {
 }
 
 export function decryptBIP38(encryptedKey, password, progressCallback) {
-    return _decryptBIP38(encryptedKey, password, progressCallback, network)
+    return _decryptBIP38(encryptedKey, password, progressCallback, network.wif)
 }
 
 // fetchs
