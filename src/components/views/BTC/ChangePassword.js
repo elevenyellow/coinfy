@@ -4,6 +4,7 @@ import { createObserver, collect } from 'dop'
 
 import routes from '/const/routes'
 import styles from '/const/styles'
+import { OK, ERROR, ALERT, NORMAL } from '/const/info'
 
 import { Coins } from '/api/Coins'
 import { minpassword } from '/api/crypto'
@@ -79,10 +80,7 @@ export default class ChangePassword extends Component {
         if (private_key) {
             const name = asset.label || asset.address
             setPrivateKey(asset_id, private_key, state.view.password)
-            addNotification(
-                `You have changed the password of "${name}"`,
-                styles.notificationColor.green
-            )
+            addNotification(`You have changed the password of "${name}"`, OK)
             setHref(routes.summaryAsset(asset_id))
         } else state.view.isInvalidOldpassword = true
 

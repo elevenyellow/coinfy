@@ -5,6 +5,7 @@ import { now } from '/api/time'
 import { keysToRemoveWhenExporting } from '/const/state'
 import routes from '/const/routes'
 import styles from '/const/styles'
+import { OK, ERROR, ALERT, NORMAL } from '/const/info'
 import timeouts from '/const/timeouts'
 import state from '/store/state'
 import {
@@ -62,10 +63,7 @@ export function deleteAsset(asset_id) {
     const name = state.assets[asset_id].label || state.assets[asset_id].address
     delete state.assets[asset_id]
     setHref(routes.home())
-    addNotification(
-        `Asset "${name}" has been deleted`,
-        styles.notificationColor.green
-    )
+    addNotification(`Asset "${name}" has been deleted`, OK)
     saveAssetsLocalStorage()
     setAssetsExported(false)
     collector.emit()
@@ -129,10 +127,7 @@ export function importAssets(dataString) {
             const collector = collect()
             state.assets = assets
             setHref(routes.home())
-            addNotification(
-                `You have imported ${totalAssets} Assets`,
-                styles.notificationColor.green
-            )
+            addNotification(`You have imported ${totalAssets} Assets`, OK)
             saveAssetsLocalStorage()
             setAssetsExported(true)
             fetchAllBalances()
@@ -140,14 +135,11 @@ export function importAssets(dataString) {
         } else
             addNotification(
                 "We couldn't find any Asset to Import on this JSON file",
-                styles.notificationColor.red
+                ERROR
             )
     } catch (e) {
         console.error(e)
-        addNotification(
-            "We couldn't parse the JSON file",
-            styles.notificationColor.red
-        )
+        addNotification("We couldn't parse the JSON file", ERROR)
     }
 }
 
@@ -204,7 +196,7 @@ export function showNotConnectionNotification(value) {
     if (value && idNotificationNotConnection === undefined) {
         idNotificationNotConnection = addNotification(
             "Seems like you don't have internet connection",
-            styles.notificationColor.grey,
+            NORMAL,
             null
         )
     } else if (!value && idNotificationNotConnection !== undefined) {

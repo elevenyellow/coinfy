@@ -1,4 +1,3 @@
-
 export default {
     headerHeight: '75px',
     paddingOut: '50px',
@@ -11,11 +10,12 @@ export default {
         first: '@media screen and (max-width: 1000px)',
         second: '@media screen and (max-width: 850px)',
         third: '@media screen and (max-width: 750px)',
-        fourth: '@media screen and (max-width: 500px)',
+        fourth: '@media screen and (max-width: 500px)'
     },
-    notificationColor: {
+    infoColor: {
         red: '#DD0044',
         green: '#1aba6a',
+        yellow: '#efa944',
         grey: '#AAAAAA'
     },
     color: {
@@ -44,7 +44,7 @@ export default {
         green1: '#1aba6a',
         black: '#000',
 
-        // 
+        //
         grey1: '#aaaaaa'
     }
 }

@@ -12,6 +12,7 @@ import { fetchBalance } from '/store/actions'
 import { getAsset, formatCurrency, convertBalance } from '/store/getters'
 
 import styles from '/const/styles'
+import { OK, ERROR, ALERT, NORMAL } from '/const/info'
 
 import Div from '/components/styled/Div'
 import Span from '/components/styled/Span'
@@ -44,7 +45,8 @@ export default class Send extends Component {
             fee_input: 0,
             fee_input_visible: false,
             password_input: '',
-            password_input_invalid: false
+            password_input_invalid: false,
+            error_when_create: false
         }
 
         // binding
@@ -142,6 +144,8 @@ export default class Send extends Component {
             private_key_encrypted,
             password
         )
+        state.view.error_when_create = false
+
         if (private_key) {
             const outputs = this.Coin.createSimpleTxOutputs(
                 address,
@@ -156,6 +160,7 @@ export default class Send extends Component {
                     console.log(tx)
                 })
                 .catch(e => {
+                    state.view.error_when_create = true
                     console.error(e)
                 })
         } else {
@@ -230,6 +235,7 @@ export default class Send extends Component {
             isEnoughBalance: isEnoughBalance,
             isValidForm: this.isValidForm && this.isEnoughBalance,
             isFeeLowerThanRecomended: this.fee.lt(this.fee_recomended),
+            error_when_create: state.view.error_when_create,
             onChangeAddress: this.onChangeAddress,
             onChangeAmount1: this.onChangeAmount1,
             onChangeAmount2: this.onChangeAmount2,
@@ -260,6 +266,7 @@ function SendTemplate({
     isEnoughBalance,
     isValidForm,
     isFeeLowerThanRecomended,
+    error_when_create,
     onChangeAddress,
     onChangeAmount1,
     onChangeAmount2,
@@ -334,16 +341,6 @@ function SendTemplate({
                         </Div>
                     </Show>
 
-                    <Show if={isFeeLowerThanRecomended}>
-                        <Div padding-top="10px">
-                            <Alert>
-                                If you don’t apply enough funds for the network
-                                fee, is probably that your transaction would
-                                never be confirmed.
-                            </Alert>
-                        </Div>
-                    </Show>
-
                     <Div text-align="center" padding="10px 0">
                         <TextFee href="#" onClick={onClickFee}>
                             <span>Recommended Network Fee </span>
@@ -379,6 +376,25 @@ function SendTemplate({
                             Next
                         </ButtonBig>
                     </Div>
+
+                    <Show if={isFeeLowerThanRecomended}>
+                        <Div padding-top="10px">
+                            <Alert>
+                                If you don’t apply enough funds for the network
+                                fee, is probably that your transaction would
+                                never be confirmed.
+                            </Alert>
+                        </Div>
+                    </Show>
+
+                    <Show if={error_when_create}>
+                        <Div padding-top="10px">
+                            <Alert color={ERROR}>
+                                Something wrong ocurred when creating your
+                                transaction. Please, try again later.
+                            </Alert>
+                        </Div>
+                    </Show>
                 </Div>
                 <Div width="50%" float="left" height="100px" />
             </SwitchView>
