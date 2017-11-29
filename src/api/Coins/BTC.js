@@ -2,7 +2,6 @@ import Bitcoin from 'bitcoinjs-lib'
 import Big from 'big.js'
 import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
 import { decimalsMax } from '/api/numbers'
-
 import {
     decryptBIP38 as _decryptBIP38,
     encryptBIP38 as _encryptBIP38

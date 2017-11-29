@@ -279,7 +279,7 @@ function SendTemplate({
     return (
         <CenterElement width="500px" media={styles.media.third}>
             <SwitchView>
-                <Div width="50%" float="left">
+                <Div id="mola2">
                     <Div>
                         <Input
                             value={address_input}
@@ -396,7 +396,7 @@ function SendTemplate({
                         </Div>
                     </Show>
                 </Div>
-                <Div width="50%" float="left" height="100px" />
+                <Div>hola</Div>
             </SwitchView>
         </CenterElement>
     )
