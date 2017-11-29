@@ -156,11 +156,14 @@ function ViewBTCTemplate({
                         <Summary />
                     </Route>
 
-                    <Route pathname={routes_sendAsset}>
+                    <Route pathname={new RegExp(routes_sendAsset)}>
                         <Send />
                     </Route>
 
-                    <Route if={hasPrivateKey} pathname={routes_changePasswordAsset}>
+                    <Route
+                        if={hasPrivateKey}
+                        pathname={routes_changePasswordAsset}
+                    >
                         <ChangePassword />
                     </Route>
 
@@ -184,7 +187,7 @@ function ViewBTCTemplate({
 }
 
 const HideMobile = styled.span`
-${styles.media.second} {
-    display: none;
-}
+    ${styles.media.second} {
+        display: none;
+    }
 `

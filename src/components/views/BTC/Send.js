@@ -8,11 +8,12 @@ import { Coins } from '/api/Coins'
 import { parseNumber, decimalsMax } from '/api/numbers'
 
 import state from '/store/state'
-import { fetchBalance } from '/store/actions'
+import { fetchBalance, setHref } from '/store/actions'
 import { getAsset, formatCurrency, convertBalance } from '/store/getters'
 
 import styles from '/const/styles'
 import { OK, ERROR, ALERT, NORMAL } from '/const/info'
+import routes from '/const/routes'
 
 import Div from '/components/styled/Div'
 import Span from '/components/styled/Span'
@@ -32,6 +33,7 @@ export default class Send extends Component {
 
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
+        this.observer.observe(state.location.path, '3')
 
         // Initial state
         this.amount = 0
@@ -156,9 +158,11 @@ export default class Send extends Component {
                 this.fee
             )
             this.Coin.createTx(private_key, outputs)
-                .then(txHex => {
-                    console.log(txHex)
-                    state.view.step = 1
+                .then(tx_hex => {
+                    // console.log(tx_hex)
+                    this.tx_hex = tx_hex
+                    // state.view.step = 1
+                    setHref(routes.sendAsset(this.asset_id) + '/1')
                 })
                 .catch(e => {
                     state.view.error_when_create = true
