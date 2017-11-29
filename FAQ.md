@@ -1,7 +1,15 @@
 # [What is Coinfy?](#what)
 Coinfy is a web browser mobile/web app that allows you to manage all your crypto-wallets and crypto-assets at once, with a friendly and intuitive UI.
 
-
+# [Features](#features)
+- You control your private keys
+- Fully anonymous
+- Open source
+- Hierarchical Deterministic
+- Web based
+- Mobile optimized
+- Multi assets
+- Very easy to use
 
 # [Our vision](#vision)
 We believe in a decentralized future where everybody will use cryptocurrencies with decentralized apps. Our idea with coinfy is to offer you the best decentralized wallet to manage all your assets. 
