@@ -3,11 +3,10 @@ import styled from 'styled-components'
 // import styles from '/const/styles'
 import Div from '/components/styled/Div'
 
-export default function SwitchView({ children }) {
-    const width = children.length * 100
-    const widthElement = Math.round(100 / children.length)
-    const childrens = Array.isArray(children) ? children : [children]
-
+export default function SwitchView({ children, active = 0 }) {
+    // const width = children.length * 100
+    // const widthElement = Math.round(100 / children.length)
+    // const childrens = Array.isArray(children) ? children : [children]
     // childrens.forEach((child, index) => {
     //     if (child) {
     //         const attrs = child.props || child.attrs
@@ -16,35 +15,32 @@ export default function SwitchView({ children }) {
     // })
 
     return (
-        <SwitchViewStyled ref={onRef} width={width} widthElement={widthElement}>
-            <div>{childrens}</div>
-        </SwitchViewStyled>
+        <SwitchViewStyled ref={onRef.bind(active)}>{children}</SwitchViewStyled>
     )
 }
-
 function onRef(e) {
+    const active = this
     if (e && e.base) {
-        const element = e.base
-        const views = element.childNodes[0].childNodes
+        const container = e.base
+        const views = container.childNodes
         let height = 0
-        views.forEach(view => {
+        views.forEach((view, index) => {
             if (view.offsetHeight > height) height = view.offsetHeight
+            view.style.left = `${(index - active) * 100}%`
         })
-        element.style.height = `${height}px`
+        container.style.height = `${height}px`
     }
 }
 
 const SwitchViewStyled = styled.div`
     width: 100%;
     overflow-x: hidden;
+    position: relative;
     & > div {
-        position: relative;
-        width: ${props => props.width}%;
-    }
-    & > div > div {
+        transition: 1s ease left;
         display: block;
         position: absolute;
         left: 0;
-        width: ${props => props.widthElement}%;
+        width: 100%;
     }
 `

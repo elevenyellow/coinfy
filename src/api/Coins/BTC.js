@@ -49,7 +49,7 @@ export function isAddressCheck(address) {
     try {
         Bitcoin.address.fromBase58Check(address)
     } catch (e) {
-        console.error(e)
+        // console.error(e)
         return false
     }
     return true

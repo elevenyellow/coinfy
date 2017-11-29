@@ -38,6 +38,7 @@ export default class Send extends Component {
         this.fee = 0
         this.fee_recomended = 0
         state.view = {
+            step: 0,
             address_input: '',
             address_input_error: false,
             amount1_input: 0, // BTC
@@ -154,10 +155,10 @@ export default class Send extends Component {
                 this.amount,
                 this.fee
             )
-            console.log(outputs)
             this.Coin.createTx(private_key, outputs)
-                .then(tx => {
-                    console.log(tx)
+                .then(txHex => {
+                    console.log(txHex)
+                    state.view.step = 1
                 })
                 .catch(e => {
                     state.view.error_when_create = true
@@ -212,6 +213,7 @@ export default class Send extends Component {
         const isEnoughBalance = this.isEnoughBalance
 
         return React.createElement(SendTemplate, {
+            step: state.view.step,
             color: this.Coin.color,
             address_input: state.view.address_input,
             address_input_error: state.view.address_input_error,
@@ -249,6 +251,7 @@ export default class Send extends Component {
 }
 
 function SendTemplate({
+    step,
     color,
     address_input,
     address_input_error,
@@ -278,8 +281,8 @@ function SendTemplate({
 }) {
     return (
         <CenterElement width="500px" media={styles.media.third}>
-            <SwitchView>
-                <Div id="mola2">
+            <SwitchView active={step}>
+                <Div>
                     <Div>
                         <Input
                             value={address_input}
