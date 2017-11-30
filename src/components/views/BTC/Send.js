@@ -24,6 +24,7 @@ import ButtonBig from '/components/styled/ButtonBig'
 import CenterElement from '/components/styled/CenterElement'
 import Alert from '/components/styled/Alert'
 import SwitchView from '/components/styled/SwitchView'
+import RadioButton from '/components/styled/RadioButton'
 
 export default class Send extends Component {
     componentWillMount() {
@@ -33,14 +34,13 @@ export default class Send extends Component {
 
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
-        this.observer.observe(state.location.path, '3')
+        this.observer.observe(state.location, 'pathname')
 
         // Initial state
         this.amount = 0
         this.fee = 0
         this.fee_recomended = 0
         state.view = {
-            step: 0,
             address_input: '',
             address_input_error: false,
             amount1_input: 0, // BTC
@@ -217,7 +217,11 @@ export default class Send extends Component {
         const isEnoughBalance = this.isEnoughBalance
 
         return React.createElement(SendTemplate, {
-            step: state.view.step,
+            step:
+                state.location.path[3] !== undefined &&
+                this.tx_hex !== undefined
+                    ? Number(state.location.path[3])
+                    : 1,
             color: this.Coin.color,
             address_input: state.view.address_input,
             address_input_error: state.view.address_input_error,
@@ -403,7 +407,68 @@ function SendTemplate({
                         </Div>
                     </Show>
                 </Div>
-                <Div>hola</Div>
+                <Div>
+                    <List>
+                        <ListItem>
+                            <ListItemLeft>
+                                <RadioButton checked={true} />
+                            </ListItemLeft>
+                            <Div>
+                                <ListItemTitle>
+                                    insight.bitpay.com
+                                </ListItemTitle>
+                                <ListItemUrl
+                                    href="https://test-insight.bitpay.com/tx/send"
+                                    target="_blank"
+                                >
+                                    https://test-insight.bitpay.com/tx/send
+                                </ListItemUrl>
+                            </Div>
+                        </ListItem>
+                        <ListItem selected={true}>
+                            <Div padding="18px 15px">
+                                <RadioButton checked={true} />
+                            </Div>
+                            <Div>
+                                <ListItemTitle>
+                                    insight.bitpay.com
+                                </ListItemTitle>
+                                <ListItemUrl
+                                    href="https://test-insight.bitpay.com/tx/send"
+                                    target="_blank"
+                                >
+                                    https://test-insight.bitpay.com/tx/send
+                                </ListItemUrl>
+                            </Div>
+                        </ListItem>
+                        <ListItem>
+                            <Div padding="18px 15px">
+                                <RadioButton checked={false} />
+                            </Div>
+                            <Div>
+                                <ListItemTitle>
+                                    insight.bitpay.com
+                                </ListItemTitle>
+                                <ListItemUrl
+                                    href="https://test-insight.bitpay.com/tx/send"
+                                    target="_blank"
+                                >
+                                    https://test-insight.bitpay.com/tx/send
+                                </ListItemUrl>
+                            </Div>
+                        </ListItem>
+                    </List>
+                    <Div padding-top="10px">
+                        <ButtonBig
+                            // onClick={onSend}
+                            disabled={false}
+                            font-size="14px"
+                            width="100%"
+                        >
+                            Send / Broadcast
+                        </ButtonBig>
+                    </Div>
+                </Div>
             </SwitchView>
         </CenterElement>
     )
@@ -426,4 +491,44 @@ const DivOverInput = styled.div`
     top: 13px;
     color: #000;
     pointer-events: none;
+`
+
+const List = styled.div`
+    & > div {
+        margin-bottom: 5px;
+    }
+`
+
+const ListItem = styled.div`
+    min-height: 55px;
+    border: 3px solid ${styles.color.background1};
+    background-color: ${props =>
+        props.selected ? styles.color.background1 : 'transparent'};
+    &:hover {
+        background-color: ${styles.color.background1};
+    }
+    & > div {
+        float: left;
+    }
+`
+
+const ListItemLeft = styled.div`
+    padding: 18px 15px;
+`
+const ListItemTitle = styled.div`
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 16px;
+    padding-top: 12px;
+    color: ${styles.color.front3};
+`
+const ListItemUrl = styled.a`
+    font-size: 11px;
+    color: ${styles.color.grey1};
+    display: block;
+    text-decoration: none;
+    &:hover {
+        text-decoration: underline;
+        color: ${styles.color.front3};
+    }
 `

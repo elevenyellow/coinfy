@@ -177,7 +177,7 @@ export function fetchRecomendedFee() {
     // https://btc-bitcore1.trezor.io/api/utils/estimatefee
     // https://bitcoinfees.21.co/api/v1/fees/recommended
     // https://www.bitgo.com/api/v1/tx/fee
-    return fetch(`${api_url}/utils/estimatefee`)
+    return fetch(`https://insight.bitpay.com/api/utils/estimatefee`)
         .then(response => response.json())
         .then(fees => fees[2])
 }
