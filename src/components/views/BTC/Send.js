@@ -25,6 +25,8 @@ import CenterElement from '/components/styled/CenterElement'
 import Alert from '/components/styled/Alert'
 import SwitchView from '/components/styled/SwitchView'
 import RadioButton from '/components/styled/RadioButton'
+import { Label } from '/components/styled/Label'
+import Help from '/components/styled/Help'
 
 export default class Send extends Component {
     componentWillMount() {
@@ -413,7 +415,7 @@ function SendTemplate({
                             <ListItemLeft>
                                 <RadioButton checked={true} />
                             </ListItemLeft>
-                            <Div>
+                            <ListItemRight>
                                 <ListItemTitle>
                                     insight.bitpay.com
                                 </ListItemTitle>
@@ -423,13 +425,13 @@ function SendTemplate({
                                 >
                                     https://test-insight.bitpay.com/tx/send
                                 </ListItemUrl>
-                            </Div>
+                            </ListItemRight>
                         </ListItem>
                         <ListItem selected={true}>
-                            <Div padding="18px 15px">
+                            <ListItemLeft>
                                 <RadioButton checked={true} />
-                            </Div>
-                            <Div>
+                            </ListItemLeft>
+                            <ListItemRight>
                                 <ListItemTitle>
                                     insight.bitpay.com
                                 </ListItemTitle>
@@ -439,23 +441,7 @@ function SendTemplate({
                                 >
                                     https://test-insight.bitpay.com/tx/send
                                 </ListItemUrl>
-                            </Div>
-                        </ListItem>
-                        <ListItem>
-                            <Div padding="18px 15px">
-                                <RadioButton checked={false} />
-                            </Div>
-                            <Div>
-                                <ListItemTitle>
-                                    insight.bitpay.com
-                                </ListItemTitle>
-                                <ListItemUrl
-                                    href="https://test-insight.bitpay.com/tx/send"
-                                    target="_blank"
-                                >
-                                    https://test-insight.bitpay.com/tx/send
-                                </ListItemUrl>
-                            </Div>
+                            </ListItemRight>
                         </ListItem>
                     </List>
                     <Div padding-top="10px">
@@ -467,6 +453,19 @@ function SendTemplate({
                         >
                             Send / Broadcast
                         </ButtonBig>
+                    </Div>
+                    <Div padding-top="20px" text-align="center">
+                        <CodeBox>
+                            01000000011ad66bf98004ff7d035392d252c3e8a8ce29b57ba02ad2ee9c32990569416195000000006b483045022100a9401f8a0af19bb486ccefa469d29e631a37d0865394f50a2d6a3df5efb3d8590220564a641fcffdadfa233f81fe78498cad6ecd2da3d480536de2e1578aa4d014a5012102126d794993f4fdc1dd6df8ddb464a569968a390bc60f2bfc0e46116d1cfc17c7ffffffff0252f2b90a000000001976a9143cb949bcba5f0dcedcdc6fde82b359cb996ad34488ac52f2b90a000000001976a914811c61ef908959f6975b6e1199c1b5c921a7efde88ac00000000
+                        </CodeBox>
+                        <Label size="11px">
+                            <a
+                                href="https://live.blockcypher.com/btc/decodetx/"
+                                target="_blank"
+                            >
+                                Raw transaction (Hexadecimal)
+                            </a>
+                        </Label>
                     </Div>
                 </Div>
             </SwitchView>
@@ -515,6 +514,9 @@ const ListItem = styled.div`
 const ListItemLeft = styled.div`
     padding: 18px 15px;
 `
+const ListItemRight = styled.div`
+    width: calc(100% - 50px);
+`
 const ListItemTitle = styled.div`
     font-weight: bold;
     font-size: 16px;
@@ -527,8 +529,34 @@ const ListItemUrl = styled.a`
     color: ${styles.color.grey1};
     display: block;
     text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     &:hover {
         text-decoration: underline;
         color: ${styles.color.front3};
+    }
+`
+
+function CodeBox({ children }) {
+    return (
+        <CodeBoxView>
+            <span>{children}</span>
+        </CodeBoxView>
+    )
+}
+
+const CodeBoxView = styled.div`
+    padding: 10px;
+    border: 1px solid #e5e9eb;
+    border-radius: 3px;
+    & > span {
+        text-align: left;
+        word-wrap: break-word;
+        display: inline-block;
+        font-size: 10px;
+        color: #aaa;
+        font-family: monospace;
+        width: 100%;
     }
 `
