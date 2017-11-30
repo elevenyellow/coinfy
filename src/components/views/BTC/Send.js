@@ -223,7 +223,7 @@ export default class Send extends Component {
                 state.location.path[3] !== undefined &&
                 this.tx_hex !== undefined
                     ? Number(state.location.path[3])
-                    : 1,
+                    : 0,
             color: this.Coin.color,
             address_input: state.view.address_input,
             address_input_error: state.view.address_input_error,
@@ -455,17 +455,24 @@ function SendTemplate({
                         </ButtonBig>
                     </Div>
                     <Div padding-top="20px" text-align="center">
-                        <CodeBox>
-                            01000000011ad66bf98004ff7d035392d252c3e8a8ce29b57ba02ad2ee9c32990569416195000000006b483045022100a9401f8a0af19bb486ccefa469d29e631a37d0865394f50a2d6a3df5efb3d8590220564a641fcffdadfa233f81fe78498cad6ecd2da3d480536de2e1578aa4d014a5012102126d794993f4fdc1dd6df8ddb464a569968a390bc60f2bfc0e46116d1cfc17c7ffffffff0252f2b90a000000001976a9143cb949bcba5f0dcedcdc6fde82b359cb996ad34488ac52f2b90a000000001976a914811c61ef908959f6975b6e1199c1b5c921a7efde88ac00000000
-                        </CodeBox>
-                        <Label size="11px">
-                            <a
-                                href="https://live.blockcypher.com/btc/decodetx/"
-                                target="_blank"
-                            >
-                                Raw transaction (Hexadecimal)
-                            </a>
-                        </Label>
+                        <TransparentInfo
+                            hide={true}
+                            text={
+                                <LinkOpenHex>Show raw transaction</LinkOpenHex>
+                            }
+                        >
+                            <CodeBox>
+                                01000000011ad66bf98004ff7d035392d252c3e8a8ce29b57ba02ad2ee9c32990569416195000000006b483045022100a9401f8a0af19bb486ccefa469d29e631a37d0865394f50a2d6a3df5efb3d8590220564a641fcffdadfa233f81fe78498cad6ecd2da3d480536de2e1578aa4d014a5012102126d794993f4fdc1dd6df8ddb464a569968a390bc60f2bfc0e46116d1cfc17c7ffffffff0252f2b90a000000001976a9143cb949bcba5f0dcedcdc6fde82b359cb996ad34488ac52f2b90a000000001976a914811c61ef908959f6975b6e1199c1b5c921a7efde88ac00000000
+                            </CodeBox>
+                            <Label size="11px">
+                                <a
+                                    href="https://live.blockcypher.com/btc/decodetx/"
+                                    target="_blank"
+                                >
+                                    Raw transaction (Hexadecimal)
+                                </a>
+                            </Label>
+                        </TransparentInfo>
                     </Div>
                 </Div>
             </SwitchView>
@@ -530,11 +537,42 @@ const ListItemUrl = styled.a`
     display: block;
     text-decoration: none;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: hide;
     text-overflow: ellipsis;
     &:hover {
         text-decoration: underline;
         color: ${styles.color.front3};
+    }
+`
+
+function TransparentInfo({ children, hide = true, height, text }) {
+    return (
+        <TransparentInfoStyled hide={hide} height={height}>
+            <div className="overlay" />
+            <div className="text">{text}</div>
+            <div>{children}</div>
+        </TransparentInfoStyled>
+    )
+}
+const TransparentInfoStyled = styled.div`
+    height: ${props => (props.hide ? props.height || '50px' : 'auto')};
+    overflow: ${props => (props.hide ? 'hidden' : 'auto')};
+    position: relative;
+    & .text {
+        display: ${props => (props.hide ? 'block' : 'none')};
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    }
+    & .overlay {
+        display: ${props => (props.hide ? 'block' : 'none')};
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: rgba(255, 255, 255, 0.8);
+        width: 100%;
+        height: 100%;
     }
 `
 
@@ -558,5 +596,17 @@ const CodeBoxView = styled.div`
         color: #aaa;
         font-family: monospace;
         width: 100%;
+    }
+`
+
+const LinkOpenHex = styled.a`
+    font-weight: bold;
+    color: ${styles.color.background3};
+    text-shadow: 0px 0px 15px #ffffff;
+    font-size: 13px;
+    text-decoration: underline;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.6;
     }
 `

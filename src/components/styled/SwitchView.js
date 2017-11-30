@@ -30,7 +30,7 @@ const SwitchViewStyled = styled.div`
     overflow-x: hidden;
     position: relative;
     & > div {
-        transition: 1s ease left;
+        transition: 0.75s ease left;
         display: block;
         position: absolute;
 
