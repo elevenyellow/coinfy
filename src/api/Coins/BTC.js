@@ -8,11 +8,11 @@ import {
 } from '/api/crypto'
 
 // private
-const debug = true
+const test = true
 const mainnet = Bitcoin.networks.bitcoin // 0x80
 const testnet = Bitcoin.networks.testnet // 0xef
-const network = debug ? testnet : mainnet
-const url = debug
+const network = test ? testnet : mainnet
+const url = test
     ? 'https://test-insight.bitpay.com'
     : 'https://insight.bitpay.com'
 const api_url = `${url}/api` // https://github.com/bitpay/insight-api
@@ -312,6 +312,28 @@ export function sendRawTx(rawTx) {
     return fetch(`${api_url}/tx/send`, fetchOptions)
         .then(response => response.json())
         .then(totals => totals)
+}
+
+export function getSendProviders() {
+    return sendProviders[test ? 'test' : 'main']
+}
+
+const sendProviders = {
+    main: {},
+    test: [
+        {
+            name: 'Bitpay.com',
+            url: 'https://test-insight.bitpay.com/tx/send',
+            request: e => {},
+            response: e => {}
+        },
+        {
+            name: 'Paco pil',
+            url: 'https://test-insight/tx/send',
+            request: e => {},
+            response: e => {}
+        }
+    ]
 }
 
 /*

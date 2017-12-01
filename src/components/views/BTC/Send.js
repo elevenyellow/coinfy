@@ -36,6 +36,7 @@ export default class Send extends Component {
         this.asset_id = state.location.path[1]
         this.asset = getAsset(this.asset_id)
         this.Coin = Coins[this.asset.symbol] // Storing Asset api (Asset.BTC, Asset.ETH, ...)
+        this.send_providers = this.Coin.getSendProviders()
 
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
@@ -54,7 +55,10 @@ export default class Send extends Component {
             fee_input_visible: false,
             password_input: '',
             password_input_invalid: false,
-            error_when_create: false
+            error_when_create: false,
+            send_provider_selected: 0,
+            show_raw_tx: false,
+            is_sent: false
         }
 
         // binding
@@ -65,6 +69,9 @@ export default class Send extends Component {
         this.onClickFee = this.onClickFee.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onNext = this.onNext.bind(this)
+        this.onChangeProvider = this.onChangeProvider.bind(this)
+        this.onShowRawTx = this.onShowRawTx.bind(this)
+        this.onSend = this.onSend.bind(this)
 
         this.fetchBalance()
         this.fetchRecomendedFee()
@@ -178,6 +185,18 @@ export default class Send extends Component {
         }
     }
 
+    onChangeProvider(index) {
+        state.view.send_provider_selected = index
+    }
+
+    onShowRawTx(index) {
+        state.view.show_raw_tx = true
+    }
+
+    onSend(e) {
+        state.view.is_sent = true
+    }
+
     getMax() {
         const max = Big(this.asset.balance).minus(this.fee)
         return max.gt(0) ? max : 0
@@ -202,6 +221,12 @@ export default class Send extends Component {
         let amount1, amount2
         const symbol = this.asset.symbol
         const price = state.prices[symbol]
+        const step_path = state.location.path[3]
+        let step = state.view.is_sent
+            ? 2
+            : step_path !== undefined && this.tx_hex !== undefined
+              ? Number(step_path)
+              : 0
 
         if (state.view.amount1_input !== undefined) {
             amount1 = state.view.amount1_input
@@ -222,11 +247,7 @@ export default class Send extends Component {
         const isEnoughBalance = this.isEnoughBalance
 
         return React.createElement(SendTemplate, {
-            step:
-                state.location.path[3] !== undefined &&
-                this.tx_hex !== undefined
-                    ? Number(state.location.path[3])
-                    : 2,
+            step: step,
             color: this.Coin.color,
             address_input: state.view.address_input,
             address_input_error: state.view.address_input_error,
@@ -245,12 +266,16 @@ export default class Send extends Component {
                 convertBalance(this.asset.symbol, this.fee_recomended),
                 2
             ),
+            total: this.amount.plus(this.fee).toString(),
             password_input: state.view.password_input,
             password_input_invalid: state.view.password_input_invalid,
             isEnoughBalance: isEnoughBalance,
             isValidForm: this.isValidForm && this.isEnoughBalance,
             isFeeLowerThanRecomended: this.fee.lt(this.fee_recomended),
             error_when_create: state.view.error_when_create,
+            send_provider_selected: state.view.send_provider_selected,
+            send_providers: this.send_providers,
+            show_raw_tx: state.view.show_raw_tx,
             onChangeAddress: this.onChangeAddress,
             onChangeAmount1: this.onChangeAmount1,
             onChangeAmount2: this.onChangeAmount2,
@@ -258,7 +283,10 @@ export default class Send extends Component {
             onClickFee: this.onClickFee,
             onChangeFee: this.onChangeFee,
             onChangePassword: this.onChangePassword,
-            onNext: this.onNext
+            onNext: this.onNext,
+            onChangeProvider: this.onChangeProvider,
+            onShowRawTx: this.onShowRawTx,
+            onSend: this.onSend
         })
     }
 }
@@ -277,12 +305,16 @@ function SendTemplate({
     fee_input_visible,
     fee_recomended,
     fee_recomended_fiat,
+    total,
     password_input,
     password_input_invalid,
     isEnoughBalance,
     isValidForm,
     isFeeLowerThanRecomended,
     error_when_create,
+    send_provider_selected,
+    send_providers,
+    show_raw_tx,
     onChangeAddress,
     onChangeAmount1,
     onChangeAmount2,
@@ -290,7 +322,10 @@ function SendTemplate({
     onClickFee,
     onChangeFee,
     onChangePassword,
-    onNext
+    onNext,
+    onChangeProvider,
+    onShowRawTx,
+    onSend
 }) {
     return (
         <CenterElement width="500px" media={styles.media.third}>
@@ -420,63 +455,62 @@ function SendTemplate({
                         <Resume>
                             <ResumeLabel>Address</ResumeLabel>
                             <ResumeValue left={true}>
-                                mm42obtLkUesaHxj5i236B9hJ7m6yv4Ujgmm42obtLkUesaHxj5i236B9hJ7m6yv4Ujg
+                                {address_input}
                             </ResumeValue>
                         </Resume>
                         <Resume>
                             <ResumeLabel>Amount</ResumeLabel>
-                            <ResumeValue>1.231 BTC</ResumeValue>
+                            <ResumeValue>
+                                {amount1_input} {symbol_crypto}
+                            </ResumeValue>
                         </Resume>
                         <Resume>
                             <ResumeLabel>Network Fee</ResumeLabel>
-                            <ResumeValue>0.12314231 BTC</ResumeValue>
+                            <ResumeValue>
+                                {fee_input} {symbol_crypto}
+                            </ResumeValue>
                         </Resume>
                         <Resume>
-                            <ResumeLabel>Total</ResumeLabel>
+                            <ResumeLabel color={styles.color.background3}>
+                                Total
+                            </ResumeLabel>
                             <ResumeValue color={styles.color.background3}>
-                                1.22314231 BTC
+                                {total} {symbol_crypto}
                             </ResumeValue>
                         </Resume>
                     </Div>
                     <Div padding-top="10px" clear="both">
                         <List>
-                            <ListItem>
-                                <ListItemLeft>
-                                    <RadioButton checked={true} />
-                                </ListItemLeft>
-                                <ListItemRight>
-                                    <ListItemTitle>
-                                        insight.bitpay.com
-                                    </ListItemTitle>
-                                    <ListItemUrl
-                                        href="https://test-insight.bitpay.com/tx/send"
-                                        target="_blank"
-                                    >
-                                        https://test-insight.bitpay.com/tx/send
-                                    </ListItemUrl>
-                                </ListItemRight>
-                            </ListItem>
-                            <ListItem selected={true}>
-                                <ListItemLeft>
-                                    <RadioButton checked={true} />
-                                </ListItemLeft>
-                                <ListItemRight>
-                                    <ListItemTitle>
-                                        insight.bitpay.com
-                                    </ListItemTitle>
-                                    <ListItemUrl
-                                        href="https://test-insight.bitpay.com/tx/send"
-                                        target="_blank"
-                                    >
-                                        https://test-insight.bitpay.com/tx/send
-                                    </ListItemUrl>
-                                </ListItemRight>
-                            </ListItem>
+                            {send_providers.map((provider, index) => (
+                                <ListItem
+                                    selected={index === send_provider_selected}
+                                    onClick={e => onChangeProvider(index)}
+                                >
+                                    <ListItemLeft>
+                                        <RadioButton
+                                            checked={
+                                                index === send_provider_selected
+                                            }
+                                        />
+                                    </ListItemLeft>
+                                    <ListItemRight>
+                                        <ListItemTitle>
+                                            {provider.name}
+                                        </ListItemTitle>
+                                        <ListItemUrl
+                                            href={provider.url}
+                                            target="_blank"
+                                        >
+                                            {provider.url}
+                                        </ListItemUrl>
+                                    </ListItemRight>
+                                </ListItem>
+                            ))}
                         </List>
                     </Div>
                     <Div padding-top="10px">
                         <ButtonBig
-                            // onClick={onSend}
+                            onClick={onSend}
                             disabled={false}
                             font-size="14px"
                             width="100%"
@@ -486,9 +520,11 @@ function SendTemplate({
                     </Div>
                     <Div padding-top="20px" text-align="center">
                         <TransparentInfo
-                            hide={true}
+                            show={show_raw_tx}
                             text={
-                                <LinkOpenHex>Show raw transaction</LinkOpenHex>
+                                <LinkOpenHex onClick={onShowRawTx}>
+                                    Show raw transaction
+                                </LinkOpenHex>
                             }
                         >
                             <CodeBox>
@@ -505,12 +541,12 @@ function SendTemplate({
                         </TransparentInfo>
                     </Div>
                 </Div>
-                <Div>
-                    <ConfirmationCircle>
+                <Div padding-top="10px">
+                    <ConfirmationCircle sent={step === 2}>
                         <img src="/static/image/send.svg" width="60" />
                     </ConfirmationCircle>
                     <Div
-                        padding-top="40px"
+                        padding-top="20px"
                         font-size="24px"
                         font-weight="900"
                         text-align="center"
@@ -582,7 +618,7 @@ const ListItemTitle = styled.div`
 const ListItemUrl = styled.a`
     font-size: 11px;
     color: ${styles.color.grey1};
-    display: block;
+    display: inline-block;
     text-decoration: none;
     white-space: nowrap;
     overflow: hidden;
@@ -591,11 +627,14 @@ const ListItemUrl = styled.a`
         text-decoration: underline;
         color: ${styles.color.front3};
     }
+    ${styles.media.fourth} {
+        display: block;
+    }
 `
 
-function TransparentInfo({ children, hide = true, height, text }) {
+function TransparentInfo({ children, show = false, height, text }) {
     return (
-        <TransparentInfoStyled hide={hide} height={height}>
+        <TransparentInfoStyled show={show} height={height}>
             <div className="overlay" />
             <div className="text">{text}</div>
             <div>{children}</div>
@@ -603,18 +642,18 @@ function TransparentInfo({ children, hide = true, height, text }) {
     )
 }
 const TransparentInfoStyled = styled.div`
-    height: ${props => (props.hide ? props.height || '50px' : 'auto')};
-    overflow: ${props => (props.hide ? 'hidden' : 'auto')};
+    height: ${props => (!props.show ? props.height || '50px' : 'auto')};
+    overflow: ${props => (!props.show ? 'hidden' : 'auto')};
     position: relative;
     & .text {
-        display: ${props => (props.hide ? 'block' : 'none')};
+        display: ${props => (!props.show ? 'block' : 'none')};
         position: absolute;
         left: 50%;
         top: 50%;
         transform: translateX(-50%) translateY(-50%);
     }
     & .overlay {
-        display: ${props => (props.hide ? 'block' : 'none')};
+        display: ${props => (!props.show ? 'block' : 'none')};
         position: absolute;
         top: 0;
         left: 0;
@@ -668,7 +707,7 @@ const ResumeLabel = styled.div`
     float: left;
     width: 90px;
     font-size: 13px;
-    color: ${styles.color.grey1};
+    color: ${props => props.color || styles.color.grey1};
 `
 const ResumeValue = styled.div`
     float: ${props => (props.left ? 'none' : 'right')};
@@ -678,18 +717,22 @@ const ResumeValue = styled.div`
     text-overflow: ellipsis;
     font-size: 13px;
     font-weight: bold;
+    text-align: right;
 `
 
 const ConfirmationCircle = styled.div`
-    width: 170px;
-    height: 170px;
-    background: #4ea863;
-    border: 8px solid #33c262;
+    width: 155px;
+    height: 155px;
+    background: #34c362;
+    border: 8px solid #54d37e;
     border-radius: 50%;
     text-align: center;
     margin: 0 auto;
-    line-height: 210px;
+    line-height: 205px;
     box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.2);
+    transform: scale(${props => (props.sent ? 1 : 0.5)});
+    transition: 3s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
+    transition-delay: 0.5s;
 `
 
 const ConfirmationLink = styled.a`
@@ -701,6 +744,7 @@ const ConfirmationLink = styled.a`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    letter-spacing: 0.5px;
     &:hover {
         color: ${styles.color.background3};
     }
