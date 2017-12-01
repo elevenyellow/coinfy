@@ -507,8 +507,21 @@ function SendTemplate({
                 </Div>
                 <Div>
                     <ConfirmationCircle>
-                        <IconSend color="white" size={50} />
+                        <img src="/static/image/send.svg" width="60" />
                     </ConfirmationCircle>
+                    <Div
+                        padding-top="40px"
+                        font-size="24px"
+                        font-weight="900"
+                        text-align="center"
+                    >
+                        Transaction Sent!
+                    </Div>
+                    <Div padding-top="10px">
+                        <ConfirmationLink href="#">
+                            0aaff29c470653a6e69eb296f881a36fdd0e0af69c778650a4246e2102379356
+                        </ConfirmationLink>
+                    </Div>
                 </Div>
             </SwitchView>
         </CenterElement>
@@ -569,7 +582,7 @@ const ListItemTitle = styled.div`
 const ListItemUrl = styled.a`
     font-size: 11px;
     color: ${styles.color.grey1};
-    display: inline-block;
+    display: block;
     text-decoration: none;
     white-space: nowrap;
     overflow: hidden;
@@ -667,4 +680,28 @@ const ResumeValue = styled.div`
     font-weight: bold;
 `
 
-const ConfirmationCircle = styled.div``
+const ConfirmationCircle = styled.div`
+    width: 170px;
+    height: 170px;
+    background: #4ea863;
+    border: 8px solid #33c262;
+    border-radius: 50%;
+    text-align: center;
+    margin: 0 auto;
+    line-height: 210px;
+    box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.2);
+`
+
+const ConfirmationLink = styled.a`
+    color: ${styles.color.background2};
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover {
+        color: ${styles.color.background3};
+    }
+`
