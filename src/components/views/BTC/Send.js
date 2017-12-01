@@ -25,8 +25,11 @@ import CenterElement from '/components/styled/CenterElement'
 import Alert from '/components/styled/Alert'
 import SwitchView from '/components/styled/SwitchView'
 import RadioButton from '/components/styled/RadioButton'
-import { Label } from '/components/styled/Label'
+import { Label, SubLabel } from '/components/styled/Label'
 import Help from '/components/styled/Help'
+
+import IconSend from 'react-icons/lib/md/send'
+// import IconBack from 'react-icons/lib/md/arrow-back'
 
 export default class Send extends Component {
     componentWillMount() {
@@ -223,7 +226,7 @@ export default class Send extends Component {
                 state.location.path[3] !== undefined &&
                 this.tx_hex !== undefined
                     ? Number(state.location.path[3])
-                    : 0,
+                    : 2,
             color: this.Coin.color,
             address_input: state.view.address_input,
             address_input_error: state.view.address_input_error,
@@ -410,40 +413,67 @@ function SendTemplate({
                     </Show>
                 </Div>
                 <Div>
-                    <List>
-                        <ListItem>
-                            <ListItemLeft>
-                                <RadioButton checked={true} />
-                            </ListItemLeft>
-                            <ListItemRight>
-                                <ListItemTitle>
-                                    insight.bitpay.com
-                                </ListItemTitle>
-                                <ListItemUrl
-                                    href="https://test-insight.bitpay.com/tx/send"
-                                    target="_blank"
-                                >
-                                    https://test-insight.bitpay.com/tx/send
-                                </ListItemUrl>
-                            </ListItemRight>
-                        </ListItem>
-                        <ListItem selected={true}>
-                            <ListItemLeft>
-                                <RadioButton checked={true} />
-                            </ListItemLeft>
-                            <ListItemRight>
-                                <ListItemTitle>
-                                    insight.bitpay.com
-                                </ListItemTitle>
-                                <ListItemUrl
-                                    href="https://test-insight.bitpay.com/tx/send"
-                                    target="_blank"
-                                >
-                                    https://test-insight.bitpay.com/tx/send
-                                </ListItemUrl>
-                            </ListItemRight>
-                        </ListItem>
-                    </List>
+                    {/* <Div>
+                        <IconBack size={25} color={styles.color.grey1} />
+                    </Div> */}
+                    <Div>
+                        <Resume>
+                            <ResumeLabel>Address</ResumeLabel>
+                            <ResumeValue left={true}>
+                                mm42obtLkUesaHxj5i236B9hJ7m6yv4Ujgmm42obtLkUesaHxj5i236B9hJ7m6yv4Ujg
+                            </ResumeValue>
+                        </Resume>
+                        <Resume>
+                            <ResumeLabel>Amount</ResumeLabel>
+                            <ResumeValue>1.231 BTC</ResumeValue>
+                        </Resume>
+                        <Resume>
+                            <ResumeLabel>Network Fee</ResumeLabel>
+                            <ResumeValue>0.12314231 BTC</ResumeValue>
+                        </Resume>
+                        <Resume>
+                            <ResumeLabel>Total</ResumeLabel>
+                            <ResumeValue color={styles.color.background3}>
+                                1.22314231 BTC
+                            </ResumeValue>
+                        </Resume>
+                    </Div>
+                    <Div padding-top="10px" clear="both">
+                        <List>
+                            <ListItem>
+                                <ListItemLeft>
+                                    <RadioButton checked={true} />
+                                </ListItemLeft>
+                                <ListItemRight>
+                                    <ListItemTitle>
+                                        insight.bitpay.com
+                                    </ListItemTitle>
+                                    <ListItemUrl
+                                        href="https://test-insight.bitpay.com/tx/send"
+                                        target="_blank"
+                                    >
+                                        https://test-insight.bitpay.com/tx/send
+                                    </ListItemUrl>
+                                </ListItemRight>
+                            </ListItem>
+                            <ListItem selected={true}>
+                                <ListItemLeft>
+                                    <RadioButton checked={true} />
+                                </ListItemLeft>
+                                <ListItemRight>
+                                    <ListItemTitle>
+                                        insight.bitpay.com
+                                    </ListItemTitle>
+                                    <ListItemUrl
+                                        href="https://test-insight.bitpay.com/tx/send"
+                                        target="_blank"
+                                    >
+                                        https://test-insight.bitpay.com/tx/send
+                                    </ListItemUrl>
+                                </ListItemRight>
+                            </ListItem>
+                        </List>
+                    </Div>
                     <Div padding-top="10px">
                         <ButtonBig
                             // onClick={onSend}
@@ -474,6 +504,11 @@ function SendTemplate({
                             </Label>
                         </TransparentInfo>
                     </Div>
+                </Div>
+                <Div>
+                    <ConfirmationCircle>
+                        <IconSend color="white" size={50} />
+                    </ConfirmationCircle>
                 </Div>
             </SwitchView>
         </CenterElement>
@@ -534,10 +569,10 @@ const ListItemTitle = styled.div`
 const ListItemUrl = styled.a`
     font-size: 11px;
     color: ${styles.color.grey1};
-    display: block;
+    display: inline-block;
     text-decoration: none;
     white-space: nowrap;
-    overflow: hide;
+    overflow: hidden;
     text-overflow: ellipsis;
     &:hover {
         text-decoration: underline;
@@ -586,14 +621,14 @@ function CodeBox({ children }) {
 
 const CodeBoxView = styled.div`
     padding: 10px;
-    border: 1px solid #e5e9eb;
+    border: 1px solid ${styles.color.background4};
     border-radius: 3px;
     & > span {
         text-align: left;
         word-wrap: break-word;
         display: inline-block;
         font-size: 10px;
-        color: #aaa;
+        color: ${styles.color.grey1};
         font-family: monospace;
         width: 100%;
     }
@@ -610,3 +645,26 @@ const LinkOpenHex = styled.a`
         opacity: 0.6;
     }
 `
+
+const Resume = styled.div`
+    clear: both;
+    padding-top: 5px;
+`
+
+const ResumeLabel = styled.div`
+    float: left;
+    width: 90px;
+    font-size: 13px;
+    color: ${styles.color.grey1};
+`
+const ResumeValue = styled.div`
+    float: ${props => (props.left ? 'none' : 'right')};
+    color: ${props => props.color || styles.color.front3};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    font-weight: bold;
+`
+
+const ConfirmationCircle = styled.div``
