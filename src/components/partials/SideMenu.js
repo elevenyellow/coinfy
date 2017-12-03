@@ -6,10 +6,10 @@ import IconMore from 'react-icons/lib/md/more-vert'
 
 import routes from '/const/routes'
 import styles from '/const/styles'
-import { currencies } from '/const/currencies'
+import { Fiats } from '/api/Fiats'
 
 import { numberWithSeparation, round } from '/api/numbers'
-import { Assets } from '/api/Assets'
+import { Coins } from '/api/Coins'
 
 import state from '/store/state'
 import {
@@ -36,7 +36,7 @@ export default class Left extends Component {
         this.observer.observe(state, 'balance')
         this.observer.observe(state, 'totalAssets')
 
-        this.state = { balance_start: state.balance }
+        this.balance_start = state.balance
         this.createRef = this.createRef.bind(this)
     }
     componentWillUnmount() {
@@ -59,28 +59,31 @@ export default class Left extends Component {
             if (state.sideMenuOpen) state.sideMenuOpen = false
         })
 
-
-
         let xDown
         let minPixels = 50
-        this.menuElement.addEventListener('touchstart', evt => {
-            xDown = evt.touches[0].clientX
-        }, false)
+        this.menuElement.addEventListener(
+            'touchstart',
+            evt => {
+                xDown = evt.touches[0].clientX
+            },
+            false
+        )
 
-        this.menuElement.addEventListener('touchmove', evt => {
-            if (!xDown)
-                return
+        this.menuElement.addEventListener(
+            'touchmove',
+            evt => {
+                if (!xDown) return
 
-            let xDiff = xDown - evt.touches[0].clientX
-            // this.menuElement.style.left = `-${xDiff}px`
-            if (xDiff > minPixels) {
-                // this.menuElement.style.left = ''
-                state.sideMenuOpen = false
-                xDown = null
-            }
-        }, false)
-
-
+                let xDiff = xDown - evt.touches[0].clientX
+                // this.menuElement.style.left = `-${xDiff}px`
+                if (xDiff > minPixels) {
+                    // this.menuElement.style.left = ''
+                    state.sideMenuOpen = false
+                    xDown = null
+                }
+            },
+            false
+        )
     }
 
     createRef(e) {
@@ -92,13 +95,13 @@ export default class Left extends Component {
     }
 
     render() {
-        const balance_start = this.state.balance_start
-        this.state.balance_start = state.balance
+        const balance_start = this.balance_start
+        this.balance_start = state.balance
         return React.createElement(LeftTemplate, {
             open: state.sideMenuOpen,
             onClickBackground: this.onClickBackground,
             createRef: this.createRef,
-            ascii: currencies[state.currency].ascii,
+            ascii: Fiats[state.currency].ascii,
             balance_start: balance_start,
             balance_end: state.balance,
             totalAssets: state.totalAssets
@@ -210,7 +213,9 @@ const Head = styled.div`
     }
 `
 
-const HeadBalance = styled.div`text-align: center;`
+const HeadBalance = styled.div`
+    text-align: center;
+`
 
 const HeadBalanceNumber = styled.span`
     color: ${styles.color.black};

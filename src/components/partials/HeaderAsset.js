@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { Router, Route, Show } from '/doprouter/react'
 
-import { getAsset, convertBalance } from '/store/getters'
+import { getAsset, convertBalance, formatCurrency } from '/store/getters'
 import {
     setHref,
     saveAssetsLocalStorage,
@@ -11,9 +11,9 @@ import {
     setAssetsExported
 } from '/store/actions'
 
-import Assets from '/api/Assets'
+import Coins from '/api/Coins'
 
-import { currencies } from '/const/currencies'
+import { Fiats } from '/api/Fiats'
 import routes from '/const/routes'
 import styles from '/const/styles'
 import state from '/store/state'
@@ -29,40 +29,30 @@ export default class HeaderAsset extends Component {
     componentWillMount() {
         let unobserveLabel
         let unobserveBalance
-        this.state = {}
-        this.state.changedLabel = false
-        this.state.asset_id = state.location.path[1]
-        this.state.asset = getAsset(this.state.asset_id)
+        this.changedLabel = false
+        this.asset_id = state.location.path[1]
+        this.asset = getAsset(this.asset_id)
         // this.qr = generateQRCode(this.address, 140, styles.color.front3)
         this.observer = createObserver(mutations => {
             if (mutations[0].prop === 'pathname') {
-                this.state.asset_id = state.location.path[1]
-                this.state.asset = getAsset(this.state.asset_id)
+                this.asset_id = state.location.path[1]
+                this.asset = getAsset(this.asset_id)
                 // this.qr = generateQRCode(this.address, 140, styles.color.front3)
                 if (unobserveLabel) {
                     unobserveLabel()
                     unobserveBalance()
                 }
-                unobserveLabel = this.observer.observe(
-                    this.state.asset,
-                    'label'
-                )
-                unobserveBalance = this.observer.observe(
-                    this.state.asset,
-                    'balance'
-                )
+                unobserveLabel = this.observer.observe(this.asset, 'label')
+                unobserveBalance = this.observer.observe(this.asset, 'balance')
             }
             this.forceUpdate()
         })
         this.observer.observe(state.location, 'pathname')
-        this.observer.observe(state.prices, this.state.asset.symbol)
-        
-        if (this.state.asset !== undefined) {
-            unobserveLabel = this.observer.observe(this.state.asset, 'label')
-            unobserveBalance = this.observer.observe(
-                this.state.asset,
-                'balance'
-            )
+        this.observer.observe(state.prices, this.asset.symbol)
+
+        if (this.asset !== undefined) {
+            unobserveLabel = this.observer.observe(this.asset, 'label')
+            unobserveBalance = this.observer.observe(this.asset, 'balance')
         }
 
         this.onChangeLabel = this.onChangeLabel.bind(this)
@@ -76,15 +66,15 @@ export default class HeaderAsset extends Component {
     }
 
     onChangeLabel(e) {
-        if (this.state.asset !== undefined) {
-            this.state.changedLabel = true
-            setAssetLabel(this.state.asset_id, e.target.value.trim())
+        if (this.asset !== undefined) {
+            this.changedLabel = true
+            setAssetLabel(this.asset_id, e.target.value.trim())
         }
     }
 
     onBlur(e) {
-        if (this.state.changedLabel) {
-            this.state.changedLabel = false
+        if (this.changedLabel) {
+            this.changedLabel = false
             saveAssetsLocalStorage()
             setAssetsExported(false)
         }
@@ -92,16 +82,12 @@ export default class HeaderAsset extends Component {
 
     render() {
         return React.createElement(HeaderAssetTemplate, {
-            address: this.state.asset.address,
-            label: this.state.asset ? this.state.asset.label : '',
-            symbol: this.state.asset.symbol,
-            balance_asset: this.state.asset.balance,
-            balance_currency: currencies[state.currency].format(
-                convertBalance(
-                    this.state.asset.symbol,
-                    this.state.asset.balance
-                ),
-                0
+            address: this.asset.address,
+            label: this.asset ? this.asset.label : '',
+            symbol: this.asset.symbol,
+            balance_asset: this.asset.balance,
+            balance_currency: formatCurrency(
+                convertBalance(this.asset.symbol, this.asset.balance)
             ),
             onChangeLabel: this.onChangeLabel,
             onBlur: this.onBlur
@@ -121,9 +107,7 @@ function HeaderAssetTemplate({
     return (
         <RightHeader>
             <Icon>
-                <img
-                    src={`/static/image/${symbol}.svg`}
-                />
+                <img src={`/static/image/${symbol}.svg`} />
             </Icon>
             <Left>
                 <H1Input
@@ -133,11 +117,17 @@ function HeaderAssetTemplate({
                     width="100%"
                     placeholder="Type a label..."
                 />
-                <Div padding-left="2px"><H2><strong>{address}</strong></H2></Div>
+                <Div padding-left="2px">
+                    <H2>
+                        <strong>{address}</strong>
+                    </H2>
+                </Div>
             </Left>
             <Right>
                 <H1b>{balance_currency}</H1b>
-                <H2>{balance_asset} {symbol}</H2>
+                <H2>
+                    {balance_asset} {symbol}
+                </H2>
             </Right>
             <Div clear="both" />
         </RightHeader>
@@ -162,15 +152,15 @@ const Icon = styled.div`
         }
     }
     ${styles.media.second} {
-        display:none
-    }  
+        display: none;
+    }
 `
 const Left = styled.div`
     width: 60%;
     float: left;
     ${styles.media.fourth} {
         width: 100%;
-    }        
+    }
 `
 
 const Right = styled.div`
@@ -179,18 +169,18 @@ const Right = styled.div`
     float: right;
     ${styles.media.fourth} {
         display: none;
-    } 
+    }
 `
 
 const H1b = styled.div`
-color: ${styles.color.black};
-font-size: 23px;
-font-weight: 900;
-margin: 0;
-line-height: 35px; 
+    color: ${styles.color.black};
+    font-size: 23px;
+    font-weight: 900;
+    margin: 0;
+    line-height: 35px;
 
-${styles.media.first} {
-    font-size: 19px;
-    line-height: 23px; 
-} 
+    ${styles.media.first} {
+        font-size: 19px;
+        line-height: 23px;
+    }
 `

@@ -5,8 +5,8 @@ import { Show } from '/doprouter/react'
 
 // import { createWorker } from '/api/workers'
 import { generateQRCode } from '/api/qr'
-import { ETH } from '/api/Assets'
-import { getPublicFromPrivateKey } from '/api/Assets/ETH'
+import { ETH } from '/api/Coins'
+import { getPublicFromPrivateKey } from '/api/Coins/ETH'
 import { printTemplate, downloadFile } from '/api/browser'
 
 import state from '/store/state'

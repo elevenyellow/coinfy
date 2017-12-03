@@ -4,13 +4,13 @@
 // import { Show } from '/doprouter/react'
 
 // import styles from '/const/styles'
-// import { currencies } from '/const/currencies'
+// import { Fiats } from '/api/Fiats'
 // import { round } from '/api/numbers'
 // import state from '/store/state'
 // import { fetchSummaryAsset, fetchSummaryAssetIfReady } from '/store/actions'
 // import { convertBalance, getAsset } from '/store/getters'
 
-// import { ETH } from '/api/Assets'
+// import { ETH } from '/api/Coins'
 // import { getDay, getMonthTextShort } from '/api/time'
 // import { openUrl } from '/api/browser'
 // import { generateQRCode } from '/api/qr'
@@ -153,11 +153,11 @@
 //         const address = asset.address
 //         return React.createElement(SummaryETHTemplate, {
 //             balance_asset: asset.balance,
-//             balance_currency: currencies[state.currency].format(
+//             balance_currency: formatCurrency(
 //                 convertBalance(ETH.symbol, asset.balance),
 //                 0
 //             ),
-//             symbol: currencies[state.currency].symbol,
+//             symbol: Fiats[state.currency].symbol,
 //             totalTransactions: asset.summary.totalTxs || 0,
 //             totalReceived: round(asset.summary.totalReceived || 0, 2),
 //             totalSent: round(asset.summary.totalSent || 0, 2),

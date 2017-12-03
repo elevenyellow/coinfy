@@ -5,9 +5,9 @@
 // import { setHref, createAsset } from '/store/actions'
 // import state from '/store/state'
 
-// import { isAddressCheck, isPublicKey, getAddressFromPublicKey } from '/api/Assets/BTC'
+// import { isAddressCheck, isPublicKey, getAddressFromPublicKey } from '/api/Coins/BTC'
 // import { isAssetRegistered } from '/store/getters'
-// import { BTC, getAssetId } from '/api/Assets'
+// import { BTC, getCoinId } from '/api/Coins'
 
 // import styles from '/const/styles'
 // import routes from '/const/routes'
@@ -54,7 +54,7 @@
 
 //                 if (
 //                     isAssetRegistered(
-//                         getAssetId({ symbol: BTC.symbol, address: address })
+//                         getCoinId({ symbol: BTC.symbol, address: address })
 //                     )
 //                 ) {
 //                     state.view.public_input_error = 'You already have this asset'
@@ -83,7 +83,7 @@
 //         const collector = collect()
 //         const address = state.view.address
 //         const asset = createAsset(BTC.type, BTC.symbol, address)
-//         setHref(routes.asset(getAssetId(asset)))
+//         setHref(routes.asset(getCoinId(asset)))
 //         collector.emit()
 //     }
 

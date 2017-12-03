@@ -4,10 +4,10 @@ import { createObserver, collect } from 'dop'
 import { Show } from '/doprouter/react'
 
 import { generateQRCode } from '/api/qr'
-import { generateRandomWallet } from '/api/Assets/BTC'
+import { generateRandomWallet } from '/api/Coins/BTC'
 import { minpassword } from '/api/crypto'
 
-import { BTC, getAssetId } from '/api/Assets'
+import { BTC, getCoinId } from '/api/Coins'
 import routes from '/const/routes'
 import state from '/store/state'
 import styles from '/const/styles'
@@ -83,11 +83,11 @@ export default class CreateBitcoin extends Component {
             const address = state.view.address
             const asset = createAsset(BTC.type, BTC.symbol, address)
             setPrivateKey(
-                getAssetId({ symbol: BTC.symbol, address }),
+                getCoinId({ symbol: BTC.symbol, address }),
                 state.view.private_key,
                 state.view.password
             )
-            setHref(routes.asset(getAssetId(asset)))
+            setHref(routes.asset(getCoinId(asset)))
             collector.emit()
         }
     }

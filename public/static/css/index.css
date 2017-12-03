@@ -1,7 +1,9 @@
-html, body, #app {
+html,
+body,
+#app {
     height: 100%;
     font-family: 'Roboto', sans-serif;
-        /* font-family: 'Source Sans Pro', sans-serif;  */
+    /* font-family: 'Source Sans Pro', sans-serif;  */
     margin: 0;
     padding: 0;
     cursor: default;
@@ -20,14 +22,21 @@ html, body, #app {
 a {
     color: inherit;
 }
-strong,b {
+strong,
+b {
     font-weight: bold;
 }
 
-strong,b,span,p,h1,h2,h3{
-    user-select: auto;
-    -webkit-user-select: auto;
-    -khtml-user-select: auto;
-    -moz-user-select: auto;
-    -ms-user-select: auto;
+strong,
+b,
+span,
+p,
+h1,
+h2,
+h3 {
+    user-select: text;
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
 }

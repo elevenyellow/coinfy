@@ -8,9 +8,13 @@ import { decryptAES128CTR } from '/api/crypto'
 import { setPrivateKey, setHref, createAsset } from '/store/actions'
 import state from '/store/state'
 
-import { isAddress, addHexPrefix, getAddressFromPrivateKey } from '/api/Assets/ETH'
+import {
+    isAddress,
+    addHexPrefix,
+    getAddressFromPrivateKey
+} from '/api/Coins/ETH'
 import { isAssetRegistered } from '/store/getters'
-import { ETH, getAssetId } from '/api/Assets'
+import { ETH, getCoinId } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -25,9 +29,9 @@ import {
     FormFieldRight,
     FormFieldButtons
 } from '/components/styled/Form'
-import { log } from 'util';
+import { log } from 'util'
 
-export default class ImportAddress extends Component {
+export default class ImportKeystore extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
@@ -63,20 +67,30 @@ export default class ImportAddress extends Component {
                     if (
                         keystore.version === 3 &&
                         isAddress(address) &&
-                        typeof keystore.Crypto == 'object'
+                        (typeof keystore.Crypto == 'object' ||
+                            typeof keystore.crypto == 'object')
                     ) {
-                        if (isAssetRegistered(getAssetId({symbol:ETH.symbol, address:address}))) {
-                            state.view.keystore_invalid_error = 'You already have this asset'
+                        if (
+                            isAssetRegistered(
+                                getCoinId({
+                                    symbol: ETH.symbol,
+                                    address: address
+                                })
+                            )
+                        ) {
+                            state.view.keystore_invalid_error =
+                                'You already have this asset'
                         } else {
-                            this.state.keystore = keystore
+                            this.keystore = keystore
                             state.view.address = address
                             state.view.keystore_invalid_error = ''
                         }
                     } else {
-                        state.view.keystore_invalid_error = 'Invalid Keystore file'
+                        state.view.keystore_invalid_error =
+                            'Invalid Keystore file'
                     }
                 } catch (e) {
-                    console.log( e )
+                    console.error(e)
                     state.view.keystore_invalid_error = 'Invalid Keystore file'
                 }
                 collector.emit()
@@ -91,40 +105,47 @@ export default class ImportAddress extends Component {
 
     onSubmit(e) {
         e.preventDefault()
-        // console.log( this.state.keystore );
-        if (this.state.keystore) {
+        // console.log( this.keystore );
+        if (this.keystore) {
             const collector = collect()
             const address = state.view.address
             const password = state.view.keystore_password
-            const private_key = ETH.decrypt(address, this.state.keystore.Crypto, password)
+            const crypto = this.keystore.Crypto || this.keystore.crypto
 
-            if (private_key) {
-                const asset = createAsset(ETH.type, ETH.symbol, address)
-                setPrivateKey(
-                    getAssetId({ symbol: ETH.symbol, address }),
-                    private_key,
-                    password
-                )
-                setHref(routes.asset(getAssetId(asset)))
+            try {
+                const private_key = ETH.decrypt(address, crypto, password)
+                if (private_key) {
+                    const asset = createAsset(ETH.type, ETH.symbol, address)
+                    setPrivateKey(
+                        getCoinId({ symbol: ETH.symbol, address }),
+                        private_key,
+                        password
+                    )
+                    setHref(routes.asset(getCoinId(asset)))
+                } else {
+                    state.view.keystore_password_error = 'Invalid password'
+                }
+                collector.emit()
+            } catch (e) {
+                state.view.keystore_invalid_error = 'Invalid Keystore file'
+                collector.emit()
+                console.error(e)
+                return false
             }
-            else {
-                state.view.keystore_password_error = 'Invalid password'
-            }
-            collector.emit()
         }
     }
 
     get isValidForm() {
         return (
-            state.view.keystore_invalid_error==='' &&
-            state.view.keystore_password_error==='' &&
+            state.view.keystore_invalid_error === '' &&
+            state.view.keystore_password_error === '' &&
             state.view.keystore_selected &&
             state.view.keystore_password.length > 0
         )
     }
 
     render() {
-        return React.createElement(ImportAddressTemplate, {
+        return React.createElement(ImportKeystoreTemplate, {
             keystore_invalid_error: state.view.keystore_invalid_error,
             keystore_password: state.view.keystore_password,
             keystore_password_error: state.view.keystore_password_error,
@@ -136,7 +157,7 @@ export default class ImportAddress extends Component {
     }
 }
 
-function ImportAddressTemplate({
+function ImportKeystoreTemplate({
     keystore_invalid_error,
     keystore_password,
     keystore_password_error,

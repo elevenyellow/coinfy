@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { setHref } from '/store/actions'
 import styles from '/const/styles'
 
-import { BTC } from '/api/Assets'
+import { BTC } from '/api/Coins'
 import routes from '/const/routes'
 import state from '/store/state'
 import { isAssetWithPrivateKey } from '/store/getters'
@@ -29,6 +29,7 @@ import {
 
 import HeaderAsset from '/components/partials/HeaderAsset'
 import Summary from '/components/views/BTC/Summary'
+import Send from '/components/views/BTC/Send'
 import ChangePassword from '/components/views/BTC/ChangePassword'
 import ExportBTC from '/components/views/BTC/Export'
 import Delete from '/components/views/BTC/Delete'
@@ -102,8 +103,9 @@ function ViewBTCTemplate({
                         <MenuContentItem
                             disabled={!hasPrivateKey}
                             selected={
-                                location.pathname === routes_sendAsset ||
-                                location.path.length === 2
+                                new RegExp(routes_sendAsset).test(
+                                    location.pathname
+                                ) || location.path.length === 2
                             }
                             onClick={e => {
                                 if (hasPrivateKey) onClick(routes_sendAsset)
@@ -155,18 +157,23 @@ function ViewBTCTemplate({
                         <Summary />
                     </Route>
 
-                    <Route pathname={routes_changePasswordAsset}>
+                    <Route pathname={new RegExp(routes_sendAsset)}>
+                        <Send />
+                    </Route>
+
+                    <Route
+                        if={hasPrivateKey}
+                        pathname={routes_changePasswordAsset}
+                    >
                         <ChangePassword />
                     </Route>
 
-                    <Route pathname={routes_printAsset}>
+                    <Route if={hasPrivateKey} pathname={routes_printAsset}>
                         <ExportBTC />
                     </Route>
 
                     <Route pathname={routes_deleteAsset}>
-                        <RightContainerMiddle2>
-                            <Delete />
-                        </RightContainerMiddle2>
+                        <Delete />
                     </Route>
 
                     <Route>
@@ -181,7 +188,7 @@ function ViewBTCTemplate({
 }
 
 const HideMobile = styled.span`
-${styles.media.second} {
-    display: none;
-}
+    ${styles.media.second} {
+        display: none;
+    }
 `

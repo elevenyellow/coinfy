@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { setHref } from '/store/actions'
 import styles from '/const/styles'
 
-import { ETH } from '/api/Assets'
+import { ETH } from '/api/Coins'
 import routes from '/const/routes'
 import state from '/store/state'
 import { isAssetWithPrivateKey } from '/store/getters'
@@ -155,19 +155,17 @@ function ViewETHTemplate({
                         <Summary />
                     </Route>
 
-                    <Route pathname={routes_printAsset}>
+                    <Route if={hasPrivateKey} pathname={routes_printAsset}>
                         <ExportETH />
                     </Route>
 
-                    <Route pathname={routes_changePasswordAsset}>
+                    <Route if={hasPrivateKey} pathname={routes_changePasswordAsset}>
                         <ChangePassword />
                     </Route>
 
 
                     <Route pathname={routes_deleteAsset}>
-                        <RightContainerMiddle2>
-                            <Delete />
-                        </RightContainerMiddle2>
+                        <Delete />
                     </Route>
 
                     <Route>

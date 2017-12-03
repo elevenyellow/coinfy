@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import styles from '/const/styles';
+import React from 'react'
+import styled from 'styled-components'
+import styles from '/const/styles'
 
 export default function(props) {
     let width = props.width || 200
@@ -19,13 +19,16 @@ export default function(props) {
         top = '16px'
     }
     return (
-        <Help width={width + 'px'} left={left} top={top} position={props.position}>
+        <Help
+            width={width + 'px'}
+            left={left}
+            top={top}
+            position={props.position}
+        >
             <span>?</span>
-            <div>
-                {props.children}
-            </div>
+            <div>{props.children}</div>
         </Help>
-    );
+    )
 }
 
 const Help = styled.div`
@@ -35,7 +38,7 @@ const Help = styled.div`
     height: 16px;
     font-size: 11px;
     cursor: help;
-    margin-left: 5px;
+    top: -2px;
 
     & span {
         display: inline-block;
@@ -67,7 +70,8 @@ const Help = styled.div`
         color: white;
         position: absolute;
         border-radius: 3px;
-        text-align: ${props=>props.position=='center'?'center':'left'};
+        text-align: ${props =>
+            props.position == 'center' ? 'center' : 'left'};
         padding: 5px 10px;
         font-weight: normal;
         letter-spacing: 0.3px;
@@ -76,7 +80,7 @@ const Help = styled.div`
     &:hover div {
         display: block;
     }
-`;
+`
 
 // & div:before {
 //     content: '?';

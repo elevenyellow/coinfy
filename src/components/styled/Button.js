@@ -1,25 +1,40 @@
 import styled from 'styled-components'
 import styles from '/const/styles'
 
+
+// color: #fff;
+// background-image: linear-gradient(#e84848,#c83838);
+// border: 1px solid #bc1212;
+
+
+
 export default styled.button`
-color: ${props=>props.red ? styles.color.red2 : styles.color.front5};
-background-image: linear-gradient(#fff,${styles.color.background1});
-border: 1px solid ${props=>props.red ? styles.color.red : styles.color.background5};
+color: ${props=>props.red ? '#fff' : styles.color.front5};
+background-image: ${props=>props.red ? `linear-gradient(${styles.color.red3},${styles.color.red4})` : `linear-gradient(#fff,${styles.color.background1})` };
+border: 1px solid ${props=>props.red ? styles.color.red4 : styles.color.background5};
 padding: 8px 20px 8px;
 font-weight: bold;
-font-size: 12px;
+font-size: ${props=>props['font-size'] ? props['font-size'] : '12px'};
 display: inline-block;
-line-height: 20px;
+line-height: ${props=>props['line-height'] ? props['line-height'] : '20px'};
 cursor: pointer;
-border-radius: 4px;
+border-radius: ${props=>props['border-radius'] ? props['border-radius'] : '4px'};
+border-right: ${props=>props['border-right'] ? props['border-right'] : 'auto'};
 width: ${props=>props.width};
+margin: ${props=>props.margin};
+display: block;
 outline: none;
 &:hover {
-    color: ${styles.color.background3};
-    border-color: ${styles.color.background3};
+    ${props=>!props.red ? `
+        color: ${styles.color.background3};
+        border-color: ${styles.color.background3};
+    ` : `
+        background: ${styles.color.red3};
+    `}
+
 }
 &:active {
-    background-image: linear-gradient(${styles.color.background1},${styles.color.background1});
+    background: ${props=>props.red?styles.color.red4:styles.color.background1}
 }
 ${props=>{
     let css = ''

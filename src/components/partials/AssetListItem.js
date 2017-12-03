@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
-import { Assets, getAssetId } from '/api/Assets'
+import { Coins, getCoinId } from '/api/Coins'
 import { round } from '/api/numbers'
 import styles from '/const/styles'
 import routes from '/const/routes'
-import { currencies } from '/const/currencies'
+import { Fiats } from '/api/Fiats'
 import state from '/store/state'
 import { setHref } from '/store/actions'
-import { convertBalance } from '/store/getters'
+import { convertBalance, formatCurrency } from '/store/getters'
 
 export default class Asset extends Component {
     componentWillMount() {
@@ -31,7 +31,7 @@ export default class Asset extends Component {
     }
 
     onClick() {
-        setHref(routes.asset(getAssetId(this.props.asset)))
+        setHref(routes.asset(getCoinId(this.props.asset)))
     }
 
     render() {
@@ -40,11 +40,10 @@ export default class Asset extends Component {
         return React.createElement(AssetTemplate, {
             asset: this.props.asset,
             location: state.location,
-            balance_currency: currencies[state.currency].format(
-                convertBalance(asset.symbol, asset.balance),
-                0
+            balance_currency: formatCurrency(
+                convertBalance(asset.symbol, asset.balance)
             ),
-            balance_asset: Assets[asset.symbol].format(asset.balance, 5),
+            balance_asset: Coins[asset.symbol].format(asset.balance, 5),
             onClick: this.onClick
         })
     }
@@ -62,12 +61,16 @@ function AssetTemplate({
             onClick={onClick}
             selected={
                 state.location.path[1] ===
-                getAssetId({ symbol: asset.symbol, address: asset.address })
+                getCoinId({ symbol: asset.symbol, address: asset.address })
             }
         >
             <div>
                 <AssetIcon>
-                    <img src={`/static/image/${asset.symbol}.svg`} width="22" height="22" />
+                    <img
+                        src={`/static/image/${asset.symbol}.svg`}
+                        width="22"
+                        height="22"
+                    />
                 </AssetIcon>
                 <AssetInfo>
                     <AssetLabel>
@@ -110,7 +113,9 @@ const AssetIcon = styled.div`
     float: left;
     padding-top: 3px;
 `
-const AssetInfo = styled.div`margin-left: 33px;`
+const AssetInfo = styled.div`
+    margin-left: 33px;
+`
 const AssetLabel = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;

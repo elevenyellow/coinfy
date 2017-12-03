@@ -4,10 +4,10 @@ import { createObserver } from 'dop'
 import { Show } from '/doprouter/react'
 
 import styles from '/const/styles'
-import { currencies } from '/const/currencies'
+import { Fiats } from '/api/Fiats'
 import { PrivateKey as template } from '/const/paperwallets'
 
-import { Assets } from '/api/Assets'
+import { Coins } from '/api/Coins'
 import { round } from '/api/numbers'
 import { getDay, getMonthTextShort } from '/api/time'
 import { openUrl } from '/api/browser'
@@ -17,7 +17,7 @@ import { selectContentElement, copyContentSelected } from '/api/browser'
 
 import state from '/store/state'
 import { fetchSummaryAsset, fetchSummaryAssetIfReady } from '/store/actions'
-import { convertBalance, getAsset } from '/store/getters'
+import { convertBalance, getAsset, formatCurrency } from '/store/getters'
 
 import IconCopy from 'react-icons/lib/md/content-copy'
 import IconPrint from 'react-icons/lib/fa/print'
@@ -44,9 +44,6 @@ import {
     TransactionLabel
 } from '/components/styled/Transactions'
 
-
-
-
 export default class Summary extends Component {
     componentWillMount() {
         this.observerPath = createObserver(mutations => {
@@ -55,10 +52,11 @@ export default class Summary extends Component {
             this.forceUpdate()
         })
         this.observerPath.observe(state.location, 'pathname')
-        this.refaddress = this.refaddress.bind(this)
+
+        this.refAddress = this.refAddress.bind(this)
+        this.rescanOrLoad = this.rescanOrLoad.bind(this)
         this.onCopy = this.onCopy.bind(this)
         this.onPrint = this.onPrint.bind(this)
-        this.rescanOrLoad = this.rescanOrLoad.bind(this)
 
         this.observeAll()
         this.fetchData()
@@ -76,7 +74,7 @@ export default class Summary extends Component {
         state.view = { fetchingTxs: false }
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
-        this.Asset = Assets[asset.symbol] // Storing Asset api (Asset.BTC, Asset.ETH, ...)        
+        this.Coin = Coins[asset.symbol] // Storing Coin api (Coin.BTC, Coin.ETH, ...)
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(asset, 'summary')
         this.observer.observe(asset.state, 'fetching_summary')
@@ -85,8 +83,7 @@ export default class Summary extends Component {
         this.observer.observe(state.view, 'fetchingTxs')
     }
 
-
-    refaddress(e) {
+    refAddress(e) {
         if (e) this.addressElement = e.base
     }
 
@@ -99,12 +96,16 @@ export default class Summary extends Component {
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
         const address = asset.address
-        printTemplate(template([{
-            title: 'Address',
-            img: generateQRCode(address),
-            hash: address,
-            description: 'Share this address to receive funds.'
-        }]))
+        printTemplate(
+            template([
+                {
+                    title: 'Address',
+                    img: generateQRCode(address),
+                    hash: address,
+                    description: 'Share this address to receive funds.'
+                }
+            ])
+        )
     }
 
     fetchData() {
@@ -126,14 +127,15 @@ export default class Summary extends Component {
 
         if (totalTransactions === txs.length) {
             this.forceFetch()
-        }
-        else {
+        } else {
             state.view.fetchingTxs = true
-            this.Asset.fetchTxs(asset.address, asset.summary.txs.length).then(txs => {
-                asset.summary.totalTransactions = txs.totalTxs
-                asset.summary.txs = asset.summary.txs.concat(txs.txs)
-                state.view.fetchingTxs = false
-            })
+            this.Coin.fetchTxs(asset.address, asset.summary.txs.length).then(
+                txs => {
+                    asset.summary.totalTransactions = txs.totalTxs
+                    asset.summary.txs = asset.summary.txs.concat(txs.txs)
+                    state.view.fetchingTxs = false
+                }
+            )
         }
     }
 
@@ -143,11 +145,10 @@ export default class Summary extends Component {
         const address = asset.address
         return React.createElement(SummaryTemplate, {
             balance_asset: asset.balance,
-            balance_currency: currencies[state.currency].format(
-                convertBalance(asset.symbol, asset.balance),
-                0
+            balance_currency: formatCurrency(
+                convertBalance(asset.symbol, asset.balance)
             ),
-            symbol: currencies[state.currency].symbol,
+            symbol: asset.symbol,
             totalTransactions: asset.summary.totalTxs || 0,
             totalReceived: round(asset.summary.totalReceived || 0, 2),
             totalSent: round(asset.summary.totalSent || 0, 2),
@@ -157,13 +158,15 @@ export default class Summary extends Component {
             rescanOrLoad: this.rescanOrLoad,
             address: address,
             qrcodebase64: generateQRCode(address),
-            refaddress: this.refaddress,
-            colorAsset: this.Asset.color,
-            urlInfo: this.Asset.urlInfo(address),
-            urlInfoTx: this.Asset.urlInfoTx,
+            refAddress: this.refAddress,
+            colorAsset: this.Coin.color,
+            urlInfo: this.Coin.urlInfo(address),
+            urlInfoTx: this.Coin.urlInfoTx,
             onCopy: this.onCopy,
             onPrint: this.onPrint,
-            mailTo: `mailto:?subject=My ${this.Asset.name} Address&body=My ${this.Asset.name} address is: ${address}`
+            mailTo: `mailto:?subject=My ${this.Coin.name} Address&body=My ${
+                this.Coin.name
+            } address is: ${address}`
         })
     }
 }
@@ -181,7 +184,7 @@ function SummaryTemplate({
     rescanOrLoad,
     address,
     qrcodebase64,
-    refaddress,
+    refAddress,
     colorAsset,
     urlInfo,
     urlInfoTx,
@@ -198,9 +201,7 @@ function SummaryTemplate({
                     </QRCode>
                 </Div>
                 <Div padding-bottom="20px">
-                    <CenterElement>
-                        <Address ref={refaddress}>{address}</Address>
-                    </CenterElement>
+                    <Address ref={refAddress}>{address}</Address>
                 </Div>
                 <Div>
                     <CenterElement>
@@ -264,7 +265,9 @@ function SummaryTemplate({
                     </ListItem>
                 </List>
             </Header> */}
-            <Show if={totalTransactions===0 && !fetchingTxs && !fetchingSummary}>
+            <Show
+                if={totalTransactions === 0 && !fetchingTxs && !fetchingSummary}
+            >
                 <Div padding-top="50px" padding-bottom="50px">
                     <Message>No transactions found for this address</Message>
                 </Div>
@@ -291,7 +294,9 @@ function SummaryTemplate({
                                     <div>{month}</div>
                                     {day}
                                 </TransactionDate>
-                                <TransactionIco color={colorAsset}>{icon}</TransactionIco>
+                                <TransactionIco color={colorAsset}>
+                                    {icon}
+                                </TransactionIco>
                                 <TransactionData>
                                     <TransactionLabel>
                                         {received ? 'Received' : 'Sent'}
@@ -339,21 +344,22 @@ function SummaryTemplate({
                 })}
             </Transactions>
             {/* <Show if={totalTransactions === txs.length || totalTransactions > txs.length}> */}
-            <Div clear="both" text-align="center" padding-top="20px">
+            <Div clear="both" padding-top="20px">
                 <Button
                     loading={fetchingTxs || fetchingSummary}
                     onClick={rescanOrLoad}
                     loadingIco="/static/image/loading.gif"
+                    margin="0 auto"
                 >
-                    {totalTransactions === txs.length ? 'Rescan all transactions' : 'Load more'}
+                    {totalTransactions === txs.length
+                        ? 'Rescan all transactions'
+                        : 'Load more'}
                 </Button>
             </Div>
             {/* </Show> */}
         </div>
     )
 }
-
-
 
 // const Header = styled.div``
 

@@ -4,9 +4,9 @@
 
 
 // import routes from '/const/routes'
-// import { BTC } from '/api/Assets'
+// import { BTC } from '/api/Coins'
 
-// import { isPrivateKey, getAddressFromPrivateKey } from '/api/Assets/BTC'
+// import { isPrivateKey, getAddressFromPrivateKey } from '/api/Coins/BTC'
 // import { minpassword } from '/api/crypto'
 
 // import state from '/store/state'
