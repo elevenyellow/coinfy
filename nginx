@@ -1,11 +1,11 @@
 server {
-    listen 34.200.242.216:80;
+    listen 80;
     server_name coinfy.com;
     rewrite ^(.*) https://coinfy.com$1 permanent;
 }
 
 server {
-    listen 34.200.242.216:80;
+    listen 80;
     server_name www.coinfy.com;
     rewrite ^(.*) https://coinfy.com$1 permanent;
 }
