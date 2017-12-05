@@ -58,7 +58,7 @@ export default class Send extends Component {
             error_when_create: false,
             send_provider_selected: 0,
             show_tx_raw: false,
-            sending: false,
+            loading: false,
             error_when_send: '',
             is_sent: false
         }
@@ -162,6 +162,7 @@ export default class Send extends Component {
             password
         )
         const collector = collect()
+        state.view.loading = true
         state.view.error_when_create = false
         state.view.error_when_send = ''
         collector.emit()
@@ -174,14 +175,18 @@ export default class Send extends Component {
                 this.fee
             )
                 .then(tx_raw => {
-                    // console.log(tx_raw)
                     this.tx_raw = tx_raw
-                    // state.view.step = 1
+                    const collector = collect()
+                    state.view.loading = false
                     setHref(routes.sendAsset(this.asset_id) + '/1')
+                    collector.emit()
                 })
                 .catch(e => {
-                    state.view.error_when_create = true
                     console.error(e)
+                    const collector = collect()
+                    state.view.error_when_create = true
+                    state.view.loading = false
+                    collector.emit()
                 })
         } else {
             state.view.password_input_invalid = true
@@ -199,7 +204,7 @@ export default class Send extends Component {
     onSend(e) {
         const provider = this.send_providers[state.view.send_provider_selected]
         const collector = collect()
-        state.view.sending = true
+        state.view.loading = true
         state.view.error_when_send = ''
         collector.emit()
 
@@ -208,14 +213,14 @@ export default class Send extends Component {
             .then(tx_id => {
                 this.tx_id = tx_id
                 const collector = collect()
-                state.view.sending = false
+                state.view.loading = false
                 state.view.is_sent = true
                 collector.emit()
             })
             .catch(error => {
                 console.error('Error!', error)
                 const collector = collect()
-                state.view.sending = false
+                state.view.loading = false
                 state.view.error_when_send = error
                 collector.emit()
             })
@@ -301,7 +306,7 @@ export default class Send extends Component {
             send_providers: this.send_providers,
             show_tx_raw: state.view.show_tx_raw,
             tx_raw: this.tx_raw,
-            sending: state.view.sending,
+            loading: state.view.loading,
             error_when_send: state.view.error_when_send,
             tx_id: this.tx_id,
             tx_info: this.Coin.urlInfoTx(this.tx_id),
@@ -345,7 +350,7 @@ function SendTemplate({
     send_providers,
     show_tx_raw,
     tx_raw,
-    sending,
+    loading,
     error_when_send,
     tx_id,
     tx_info,
@@ -457,6 +462,8 @@ function SendTemplate({
                             disabled={!isValidForm}
                             font-size="14px"
                             width="100%"
+                            loading={loading}
+                            loadingIco="/static/image/loading.gif"
                         >
                             Next
                         </ButtonBig>
@@ -547,8 +554,8 @@ function SendTemplate({
                             onClick={onSend}
                             font-size="14px"
                             width="100%"
+                            loading={loading}
                             loadingIco="/static/image/loading.gif"
-                            loading={sending}
                         >
                             Send / Broadcast
                         </ButtonBig>

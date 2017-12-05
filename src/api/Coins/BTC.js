@@ -246,7 +246,10 @@ export function fetchSummary(address) {
     const totals = {}
     return fetchTotals(address)
         .then(data => {
-            totals.balance = data.balance
+            totals.balance =
+                data.unconfirmedBalance < 0
+                    ? data.balance + data.unconfirmedBalance
+                    : data.balance
             totals.totalReceived = data.totalReceived
             totals.totalSent = data.totalSent
             totals.unconfirmedBalance = data.unconfirmedBalance
