@@ -290,6 +290,7 @@ export function createSimpleTx(
             })
 
             // Adding outputs
+            // txb.addOutput(toAddress, 100000000)
             txb.addOutput(toAddress, Number(amount.times(satoshis)))
             const amountBack = Big(totalInput)
                 .minus(amount)
@@ -309,7 +310,28 @@ export function createSimpleTx(
         })
 }
 
-export function sendRawTx(rawTx) {
+export function getSendProviders() {
+    return sendProviders[test ? 'test' : 'main']
+}
+
+const sendProviders = {
+    main: [
+        {
+            name: 'Bitpay.com',
+            url: 'https://insight.bitpay.com/tx/send',
+            send: sendRawTxBitpay
+        }
+    ],
+    test: [
+        {
+            name: 'Bitpay.com',
+            url: 'https://test-insight.bitpay.com/tx/send',
+            send: sendRawTxBitpay
+        }
+    ]
+}
+
+function sendRawTxBitpay(rawTx) {
     const fetchOptions = {
         method: 'POST',
         headers: {
@@ -321,30 +343,15 @@ export function sendRawTx(rawTx) {
         })
     }
     return fetch(`${api_url}/tx/send`, fetchOptions)
-        .then(response => response.json())
-        .then(totals => totals)
-}
-
-export function getSendProviders() {
-    return sendProviders[test ? 'test' : 'main']
-}
-
-const sendProviders = {
-    main: {},
-    test: [
-        {
-            name: 'Bitpay.com',
-            url: 'https://test-insight.bitpay.com/tx/send',
-            request: e => {},
-            response: e => {}
-        },
-        {
-            name: 'Paco pil',
-            url: 'https://test-insight/tx/send',
-            request: e => {},
-            response: e => {}
-        }
-    ]
+        .then(response => response.text())
+        .then(response => {
+            try {
+                return JSON.parse(response)
+            } catch (e) {
+                return Promise.reject(response)
+            }
+        })
+        .then(data => data.txid)
 }
 
 /*

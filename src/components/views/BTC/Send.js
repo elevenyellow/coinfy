@@ -57,7 +57,9 @@ export default class Send extends Component {
             password_input_invalid: false,
             error_when_create: false,
             send_provider_selected: 0,
-            show_raw_tx: false,
+            show_tx_raw: false,
+            sending: false,
+            error_when_send: '',
             is_sent: false
         }
 
@@ -159,25 +161,21 @@ export default class Send extends Component {
             private_key_encrypted,
             password
         )
+        const collector = collect()
         state.view.error_when_create = false
+        state.view.error_when_send = ''
+        collector.emit()
 
         if (private_key) {
-            // const outputs = this.Coin.createSimpleTxOutputs(
-            //     address,
-            //     state.view.address_input,
-            //     asset.balance,
-            //     this.amount,
-            //     this.fee
-            // )
             this.Coin.createSimpleTx(
                 private_key,
                 state.view.address_input, // to/destiny
                 this.amount, // amount to send
                 this.fee
             )
-                .then(raw_tx => {
-                    // console.log(raw_tx)
-                    this.raw_tx = raw_tx
+                .then(tx_raw => {
+                    // console.log(tx_raw)
+                    this.tx_raw = tx_raw
                     // state.view.step = 1
                     setHref(routes.sendAsset(this.asset_id) + '/1')
                 })
@@ -195,11 +193,32 @@ export default class Send extends Component {
     }
 
     onShowRawTx(index) {
-        state.view.show_raw_tx = true
+        state.view.show_tx_raw = true
     }
 
     onSend(e) {
-        state.view.is_sent = true
+        const provider = this.send_providers[state.view.send_provider_selected]
+        const collector = collect()
+        state.view.sending = true
+        state.view.error_when_send = ''
+        collector.emit()
+
+        provider
+            .send(this.tx_raw)
+            .then(tx_id => {
+                this.tx_id = tx_id
+                const collector = collect()
+                state.view.sending = false
+                state.view.is_sent = true
+                collector.emit()
+            })
+            .catch(error => {
+                console.error('Error!', error)
+                const collector = collect()
+                state.view.sending = false
+                state.view.error_when_send = error
+                collector.emit()
+            })
     }
 
     getMax() {
@@ -229,7 +248,7 @@ export default class Send extends Component {
         const step_path = state.location.path[3]
         let step = state.view.is_sent
             ? 2
-            : step_path !== undefined && this.raw_tx !== undefined
+            : step_path !== undefined && this.tx_raw !== undefined
               ? Number(step_path)
               : 0
 
@@ -280,8 +299,12 @@ export default class Send extends Component {
             error_when_create: state.view.error_when_create,
             send_provider_selected: state.view.send_provider_selected,
             send_providers: this.send_providers,
-            show_raw_tx: state.view.show_raw_tx,
-            raw_tx: this.raw_tx,
+            show_tx_raw: state.view.show_tx_raw,
+            tx_raw: this.tx_raw,
+            sending: state.view.sending,
+            error_when_send: state.view.error_when_send,
+            tx_id: this.tx_id,
+            tx_info: this.Coin.urlInfoTx(this.tx_id),
             onChangeAddress: this.onChangeAddress,
             onChangeAmount1: this.onChangeAmount1,
             onChangeAmount2: this.onChangeAmount2,
@@ -320,8 +343,12 @@ function SendTemplate({
     error_when_create,
     send_provider_selected,
     send_providers,
-    show_raw_tx,
-    raw_tx,
+    show_tx_raw,
+    tx_raw,
+    sending,
+    error_when_send,
+    tx_id,
+    tx_info,
     onChangeAddress,
     onChangeAmount1,
     onChangeAmount2,
@@ -518,23 +545,29 @@ function SendTemplate({
                     <Div padding-top="10px">
                         <ButtonBig
                             onClick={onSend}
-                            disabled={false}
                             font-size="14px"
                             width="100%"
+                            loadingIco="/static/image/loading.gif"
+                            loading={sending}
                         >
                             Send / Broadcast
                         </ButtonBig>
                     </Div>
+                    <Show if={error_when_send !== ''}>
+                        <Div padding-top="10px">
+                            <Alert color={ERROR}>{error_when_send}</Alert>
+                        </Div>
+                    </Show>
                     <Div padding-top="20px" text-align="center">
                         <TransparentInfo
-                            show={show_raw_tx}
+                            show={show_tx_raw}
                             text={
                                 <LinkOpenHex onClick={onShowRawTx}>
                                     Show raw transaction
                                 </LinkOpenHex>
                             }
                         >
-                            <CodeBox>{raw_tx}</CodeBox>
+                            <CodeBox>{tx_raw}</CodeBox>
                             <Label size="11px">
                                 <a
                                     href="https://live.blockcypher.com/btc/decodetx/"
@@ -559,8 +592,8 @@ function SendTemplate({
                         Transaction Sent!
                     </Div>
                     <Div padding-top="10px">
-                        <ConfirmationLink href="#">
-                            0aaff29c470653a6e69eb296f881a36fdd0e0af69c778650a4246e2102379356
+                        <ConfirmationLink href={tx_info} target="_blank">
+                            {tx_id}
                         </ConfirmationLink>
                     </Div>
                 </Div>

@@ -7,7 +7,7 @@ background-color: ${styles.color.background2};
 color: white;
 font-weight: bold;
 height: 40px;
-width: ${props=>props.width||'100%'};
+width: ${props => props.width || '100%'};
 border-radius: 4px;
 font-size: 15px;
 letter-spacing: -0.2px;
@@ -16,11 +16,24 @@ outline: none;
 &:hover {
     background-color: ${styles.color.background3};
 }
-${props=>{
-    if (props.disabled) return `
-    cursor:default;
-    background-color: ${styles.color.disabled} !important
-    `;
+${props => {
+    let css
+
+    if (props.disabled || props.loading) {
+        css = `
+        pointer-events: none;
+        cursor:default;
+        background-color: ${styles.color.disabled} !important;
+    `
+    }
+    if (props.loading) {
+        css += `
+        background: url('${props.loadingIco}') no-repeat center center / 18px;
+        color: transparent !important;
+        `
+    }
+
+    return css
 }}
 /*color: ${styles.color.front3};
 background-image: linear-gradient(#fff,#f7f9fb);
