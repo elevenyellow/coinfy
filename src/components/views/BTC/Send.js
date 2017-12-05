@@ -215,10 +215,15 @@ export default class Send extends Component {
                 const collector = collect()
                 state.view.loading = false
                 state.view.is_sent = true
+                this.asset.balance = Number(
+                    Big(this.asset.balance)
+                        .minus(this.amount)
+                        .minus(this.fee)
+                )
                 collector.emit()
             })
             .catch(error => {
-                console.error('Error!', error)
+                console.error(error)
                 const collector = collect()
                 state.view.loading = false
                 state.view.error_when_send = error
@@ -753,6 +758,7 @@ const ResumeLabel = styled.div`
     width: 90px;
     font-size: 13px;
     color: ${props => props.color || styles.color.grey1};
+    user-select: auto;
 `
 const ResumeValue = styled.div`
     float: ${props => (props.left ? 'none' : 'right')};
@@ -763,6 +769,7 @@ const ResumeValue = styled.div`
     font-size: 13px;
     font-weight: bold;
     text-align: right;
+    user-select: auto;
 `
 
 const ConfirmationCircle = styled.div`

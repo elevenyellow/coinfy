@@ -285,7 +285,8 @@ export function createSimpleTx(
             )
 
             // Adding inputs
-            sortBy(txs, '-amount').forEach(tx => {
+            // console.log(txs)
+            sortBy(txs || [], '-amount').forEach(tx => {
                 if (totalInput.lt(totalOutput)) {
                     txb.addInput(tx.txid, tx.vout)
                     totalInput = totalInput.plus(tx.amount)
