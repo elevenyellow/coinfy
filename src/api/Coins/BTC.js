@@ -6,6 +6,7 @@ import {
     decryptBIP38 as _decryptBIP38,
     encryptBIP38 as _encryptBIP38
 } from '/api/crypto'
+import sortBy from '/api/sortBy'
 
 // private
 const test = true
@@ -260,53 +261,51 @@ export function fetchTotals(address) {
         .then(totals => totals)
 }
 
-export function createSimpleTxOutputs(from, to, balance, amount, fee) {
-    const outputs = []
-    amount = Big(amount)
-    const moneyBack = Big(balance)
-        .minus(amount)
-        .minus(Big(fee))
-
-    outputs.push({ address: to, amount: Number(amount.times(satoshis)) })
-    if (moneyBack.gt(0))
-        outputs.push({
-            address: from,
-            amount: Number(moneyBack.times(satoshis))
-        })
-
-    return outputs
-}
-
-export function createSimpleTx(private_key, to, amount, fee) {
-    const address = getAddressFromPrivateKey(private_key)
-    const totalOutput = Big(amount).plus(fee)
-    let totalInput = Big(0)
-    return fetch(`${api_url}/addr/${address}/utxo?noCache=1`)
+export function createSimpleTx(
+    private_key,
+    toAddress,
+    amount,
+    fee,
+    backAddress
+) {
+    const fromAddress = getAddressFromPrivateKey(private_key)
+    backAddress = isAddressCheck(backAddress) ? backAddress : fromAddress
+    return fetch(`${api_url}/addr/${fromAddress}/utxo?noCache=1`)
         .then(response => response.json())
         .then(txs => {
+            let totalInput = Big(0)
+            const totalOutput = Big(amount).plus(fee)
             const txb = new Bitcoin.TransactionBuilder(network)
-            txs.forEach(tx => {
+            const private_key_ecpar = Bitcoin.ECPair.fromWIF(
+                private_key,
+                network
+            )
+
+            // Adding inputs
+            sortBy(txs, '-amount').forEach(tx => {
                 if (totalInput.lt(totalOutput)) {
                     txb.addInput(tx.txid, tx.vout)
                     totalInput = totalInput.plus(tx.amount)
                 }
             })
-            const outputs = createSimpleTxOutputs(
-                address,
-                to,
-                totalInput,
-                amount,
-                fee
+
+            // Adding outputs
+            txb.addOutput(toAddress, Number(amount.times(satoshis)))
+            const amountBack = Big(totalInput)
+                .minus(amount)
+                .minus(Big(fee))
+            if (amountBack.gt(0))
+                txb.addOutput(backAddress, Number(amountBack.times(satoshis)))
+
+            // signing inputs
+            txb.inputs.forEach((input, index) =>
+                txb.sign(index, private_key_ecpar)
             )
-            outputs.forEach(output => {
-                txb.addOutput(output.address, output.amount)
-            })
-            console.log(txb)
-            txb.sign(0, Bitcoin.ECPair.fromWIF(private_key, network))
+
             const txHex = txb.build().toHex()
+            return txHex
             // let a = new TxDecoder(txHex, network) // https://github.com/you21979/node-multisig-wallet/blob/master/lib/txdecoder.js
             // console.log(a.decode())
-            return txHex
         })
 }
 
