@@ -277,19 +277,31 @@ export function createSimpleTxOutputs(from, to, balance, amount, fee) {
     return outputs
 }
 
-export function createTx(private_key, outputs) {
+export function createSimpleTx(private_key, to, amount, fee) {
     const address = getAddressFromPrivateKey(private_key)
+    const totalOutput = Big(amount).plus(fee)
+    let totalInput = Big(0)
     return fetch(`${api_url}/addr/${address}/utxo?noCache=1`)
         .then(response => response.json())
         .then(txs => {
-            const lastTx = txs[0]
-            const txid = lastTx.txid
-            const vout = lastTx.vout
             const txb = new Bitcoin.TransactionBuilder(network)
-            txb.addInput(txid, vout)
+            txs.forEach(tx => {
+                if (totalInput.lt(totalOutput)) {
+                    txb.addInput(tx.txid, tx.vout)
+                    totalInput = totalInput.plus(tx.amount)
+                }
+            })
+            const outputs = createSimpleTxOutputs(
+                address,
+                to,
+                totalInput,
+                amount,
+                fee
+            )
             outputs.forEach(output => {
                 txb.addOutput(output.address, output.amount)
             })
+            console.log(txb)
             txb.sign(0, Bitcoin.ECPair.fromWIF(private_key, network))
             const txHex = txb.build().toHex()
             // let a = new TxDecoder(txHex, network) // https://github.com/you21979/node-multisig-wallet/blob/master/lib/txdecoder.js

@@ -162,17 +162,22 @@ export default class Send extends Component {
         state.view.error_when_create = false
 
         if (private_key) {
-            const outputs = this.Coin.createSimpleTxOutputs(
-                address,
-                state.view.address_input,
-                asset.balance,
-                this.amount,
+            // const outputs = this.Coin.createSimpleTxOutputs(
+            //     address,
+            //     state.view.address_input,
+            //     asset.balance,
+            //     this.amount,
+            //     this.fee
+            // )
+            this.Coin.createSimpleTx(
+                private_key,
+                state.view.address_input, // to/destiny
+                this.amount, // amount to send
                 this.fee
             )
-            this.Coin.createTx(private_key, outputs)
-                .then(tx_hex => {
-                    // console.log(tx_hex)
-                    this.tx_hex = tx_hex
+                .then(raw_tx => {
+                    // console.log(raw_tx)
+                    this.raw_tx = raw_tx
                     // state.view.step = 1
                     setHref(routes.sendAsset(this.asset_id) + '/1')
                 })
@@ -224,7 +229,7 @@ export default class Send extends Component {
         const step_path = state.location.path[3]
         let step = state.view.is_sent
             ? 2
-            : step_path !== undefined && this.tx_hex !== undefined
+            : step_path !== undefined && this.raw_tx !== undefined
               ? Number(step_path)
               : 0
 
@@ -276,6 +281,7 @@ export default class Send extends Component {
             send_provider_selected: state.view.send_provider_selected,
             send_providers: this.send_providers,
             show_raw_tx: state.view.show_raw_tx,
+            raw_tx: this.raw_tx,
             onChangeAddress: this.onChangeAddress,
             onChangeAmount1: this.onChangeAmount1,
             onChangeAmount2: this.onChangeAmount2,
@@ -315,6 +321,7 @@ function SendTemplate({
     send_provider_selected,
     send_providers,
     show_raw_tx,
+    raw_tx,
     onChangeAddress,
     onChangeAmount1,
     onChangeAmount2,
@@ -527,9 +534,7 @@ function SendTemplate({
                                 </LinkOpenHex>
                             }
                         >
-                            <CodeBox>
-                                01000000011ad66bf98004ff7d035392d252c3e8a8ce29b57ba02ad2ee9c32990569416195000000006b483045022100a9401f8a0af19bb486ccefa469d29e631a37d0865394f50a2d6a3df5efb3d8590220564a641fcffdadfa233f81fe78498cad6ecd2da3d480536de2e1578aa4d014a5012102126d794993f4fdc1dd6df8ddb464a569968a390bc60f2bfc0e46116d1cfc17c7ffffffff0252f2b90a000000001976a9143cb949bcba5f0dcedcdc6fde82b359cb996ad34488ac52f2b90a000000001976a914811c61ef908959f6975b6e1199c1b5c921a7efde88ac00000000
-                            </CodeBox>
+                            <CodeBox>{raw_tx}</CodeBox>
                             <Label size="11px">
                                 <a
                                     href="https://live.blockcypher.com/btc/decodetx/"
@@ -731,7 +736,7 @@ const ConfirmationCircle = styled.div`
     line-height: 205px;
     box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.2);
     transform: scale(${props => (props.sent ? 1 : 0.5)});
-    transition: 3s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
+    transition: 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
     transition-delay: 0.5s;
 `
 
