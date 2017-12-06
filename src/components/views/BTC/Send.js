@@ -162,12 +162,11 @@ export default class Send extends Component {
             password
         )
         const collector = collect()
-        state.view.loading = true
         state.view.error_when_create = false
         state.view.error_when_send = ''
-        collector.emit()
 
         if (private_key) {
+            state.view.loading = true
             this.Coin.createSimpleTx(
                 private_key,
                 state.view.address_input, // to/destiny
@@ -191,6 +190,7 @@ export default class Send extends Component {
         } else {
             state.view.password_input_invalid = true
         }
+        collector.emit()
     }
 
     onChangeProvider(index) {

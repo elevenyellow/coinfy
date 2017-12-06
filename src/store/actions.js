@@ -155,6 +155,11 @@ export function closeSession() {
     }
 }
 
+export function changeNetwork(network) {
+    localStorageSet('network', network)
+    location.href = '/'
+}
+
 export function forceloseSession() {
     setAssetsExported(true)
     localStorageRemove('assets', state.network)

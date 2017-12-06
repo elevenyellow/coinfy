@@ -3,8 +3,10 @@ import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 import styles from '/const/styles'
+import { MAINNET, TESTNET } from '/const/networks'
 
 import state from '/store/state'
+import { changeNetwork } from '/store/actions'
 
 import Div from '/components/styled/Div'
 import H1 from '/components/styled/H1'
@@ -40,12 +42,19 @@ export default class Settings extends Component {
         return false
     }
 
+    onChangeNetwork(e) {
+        changeNetwork(e.target.value)
+    }
+
     render() {
-        return React.createElement(SettingsTemplate, {})
+        return React.createElement(SettingsTemplate, {
+            network: state.network,
+            onChangeNetwork: this.onChangeNetwork
+        })
     }
 }
 
-function SettingsTemplate({}) {
+function SettingsTemplate({ network, onChangeNetwork }) {
     return (
         <RightContainerPadding>
             <RightHeader>
@@ -73,11 +82,17 @@ function SettingsTemplate({}) {
                             </SubLabel>
                         </FormFieldLeft>
                         <FormFieldRight>
-                            <Select width="100%">
-                                <option value={1} selected={true}>
+                            <Select width="100%" onChange={onChangeNetwork}>
+                                <option
+                                    value={MAINNET}
+                                    selected={network === MAINNET}
+                                >
                                     Mainnet
                                 </option>
-                                <option value={2} selected={false}>
+                                <option
+                                    value={TESTNET}
+                                    selected={network === TESTNET}
+                                >
                                     Testnet
                                 </option>
                             </Select>

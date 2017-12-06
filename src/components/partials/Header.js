@@ -103,6 +103,10 @@ export default class Header extends Component {
         setHref(routes.home())
     }
 
+    onSettings() {
+        setHref(routes.settings())
+    }
+
     // onAddAsset() {
     //     setHref(routes.add())
     // }
@@ -134,6 +138,7 @@ export default class Header extends Component {
             onImport: this.onImport,
             onClose: this.onClose,
             onHome: this.onHome,
+            onSettings: this.onSettings,
             totalAssets: state.totalAssets
         })
     }
@@ -150,6 +155,7 @@ function HeaderTemplate({
     onImport,
     onClose,
     onHome,
+    onSettings,
     totalAssets
 }) {
     return (
@@ -194,6 +200,9 @@ function HeaderTemplate({
                                 disabled={totalAssets === 0}
                             >
                                 Export backup
+                            </DropDownItem>
+                            <DropDownItem onClick={onSettings}>
+                                Settings
                             </DropDownItem>
                             <DropDownItem
                                 onClick={onClose}

@@ -7,15 +7,18 @@ import {
     encryptBIP38 as _encryptBIP38
 } from '/api/crypto'
 import sortBy from '/api/sortBy'
+import { localStorageGet } from '/api/browser'
+import { MAINNET, TESTNET } from '/const/networks'
 
 // private
-const test = true
+const network_int = Number(localStorageGet('network')) || MAINNET
 const mainnet = Bitcoin.networks.bitcoin // 0x80
 const testnet = Bitcoin.networks.testnet // 0xef
-const network = test ? testnet : mainnet
-const url = test
-    ? 'https://test-insight.bitpay.com'
-    : 'https://insight.bitpay.com'
+const network = network_int === MAINNET ? mainnet : testnet
+const url =
+    network === mainnet
+        ? 'https://insight.bitpay.com'
+        : 'https://test-insight.bitpay.com'
 const api_url = `${url}/api` // https://github.com/bitpay/insight-api
 
 // exports
@@ -315,18 +318,18 @@ export function createSimpleTx(
 }
 
 export function getSendProviders() {
-    return sendProviders[test ? 'test' : 'main']
+    return sendProviders[network === mainnet ? 'mainnet' : 'testnet']
 }
 
 const sendProviders = {
-    main: [
+    mainnet: [
         {
             name: 'Bitpay.com',
             url: 'https://insight.bitpay.com/tx/send',
             send: sendRawTxBitpay
         }
     ],
-    test: [
+    testnet: [
         {
             name: 'Bitpay.com',
             url: 'https://test-insight.bitpay.com/tx/send',
