@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { createObserver } from 'dop'
 import styles from '/const/styles'
 import routes from '/const/routes'
+import { MAINNET, TESTNET } from '/const/networks'
+import { Show } from '/doprouter/react'
 
 import IconMenu from 'react-icons/lib/md/menu'
 import IconMore from 'react-icons/lib/md/more-vert'
@@ -14,7 +16,8 @@ import {
     setHref,
     exportAssets,
     importAssetsFromFile,
-    closeSession
+    closeSession,
+    changeNetwork
 } from '/store/actions'
 import state from '/store/state'
 
@@ -89,6 +92,10 @@ export default class Header extends Component {
     //     changeCurrency(symbol)
     // }
 
+    onChangeNetwork() {
+        changeNetwork(MAINNET)
+    }
+
     onExport() {
         exportAssets()
     }
@@ -128,10 +135,12 @@ export default class Header extends Component {
 
     render() {
         return React.createElement(HeaderTemplate, {
+            network: state.network,
             sideMenuOpen: state.sideMenuOpen,
             onSideMenu: this.onSideMenu,
             menuOpen: state.menuOpen,
             // onAddAsset: this.onAddAsset,
+            onChangeNetwork: this.onChangeNetwork,
             onMenuOpen: this.onMenuOpen,
             onMenuClose: this.onMenuClose,
             onExport: this.onExport,
@@ -145,10 +154,12 @@ export default class Header extends Component {
 }
 
 function HeaderTemplate({
+    network,
     sideMenuOpen,
     onSideMenu,
     menuOpen,
     // onAddAsset,
+    onChangeNetwork,
     onMenuOpen,
     onMenuClose,
     onExport,
@@ -160,6 +171,14 @@ function HeaderTemplate({
 }) {
     return (
         <HeaderDiv>
+            <Show if={network === TESTNET}>
+                <Testnet>
+                    <span>You are on Testnet mode. </span>
+                    <a href="#" onClick={onChangeNetwork}>
+                        Click here to change to Mainnet.
+                    </a>
+                </Testnet>
+            </Show>
             <HeaderContent>
                 <HeaderLeft onClick={onSideMenu}>
                     <div>
@@ -242,6 +261,20 @@ function HeaderTemplate({
         </HeaderDiv>
     )
 }
+
+const Testnet = styled.div`
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: ${styles.infoColor.red};
+    line-height: 18px;
+    text-align: center;
+    color: white;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    z-index: 1;
+`
 
 const HeaderDiv = styled.div`
     height: ${styles.headerHeight};
