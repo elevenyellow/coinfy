@@ -81,15 +81,15 @@ export default class Header extends Component {
     }
 
     // onMenuOpen(e) {
-    //     state.currencyMenuOpen = true
+    //     state.fiatMenuOpen = true
     // }
 
     // onMenuClose(e) {
-    //     state.currencyMenuOpen = false
+    //     state.fiatMenuOpen = false
     // }
 
     // onChangeCurrency(symbol) {
-    //     changeCurrency(symbol)
+    //     changeFiat(symbol)
     // }
 
     onChangeNetwork() {

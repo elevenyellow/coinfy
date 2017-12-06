@@ -122,11 +122,11 @@ export default class Dashboard extends Component {
         return React.createElement(DashboardTemplate, {
             data: data,
             onClick: this.onClick,
-            ascii: Fiats[state.currency].ascii,
+            ascii: Fiats[state.fiat].ascii,
             balance_start: balance_start,
             balance_end: state.balance,
             cryptoPrices: state.prices,
-            currency: state.currency
+            currency: state.fiat
         })
     }
 }
