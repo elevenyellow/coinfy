@@ -57,6 +57,6 @@ export function generateDefaultAsset(object = {}) {
     return util.merge(asset, object)
 }
 
-export function formatCurrency(value, n = 0, currencySymbol = state.currency) {
+export function formatCurrency(value, n = 0, currencySymbol = state.fiat) {
     return Fiats[currencySymbol].format(value, n)
 }

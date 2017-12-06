@@ -11,7 +11,7 @@ const network = Number(localStorageGet('network')) || MAINNET
 const initialState = {
     // Data
     network: network,
-    currency: localStorageGet('currency') || USD.symbol,
+    fiat: localStorageGet('fiat') || USD.symbol,
     assetsExported: localStorageGet('assetsExported', network) !== 'false',
     assets: {},
     prices: {},
@@ -31,7 +31,6 @@ const initialState = {
     // UI
     menuOpen: false,
     sideMenuOpen: false,
-    currencyMenuOpen: false,
     view: {},
     notifications: {},
     popups: {

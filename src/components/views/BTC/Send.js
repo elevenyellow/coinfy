@@ -288,7 +288,7 @@ export default class Send extends Component {
             amount1_input: amount1,
             amount2_input: amount2,
             symbol_crypto: symbol,
-            symbol_currency: state.currency,
+            symbol_currency: state.fiat,
             fee_input: state.view.fee_input,
             fee_input_visible: state.view.fee_input_visible,
             fee_fiat: formatCurrency(

@@ -101,7 +101,7 @@ export default class Left extends Component {
             open: state.sideMenuOpen,
             onClickBackground: this.onClickBackground,
             createRef: this.createRef,
-            ascii: Fiats[state.currency].ascii,
+            ascii: Fiats[state.fiat].ascii,
             balance_start: balance_start,
             balance_end: state.balance,
             totalAssets: state.totalAssets
@@ -125,7 +125,7 @@ function LeftTemplate({
                     <div>
                         <HeadAssets>{totalAssets} assets</HeadAssets>
                         <HeadBalance>
-                            <HeadBalanceAscii>$</HeadBalanceAscii>
+                            <HeadBalanceAscii>{ascii}</HeadBalanceAscii>
                             <HeadBalanceNumber>
                                 <CountUp
                                     start={balance_start}

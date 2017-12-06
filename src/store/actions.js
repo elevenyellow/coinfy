@@ -181,10 +181,10 @@ export function deleteNotification(id) {
     delete state.notifications[id]
 }
 
-export function changeCurrency(symbol) {
+export function changeFiat(symbol) {
     const collector = collect()
-    state.currency = symbol
-    localStorageSet('currency', symbol)
+    state.fiat = symbol
+    localStorageSet('fiat', symbol)
     fetchPrices()
     collector.emit()
 }
@@ -328,7 +328,7 @@ export const fetchPrices = (function() {
 
     return function() {
         clearTimeout(timeout)
-        manager.fetch(assetsArray, state.currency)
+        manager.fetch(assetsArray, state.fiat)
     }
 })()
 fetchPrices()

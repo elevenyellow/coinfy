@@ -157,7 +157,7 @@
 //                 convertBalance(ETH.symbol, asset.balance),
 //                 0
 //             ),
-//             symbol: Fiats[state.currency].symbol,
+//             symbol: Fiats[state.fiat].symbol,
 //             totalTransactions: asset.summary.totalTxs || 0,
 //             totalReceived: round(asset.summary.totalReceived || 0, 2),
 //             totalSent: round(asset.summary.totalSent || 0, 2),
