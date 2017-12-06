@@ -1,56 +1,96 @@
-crypto = require('crypto')
-scrypt = require('scryptsy')
+const {
+    pbkdf2Sync,
+    randomBytes,
+    createCipheriv,
+    createDecipheriv
+} = require('crypto')
+const scrypt = require('scrypt.js') // or from 'scryptsy'
+const { sha3 } = require('ethereumjs-util')
 
-toV3 = function(value, password, opts) {
-    opts = opts || {}
-    var salt = opts.salt || crypto.randomBytes(32)
-    var iv = opts.iv || crypto.randomBytes(16)
-    var derivedKey
-    var kdf = opts.kdf || 'scrypt'
-    var kdfparams = {
-        dklen: opts.dklen || 32,
-        salt: salt.toString('hex')
+function encryptAES128CTR(string, password, hex = false, mac = false) {
+    const string_buffer = new Buffer(string, hex ? 'hex' : undefined) // ethereum: new Buffer(string,'hex')
+    const ciphertype = 'aes-128-ctr'
+    const salt = randomBytes(32)
+    const iv = randomBytes(16)
+    const kdf = 'scrypt'
+    const kdfparams = {
+        dklen: 32,
+        salt: salt.toString('hex'),
+        n: 1024,
+        r: 8,
+        p: 1
     }
-    if (kdf === 'pbkdf2') {
-        kdfparams.c = opts.c || 262144
-        kdfparams.prf = 'hmac-sha256'
-        derivedKey = crypto.pbkdf2Sync(new Buffer(password), salt, kdfparams.c, kdfparams.dklen, 'sha256')
-    } else if (kdf === 'scrypt') {
-        // FIXME: support progress reporting callback
-        kdfparams.n = opts.n || 262144
-        kdfparams.r = opts.r || 8
-        kdfparams.p = opts.p || 1
-        derivedKey = scrypt(new Buffer(password), salt, kdfparams.n, kdfparams.r, kdfparams.p, kdfparams.dklen)
-    } else {
-        throw new Error('Unsupported kdf')
-    }
-    var cipher = crypto.createCipheriv(opts.cipher || 'aes-128-ctr', derivedKey.slice(0, 16), iv)
-    if (!cipher) {
-        throw new Error('Unsupported cipher')
-    }
-    var ciphertext = Buffer.concat([cipher.update(value), cipher.final()])
-    return {
+
+    const derivedKey = scrypt(
+        new Buffer(password),
+        salt,
+        kdfparams.n,
+        kdfparams.r,
+        kdfparams.p,
+        kdfparams.dklen
+    )
+    const cipher = createCipheriv(ciphertype, derivedKey.slice(0, 16), iv)
+    if (!cipher) throw new Error('Unsupported cipher')
+
+    const ciphertext = Buffer.concat([
+        cipher.update(string_buffer),
+        cipher.final()
+    ])
+
+    const private_key = {
         ciphertext: ciphertext.toString('hex'),
         cipherparams: {
             iv: iv.toString('hex')
         },
-        cipher: opts.cipher || 'aes-128-ctr',
+        cipher: ciphertype,
         kdf: kdf,
         kdfparams: kdfparams
     }
+
+    if (mac) {
+        private_key.mac = sha3(
+            Buffer.concat([
+                derivedKey.slice(16, 32),
+                new Buffer(ciphertext, 'hex')
+            ])
+        ).toString('hex')
+    }
+
+    // console.log(JSON.stringify(private_key))
+
+    return private_key
 }
-decipherBuffer = function(decipher, data) {
-    return Buffer.concat([decipher.update(data), decipher.final()])
+
+function decryptAES128CTR(encryption, password, hex = false) {
+    const ciphertype = 'aes-128-ctr'
+    const ciphertext = new Buffer(encryption.ciphertext, 'hex')
+    const derivedKey =
+        encryption.kdf === 'scrypt'
+            ? scrypt(
+                  new Buffer(password),
+                  new Buffer(encryption.kdfparams.salt, 'hex'),
+                  encryption.kdfparams.n,
+                  encryption.kdfparams.r,
+                  encryption.kdfparams.p,
+                  encryption.kdfparams.dklen
+              )
+            : pbkdf2Sync(
+                  new Buffer(password),
+                  new Buffer(encryption.kdfparams.salt, 'hex'),
+                  encryption.kdfparams.c,
+                  encryption.kdfparams.dklen,
+                  'sha256'
+              )
+    const decipher = createDecipheriv(
+        ciphertype,
+        derivedKey.slice(0, 16),
+        new Buffer(encryption.cipherparams.iv, 'hex')
+    )
+    let seed = Buffer.concat([decipher.update(ciphertext), decipher.final()])
+    while (seed.length < 32) seed = Buffer.concat([new Buffer([0x00]), seed])
+
+    return seed.toString(hex ? 'hex' : undefined) //ethereum seed.toString('hex')
 }
 
-
-
-pwd='1234'
-enc=toV3('Hola mundo', pwd, {kdf:'pbkdf2'})
-console.log( enc );
-
-// var ciphertext = new Buffer(enc.ciphertext, 'hex')
-// var derivedKey = crypto.pbkdf2Sync(new Buffer(pwd), new Buffer(enc.kdfparams.salt, 'hex'), enc.kdfparams.c, enc.kdfparams.dklen, 'sha256')
-// var decipher = crypto.createDecipheriv(enc.cipher, derivedKey.slice(0, 16), new Buffer(enc.cipherparams.iv, 'hex'))
-// var seed = decipherBuffer(decipher, ciphertext, 'hex')
-// console.log( seed.toString() );
+const pwd = '1234'
+console.log(decryptAES128CTR(encryptAES128CTR('Hola Mundo', pwd), pwd))

@@ -4,14 +4,17 @@ import { Coins } from '/api/Coins'
 import { Fiats, USD } from '/api/Fiats'
 import { getTotalAssets, generateDefaultAsset } from '/store/getters'
 import { localStorageGet } from '/api/browser'
+import { MAINNET, TESTNET } from '/const/networks'
 
 // initial state
+const network = Number(localStorageGet('network')) || MAINNET
 const initialState = {
     // Data
-    prices: {},
+    network: network,
     currency: localStorageGet('currency') || USD.symbol,
-    assetsExported: localStorageGet('assetsExported') !== 'false',
+    assetsExported: localStorageGet('assetsExported', network) !== 'false',
     assets: {},
+    prices: {},
     totalAssets: 0,
     balance: computed(function() {
         let total = 0
@@ -47,7 +50,7 @@ assetsArray.forEach(symbol => {
 
 // restoring assets from storage
 try {
-    let assets = localStorageGet('assets')
+    let assets = localStorageGet('assets', network)
     assets = JSON.parse(assets)
     if (assets && typeof assets == 'object') {
         initialState.assets = assets

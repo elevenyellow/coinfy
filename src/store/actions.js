@@ -74,12 +74,12 @@ export function saveAssetsLocalStorage() {
         key = key.toLocaleLowerCase()
         return key === 'state' ? undefined : value
     })
-    localStorageSet('assets', assets)
+    localStorageSet('assets', assets, state.network)
 }
 
 export function setAssetsExported(value) {
     state.assetsExported = value
-    localStorageSet('assetsExported', value)
+    localStorageSet('assetsExported', value, state.network)
 }
 
 export function exportAssets() {
@@ -157,7 +157,7 @@ export function closeSession() {
 
 export function forceloseSession() {
     setAssetsExported(true)
-    localStorageRemove('assets')
+    localStorageRemove('assets', state.network)
     location.href = '/'
 }
 

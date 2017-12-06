@@ -335,6 +335,7 @@ const sendProviders = {
     ]
 }
 
+// https://en.bitcoin.it/wiki/Transaction_broadcasting
 function sendRawTxBitpay(rawTx) {
     const fetchOptions = {
         method: 'POST',

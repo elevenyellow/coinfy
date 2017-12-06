@@ -1,5 +1,6 @@
 export default {
     home: () => `/`,
+    settings: () => `/settings`,
 
     // Add
     add: () => `/add`,

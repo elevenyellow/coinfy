@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 
-
 import state from '/store/state'
 import { getAsset, isAssetRegistered } from '/store/getters'
 import { BTC } from '/api/Coins'
@@ -16,6 +15,7 @@ import Message from '/components/styled/Message'
 
 // Views
 import Dashboard from '/components/views/Dashboard'
+import Settings from '/components/views/Settings'
 import AddAsset from '/components/views/AddAsset'
 import CreateBTC from '/components/views/CreateBTC'
 import ImportBTC from '/components/views/ImportBTC'
@@ -39,33 +39,30 @@ export default class Right extends Component {
 
     render() {
         const asset = getAsset(state.location.path[1])
-        const symbol = (asset !== undefined) ? asset.symbol : false
+        const symbol = asset !== undefined ? asset.symbol : false
         return React.createElement(RightTemplate, {
             location: state.location,
             totalAssets: state.totalAssets,
             isRegistered: isAssetRegistered(state.location.path[1]),
             symbol: symbol
-        })            
+        })
     }
 }
 
-
-function RightTemplate({
-    location,
-    totalAssets,
-    isRegistered,
-    symbol,
-}) {
+function RightTemplate({ location, totalAssets, isRegistered, symbol }) {
     return (
         <RightContainer>
             <Router source={location}>
-                <Route pathname="/" if={totalAssets===0}>
+                <Route pathname="/" if={totalAssets === 0}>
                     <RightContainerMiddle>
                         <Message>Add or Import assets to start working</Message>
                     </RightContainerMiddle>
                 </Route>
                 <Route pathname="/">
                     <Dashboard />
+                </Route>
+                <Route pathname={routes.settings()}>
+                    <Settings />
                 </Route>
                 <Route pathname={routes.add()}>
                     <AddAsset />
@@ -82,10 +79,10 @@ function RightTemplate({
                 <Route pathname={routes.importeth()}>
                     <ImportETH />
                 </Route>
-                <Route path-0="asset" if={isRegistered && symbol==='BTC'}>
+                <Route path-0="asset" if={isRegistered && symbol === 'BTC'}>
                     <ViewBTC />
                 </Route>
-                <Route path-0="asset" if={isRegistered && symbol==='ETH'}>
+                <Route path-0="asset" if={isRegistered && symbol === 'ETH'}>
                     <ViewETH />
                 </Route>
                 <Route>
@@ -93,9 +90,7 @@ function RightTemplate({
                         <Message>Not found</Message>
                     </RightContainerMiddle>
                 </Route>
-
             </Router>
         </RightContainer>
     )
 }
-

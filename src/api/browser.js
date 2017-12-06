@@ -1,4 +1,5 @@
 import { supplant } from '/api/strings'
+import { MAINNET } from '/const/networks'
 
 export function printTemplate(template, data = {}, printIn = 1000) {
     const html = supplant(template, data)
@@ -30,13 +31,16 @@ export function copyContentSelected() {
     document.execCommand('copy')
 }
 
-export function localStorageSet(key, value) {
+export function localStorageSet(key, value, network = MAINNET) {
+    key = network === MAINNET ? key : `${key}-${network}`
     return window.localStorage.setItem(key, value)
 }
-export function localStorageGet(key) {
+export function localStorageGet(key, network = MAINNET) {
+    key = network === MAINNET ? key : `${key}-${network}`
     return window.localStorage.getItem(key)
 }
-export function localStorageRemove(key) {
+export function localStorageRemove(key, network = MAINNET) {
+    key = network === MAINNET ? key : `${key}-${network}`
     return window.localStorage.removeItem(key)
 }
 
@@ -68,8 +72,7 @@ export function readFile(file, onRead) {
     reader.readAsText(file)
 }
 
-
-export function downloadFile(data, name, filetype='charset=UTF-8') {
+export function downloadFile(data, name, filetype = 'charset=UTF-8') {
     const a = document.createElement('a')
     const file = new Blob([data], { type: filetype }) //,
     // const date = new Date().toJSON().replace(/\..+$/,'')
