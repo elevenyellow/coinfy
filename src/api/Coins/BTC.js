@@ -188,9 +188,7 @@ export function fetchRecomendedFee() {
 
 export function fetchTxs(address, from = 0, to = from + 25) {
     return fetch(
-        `${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${
-            from
-        }&to=${to}`
+        `${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${from}&to=${to}`
     )
         .then(response => response.json())
         .then(json => {
@@ -306,9 +304,13 @@ export function createSimpleTx(
                 txb.addOutput(backAddress, Number(amountBack.times(satoshis)))
 
             // signing inputs
-            txb.inputs.forEach((input, index) =>
-                txb.sign(index, private_key_ecpar)
-            )
+            txb.inputs.forEach((input, index) => {
+                try {
+                    txb.sign(index, private_key_ecpar)
+                } catch (e) {
+                    console.error(e)
+                }
+            })
 
             const txHex = txb.build().toHex()
             return txHex
