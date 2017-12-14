@@ -18,6 +18,7 @@ import { decimals } from '/api/numbers'
 import {
     localStorageSet,
     localStorageRemove,
+    localStorageGet,
     openFile,
     readFile,
     downloadFile
@@ -78,7 +79,7 @@ export function saveAssetsLocalStorage() {
 }
 
 export function setAssetsExported(value) {
-    state.assetsExported = value
+    // state.assetsExported = value
     localStorageSet('assetsExported', value, state.network)
 }
 
@@ -98,7 +99,9 @@ export function exportAssets() {
 }
 
 export function importAssetsFromFile() {
-    if (state.totalAssets > 0 && !state.assetsExported) {
+    const assetsExported =
+        localStorageGet('assetsExported', state.network) !== 'false'
+    if (state.totalAssets > 0 && assetsExported) {
         state.popups.closeSession.confirm = () => {
             state.popups.closeSession.open = false
             // setAssetsExported(true) // Not sure if should ask again after a failed import
@@ -144,14 +147,16 @@ export function importAssets(dataString) {
 }
 
 export function closeSession() {
+    const assetsExported =
+        localStorageGet('assetsExported', state.network) !== 'false'
     if (state.totalAssets > 0) {
-        if (!state.assetsExported) {
-            state.popups.closeSession.confirm = forceloseSession
+        if (!assetsExported) {
+            state.popups.closeSession.confirm = forceLoseSession
             state.popups.closeSession.cancel = () => {
                 state.popups.closeSession.open = false
             }
             state.popups.closeSession.open = true
-        } else forceloseSession()
+        } else forceLoseSession()
     }
 }
 
@@ -160,7 +165,7 @@ export function changeNetwork(network) {
     location.href = '/'
 }
 
-export function forceloseSession() {
+export function forceLoseSession() {
     setAssetsExported(true)
     localStorageRemove('assets', state.network)
     location.href = '/'

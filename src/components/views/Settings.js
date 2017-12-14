@@ -7,7 +7,7 @@ import { MAINNET, TESTNET } from '/const/networks'
 import { Fiats } from '/api/Fiats'
 
 import state from '/store/state'
-import { changeFiat, changeNetwork } from '/store/actions'
+import { changeFiat, changeNetwork, closeSession } from '/store/actions'
 
 import Div from '/components/styled/Div'
 import H1 from '/components/styled/H1'
@@ -21,6 +21,7 @@ import {
 import Select from '/components/styled/Select'
 import { Label, SubLabel } from '/components/styled/Label'
 import CenterElement from '/components/styled/CenterElement'
+import Button from '/components/styled/Button'
 import {
     FormField,
     FormFieldLeft,
@@ -108,13 +109,18 @@ export default class Settings extends Component {
         changeNetwork(e.target.value)
     }
 
+    onClose() {
+        closeSession()
+    }
+
     render() {
         return React.createElement(SettingsTemplate, {
             fiat: state.fiat,
             fiatsList: this.fiatsList,
             network: state.network,
             onChangeFiat: this.onChangeFiat,
-            onChangeNetwork: this.onChangeNetwork
+            onChangeNetwork: this.onChangeNetwork,
+            onClose: this.onClose
         })
     }
 }
@@ -124,7 +130,8 @@ function SettingsTemplate({
     fiatsList,
     network,
     onChangeFiat,
-    onChangeNetwork
+    onChangeNetwork,
+    onClose
 }) {
     return (
         <RightContainerPadding>
@@ -189,6 +196,13 @@ function SettingsTemplate({
                                 </option>
                             </Select>
                         </FormFieldRight>
+                    </FormField>
+                    <FormField>
+                        <Button width="100%" onClick={onClose}>
+                            Close / Remove{' '}
+                            {network === MAINNET ? 'mainnet' : 'testnet'}{' '}
+                            session
+                        </Button>
                     </FormField>
                 </Div>
             </RightContent>

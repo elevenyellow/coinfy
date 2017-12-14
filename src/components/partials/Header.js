@@ -102,9 +102,6 @@ export default class Header extends Component {
     onImport() {
         importAssetsFromFile()
     }
-    onClose() {
-        closeSession()
-    }
 
     onHome() {
         setHref(routes.home())
@@ -145,7 +142,7 @@ export default class Header extends Component {
             onMenuClose: this.onMenuClose,
             onExport: this.onExport,
             onImport: this.onImport,
-            onClose: this.onClose,
+            // onClose: this.onClose,
             onHome: this.onHome,
             onSettings: this.onSettings,
             totalAssets: state.totalAssets
@@ -164,7 +161,7 @@ function HeaderTemplate({
     onMenuClose,
     onExport,
     onImport,
-    onClose,
+    // onClose,
     onHome,
     onSettings,
     totalAssets
@@ -223,12 +220,12 @@ function HeaderTemplate({
                             <DropDownItem onClick={onSettings}>
                                 Settings
                             </DropDownItem>
-                            <DropDownItem
+                            {/* <DropDownItem
                                 onClick={onClose}
                                 disabled={totalAssets === 0}
                             >
                                 Close session
-                            </DropDownItem>
+                            </DropDownItem> */}
                         </DropDownMenu>
                     </DropDown>
                     {/* <DropDown

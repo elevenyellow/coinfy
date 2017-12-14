@@ -12,7 +12,7 @@ const initialState = {
     // Data
     network: network,
     fiat: localStorageGet('fiat') || USD.symbol,
-    assetsExported: localStorageGet('assetsExported', network) !== 'false',
+    // assetsExported: localStorageGet('assetsExported', network) !== 'false',
     assets: {},
     prices: {},
     totalAssets: 0,
