@@ -82,11 +82,11 @@ export function generateRandomWallet() {
 }
 
 export function urlInfo(address) {
-    return `https://etherscan.io/address/${address}`
+    return `${url}/address/${address}`
 }
 
 export function urlInfoTx(txid) {
-    return `https://etherscan.io/tx/${txid}`
+    return `${url}/tx/${txid}`
 }
 
 export function fetchBalance(address) {
@@ -145,14 +145,23 @@ export function fetchSummary(address) {
 
 // http://ipfs.b9lab.com:8080/ipfs/QmTHdYEYiJPmbkcth3mQvEQQgEamFypLhc9zapsBatQW7Y/throttled_faucet.html
 export function fetchRecomendedFee() {
-    // https://btc-bitcore1.trezor.io/api/utils/estimatefee
-    // https://bitcoinfees.21.co/api/v1/fees/recommended
-    // https://www.bitgo.com/api/v1/tx/fee
-    return (
-        fetch(`https://insight.bitpay.com/api/utils/estimatefee`)
-            // .then(response => response.json())
-            .then(fees => 0.0002)
-    )
+    const fetchOptions = {
+        method: 'POST',
+        // headers: {
+        //     Accept: 'application/json',
+        //     'Content-Type': 'application/json',
+        //     'Access-Control-Allow-Origin': '*'
+        // },
+        body:
+            '{"method":"eth_estimateGas","params":[{"from":"0x64a3561257e3850995f83ef4dec1c948197441c6","to":"0x64A3561257E3850995f83EF4DEc1c948197441C6","value":"0x16345785d8a0000"}],"id":"c8b6677660a9fb3c4ff363d20e45bf86","jsonrpc":"2.0"}'
+    }
+    return fetch(`https://api.myetherapi.com/rop`, fetchOptions)
+        .then(response => response.json())
+        .then(e => {
+            console.log(e)
+            // return e.result
+            return 0.021
+        })
 }
 
 export function encrypt(private_key_encrypted, password) {
