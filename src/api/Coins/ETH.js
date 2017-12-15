@@ -8,11 +8,20 @@ import {
 import Big from 'big.js'
 import { decimalsMax } from '/api/numbers'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
+import { localStorageGet } from '/api/browser'
+import { MAINNET, TESTNET } from '/const/networks'
 
+// private
+const network = Number(localStorageGet('network')) || MAINNET
+const url =
+    network === MAINNET
+        ? 'https://api.etherscan.io'
+        : 'https://ropsten.etherscan.io'
 
-const api_url = 'https://api.etherscan.io/api'
+const api_url = `${url}/api`
 const api_key = 'GY9KKYEJF1HDEPIAIRGA66R2RIQWQXV9UZ'
 
+// exports
 export const type = 'wallet'
 export const symbol = 'ETH'
 export const name = 'Ethereum'
@@ -23,7 +32,7 @@ export const satoshis = 1000000000000000000 // this is WEI actually
 
 export { addHexPrefix } from 'ethereumjs-util'
 
-export function format(value, dec=18) {
+export function format(value, dec = 18) {
     const tof = typeof value
     if (tof != 'number' && tof != 'string') value = '0'
     return `${decimalsMax(value, dec)} ${symbol}`
@@ -48,7 +57,9 @@ export function isPrivateKeyCheck(string) {
 }
 
 export function getAddressFromPrivateKey(private_key) {
-    return addHexPrefix(privateToAddress(stringToBuffer(private_key)).toString('hex'))
+    return addHexPrefix(
+        privateToAddress(stringToBuffer(private_key)).toString('hex')
+    )
 }
 
 export function getPublicFromPrivateKey(private_key) {
@@ -59,13 +70,12 @@ export function stringToBuffer(string) {
     return new Buffer(string, 'hex')
 }
 
-
 export function generateRandomWallet() {
     const bytes = randomBytes(32)
     const private_key = new Buffer(bytes, 'hex')
     const address = privateToAddress(private_key)
     // console.log( private_key.toString('hex') );
-    return { 
+    return {
         address: addHexPrefix(address.toString('hex')),
         private_key: private_key.toString('hex')
     }
@@ -79,7 +89,6 @@ export function urlInfoTx(txid) {
     return `https://etherscan.io/tx/${txid}`
 }
 
-
 export function fetchBalance(address) {
     return fetch(
         `${api_url}?apikey=${api_key}&module=account&action=balance&address=${address}&tag=latest`
@@ -87,12 +96,13 @@ export function fetchBalance(address) {
         .then(response => response.json())
         .then(response => {
             // return Number(response.result)/satoshis
-            return Big(response.result).div(satoshis).toString()
+            return Big(response.result)
+                .div(satoshis)
+                .toString()
         })
 }
 
-
-export function fetchTxs(address, from=0, to=from+100) {
+export function fetchTxs(address, from = 0, to = from + 100) {
     return fetch(
         `${api_url}?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${api_key}`
     )
@@ -109,18 +119,19 @@ export function fetchTxs(address, from=0, to=from+100) {
                     fees: Big(txRaw.gasUsed),
                     time: txRaw.timeStamp,
                     confirmations: txRaw.confirmations,
-                    value: Big(txRaw.value).div(satoshis).toString()
+                    value: Big(txRaw.value)
+                        .div(satoshis)
+                        .toString()
                     // raw: txRaw,
                 }
                 if (txRaw.from.toLowerCase() === address.toLowerCase())
-                    tx.value = '-'+tx.value
+                    tx.value = '-' + tx.value
 
                 data.txs.push(tx)
             })
             return data
         })
 }
-
 
 export function fetchSummary(address) {
     const totals = {}
@@ -130,6 +141,18 @@ export function fetchSummary(address) {
             return fetchTxs(address)
         })
         .then(txs => Object.assign(txs, totals))
+}
+
+// http://ipfs.b9lab.com:8080/ipfs/QmTHdYEYiJPmbkcth3mQvEQQgEamFypLhc9zapsBatQW7Y/throttled_faucet.html
+export function fetchRecomendedFee() {
+    // https://btc-bitcore1.trezor.io/api/utils/estimatefee
+    // https://bitcoinfees.21.co/api/v1/fees/recommended
+    // https://www.bitgo.com/api/v1/tx/fee
+    return (
+        fetch(`https://insight.bitpay.com/api/utils/estimatefee`)
+            // .then(response => response.json())
+            .then(fees => 0.0002)
+    )
 }
 
 export function encrypt(private_key_encrypted, password) {
@@ -145,6 +168,27 @@ export function decrypt(address, private_key_encrypted, password) {
     }
 
     return false
+}
+
+export function getSendProviders() {
+    return sendProviders[network === MAINNET ? 'mainnet' : 'testnet']
+}
+
+const sendProviders = {
+    mainnet: [
+        {
+            name: 'Bitpay.com',
+            url: 'https://insight.bitpay.com/tx/send',
+            send: e => {}
+        }
+    ],
+    testnet: [
+        {
+            name: 'Bitpay.com',
+            url: 'https://test-insight.bitpay.com/tx/send',
+            send: e => {}
+        }
+    ]
 }
 
 // function fetchMyEtherScan(extraBody) {

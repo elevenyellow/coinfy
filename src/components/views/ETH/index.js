@@ -29,6 +29,7 @@ import {
 
 import HeaderAsset from '/components/partials/HeaderAsset'
 import Summary from '/components/views/ETH/Summary'
+import Send from '/components/views/ETH/Send'
 import ExportETH from '/components/views/ETH/Export'
 import ChangePassword from '/components/views/ETH/ChangePassword'
 import Delete from '/components/views/ETH/Delete'
@@ -155,14 +156,20 @@ function ViewETHTemplate({
                         <Summary />
                     </Route>
 
+                    <Route pathname={new RegExp(routes_sendAsset)}>
+                        <Send />
+                    </Route>
+
                     <Route if={hasPrivateKey} pathname={routes_printAsset}>
                         <ExportETH />
                     </Route>
 
-                    <Route if={hasPrivateKey} pathname={routes_changePasswordAsset}>
+                    <Route
+                        if={hasPrivateKey}
+                        pathname={routes_changePasswordAsset}
+                    >
                         <ChangePassword />
                     </Route>
-
 
                     <Route pathname={routes_deleteAsset}>
                         <Delete />
@@ -180,7 +187,7 @@ function ViewETHTemplate({
 }
 
 const HideMobile = styled.span`
-${styles.media.second} {
-    display: none;
-}
+    ${styles.media.second} {
+        display: none;
+    }
 `
