@@ -165,6 +165,10 @@ export function createSimpleTx(
     backAddress
 ) {
     console.log(arguments)
+
+    const fromAddress = getAddressFromPrivateKey(private_key)
+    backAddress = isAddressCheck(backAddress) ? backAddress : fromAddress
+
     const txJson = {
         data: '',
         gasLimit: '0x5209',
