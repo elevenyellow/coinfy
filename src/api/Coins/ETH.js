@@ -30,6 +30,7 @@ export const color = '#7a8aec' //'#9c86fe'
 export const ascii = ''
 export const price_decimals = 0
 export const satoshis = 1000000000000000000 // this is WEI actually
+export const gas = 21000
 
 export { addHexPrefix } from 'ethereumjs-util'
 
@@ -146,14 +147,32 @@ export function fetchSummary(address) {
 
 // http://ipfs.b9lab.com:8080/ipfs/QmTHdYEYiJPmbkcth3mQvEQQgEamFypLhc9zapsBatQW7Y/throttled_faucet.html
 export function fetchRecomendedFee(from, to) {
-    return JSONRpc(`https://api.myetherapi.com/rop`, 'eth_gasPrice')
+    return JSONRpc(`https://api.myetherapi.com/eth`, 'eth_gasPrice')
         .then(response => response.json())
-        .then(e => {
-            console.log(Number(e.result))
-            // console.log(new Big(e.result))
-            // return e.result
-            return 0.021
-        })
+        .then(e =>
+            Big(parseInt(e.result, 16))
+                .times(gas)
+                .div(satoshis)
+                .toString()
+        )
+}
+
+export function createSimpleTx(
+    private_key,
+    toAddress,
+    amount,
+    fee,
+    backAddress
+) {
+    console.log(arguments)
+    const txJson = {
+        data: '',
+        gasLimit: '0x5209',
+        gasPrice: '0x04a817c800',
+        nonce: '0x02',
+        to: '0x64A3561257E3850995f83EF4DEc1c948197441C6',
+        value: '0x120a871cc0020000'
+    }
 }
 
 export function encrypt(private_key_encrypted, password) {
