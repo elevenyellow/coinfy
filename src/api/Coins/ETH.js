@@ -9,6 +9,7 @@ import Big from 'big.js'
 import { decimalsMax } from '/api/numbers'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
 import { localStorageGet } from '/api/browser'
+import JSONRpc from '/api/json-rpc'
 import { MAINNET, TESTNET } from '/const/networks'
 
 // private
@@ -144,21 +145,12 @@ export function fetchSummary(address) {
 }
 
 // http://ipfs.b9lab.com:8080/ipfs/QmTHdYEYiJPmbkcth3mQvEQQgEamFypLhc9zapsBatQW7Y/throttled_faucet.html
-export function fetchRecomendedFee() {
-    const fetchOptions = {
-        method: 'POST',
-        // headers: {
-        //     Accept: 'application/json',
-        //     'Content-Type': 'application/json',
-        //     'Access-Control-Allow-Origin': '*'
-        // },
-        body:
-            '{"method":"eth_estimateGas","params":[{"from":"0x64a3561257e3850995f83ef4dec1c948197441c6","to":"0x64A3561257E3850995f83EF4DEc1c948197441C6","value":"0x16345785d8a0000"}],"id":"c8b6677660a9fb3c4ff363d20e45bf86","jsonrpc":"2.0"}'
-    }
-    return fetch(`https://api.myetherapi.com/rop`, fetchOptions)
+export function fetchRecomendedFee(from, to) {
+    return JSONRpc(`https://api.myetherapi.com/rop`, 'eth_gasPrice')
         .then(response => response.json())
         .then(e => {
-            console.log(e)
+            console.log(Number(e.result))
+            // console.log(new Big(e.result))
             // return e.result
             return 0.021
         })
