@@ -2,10 +2,8 @@
     "name": "coinfy",
     "version": "1.0.0",
     "scripts": {
-        "stats":
-            "webpack --config=./webpack/production.js --profile --json > webpack-stats.json | open https://chrisbateman.github.io/webpack-visualizer/",
-        "build":
-            "webpack --config=./webpack/production.js --progress --colors --display-error-details",
+        "stats": "webpack --config=./webpack/production.js --profile --json > webpack-stats.json | open https://chrisbateman.github.io/webpack-visualizer/",
+        "build": "webpack --config=./webpack/production.js --progress --colors --display-error-details",
         "dev": "NODE_ENV=development node src/server",
         "prod": "NODE_ENV=production node src/server",
         "forever": "NODE_ENV=production forever start src/server.js",
@@ -17,6 +15,7 @@
         "bitcoinjs-lib": "^3.3.1",
         "crypto": "^1.0.1",
         "dop": "^0.26.0",
+        "ethereumjs-tx": "^1.3.3",
         "ethereumjs-util": "^5.1.2",
         "express": "4.14.0",
         "preact": "5.7.0",

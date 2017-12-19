@@ -5,6 +5,7 @@ import {
     privateToAddress,
     privateToPublic
 } from 'ethereumjs-util'
+import EthereumTx from 'ethereumjs-tx'
 import BigNumber from 'bignumber.js'
 import { decimalsMax, decimalToHex, sanitizeHex } from '/api/numbers'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
@@ -151,10 +152,12 @@ export function fetchSummary(address) {
 
 // http://ipfs.b9lab.com:8080/ipfs/QmTHdYEYiJPmbkcth3mQvEQQgEamFypLhc9zapsBatQW7Y/throttled_faucet.html
 export function fetchRecomendedFee(from, to) {
-    return JSONRpc(url_myetherapi, 'eth_gasPrice')
+    // return JSONRpc(url_myetherapi, 'eth_gasPrice')
+    return fetch(
+        `${api_url}?module=proxy&action=eth_gasPrice&apikey=${api_key}`
+    )
         .then(response => response.json())
         .then(e => {
-            console.log(e.result)
             return BigNumber(parseInt(e.result, 16))
                 .times(gas_limit)
                 .div(satoshis)
@@ -172,7 +175,10 @@ export function createSimpleTx(
     const fromAddress = getAddressFromPrivateKey(private_key)
     backAddress = isAddressCheck(backAddress) ? backAddress : fromAddress
 
-    JSONRpc(url_myetherapi, 'eth_getTransactionCount', [fromAddress, 'pending'])
+    return JSONRpc(url_myetherapi, 'eth_getTransactionCount', [
+        fromAddress,
+        'pending'
+    ])
         .then(response => response.json())
         .then(e => {
             const txJson = {
@@ -185,7 +191,11 @@ export function createSimpleTx(
                 to: sanitizeHex(toAddress),
                 value: sanitizeHex(decimalToHex(amount.times(satoshis)))
             }
-            console.log(txJson)
+
+            // console.log(txJson)
+            const tx = new EthereumTx(txJson)
+            tx.sign(Buffer.from(private_key, 'hex'))
+            return sanitizeHex(tx.serialize())
         })
 }
 
