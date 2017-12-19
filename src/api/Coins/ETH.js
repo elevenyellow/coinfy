@@ -5,7 +5,7 @@ import {
     privateToAddress,
     privateToPublic
 } from 'ethereumjs-util'
-import Big from 'big.js'
+import BigNumber from 'bignumber.js'
 import { decimalsMax, decimalToHex, sanitizeHex } from '/api/numbers'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
 import { localStorageGet } from '/api/browser'
@@ -18,7 +18,7 @@ const url =
     network === MAINNET
         ? 'https://api.etherscan.io'
         : 'https://ropsten.etherscan.io'
-const url_myetherwapi =
+const url_myetherapi =
     network === MAINNET
         ? 'https://api.myetherapi.com/eth'
         : 'https://api.myetherapi.com/rop'
@@ -102,7 +102,7 @@ export function fetchBalance(address) {
         .then(response => response.json())
         .then(response => {
             // return Number(response.result)/satoshis
-            return Big(response.result)
+            return BigNumber(response.result)
                 .div(satoshis)
                 .toString()
         })
@@ -122,10 +122,10 @@ export function fetchTxs(address, from = 0, to = from + 100) {
             json.result.slice(from, to).forEach(txRaw => {
                 let tx = {
                     txid: txRaw.hash,
-                    fees: Big(txRaw.gasUsed),
+                    fees: BigNumber(txRaw.gasUsed),
                     time: txRaw.timeStamp,
                     confirmations: txRaw.confirmations,
-                    value: Big(txRaw.value)
+                    value: BigNumber(txRaw.value)
                         .div(satoshis)
                         .toString()
                     // raw: txRaw,
@@ -151,14 +151,15 @@ export function fetchSummary(address) {
 
 // http://ipfs.b9lab.com:8080/ipfs/QmTHdYEYiJPmbkcth3mQvEQQgEamFypLhc9zapsBatQW7Y/throttled_faucet.html
 export function fetchRecomendedFee(from, to) {
-    return JSONRpc(url_myetherwapi, 'eth_gasPrice')
+    return JSONRpc(url_myetherapi, 'eth_gasPrice')
         .then(response => response.json())
-        .then(e =>
-            Big(parseInt(e.result, 16))
+        .then(e => {
+            console.log(e.result)
+            return BigNumber(parseInt(e.result, 16))
                 .times(gas_limit)
                 .div(satoshis)
                 .toString()
-        )
+        })
 }
 
 export function createSimpleTx(
@@ -171,21 +172,18 @@ export function createSimpleTx(
     const fromAddress = getAddressFromPrivateKey(private_key)
     backAddress = isAddressCheck(backAddress) ? backAddress : fromAddress
 
-    JSONRpc(url_myetherwapi, 'eth_getTransactionCount', [
-        fromAddress,
-        'pending'
-    ])
+    JSONRpc(url_myetherapi, 'eth_getTransactionCount', [fromAddress, 'pending'])
         .then(response => response.json())
         .then(e => {
             const txJson = {
                 // data: '',
                 gasLimit: sanitizeHex(decimalToHex(gas_limit)),
                 gasPrice: sanitizeHex(
-                    decimalToHex(fee.div(gas_limit).times(satoshis))
+                    decimalToHex(fee.times(satoshis).div(gas_limit))
                 ),
-                nonce: e.result,
-                to: toAddress,
-                value: sanitizeHex(decimalToHex(amount))
+                nonce: sanitizeHex(e.result),
+                to: sanitizeHex(toAddress),
+                value: sanitizeHex(decimalToHex(amount.times(satoshis)))
             }
             console.log(txJson)
         })

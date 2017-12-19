@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
-import Big from 'big.js'
+import BigNumber from 'bignumber.js'
 import { Show } from '/doprouter/react'
 
 import { Coins } from '/api/Coins'
@@ -91,7 +91,7 @@ export default class Send extends Component {
 
     fetchRecomendedFee() {
         this.Coin.fetchRecomendedFee(this.asset.address).then(fee => {
-            state.view.fee_input = this.fee_recomended = Big(fee)
+            state.view.fee_input = this.fee_recomended = BigNumber(fee)
         })
     }
 
@@ -216,7 +216,7 @@ export default class Send extends Component {
                 state.view.loading = false
                 state.view.is_sent = true
                 this.asset.balance = Number(
-                    Big(this.asset.balance)
+                    BigNumber(this.asset.balance)
                         .minus(this.amount)
                         .minus(this.fee)
                 )
@@ -232,7 +232,7 @@ export default class Send extends Component {
     }
 
     getMax() {
-        const max = Big(this.asset.balance).minus(this.fee)
+        const max = BigNumber(this.asset.balance).minus(this.fee)
         return max.gt(0) ? max : 0
     }
 
@@ -265,19 +265,19 @@ export default class Send extends Component {
         if (state.view.amount1_input !== undefined) {
             amount1 = state.view.amount1_input
             amount2 = decimalsMax(
-                Big(state.prices[symbol]).times(parseNumber(amount1)),
+                BigNumber(state.prices[symbol]).times(parseNumber(amount1)),
                 2
             )
         } else {
             amount2 = state.view.amount2_input
             amount1 = decimalsMax(
-                Big(parseNumber(amount2)).div(state.prices[symbol]),
+                BigNumber(parseNumber(amount2)).div(state.prices[symbol]),
                 10
             )
         }
 
-        this.amount = Big(parseNumber(amount1))
-        this.fee = Big(parseNumber(state.view.fee_input))
+        this.amount = BigNumber(parseNumber(amount1))
+        this.fee = BigNumber(parseNumber(state.view.fee_input))
         const isEnoughBalance = this.isEnoughBalance
 
         return React.createElement(SendTemplate, {

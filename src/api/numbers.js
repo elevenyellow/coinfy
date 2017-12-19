@@ -1,4 +1,4 @@
-import Big from 'big.js'
+import BigNumber from 'bignumber.js'
 
 export function decimals(value, max = 2) {
     return Number(value).toFixed(max)
@@ -32,9 +32,9 @@ export function parseNumber(number) {
 }
 
 export function decimalToHex(number) {
-    // return Big(number).toString(16)
-    if (typeof number !== 'number') number = Number(number)
-    return number.toString(16)
+    return BigNumber(number).toString(16)
+    // if (typeof number !== 'number') number = Number(number)
+    // return number.toString(16)
 }
 
 export function sanitizeHex(hex) {
