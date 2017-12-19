@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
-import BigNumber from 'bignumber.js'
 import CountUp from 'react-countup'
 
 import styles from '/const/styles'
 import { Fiats } from '/api/Fiats'
 import routes from '/const/routes'
 
-import { round } from '/api/numbers'
+import { round, bigNumber } from '/api/numbers'
 import { Coins } from '/api/Coins'
 import sortBy from '/api/sortBy'
 
@@ -49,7 +48,7 @@ export default class Dashboard extends Component {
                 dataUnformated[asset.symbol] = {
                     label: Coins[asset.symbol].name,
                     color: Coins[asset.symbol].color,
-                    balance_asset_big: BigNumber(0),
+                    balance_asset_big: bigNumber(0),
                     balance_asset_number: 0,
                     balance_currency_number: 0,
                     assets: []

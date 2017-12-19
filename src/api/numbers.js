@@ -32,7 +32,7 @@ export function parseNumber(number) {
 }
 
 export function decimalToHex(number) {
-    return BigNumber(number).toString(16)
+    return bigNumber(number).toString(16)
     // if (typeof number !== 'number') number = Number(number)
     // return number.toString(16)
 }
@@ -46,4 +46,8 @@ export function sanitizeHex(hex) {
 export function padLeftEven(hex) {
     hex = hex.length % 2 != 0 ? '0' + hex : hex
     return hex
+}
+
+export function bigNumber(number) {
+    return new BigNumber(String(number))
 }

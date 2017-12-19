@@ -1,7 +1,6 @@
 import Bitcoin from 'bitcoinjs-lib'
-import BigNumber from 'bignumber.js'
 import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
-import { decimalsMax } from '/api/numbers'
+import { decimalsMax, bigNumber } from '/api/numbers'
 import {
     decryptBIP38 as _decryptBIP38,
     encryptBIP38 as _encryptBIP38
@@ -167,7 +166,7 @@ export function fetchBalance(address) {
     //     .then(response => response.text())
     //     .then(balance => {
     //         // return Number(balance) / satoshis
-    //         return BigNumber(balance).div(satoshis).toString()
+    //         return bigNumber(balance).div(satoshis).toString()
     //     })
     return fetchTotals(address).then(data => {
         return data.unconfirmedBalance < 0
@@ -198,13 +197,13 @@ export function fetchTxs(address, from = 0, to = from + 25) {
             }
             json.items.forEach(txRaw => {
                 let index, total
-                let value = BigNumber(0)
+                let value = bigNumber(0)
                 let tx = {
                     txid: txRaw.txid,
-                    fees: BigNumber(txRaw.fees),
+                    fees: bigNumber(txRaw.fees),
                     time: txRaw.time,
                     confirmations: txRaw.confirmations,
-                    value: BigNumber(0)
+                    value: bigNumber(0)
                     // raw: txRaw,
                 }
 
@@ -277,8 +276,8 @@ export function createSimpleTx(
     return fetch(`${api_url}/addr/${fromAddress}/utxo?noCache=1`)
         .then(response => response.json())
         .then(txs => {
-            let totalInput = BigNumber(0)
-            const totalOutput = BigNumber(amount).plus(fee)
+            let totalInput = bigNumber(0)
+            const totalOutput = bigNumber(amount).plus(fee)
             const txb = new Bitcoin.TransactionBuilder(network)
             const private_key_ecpar = Bitcoin.ECPair.fromWIF(
                 private_key,
@@ -297,9 +296,9 @@ export function createSimpleTx(
             // Adding outputs
             // txb.addOutput(toAddress, 100000000)
             txb.addOutput(toAddress, Number(amount.times(satoshis)))
-            const amountBack = BigNumber(totalInput)
+            const amountBack = bigNumber(totalInput)
                 .minus(amount)
-                .minus(BigNumber(fee))
+                .minus(bigNumber(fee))
             if (amountBack.gt(0))
                 txb.addOutput(backAddress, Number(amountBack.times(satoshis)))
 

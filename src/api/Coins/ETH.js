@@ -6,11 +6,9 @@ import {
     privateToPublic
 } from 'ethereumjs-util'
 import EthereumTx from 'ethereumjs-tx'
-import BigNumber from 'bignumber.js'
-import { decimalsMax, decimalToHex, sanitizeHex } from '/api/numbers'
+import { decimalsMax, decimalToHex, sanitizeHex, bigNumber } from '/api/numbers'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
 import { localStorageGet } from '/api/browser'
-import JSONRpc from '/api/json-rpc'
 import { MAINNET, TESTNET } from '/const/networks'
 
 // private
@@ -103,7 +101,7 @@ export function fetchBalance(address) {
         .then(response => response.json())
         .then(response => {
             // return Number(response.result)/satoshis
-            return BigNumber(response.result)
+            return bigNumber(response.result)
                 .div(satoshis)
                 .toString()
         })
@@ -123,10 +121,10 @@ export function fetchTxs(address, from = 0, to = from + 100) {
             json.result.slice(from, to).forEach(txRaw => {
                 let tx = {
                     txid: txRaw.hash,
-                    fees: BigNumber(txRaw.gasUsed),
+                    fees: bigNumber(txRaw.gasUsed),
                     time: txRaw.timeStamp,
                     confirmations: txRaw.confirmations,
-                    value: BigNumber(txRaw.value)
+                    value: bigNumber(txRaw.value)
                         .div(satoshis)
                         .toString()
                     // raw: txRaw,
@@ -157,12 +155,12 @@ export function fetchRecomendedFee(from, to) {
         `${api_url}?module=proxy&action=eth_gasPrice&apikey=${api_key}`
     )
         .then(response => response.json())
-        .then(e => {
-            return BigNumber(parseInt(e.result, 16))
+        .then(e =>
+            bigNumber(parseInt(e.result, 16))
                 .times(gas_limit)
                 .div(satoshis)
                 .toString()
-        })
+        )
 }
 
 export function createSimpleTx(
@@ -175,10 +173,13 @@ export function createSimpleTx(
     const fromAddress = getAddressFromPrivateKey(private_key)
     backAddress = isAddressCheck(backAddress) ? backAddress : fromAddress
 
-    return JSONRpc(url_myetherapi, 'eth_getTransactionCount', [
-        fromAddress,
-        'pending'
-    ])
+    // return JSONRpc(url_myetherapi, 'eth_getTransactionCount', [
+    //     fromAddress,
+    //     'pending'
+    // ])
+    return fetch(
+        `${api_url}?module=proxy&action=eth_getTransactionCount&tag=latest&address=${fromAddress}&apikey=${api_key}`
+    )
         .then(response => response.json())
         .then(e => {
             const txJson = {
@@ -195,7 +196,7 @@ export function createSimpleTx(
             // console.log(txJson)
             const tx = new EthereumTx(txJson)
             tx.sign(Buffer.from(private_key, 'hex'))
-            return sanitizeHex(tx.serialize())
+            return sanitizeHex(tx.serialize().toString('hex'))
         })
 }
 
@@ -221,18 +222,32 @@ export function getSendProviders() {
 const sendProviders = {
     mainnet: [
         {
-            name: 'Bitpay.com',
-            url: 'https://insight.bitpay.com/tx/send',
-            send: e => {}
+            name: 'Etherscan',
+            url: 'https://etherscan.io/pushTx',
+            send: sendRawEtherscan
         }
     ],
     testnet: [
         {
-            name: 'Bitpay.com',
-            url: 'https://test-insight.bitpay.com/tx/send',
-            send: e => {}
+            name: 'Etherscan',
+            url: 'https://ropsten.etherscan.io/pushTx',
+            send: sendRawEtherscan
         }
     ]
+}
+
+export function sendRawEtherscan(rawTx) {
+    // return JSONRpc(url_myetherapi, 'eth_gasPrice')
+    return fetch(
+        `${api_url}?module=proxy&action=eth_sendRawTransaction&hex=${rawTx}&apikey=${api_key}`
+        // { method: 'POST', body: rawTx }
+    )
+        .then(response => response.json())
+        .then(e => {
+            if (e.error !== undefined)
+                return Promise.reject(JSON.stringify(e.error))
+            return e.result
+        })
 }
 
 // function fetchMyEtherScan(extraBody) {
