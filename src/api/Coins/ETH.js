@@ -6,7 +6,7 @@ import {
     privateToPublic
 } from 'ethereumjs-util'
 import Big from 'big.js'
-import { decimalsMax } from '/api/numbers'
+import { decimalsMax, decimalToHex, sanitizeHex } from '/api/numbers'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
 import { localStorageGet } from '/api/browser'
 import JSONRpc from '/api/json-rpc'
@@ -18,6 +18,10 @@ const url =
     network === MAINNET
         ? 'https://api.etherscan.io'
         : 'https://ropsten.etherscan.io'
+const url_myetherwapi =
+    network === MAINNET
+        ? 'https://api.myetherapi.com/eth'
+        : 'https://api.myetherapi.com/rop'
 
 const api_url = `${url}/api`
 const api_key = 'GY9KKYEJF1HDEPIAIRGA66R2RIQWQXV9UZ'
@@ -30,7 +34,7 @@ export const color = '#7a8aec' //'#9c86fe'
 export const ascii = ''
 export const price_decimals = 0
 export const satoshis = 1000000000000000000 // this is WEI actually
-export const gas = 21000
+export const gas_limit = 21000
 
 export { addHexPrefix } from 'ethereumjs-util'
 
@@ -147,11 +151,11 @@ export function fetchSummary(address) {
 
 // http://ipfs.b9lab.com:8080/ipfs/QmTHdYEYiJPmbkcth3mQvEQQgEamFypLhc9zapsBatQW7Y/throttled_faucet.html
 export function fetchRecomendedFee(from, to) {
-    return JSONRpc(`https://api.myetherapi.com/eth`, 'eth_gasPrice')
+    return JSONRpc(url_myetherwapi, 'eth_gasPrice')
         .then(response => response.json())
         .then(e =>
             Big(parseInt(e.result, 16))
-                .times(gas)
+                .times(gas_limit)
                 .div(satoshis)
                 .toString()
         )
@@ -164,19 +168,27 @@ export function createSimpleTx(
     fee,
     backAddress
 ) {
-    console.log(arguments)
-
     const fromAddress = getAddressFromPrivateKey(private_key)
     backAddress = isAddressCheck(backAddress) ? backAddress : fromAddress
 
-    const txJson = {
-        data: '',
-        gasLimit: '0x5209',
-        gasPrice: '0x04a817c800',
-        nonce: '0x02',
-        to: '0x64A3561257E3850995f83EF4DEc1c948197441C6',
-        value: '0x120a871cc0020000'
-    }
+    JSONRpc(url_myetherwapi, 'eth_getTransactionCount', [
+        fromAddress,
+        'pending'
+    ])
+        .then(response => response.json())
+        .then(e => {
+            const txJson = {
+                // data: '',
+                gasLimit: sanitizeHex(decimalToHex(gas_limit)),
+                gasPrice: sanitizeHex(
+                    decimalToHex(fee.div(gas_limit).times(satoshis))
+                ),
+                nonce: e.result,
+                to: toAddress,
+                value: sanitizeHex(decimalToHex(amount))
+            }
+            console.log(txJson)
+        })
 }
 
 export function encrypt(private_key_encrypted, password) {
