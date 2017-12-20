@@ -94,6 +94,10 @@ export function urlInfoTx(txid) {
     return `${url}/tx/${txid}`
 }
 
+export function urlDecodeTx() {
+    return ''
+}
+
 export function fetchBalance(address) {
     return fetch(
         `${api_url}?apikey=${api_key}&module=account&action=balance&address=${address}&tag=latest`
@@ -239,8 +243,8 @@ const sendProviders = {
 export function sendRawEtherscan(rawTx) {
     // return JSONRpc(url_myetherapi, 'eth_gasPrice')
     return fetch(
-        `${api_url}?module=proxy&action=eth_sendRawTransaction&hex=${rawTx}&apikey=${api_key}`
-        // { method: 'POST', body: rawTx }
+        `${api_url}?module=proxy&action=eth_sendRawTransaction&hex=${rawTx}&apikey=${api_key}`,
+        { method: 'POST', body: rawTx }
     )
         .then(response => response.json())
         .then(e => {

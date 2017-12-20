@@ -314,6 +314,7 @@ export default class Send extends Component {
             error_when_send: state.view.error_when_send,
             tx_id: this.tx_id,
             tx_info: this.Coin.urlInfoTx(this.tx_id),
+            url_decode_tx: this.Coin.urlDecodeTx(this.tx_raw),
             onChangeAddress: this.onChangeAddress,
             onChangeAmount1: this.onChangeAmount1,
             onChangeAmount2: this.onChangeAmount2,
@@ -358,6 +359,7 @@ function SendTemplate({
     error_when_send,
     tx_id,
     tx_info,
+    url_decode_tx,
     onChangeAddress,
     onChangeAmount1,
     onChangeAmount2,
@@ -580,12 +582,16 @@ function SendTemplate({
                         >
                             <CodeBox>{tx_raw}</CodeBox>
                             <Label size="11px">
-                                <a
-                                    href="https://live.blockcypher.com/btc/decodetx/"
-                                    target="_blank"
-                                >
-                                    Raw transaction (Hexadecimal)
-                                </a>
+                                {url_decode_tx === '' ? (
+                                    'Raw transaction (Hexadecimal)'
+                                ) : (
+                                    <a
+                                        href="https://live.blockcypher.com/btc/decodetx/"
+                                        target="_blank"
+                                    >
+                                        Raw transaction (Hexadecimal)
+                                    </a>
+                                )}
                             </Label>
                         </TransparentInfo>
                     </Div>

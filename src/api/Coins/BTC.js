@@ -137,6 +137,10 @@ export function urlInfoTx(txid) {
     return `${url}/tx/${txid}`
 }
 
+export function urlDecodeTx() {
+    return 'https://live.blockcypher.com/btc/decodetx/'
+}
+
 export function encrypt(private_key_encrypted, password) {
     return encryptAES128CTR(private_key_encrypted, password)
 }

@@ -103,8 +103,9 @@ function ViewETHTemplate({
                         <MenuContentItem
                             disabled={!hasPrivateKey}
                             selected={
-                                location.pathname === routes_sendAsset ||
-                                location.path.length === 2
+                                new RegExp(routes_sendAsset).test(
+                                    location.pathname
+                                ) || location.path.length === 2
                             }
                             onClick={e => {
                                 if (hasPrivateKey) onClick(routes_sendAsset)
