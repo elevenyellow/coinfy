@@ -581,18 +581,16 @@ function SendTemplate({
                             }
                         >
                             <CodeBox>{tx_raw}</CodeBox>
-                            <Label size="11px">
-                                {url_decode_tx === '' ? (
-                                    'Raw transaction (Hexadecimal)'
-                                ) : (
+                            {url_decode_tx === '' ? null : (
+                                <Label size="11px">
                                     <a
                                         href="https://live.blockcypher.com/btc/decodetx/"
                                         target="_blank"
                                     >
-                                        Raw transaction (Hexadecimal)
+                                        Decode raw transaction
                                     </a>
-                                )}
-                            </Label>
+                                </Label>
+                            )}
                         </TransparentInfo>
                     </Div>
                 </Div>

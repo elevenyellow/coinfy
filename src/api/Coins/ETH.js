@@ -33,7 +33,7 @@ export const color = '#7a8aec' //'#9c86fe'
 export const ascii = ''
 export const price_decimals = 0
 export const satoshis = 1000000000000000000 // this is WEI actually
-export const gas_limit = 21000
+export const default_gas_limit = 21000
 
 export { addHexPrefix } from 'ethereumjs-util'
 
@@ -153,18 +153,20 @@ export function fetchSummary(address) {
 }
 
 // http://ipfs.b9lab.com:8080/ipfs/QmTHdYEYiJPmbkcth3mQvEQQgEamFypLhc9zapsBatQW7Y/throttled_faucet.html
+let last_gas_price
 export function fetchRecomendedFee(from, to) {
     // return JSONRpc(url_myetherapi, 'eth_gasPrice')
     return fetch(
         `${api_url}?module=proxy&action=eth_gasPrice&apikey=${api_key}`
     )
         .then(response => response.json())
-        .then(e =>
-            bigNumber(parseInt(e.result, 16))
-                .times(gas_limit)
+        .then(e => {
+            last_gas_price = bigNumber(parseInt(e.result, 16))
+            return last_gas_price
+                .times(default_gas_limit)
                 .div(satoshis)
                 .toString()
-        )
+        })
 }
 
 export function createSimpleTx(
@@ -186,18 +188,24 @@ export function createSimpleTx(
     )
         .then(response => response.json())
         .then(e => {
+            // console.log('fee', fee.toString())
+            // console.log('last_gas_price', last_gas_price.toString())
+            // console.log('default_gas_limit', default_gas_limit.toString())
+            const gas_limit = bigNumber(fee)
+                .div(last_gas_price.div(satoshis))
+                .toString()
+            // console.log('gas_limit', bigNumber(gas_limit).toString())
+            // console.log('price', last_gas_price)
+            // console.log('limit', gas_limit)
             const txJson = {
                 // data: '',
+                gasPrice: sanitizeHex(decimalToHex(last_gas_price)),
                 gasLimit: sanitizeHex(decimalToHex(gas_limit)),
-                gasPrice: sanitizeHex(
-                    decimalToHex(fee.times(satoshis).div(gas_limit))
-                ),
                 nonce: sanitizeHex(e.result),
                 to: sanitizeHex(toAddress),
                 value: sanitizeHex(decimalToHex(amount.times(satoshis)))
             }
 
-            // console.log(txJson)
             const tx = new EthereumTx(txJson)
             tx.sign(Buffer.from(private_key, 'hex'))
             return sanitizeHex(tx.serialize().toString('hex'))

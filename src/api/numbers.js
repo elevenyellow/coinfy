@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js'
 
+BigNumber.config({ ERRORS: false }) // https://github.com/MikeMcl/bignumber.js/issues/11
+
 export function decimals(value, max = 2) {
     return Number(value).toFixed(max)
 }
