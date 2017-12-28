@@ -100,8 +100,8 @@ export function exportAssets() {
 
 export function importAssetsFromFile() {
     const assetsExported =
-        localStorageGet('assetsExported', state.network) !== 'false'
-    if (state.totalAssets > 0 && assetsExported) {
+        localStorageGet('assetsExported', state.network) === 'true'
+    if (state.totalAssets > 0 && !assetsExported) {
         state.popups.closeSession.confirm = () => {
             state.popups.closeSession.open = false
             // setAssetsExported(true) // Not sure if should ask again after a failed import
@@ -148,7 +148,7 @@ export function importAssets(dataString) {
 
 export function closeSession() {
     const assetsExported =
-        localStorageGet('assetsExported', state.network) !== 'false'
+        localStorageGet('assetsExported', state.network) === 'true'
     if (state.totalAssets > 0) {
         if (!assetsExported) {
             state.popups.closeSession.confirm = forceLoseSession

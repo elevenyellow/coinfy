@@ -46,9 +46,7 @@ export function localStorageRemove(key, network = MAINNET) {
 
 export function openFile(onOpen) {
     const input = createInputFile()
-    input.addEventListener('change', e => {
-        forEachFile(input).forEach(onOpen)
-    })
+    input.addEventListener('change', e => forEachFile(input).forEach(onOpen))
     input.click()
 }
 
