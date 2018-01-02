@@ -46,7 +46,7 @@ Blockchain.info asks you for an email, and they store your private key for you. 
 The main reason is basically that Coinfy is free.
 
 ### But hardware wallets are much more secure right?
-Yes, they are. If you lose your gadget you may always restore your wallets using your 12/15 words seed. Coinfy operates in the same way: you must print paper-wallets or write down your 12 words each time you create a new asset.
+Yes, they are. If you lose your gadget you may always restore your wallets using your 12/24 words seed. Coinfy operates in the same way: you must print paper-wallets or write down your 12 words each time you create a new asset.
 
 
 # [Are there tradeoffs to using Coinfy?](#tradeoffs)
