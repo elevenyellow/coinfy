@@ -191,20 +191,41 @@ export function createSimpleTx(
             // console.log('fee', fee.toString())
             // console.log('last_gas_price', last_gas_price.toString())
             // console.log('default_gas_limit', default_gas_limit.toString())
-            const gas_limit = bigNumber(fee)
-                .div(last_gas_price.div(satoshis))
-                .toString()
-            // console.log('gas_limit', bigNumber(gas_limit).toString())
-            // console.log('price', last_gas_price)
-            // console.log('limit', gas_limit)
+            // const gas_limit = bigNumber(fee)
+            //     .div(last_gas_price.div(satoshis))
+            //     .toString()
+            // console.log(
+            //     'gas_price',
+            //     fee
+            //         .times(satoshis)
+            //         .div(default_gas_limit)
+            //         .toString()
+            // )
+            // console.log('gas_limit', default_gas_limit.toString())
+
             const txJson = {
                 // data: '',
-                gasPrice: sanitizeHex(decimalToHex(last_gas_price)),
-                gasLimit: sanitizeHex(decimalToHex(gas_limit)),
+                gasLimit: sanitizeHex(decimalToHex(default_gas_limit)),
+                gasPrice: sanitizeHex(
+                    decimalToHex(
+                        fee
+                            .times(satoshis)
+                            .div(default_gas_limit)
+                            .round()
+                    )
+                ),
                 nonce: sanitizeHex(e.result),
                 to: sanitizeHex(toAddress),
-                value: sanitizeHex(decimalToHex(amount.times(satoshis)))
+                value: sanitizeHex(decimalToHex(amount.times(satoshis).round()))
             }
+
+            // console.log(
+            //     fee
+            //         .times(satoshis)
+            //         .div(default_gas_limit)
+            //         .round()
+            //         .toString()
+            // )
 
             const tx = new EthereumTx(txJson)
             tx.sign(Buffer.from(private_key, 'hex'))
@@ -251,8 +272,8 @@ const sendProviders = {
 export function sendRawEtherscan(rawTx) {
     // return JSONRpc(url_myetherapi, 'eth_gasPrice')
     return fetch(
-        `${api_url}?module=proxy&action=eth_sendRawTransaction&hex=${rawTx}&apikey=${api_key}`,
-        { method: 'POST', body: rawTx }
+        `${api_url}?module=proxy&action=eth_sendRawTransaction&hex=${rawTx}&apikey=${api_key}`
+        // { method: 'POST', body: rawTx }
     )
         .then(response => response.json())
         .then(e => {
