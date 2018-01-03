@@ -14,12 +14,18 @@ function sha1(data) {
     return shasum.digest('hex')
 }
 
+function readRemoteFile(url, callback) {
+    request(url, (error, response, body) => {
+        callback(body)
+    })
+}
+
 recursive('./public', ['.*'], (err, paths) => {
     paths.forEach(path => {
         const url = `https://coinfy.com${path.replace('public', '')}`
         // console.log(sha1(readLocalFile(path)), path)
-        request(url, (error, response, body) => {
-            console.log(url, sha1(body), sha1(readLocalFile(path)))
+        readRemoteFile(url, data => {
+            console.log(url, sha1(data), sha1(readLocalFile(path)))
         })
     })
 })

@@ -6,7 +6,7 @@ import {
 } from 'crypto'
 import bip38 from 'bip38'
 import wif from 'wif'
-import scrypt from 'scrypt.js' // or from 'scryptsy'
+import scrypt from 'scryptsy' // or from 'scryptsy'
 import { sha3 } from 'ethereumjs-util'
 
 export { randomBytes } from 'crypto'
