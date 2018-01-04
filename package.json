@@ -1,6 +1,7 @@
 {
     "name": "coinfy",
     "version": "1.0.0",
+    "repository": "https://github.com/elevenyellow/coinfy",
     "scripts": {
         "stats":
             "webpack --config=./webpack/production.js --profile --json > webpack-stats.json | open https://chrisbateman.github.io/webpack-visualizer/",
