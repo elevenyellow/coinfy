@@ -9,7 +9,7 @@ export default function Footer() {
             <div>
                 <a href={repository} target="_blank">
                     {' '}
-                    Version: {version}
+                    v{version}
                 </a>
             </div>
         </FooterDiv>
