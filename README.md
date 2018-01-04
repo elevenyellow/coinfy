@@ -1,6 +1,6 @@
 <p align="center"><a href="https://coinfy.com/"><img width="200"src="https://coinfy.com/static/image/logo2.svg"></a></p>
 
-## Download and running the last release in your machine
+## Download and running the latest release on your machine
 
 In order to follow this you will need to install the latest version of: [git](https://git-scm.com/downloads), [node.js](https://nodejs.org) and [npm](https://www.npmjs.com/)
 
@@ -24,7 +24,7 @@ npm run build
 npm run hashes
 ```
 
-The out will be something similar to this:
+The output will be something similar to this:
 
 ```
 > node test/hashes

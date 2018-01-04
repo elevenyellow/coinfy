@@ -33,7 +33,8 @@ const FooterDiv = styled.div`
         font-weight: bold;
         letter-spacing: 0.2px;
         display: block;
-        padding-left: 10px;
+        padding-right: 10px;
+        text-align: right;
         opacity: 0.3;
     }
     a:hover {
