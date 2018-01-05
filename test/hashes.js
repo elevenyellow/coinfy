@@ -36,7 +36,8 @@ recursive('./public', ['.*'], (err, paths) => {
                 console.log(
                     colors.red(`✘ ${hash_local}`) +
                         ` ${path}\n  ` +
-                        colors.red(hash_remote)
+                        colors.red(hash_remote) +
+                        ` ${url}`
                 )
 
             if (loaded === total_paths) {
