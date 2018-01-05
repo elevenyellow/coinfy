@@ -8,12 +8,36 @@ import SideMenu from '/components/partials/SideMenu'
 import Right from '/components/partials/Right'
 import Footer from '/components/partials/Footer'
 
+function show() {
+    let scanner = new Instascan.Scanner({
+        video: document.getElementById('cam')
+    })
+    scanner.addListener('scan', function(content) {
+        console.log(content)
+    })
+    Instascan.Camera.getCameras()
+        .then(function(cameras) {
+            if (cameras.length > 0) {
+                scanner.start(cameras[0])
+            } else {
+                console.error('No cameras found.')
+            }
+        })
+        .catch(function(e) {
+            console.error(e)
+        })
+}
+
 export default function App() {
     return (
         <Background>
             <Notifications />
             <SideMenu />
-            <Header />
+            {/* <Header /> */}
+            <div>
+                <button onClick={show}>Go</button>
+                <video id="cam" />
+            </div>
             <Content>
                 <Right />
             </Content>
