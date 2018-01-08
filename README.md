@@ -6,7 +6,7 @@
 
 In order to follow this you will need to install the latest version of: [git](https://git-scm.com/downloads), [node.js](https://nodejs.org) and [npm](https://www.npmjs.com/)
 
-Open a terminal/console and type this commands
+Open a terminal/console and type these commands
 
 ```
 git clone git@github.com:elevenyellow/coinfy.git
@@ -19,7 +19,7 @@ open http://localhost:8000
 
 ## Checking versions
 
-You can check if the files generated in your machine are the same that are being used in http://coinfy.com
+You can check if the files generated on your machine are the same that are being used in http://coinfy.com
 
 ```
 npm run build
