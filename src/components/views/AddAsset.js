@@ -50,14 +50,14 @@ export default class AddAsset extends Component {
                 title: 'Create a new wallet',
                 url: routes.createeth(),
                 logo: '/static/image/ETH.svg',
-                labels: 'eth coin'
+                labels: 'eth coin etereum'
             },
             {
                 name: 'Ethereum',
                 title: 'Import wallet',
                 url: routes.importeth(),
                 logo: '/static/image/ETH.svg',
-                labels: 'eth coin'
+                labels: 'eth coin etereum'
             }
         ]
     }
