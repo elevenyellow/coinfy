@@ -23,31 +23,41 @@ export default class AddAsset extends Component {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state.location.path, 'length')
         this.observer.observe(state.location.path, '1')
+        this.observer.observe(state.view, 'filter')
+
+        // Initial state
+        state.view = {
+            filter: ''
+        }
 
         this.assetList = [
             {
                 name: 'Bitcoin',
                 title: 'Create a new wallet',
                 url: routes.createbtc(),
-                logo: '/static/image/BTC.svg'
+                logo: '/static/image/BTC.svg',
+                labels: 'btc coin'
             },
             {
                 name: 'Bitcoin',
                 title: 'Import wallet',
                 url: routes.importbtc(),
-                logo: '/static/image/BTC.svg'
+                logo: '/static/image/BTC.svg',
+                labels: 'btc coin'
             },
             {
                 name: 'Ethereum',
                 title: 'Create a new wallet',
                 url: routes.createeth(),
-                logo: '/static/image/ETH.svg'
+                logo: '/static/image/ETH.svg',
+                labels: 'eth coin'
             },
             {
                 name: 'Ethereum',
                 title: 'Import wallet',
                 url: routes.importeth(),
-                logo: '/static/image/ETH.svg'
+                logo: '/static/image/ETH.svg',
+                labels: 'eth coin'
             }
         ]
     }
@@ -60,20 +70,43 @@ export default class AddAsset extends Component {
         return false
     }
 
+    onChangeFilter(e) {
+        state.view.filter = e.target.value
+    }
+
     onClick(route) {
         setHref(route)
     }
 
     render() {
+        const filter = state.view.filter.trim().toLowerCase()
+        const assetList =
+            filter.length < 2
+                ? this.assetList
+                : this.assetList.filter(
+                      asset =>
+                          asset.labels.toLowerCase().indexOf(filter) > -1 ||
+                          asset.name.toLowerCase().indexOf(filter) > -1 ||
+                          asset.title.toLowerCase().indexOf(filter) > -1
+                  )
+
         return React.createElement(AddAssetTemplate, {
             location: state.location,
-            assetList: this.assetList,
+            assetList: assetList,
+            filter: state.view.filter,
+            onChangeFilter: this.onChangeFilter,
             onClick: this.onClick
         })
     }
 }
 
-function AddAssetTemplate({ location, assetList, onClick }) {
+function AddAssetTemplate({
+    location,
+    assetList,
+    filter,
+    onChangeFilter,
+    onClick
+}) {
     return (
         <RightContainerPadding>
             <RightHeader>
@@ -85,7 +118,13 @@ function AddAssetTemplate({ location, assetList, onClick }) {
             </RightHeader>
             <RightContent>
                 <Div padding-bottom="20px">
-                    <InputSearch placeholder="Filter" width="100%" />
+                    <InputSearch
+                        value={filter}
+                        onChange={onChangeFilter}
+                        onClear={e => onChangeFilter({ target: { value: '' } })}
+                        placeholder="Filter"
+                        width="100%"
+                    />
                 </Div>
                 <Items>
                     {assetList.map(asset => (
@@ -119,7 +158,7 @@ const Item = styled.div`
     color: ${styles.color.black};
     &:hover {
         color: white;
-        background-color: ${styles.color.background3};
+        background-color: ${styles.color.background2};
     }
     &:nth-child(even) {
         margin-right: 0;

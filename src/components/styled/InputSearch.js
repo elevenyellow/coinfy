@@ -4,25 +4,29 @@ import styles from '/const/styles'
 import { createInputFile } from '/api/browser'
 import Input from '/components/styled/Input'
 import Div from '/components/styled/Div'
-import IconMenu from 'react-icons/lib/md/search'
+import IconSearch from 'react-icons/lib/md/search'
+import IconClose from 'react-icons/lib/md/close'
 
-export default class InputSearch extends Component {
-    render() {
-        return (
-            <Container>
-                <div className="icon">
-                    <IconMenu size={24} color={styles.color.front5} />
-                </div>
-                <div className="input">
-                    <Input {...this.props} />
-                </div>
-                <Div clear="both" />
-            </Container>
-        )
-    }
+export default function(props) {
+    return (
+        <Container value={props.value || ''}>
+            <div className="icon">
+                <IconSearch size={24} color={styles.color.front5} />
+            </div>
+            <div className="input">
+                <Input {...props} />
+            </div>
+            <div className="delete" onClick={props.onClear}>
+                <IconClose size={24} color="black" />
+            </div>
+            <Div clear="both" />
+        </Container>
+    )
 }
 
 const Container = styled.div`
+    position: relative;
+
     & .icon {
         float: left;
         text-align: center;
@@ -43,5 +47,18 @@ const Container = styled.div`
     & .input {
         float: left;
         width: calc(100% - 42px);
+    }
+    & .delete {
+        display: ${props => (props.value.length > 0 ? 'block' : 'none')};
+        position: absolute;
+        width: 40px;
+        height: 31px;
+        right: 0;
+        text-align: center;
+        padding-top: 7px;
+        opacity: 0.3;
+    }
+    & .delete:hover {
+        opacity: 1;
     }
 `

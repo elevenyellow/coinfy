@@ -8,6 +8,7 @@ export default {
     importbtc: () => `/add/import-bitcoin`,
     createeth: () => `/add/create-ethereum`,
     importeth: () => `/add/import-ethereum`,
+    importerc20: () => `/add/import-erc20`,
 
     // Assets
     asset: asset_id => `/asset/${asset_id}/summary`, // default
