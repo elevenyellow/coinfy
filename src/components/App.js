@@ -33,11 +33,7 @@ export default function App() {
         <Background>
             <Notifications />
             <SideMenu />
-            {/* <Header /> */}
-            <div>
-                <button onClick={show}>Go</button>
-                <video id="cam" />
-            </div>
+            <Header />
             <Content>
                 <Right />
             </Content>

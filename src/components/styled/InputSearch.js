@@ -3,38 +3,20 @@ import styled from 'styled-components'
 import styles from '/const/styles'
 import { createInputFile } from '/api/browser'
 import Input from '/components/styled/Input'
-import IconMenu from 'react-icons/lib/md/folder-open'
+import Div from '/components/styled/Div'
+import IconMenu from 'react-icons/lib/md/search'
 
-export default class InputFile extends Component {
-    componentWillMount(props) {
-        this.fileName = 'Select file'
-        this.input = createInputFile()
-        this.input.addEventListener('change', e => {
-            if (e.target.files && e.target.files[0])
-                this.setState({ fileName: e.target.files[0].name })
-            if (typeof this.props.onChange == 'function') this.props.onChange(e)
-        })
-        this.onClick = this.onClick.bind(this)
-    }
-
-    onClick(e) {
-        this.input.click()
-    }
-
+export default class InputSearch extends Component {
     render() {
         return (
-            <Container onClick={this.onClick} invalid={this.props.invalid}>
+            <Container>
                 <div className="icon">
-                    <IconMenu size={20} color={styles.color.front5} />
+                    <IconMenu size={24} color={styles.color.front5} />
                 </div>
                 <div className="input">
-                    <Input
-                        {...this.props}
-                        disabled={true}
-                        value={this.fileName}
-                        onChange={null}
-                    />
+                    <Input {...this.props} />
                 </div>
+                <Div clear="both" />
             </Container>
         )
     }
@@ -45,7 +27,7 @@ const Container = styled.div`
         float: left;
         text-align: center;
         width: 40px;
-        height: 30px;
+        height: 31px;
         background-image: linear-gradient(#fff, ${styles.color.background1});
         border: 1px solid
             ${props =>
