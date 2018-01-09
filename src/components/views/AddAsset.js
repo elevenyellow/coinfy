@@ -58,6 +58,13 @@ export default class AddAsset extends Component {
                 url: routes.importeth(),
                 logo: '/static/image/ETH.svg',
                 labels: 'eth coin etereum'
+            },
+            {
+                name: 'Aragon',
+                title: 'Import ANT token',
+                url: routes.importerc20('ANT'),
+                logo: '/static/image/ANT.svg',
+                labels: 'ant eth token erc20 ecr20'
             }
         ]
     }
@@ -131,6 +138,7 @@ function AddAssetTemplate({
                         onChange={onChangeFilter}
                         onClear={e => onChangeFilter({ target: { value: '' } })}
                         placeholder="Filter"
+                        invalid={assetList.length === 0}
                         width="100%"
                     />
                 </Div>
@@ -197,37 +205,3 @@ const ItemTitle = styled.div`
 const ItemSubtitle = styled.div`
     font-size: 14px;
 `
-
-/* <RightContentMenu>
-                    <RightContentMenuItem
-                        selected={location.pathname === routesCreatebtc}
-                        onClick={e => onClick(routesCreatebtc)}
-                    >
-                        <RightContentMenuItemImage>
-                            <img
-                                src="/static/image/BTC.svg"
-                                width="20"
-                                height="20"
-                            />
-                        </RightContentMenuItemImage>
-                        <RightContentMenuItemText>
-                            Create Bitcoin Wallet
-                        </RightContentMenuItemText>
-                    </RightContentMenuItem>
-
-                    <RightContentMenuItem
-                        selected={location.pathname === routesImportbtc}
-                        onClick={e => onClick(routesImportbtc)}
-                    >
-                        <RightContentMenuItemImage>
-                            <img
-                                src="/static/image/BTC.svg"
-                                width="20"
-                                height="20"
-                            />
-                        </RightContentMenuItemImage>
-                        <RightContentMenuItemText>
-                            Import Bitcoin Wallet
-                        </RightContentMenuItemText>
-                    </RightContentMenuItem>
-                </RightContentMenu> */

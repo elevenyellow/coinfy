@@ -3,7 +3,8 @@ import * as eth from '/api/Coins/ETH'
 
 export const Coins = {
     BTC: btc,
-    ETH: eth
+    ETH: eth,
+    ANT: {}
 }
 
 export const BTC = btc

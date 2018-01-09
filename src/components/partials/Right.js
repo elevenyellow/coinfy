@@ -5,7 +5,7 @@ import { Router, Route } from '/doprouter/react'
 
 import state from '/store/state'
 import { getAsset, isAssetRegistered } from '/store/getters'
-import { BTC } from '/api/Coins'
+import { Coins } from '/api/Coins'
 import styles from '/const/styles'
 import routes from '/const/routes'
 
@@ -21,6 +21,7 @@ import CreateBTC from '/components/views/CreateBTC'
 import ImportBTC from '/components/views/ImportBTC'
 import CreateETH from '/components/views/CreateETH'
 import ImportETH from '/components/views/ImportETH'
+import ImportERC20 from '/components/views/ImportERC20'
 import ViewBTC from '/components/views/BTC/'
 import ViewETH from '/components/views/ETH/'
 
@@ -78,6 +79,14 @@ function RightTemplate({ location, totalAssets, isRegistered, symbol }) {
                 </Route>
                 <Route pathname={routes.importeth()}>
                     <ImportETH />
+                </Route>
+                <Route
+                    pathname={new RegExp(routes.importerc20('[A-Z0-9]{3,}'))}
+                    if={Coins.hasOwnProperty(
+                        location.path[location.path.length - 1]
+                    )}
+                >
+                    <ImportERC20 />
                 </Route>
                 <Route path-0="asset" if={isRegistered && symbol === 'BTC'}>
                     <ViewBTC />
