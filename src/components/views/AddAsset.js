@@ -80,15 +80,23 @@ export default class AddAsset extends Component {
 
     render() {
         const filter = state.view.filter.trim().toLowerCase()
+        const words = filter.split(' ').filter(e => e.length > 1)
         const assetList =
             filter.length < 2
                 ? this.assetList
-                : this.assetList.filter(
-                      asset =>
-                          asset.labels.toLowerCase().indexOf(filter) > -1 ||
-                          asset.name.toLowerCase().indexOf(filter) > -1 ||
-                          asset.title.toLowerCase().indexOf(filter) > -1
-                  )
+                : this.assetList.filter(asset => {
+                      for (let i = 0; i < words.length; ++i)
+                          if (
+                              asset.labels.toLowerCase().indexOf(words[i]) ===
+                                  -1 &&
+                              asset.name.toLowerCase().indexOf(words[i]) ===
+                                  -1 &&
+                              asset.title.toLowerCase().indexOf(words[i]) === -1
+                          )
+                              return false
+
+                      return true
+                  })
 
         return React.createElement(AddAssetTemplate, {
             location: state.location,
