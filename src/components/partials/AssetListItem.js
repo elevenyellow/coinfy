@@ -67,7 +67,7 @@ function AssetTemplate({
             <div>
                 <AssetIcon>
                     <img
-                        src={`/static/image/${asset.symbol}.svg`}
+                        src={`/static/image/coins/${asset.symbol}.svg`}
                         width="22"
                         height="22"
                     />

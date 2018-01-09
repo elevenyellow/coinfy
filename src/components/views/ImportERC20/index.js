@@ -4,6 +4,7 @@ import { createObserver, collect } from 'dop'
 import { Router, Route, Show } from '/doprouter/react'
 
 import { generateQRCode } from '/api/qr'
+import { Coins } from '/api/Coins'
 import { isAddress } from '/api/Coins/ETH'
 import routes from '/const/routes'
 import state from '/store/state'
@@ -23,6 +24,7 @@ import Address from '/components/styled/Address'
 import Select from '/components/styled/Select'
 import { Label, SubLabel } from '/components/styled/Label'
 import CenterElement from '/components/styled/CenterElement'
+import IconHeader from '/components/styled/IconHeader'
 import {
     FormField,
     FormFieldLeft,
@@ -33,11 +35,10 @@ import ImportAddress from '/components/views/ImportETH/ImportAddress'
 import ImportPrivate from '/components/views/ImportETH/ImportPrivate'
 import ImportKeystore from '/components/views/ImportETH/ImportKeystore'
 
-
 const types_import = {
     address: 0,
     private: 1,
-    keystore: 2,
+    keystore: 2
 }
 
 export default class ImportEthereum extends Component {
@@ -71,9 +72,12 @@ export default class ImportEthereum extends Component {
 
     render() {
         const isValidAddress = isAddress(state.view.address)
+        const symbol = state.location.path[state.location.path.length - 1]
+        const Coin = Coins[symbol]
         return React.createElement(ImportTemplate, {
             type_import: state.view.type_import,
             address: state.view.address,
+            Coin: Coin,
             isValidAddress: isValidAddress,
             qrcodebase64: isValidAddress
                 ? generateQRCode(state.view.address)
@@ -86,6 +90,7 @@ export default class ImportEthereum extends Component {
 function ImportTemplate({
     type_import,
     address,
+    Coin,
     isValidAddress,
     qrcodebase64,
     onChangeTypeImport
@@ -93,9 +98,12 @@ function ImportTemplate({
     return (
         <RightContainerPadding>
             <RightHeader>
+                <IconHeader>
+                    <img src={`/static/image/coins/${Coin.symbol}.svg`} />
+                </IconHeader>
                 <Div float="left">
-                    <H1>Add asset</H1>
-                    <H2>Import Ethereum Wallet</H2>
+                    <H1>{Coin.name}</H1>
+                    <H2>Import {Coin.symbol} token</H2>
                 </Div>
                 <Div clear="both" />
             </RightHeader>
@@ -152,13 +160,13 @@ function ImportTemplate({
                     </FormField>
 
                     <Router>
-                        <Route if={type_import===types_import.address}>
+                        <Route if={type_import === types_import.address}>
                             <ImportAddress />
                         </Route>
-                        <Route if={type_import===types_import.private}>
+                        <Route if={type_import === types_import.private}>
                             <ImportPrivate />
                         </Route>
-                        <Route if={type_import===types_import.keystore}>
+                        <Route if={type_import === types_import.keystore}>
                             <ImportKeystore />
                         </Route>
                     </Router>

@@ -20,6 +20,7 @@ import Help from '/components/styled/Help'
 import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
 import CenterElement from '/components/styled/CenterElement'
+import IconHeader from '/components/styled/IconHeader'
 import { Label, SubLabel } from '/components/styled/Label'
 import {
     FormField,
@@ -147,9 +148,12 @@ function CreateBitcoinTemplate({
     return (
         <RightContainerPadding>
             <RightHeader>
+                <IconHeader>
+                    <img src="/static/image/coins/BTC.svg" />
+                </IconHeader>
                 <Div float="left">
-                    <H1>Add asset</H1>
-                    <H2>Create a new Bitcoin Wallet</H2>
+                    <H1>Bitcoin</H1>
+                    <H2>Create a new wallet</H2>
                 </Div>
                 <Div clear="both" />
             </RightHeader>

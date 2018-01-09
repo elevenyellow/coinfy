@@ -107,7 +107,7 @@ function HeaderAssetTemplate({
     return (
         <RightHeader>
             <Icon>
-                <img src={`/static/image/${symbol}.svg`} />
+                <img src={`/static/image/coins/${symbol}.svg`} />
             </Icon>
             <Left>
                 <H1Input

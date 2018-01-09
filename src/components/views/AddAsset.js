@@ -35,35 +35,35 @@ export default class AddAsset extends Component {
                 name: 'Bitcoin',
                 title: 'Create a new wallet',
                 url: routes.createbtc(),
-                logo: '/static/image/BTC.svg',
+                logo: '/static/image/coins/BTC.svg',
                 labels: 'btc coin'
             },
             {
                 name: 'Bitcoin',
                 title: 'Import wallet',
                 url: routes.importbtc(),
-                logo: '/static/image/BTC.svg',
+                logo: '/static/image/coins/BTC.svg',
                 labels: 'btc coin'
             },
             {
                 name: 'Ethereum',
                 title: 'Create a new wallet',
                 url: routes.createeth(),
-                logo: '/static/image/ETH.svg',
+                logo: '/static/image/coins/ETH.svg',
                 labels: 'eth coin etereum'
             },
             {
                 name: 'Ethereum',
                 title: 'Import wallet',
                 url: routes.importeth(),
-                logo: '/static/image/ETH.svg',
+                logo: '/static/image/coins/ETH.svg',
                 labels: 'eth coin etereum'
             },
             {
                 name: 'Aragon',
                 title: 'Import ANT token',
                 url: routes.importerc20('ANT'),
-                logo: '/static/image/ANT.svg',
+                logo: '/static/image/coins/ANT.svg',
                 labels: 'ant eth token erc20 ecr20'
             }
         ]

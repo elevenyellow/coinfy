@@ -23,6 +23,7 @@ import Address from '/components/styled/Address'
 import Select from '/components/styled/Select'
 import { Label, SubLabel } from '/components/styled/Label'
 import CenterElement from '/components/styled/CenterElement'
+import IconHeader from '/components/styled/IconHeader'
 import {
     FormField,
     FormFieldLeft,
@@ -33,7 +34,6 @@ import ImportAddress from '/components/views/ImportBTC/ImportAddress'
 // import ImportPublic from '/components/views/ImportBTC/ImportPublic'
 import ImportWIF from '/components/views/ImportBTC/ImportWIF'
 import ImportBIP from '/components/views/ImportBTC/ImportBIP'
-
 
 const types_import = {
     address: 0,
@@ -95,9 +95,12 @@ function ImportTemplate({
     return (
         <RightContainerPadding>
             <RightHeader>
+                <IconHeader>
+                    <img src="/static/image/coins/BTC.svg" />
+                </IconHeader>
                 <Div float="left">
-                    <H1>Add asset</H1>
-                    <H2>Import Bitcoin Wallet</H2>
+                    <H1>Bitcoin</H1>
+                    <H2>Import wallet</H2>
                 </Div>
                 <Div clear="both" />
             </RightHeader>
@@ -165,16 +168,18 @@ function ImportTemplate({
                     </FormField>
 
                     <Router>
-                        <Route if={type_import===types_import.address}>
+                        <Route if={type_import === types_import.address}>
                             <ImportAddress />
                         </Route>
                         {/* <Route if={type_import===types_import.public_key}>
                             <ImportPublic />
                         </Route> */}
-                        <Route if={type_import===types_import.private_key}>
+                        <Route if={type_import === types_import.private_key}>
                             <ImportWIF />
                         </Route>
-                        <Route if={type_import===types_import.private_key_bip}>
+                        <Route
+                            if={type_import === types_import.private_key_bip}
+                        >
                             <ImportBIP />
                         </Route>
                     </Router>

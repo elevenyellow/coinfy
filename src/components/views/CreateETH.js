@@ -21,6 +21,7 @@ import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
 import CenterElement from '/components/styled/CenterElement'
 import { Label, SubLabel } from '/components/styled/Label'
+import IconHeader from '/components/styled/IconHeader'
 import {
     FormField,
     FormFieldLeft,
@@ -147,9 +148,12 @@ function CreateEthereumTemplate({
     return (
         <RightContainerPadding>
             <RightHeader>
+                <IconHeader>
+                    <img src="/static/image/coins/ETH.svg" />
+                </IconHeader>
                 <Div float="left">
-                    <H1>Add asset</H1>
-                    <H2>Create a new Ethereum Wallet</H2>
+                    <H1>Ethereum</H1>
+                    <H2>Create a new wallet</H2>
                 </Div>
                 <Div clear="both" />
             </RightHeader>

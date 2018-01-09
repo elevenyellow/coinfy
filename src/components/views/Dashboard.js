@@ -72,7 +72,7 @@ export default class Dashboard extends Component {
                 balance_currency_number: convertBalance(asset.symbol, balance),
                 percentage: 0,
                 id: id,
-                icon: `/static/image/${asset.symbol}.svg`
+                icon: `/static/image/coins/${asset.symbol}.svg`
             })
         }
 
@@ -179,7 +179,7 @@ function DashboardTemplate({
                         <Currency>
                             <CurrencyIco>
                                 <img
-                                    src={`/static/image/${symbol}.svg`}
+                                    src={`/static/image/coins/${symbol}.svg`}
                                     width="25"
                                 />
                             </CurrencyIco>
@@ -200,14 +200,14 @@ function DashboardTemplate({
                         </Currency>
                     ))}
                     {/* <Currency>
-                        <CurrencyIco><img src={`/static/image/BTC.svg`} width="25" /></CurrencyIco>
+                        <CurrencyIco><img src={`/static/image/coins/BTC.svg`} width="25" /></CurrencyIco>
                         <CurrencyText>
                             <CurrencyLabel>Bitcoin</CurrencyLabel>
                             <CurrencyValue>BTC ≈ <span>$5,235</span></CurrencyValue>
                         </CurrencyText>
                     </Currency> */}
                     {/* <Currency>
-                        <CurrencyIco><img src={`/static/image/ETH.svg`} width="25" /></CurrencyIco>
+                        <CurrencyIco><img src={`/static/image/coins/ETH.svg`} width="25" /></CurrencyIco>
                         <CurrencyText>
                             <CurrencyLabel>Ethereum</CurrencyLabel>
                             <CurrencyValue>ETH ≈ <span>$342</span></CurrencyValue>
@@ -335,7 +335,7 @@ function DashboardTemplate({
                     </HeaderAsset>
                     <Assets>
                         <Asset>
-                            <AssetIcon><img src="/static/image/ETH.svg" width="20" height="20" /></AssetIcon>
+                            <AssetIcon><img src="/static/image/coins/ETH.svg" width="20" height="20" /></AssetIcon>
                             <AssetText>
                                 <AssetLeft>
                                     <AssetTitle>My wallet 1</AssetTitle>
