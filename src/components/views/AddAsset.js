@@ -4,6 +4,7 @@ import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 import styles from '/const/styles'
 
+import searchInArray from '/api/searchInArray'
 import state from '/store/state'
 import { setHref } from '/store/actions'
 import routes from '/const/routes'
@@ -86,28 +87,13 @@ export default class AddAsset extends Component {
     }
 
     render() {
-        const filter = state.view.filter.trim().toLowerCase()
-        const words = filter.split(' ').filter(e => e.length > 1)
-        const assetList =
-            filter.length < 2
-                ? this.assetList
-                : this.assetList.filter(asset => {
-                      for (let i = 0; i < words.length; ++i)
-                          if (
-                              asset.labels.toLowerCase().indexOf(words[i]) ===
-                                  -1 &&
-                              asset.name.toLowerCase().indexOf(words[i]) ===
-                                  -1 &&
-                              asset.title.toLowerCase().indexOf(words[i]) === -1
-                          )
-                              return false
-
-                      return true
-                  })
-
         return React.createElement(AddAssetTemplate, {
             location: state.location,
-            assetList: assetList,
+            assetList: searchInArray(this.assetList, state.view.filter, [
+                'name',
+                'title',
+                'labels'
+            ]),
             filter: state.view.filter,
             onChangeFilter: this.onChangeFilter,
             onClick: this.onClick
