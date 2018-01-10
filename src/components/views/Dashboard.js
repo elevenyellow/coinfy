@@ -250,7 +250,13 @@ function DashboardTemplate({
                                                 {category.label}
                                             </HeaderLeftTitle>
                                             <HeaderLeftSubtitle>
-                                                {category.assets.length} assets
+                                                {category.assets.length === 1
+                                                    ? `${
+                                                          category.assets.length
+                                                      } asset`
+                                                    : `${
+                                                          category.assets.length
+                                                      } assets`}
                                             </HeaderLeftSubtitle>
                                         </HeaderLeftText>
                                     </HeaderLeft>

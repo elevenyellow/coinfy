@@ -45,7 +45,7 @@ const Container = styled.div`
         float: left;
         text-align: center;
         width: 40px;
-        height: 30px;
+        height: 31px;
         background-image: linear-gradient(#fff, ${styles.color.background1});
         border: 1px solid
             ${props =>

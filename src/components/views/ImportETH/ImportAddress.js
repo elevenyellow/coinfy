@@ -35,6 +35,7 @@ export default class ImportAddress extends Component {
 
         const symbol = state.location.path[state.location.path.length - 1]
         this.Coin = Coins.hasOwnProperty(symbol) ? Coins[symbol] : Coins.ETH
+
         this.onChangeInput = this.onChangeInput.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }

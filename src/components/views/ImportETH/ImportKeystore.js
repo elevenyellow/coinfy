@@ -14,7 +14,7 @@ import {
     getAddressFromPrivateKey
 } from '/api/Coins/ETH'
 import { isAssetRegistered } from '/store/getters'
-import { ETH, getCoinId } from '/api/Coins'
+import { Coins, getCoinId } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -35,12 +35,17 @@ export default class ImportKeystore extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
+
         const collector = collect()
         state.view.keystore_selected = false
         state.view.keystore_password = ''
         state.view.keystore_password_error = ''
         state.view.keystore_invalid_error = ''
         collector.destroy()
+
+        const symbol = state.location.path[state.location.path.length - 1]
+        this.Coin = Coins.hasOwnProperty(symbol) ? Coins[symbol] : Coins.ETH
+
         this.onChangeFile = this.onChangeFile.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
@@ -73,7 +78,7 @@ export default class ImportKeystore extends Component {
                         if (
                             isAssetRegistered(
                                 getCoinId({
-                                    symbol: ETH.symbol,
+                                    symbol: this.Coin.symbol,
                                     address: address
                                 })
                             )
@@ -113,11 +118,15 @@ export default class ImportKeystore extends Component {
             const crypto = this.keystore.Crypto || this.keystore.crypto
 
             try {
-                const private_key = ETH.decrypt(address, crypto, password)
+                const private_key = this.Coin.decrypt(address, crypto, password)
                 if (private_key) {
-                    const asset = createAsset(ETH.type, ETH.symbol, address)
+                    const asset = createAsset(
+                        this.Coin.type,
+                        this.Coin.symbol,
+                        address
+                    )
                     setPrivateKey(
-                        getCoinId({ symbol: ETH.symbol, address }),
+                        getCoinId({ symbol: this.Coin.symbol, address }),
                         private_key,
                         password
                     )

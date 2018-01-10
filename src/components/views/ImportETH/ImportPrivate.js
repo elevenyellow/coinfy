@@ -8,7 +8,7 @@ import state from '/store/state'
 
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/Coins/ETH'
 import { isAssetRegistered } from '/store/getters'
-import { ETH, getCoinId } from '/api/Coins'
+import { Coins, getCoinId } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -29,6 +29,7 @@ export default class ImportPrivate extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
+
         const collector = collect()
         state.view.isValidInput = false
         state.view.private_input = ''
@@ -36,6 +37,10 @@ export default class ImportPrivate extends Component {
         state.view.private_password = ''
         state.view.private_repassword = ''
         collector.destroy()
+
+        const symbol = state.location.path[state.location.path.length - 1]
+        this.Coin = Coins.hasOwnProperty(symbol) ? Coins[symbol] : Coins.ETH
+
         this.onChangeInput = this.onChangeInput.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onChangeRepassword = this.onChangeRepassword.bind(this)
@@ -59,7 +64,10 @@ export default class ImportPrivate extends Component {
 
                 if (
                     isAssetRegistered(
-                        getCoinId({ symbol: ETH.symbol, address: address })
+                        getCoinId({
+                            symbol: this.Coin.symbol,
+                            address: address
+                        })
                     )
                 ) {
                     state.view.private_input_error =
@@ -95,9 +103,9 @@ export default class ImportPrivate extends Component {
         e.preventDefault()
         const collector = collect()
         const address = state.view.address
-        const asset = createAsset(ETH.type, ETH.symbol, address)
+        const asset = createAsset(this.Coin.type, this.Coin.symbol, address)
         setPrivateKey(
-            getCoinId({ symbol: ETH.symbol, address }),
+            getCoinId({ symbol: this.Coin.symbol, address }),
             state.view.private_input,
             state.view.private_password
         )
