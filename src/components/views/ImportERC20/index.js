@@ -31,17 +31,19 @@ import {
     FormFieldRight,
     FormFieldButtons
 } from '/components/styled/Form'
+import ImportEthereum from '/components/views/ImportERC20/ImportEthereum'
 import ImportAddress from '/components/views/ImportETH/ImportAddress'
 import ImportPrivate from '/components/views/ImportETH/ImportPrivate'
 import ImportKeystore from '/components/views/ImportETH/ImportKeystore'
 
 const types_import = {
-    address: 0,
-    private: 1,
-    keystore: 2
+    ethereum: 0,
+    address: 1,
+    private: 2,
+    keystore: 3
 }
 
-export default class ImportEthereum extends Component {
+export default class ImportERC20 extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
@@ -50,7 +52,7 @@ export default class ImportEthereum extends Component {
 
         // Initial state
         state.view = {
-            type_import: types_import.address,
+            type_import: types_import.ethereum,
             address: ''
         }
 
@@ -124,13 +126,21 @@ function ImportTemplate({
                 <form>
                     <FormField>
                         <FormFieldLeft>
-                            <Label>I have my</Label>
+                            <Label>Import from</Label>
                             <SubLabel>
                                 Select the option you prefer to import.
                             </SubLabel>
                         </FormFieldLeft>
                         <FormFieldRight>
                             <Select width="100%" onChange={onChangeTypeImport}>
+                                <option
+                                    value={types_import.ethereum}
+                                    selected={
+                                        type_import === types_import.ethereum
+                                    }
+                                >
+                                    Ethereum wallet
+                                </option>
                                 <option
                                     value={types_import.address}
                                     selected={
@@ -160,6 +170,9 @@ function ImportTemplate({
                     </FormField>
 
                     <Router>
+                        <Route if={type_import === types_import.ethereum}>
+                            <ImportEthereum />
+                        </Route>
                         <Route if={type_import === types_import.address}>
                             <ImportAddress />
                         </Route>

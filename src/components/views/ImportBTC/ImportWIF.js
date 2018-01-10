@@ -30,7 +30,7 @@ export default class ImportWIF extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
         const collector = collect()
-        state.view.isValidInput = false
+        state.view.is_valid_input = false
         state.view.wif_input = ''
         state.view.wif_input_error = ''
         state.view.wif_password = ''
@@ -64,21 +64,21 @@ export default class ImportWIF extends Component {
                     )
                 ) {
                     state.view.wif_input_error = 'You already have this asset'
-                    state.view.isValidInput = false
+                    state.view.is_valid_input = false
                 } else {
                     state.view.wif_input_error = ''
-                    state.view.isValidInput = true
+                    state.view.is_valid_input = true
                 }
             } catch (e) {
                 state.view.address = ''
-                state.view.isValidInput = false
+                state.view.is_valid_input = false
                 state.view.wif_input_error = 'Invalid private key'
                 console.error(e)
             }
         } else {
             state.view.address = ''
             state.view.wif_input_error = 'Invalid private key'
-            state.view.isValidInput = false
+            state.view.is_valid_input = false
         }
 
         collector.emit()
@@ -117,7 +117,7 @@ export default class ImportWIF extends Component {
 
     get isValidForm() {
         return (
-            state.view.isValidInput &&
+            state.view.is_valid_input &&
             state.view.wif_password.length >= minpassword &&
             state.view.wif_password === state.view.wif_repassword
         )

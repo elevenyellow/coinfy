@@ -28,7 +28,7 @@ export default class ImportAddress extends Component {
         this.observer.observe(state.view)
 
         const collector = collect()
-        state.view.isValidInput = false
+        state.view.is_valid_input = false
         state.view.address_input = ''
         state.view.address_input_error = ''
         collector.destroy()
@@ -61,15 +61,15 @@ export default class ImportAddress extends Component {
                 )
             ) {
                 state.view.address_input_error = 'You already have this asset'
-                state.view.isValidInput = false
+                state.view.is_valid_input = false
             } else {
                 state.view.address_input_error = ''
-                state.view.isValidInput = true
+                state.view.is_valid_input = true
             }
         } else {
             state.view.address = ''
             state.view.address_input_error = 'Invalid address'
-            state.view.isValidInput = false
+            state.view.is_valid_input = false
         }
 
         collector.emit()
@@ -85,15 +85,11 @@ export default class ImportAddress extends Component {
         collector.emit()
     }
 
-    get isValidForm() {
-        return state.view.isValidInput
-    }
-
     render() {
         return React.createElement(ImportAddressTemplate, {
             address_input: state.view.address_input,
             address_input_error: state.view.address_input_error,
-            isValidForm: this.isValidForm,
+            isValidForm: state.view.is_valid_input,
             onChangeInput: this.onChangeInput,
             onSubmit: this.onSubmit
         })

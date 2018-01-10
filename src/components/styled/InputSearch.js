@@ -43,6 +43,9 @@ const Container = styled.div`
         border-radius: 5px 0 0 5px;
         border-right: 0;
         padding-top: 6px;
+        ${styles.media.fourth} {
+            height: 32px;
+        }
     }
     & .input {
         float: left;

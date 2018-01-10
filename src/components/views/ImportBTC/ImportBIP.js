@@ -30,7 +30,7 @@ export default class ImportBIP extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
         const collector = collect()
-        state.view.isValidInput = false
+        state.view.is_valid_input = false
         state.view.bip_input = ''
         state.view.bip_input_error = ''
         state.view.bip_password = ''
@@ -55,11 +55,11 @@ export default class ImportBIP extends Component {
 
         if (isPrivateKeyBip(value)) {
             state.view.bip_input_error = ''
-            state.view.isValidInput = true
+            state.view.is_valid_input = true
         } else {
             state.view.address = ''
             state.view.bip_input_error = 'Invalid private key'
-            state.view.isValidInput = false
+            state.view.is_valid_input = false
         }
 
         collector.emit()
@@ -91,7 +91,7 @@ export default class ImportBIP extends Component {
                 // console.log( address );
                 if (isAssetRegistered(asset_id)) {
                     state.view.bip_input_error = 'You already have this asset'
-                    state.view.isValidInput = false
+                    state.view.is_valid_input = false
                 } else {
                     const asset = createAsset(BTC.type, BTC.symbol, address)
                     setPrivateKey(asset_id, private_key, password)
@@ -111,7 +111,7 @@ export default class ImportBIP extends Component {
     }
 
     get isValidForm() {
-        return state.view.isValidInput && state.view.bip_password.length > 0
+        return state.view.is_valid_input && state.view.bip_password.length > 0
     }
 
     render() {

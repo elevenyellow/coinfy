@@ -27,7 +27,7 @@ export default class ImportAddress extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
         const collector = collect()
-        state.view.isValidInput = false
+        state.view.is_valid_input = false
         state.view.address_input = ''
         state.view.address_input_error = ''
         collector.destroy()
@@ -55,15 +55,15 @@ export default class ImportAddress extends Component {
                 )
             ) {
                 state.view.address_input_error = 'You already have this asset'
-                state.view.isValidInput = false
+                state.view.is_valid_input = false
             } else {
                 state.view.address_input_error = ''
-                state.view.isValidInput = true
+                state.view.is_valid_input = true
             }
         } else {
             state.view.address = ''
             state.view.address_input_error = 'Invalid address'
-            state.view.isValidInput = false
+            state.view.is_valid_input = false
         }
 
         collector.emit()
@@ -79,7 +79,7 @@ export default class ImportAddress extends Component {
     }
 
     get isValidForm() {
-        return state.view.isValidInput
+        return state.view.is_valid_input
     }
 
     render() {
