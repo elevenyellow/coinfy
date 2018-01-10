@@ -7,7 +7,7 @@ import state from '/store/state'
 
 import { isAddress, addHexPrefix } from '/api/Coins/ETH'
 import { isAssetRegistered } from '/store/getters'
-import { ETH, getCoinId } from '/api/Coins'
+import { Coins, getCoinId } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -26,11 +26,15 @@ export default class ImportAddress extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
+
         const collector = collect()
         state.view.isValidInput = false
         state.view.address_input = ''
         state.view.address_input_error = ''
         collector.destroy()
+
+        const symbol = state.location.path[state.location.path.length - 1]
+        this.Coin = Coins.hasOwnProperty(symbol) ? Coins[symbol] : Coins.ETH
         this.onChangeInput = this.onChangeInput.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
@@ -43,15 +47,16 @@ export default class ImportAddress extends Component {
 
     onChangeInput(e) {
         const collector = collect()
-        const value = e.target.value.trim()
+        let value = e.target.value.trim()
         state.view.address_input = value
+        value = value.toLowerCase()
 
         if (isAddress(value)) {
             state.view.address = addHexPrefix(value)
 
             if (
                 isAssetRegistered(
-                    getCoinId({ symbol: ETH.symbol, address: value })
+                    getCoinId({ symbol: this.Coin.symbol, address: value })
                 )
             ) {
                 state.view.address_input_error = 'You already have this asset'
@@ -73,7 +78,7 @@ export default class ImportAddress extends Component {
         e.preventDefault()
         const collector = collect()
         const address = state.view.address
-        const asset = createAsset(ETH.type, ETH.symbol, address)
+        const asset = createAsset(this.Coin.type, this.Coin.symbol, address)
         setHref(routes.asset(getCoinId(asset)))
         // setHref(routes.home())
         collector.emit()

@@ -46,6 +46,8 @@ export default class ImportEthereum extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
 
+        this.Coin = Coins[state.location.path[state.location.path.length - 1]]
+
         // Initial state
         state.view = {
             type_import: types_import.address,
@@ -72,12 +74,10 @@ export default class ImportEthereum extends Component {
 
     render() {
         const isValidAddress = isAddress(state.view.address)
-        const symbol = state.location.path[state.location.path.length - 1]
-        const Coin = Coins[symbol]
         return React.createElement(ImportTemplate, {
             type_import: state.view.type_import,
             address: state.view.address,
-            Coin: Coin,
+            Coin: this.Coin,
             isValidAddress: isValidAddress,
             qrcodebase64: isValidAddress
                 ? generateQRCode(state.view.address)
