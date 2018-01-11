@@ -6,8 +6,8 @@ import Input from '/components/styled/Input'
 import IconMenu from 'react-icons/lib/md/folder-open'
 
 export default class InputFile extends Component {
-    componentWillMount(props) {
-        this.fileName = 'Select file'
+    componentWillMount() {
+        this.state = { fileName: '' }
         this.input = createInputFile()
         this.input.addEventListener('change', e => {
             if (e.target.files && e.target.files[0])
@@ -30,8 +30,9 @@ export default class InputFile extends Component {
                 <div className="input">
                     <Input
                         {...this.props}
+                        placeholder={this.props.placeholder || 'Select file'}
                         disabled={true}
-                        value={this.fileName}
+                        value={this.state.fileName}
                         onChange={null}
                     />
                 </div>
