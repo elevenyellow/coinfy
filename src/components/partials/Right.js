@@ -24,6 +24,7 @@ import ImportETH from '/components/views/ImportETH'
 import ImportERC20 from '/components/views/ImportERC20'
 import ViewBTC from '/components/views/BTC/'
 import ViewETH from '/components/views/ETH/'
+import ViewERC20 from '/components/views/ERC20/'
 
 export default class Right extends Component {
     componentWillMount() {
@@ -93,6 +94,9 @@ function RightTemplate({ location, totalAssets, isRegistered, symbol }) {
                 </Route>
                 <Route path-0="asset" if={isRegistered && symbol === 'ETH'}>
                     <ViewETH />
+                </Route>
+                <Route path-0="asset" if={isRegistered}>
+                    <ViewERC20 />
                 </Route>
                 <Route>
                     <RightContainerMiddle>

@@ -16,6 +16,7 @@ import {
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
 import { localStorageGet } from '/api/browser'
 import { MAINNET, TESTNET } from '/const/networks'
+import { WALLET } from '/const/coin_types'
 
 // private
 export const network = Number(localStorageGet('network')) || MAINNET
@@ -32,7 +33,7 @@ export const api_url = `${url}/api`
 export const api_key = 'GY9KKYEJF1HDEPIAIRGA66R2RIQWQXV9UZ'
 
 // exports
-export const type = 'wallet'
+export const type = WALLET
 export const symbol = 'ETH'
 export const name = 'Ethereum'
 export const color = '#7a8aec' //'#9c86fe'

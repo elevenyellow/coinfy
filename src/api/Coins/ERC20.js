@@ -1,13 +1,18 @@
 import { bigNumber } from '/api/numbers'
-import { api_url, api_key } from '/api/Coins/ETH'
+import { url, api_url, api_key } from '/api/Coins/ETH'
+import { ERC20 } from '/const/coin_types'
 
-export { ascii, format, encrypt, decrypt } from './ETH' // '/api/Coins/ETH' not working
+export { ascii, format, encrypt, decrypt, fetchSummary } from './ETH' // '/api/Coins/ETH' not working
 
-export const type = 'erc20'
+export const type = ERC20
+
+export function urlInfoRaw(address, handler) {
+    return `${url}/token/${handler}?a=${address}`
+}
 
 export function fetchBalanceRaw(address, contract_address, coin_decimals = 18) {
     return fetch(
-        `https://api.etherscan.io/api?apikey=${api_key}&module=account&action=tokenbalance&contractaddress=${contract_address}&address=${address}&tag=latest`
+        `${api_url}?apikey=${api_key}&module=account&action=tokenbalance&contractaddress=${contract_address}&address=${address}&tag=latest`
     )
         .then(response => response.json())
         .then(response => {
