@@ -59,6 +59,14 @@ export function setPrivateKey(asset_id, private_key, password) {
     setAssetsExported(false)
 }
 
+export function copyPrivateKey(asset_id_from, asset_id_to) {
+    const from = state.assets[asset_id_from]
+    const to = state.assets[asset_id_to]
+    set(to, 'private_key', from.private_key, { deep: false })
+    saveAssetsLocalStorage()
+    setAssetsExported(false)
+}
+
 export function deleteAsset(asset_id) {
     const collector = collect()
     const name = state.assets[asset_id].label || state.assets[asset_id].address

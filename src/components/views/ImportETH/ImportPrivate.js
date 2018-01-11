@@ -104,12 +104,13 @@ export default class ImportPrivate extends Component {
         const collector = collect()
         const address = state.view.address
         const asset = createAsset(this.Coin.type, this.Coin.symbol, address)
+        const asset_id = getCoinId({ symbol: this.Coin.symbol, address })
         setPrivateKey(
-            getCoinId({ symbol: this.Coin.symbol, address }),
+            asset_id,
             state.view.private_input,
             state.view.private_password
         )
-        setHref(routes.asset(getCoinId(asset)))
+        setHref(routes.asset(asset_id))
         collector.emit()
     }
 

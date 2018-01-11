@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
-import { setHref, createAsset } from '/store/actions'
+import { setHref, createAsset, copyPrivateKey } from '/store/actions'
 import state from '/store/state'
 
 import { isAddress, addHexPrefix } from '/api/Coins/ETH'
@@ -66,10 +66,13 @@ export default class ImportEthereum extends Component {
     onSubmit(e) {
         e.preventDefault()
         const collector = collect()
-        const address = state.view.address
+        const ethereum_asset_id = state.view.ethereum_asset_id
+        const ethereum_asset = state.assets[ethereum_asset_id]
+        const address = ethereum_asset.address
         const asset = createAsset(this.Coin.type, this.Coin.symbol, address)
-        setHref(routes.asset(getCoinId(asset)))
-        // setHref(routes.home())
+        const asset_id = getCoinId({ symbol: this.Coin.symbol, address })
+        copyPrivateKey(ethereum_asset_id, asset_id)
+        setHref(routes.asset(asset_id))
         collector.emit()
     }
 
@@ -109,7 +112,9 @@ function ImportEthereumTemplate({
             <FormField>
                 <FormFieldLeft>
                     <Label>Ethereum wallet</Label>
-                    <SubLabel>Select one of your ethereum wallet.</SubLabel>
+                    <SubLabel>
+                        Select a ethereum wallet that you previously added
+                    </SubLabel>
                 </FormFieldLeft>
                 <FormFieldRight>
                     <Select

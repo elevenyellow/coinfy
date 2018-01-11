@@ -96,12 +96,9 @@ export default class ImportWIF extends Component {
         const collector = collect()
         const address = state.view.address
         const asset = createAsset(BTC.type, BTC.symbol, address)
-        setPrivateKey(
-            getCoinId({ symbol: BTC.symbol, address }),
-            state.view.wif_input,
-            state.view.wif_password
-        )
-        setHref(routes.asset(getCoinId(asset)))
+        const asset_id = getCoinId({ symbol: BTC.symbol, address })
+        setPrivateKey(asset_id, state.view.wif_input, state.view.wif_password)
+        setHref(routes.asset(asset_id))
         collector.emit()
     }
 
