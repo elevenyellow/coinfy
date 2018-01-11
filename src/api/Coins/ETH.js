@@ -6,24 +6,30 @@ import {
     privateToPublic
 } from 'ethereumjs-util'
 import EthereumTx from 'ethereumjs-tx'
-import { decimalsMax, decimalToHex, sanitizeHex, bigNumber } from '/api/numbers'
+import {
+    formatCoin,
+    decimalsMax,
+    decimalToHex,
+    sanitizeHex,
+    bigNumber
+} from '/api/numbers'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
 import { localStorageGet } from '/api/browser'
 import { MAINNET, TESTNET } from '/const/networks'
 
 // private
-const network = Number(localStorageGet('network')) || MAINNET
-const url =
+export const network = Number(localStorageGet('network')) || MAINNET
+export const url =
     network === MAINNET
         ? 'https://api.etherscan.io'
         : 'https://ropsten.etherscan.io'
-const url_myetherapi =
-    network === MAINNET
-        ? 'https://api.myetherapi.com/eth'
-        : 'https://api.myetherapi.com/rop'
+// export const url_myetherapi =
+//     network === MAINNET
+//         ? 'https://api.myetherapi.com/eth'
+//         : 'https://api.myetherapi.com/rop'
 
-const api_url = `${url}/api`
-const api_key = 'GY9KKYEJF1HDEPIAIRGA66R2RIQWQXV9UZ'
+export const api_url = `${url}/api`
+export const api_key = 'GY9KKYEJF1HDEPIAIRGA66R2RIQWQXV9UZ'
 
 // exports
 export const type = 'wallet'
@@ -31,16 +37,15 @@ export const symbol = 'ETH'
 export const name = 'Ethereum'
 export const color = '#7a8aec' //'#9c86fe'
 export const ascii = ''
+export const coin_decimals = 18
 export const price_decimals = 0
-export const satoshis = 1000000000000000000 // this is WEI actually
+export const satoshis = 1000000000000000000 // Math.pow(10,18) this is WEI actually
 export const default_gas_limit = 21000
 
 export { addHexPrefix } from 'ethereumjs-util'
 
-export function format(value, dec = 18) {
-    const tof = typeof value
-    if (tof != 'number' && tof != 'string') value = '0'
-    return `${decimalsMax(value, dec)} ${symbol}`
+export function format(value) {
+    return formatCoin(value, coin_decimals, symbol)
 }
 
 export function isAddress(string) {
@@ -84,6 +89,10 @@ export function generateRandomWallet() {
         address: addHexPrefix(address.toString('hex')),
         private_key: private_key.toString('hex')
     }
+}
+
+export function removeHexPrefix(address) {
+    return address.toLowerCase().replace('0x', '')
 }
 
 export function urlInfo(address) {

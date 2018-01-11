@@ -53,3 +53,9 @@ export function padLeftEven(hex) {
 export function bigNumber(number) {
     return new BigNumber(String(number))
 }
+
+export function formatCoin(value, dec, symbol) {
+    const tof = typeof value
+    if (tof != 'number' && tof != 'string') value = '0'
+    return `${decimalsMax(value, dec)} ${symbol}`
+}

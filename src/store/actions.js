@@ -35,7 +35,7 @@ export function setHref(href) {
 
 export function createAsset(type, symbol, address) {
     const asset = generateDefaultAsset({ type, symbol, address })
-    const asset_id = getNextCoinId()
+    const asset_id = getNextCoinId({ symbol, address })
     state.assets[asset_id] = asset
     saveAssetsLocalStorage()
     setAssetsExported(false)

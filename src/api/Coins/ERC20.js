@@ -1,1 +1,43 @@
-export { format, fetchBalance, encrypt, decrypt } from './ETH' // '/api/Coins/ETH' not working
+import { bigNumber } from '/api/numbers'
+import { api_url, api_key } from '/api/Coins/ETH'
+
+export { ascii, format, encrypt, decrypt } from './ETH' // '/api/Coins/ETH' not working
+
+export const type = 'erc20'
+
+export function fetchBalanceRaw(address, contract_address, coin_decimals = 18) {
+    return fetch(
+        `https://api.etherscan.io/api?apikey=${api_key}&module=account&action=tokenbalance&contractaddress=${contract_address}&address=${address}&tag=latest`
+    )
+        .then(response => response.json())
+        .then(response => {
+            return bigNumber(response.result)
+                .div(Math.pow(10, coin_decimals))
+                .toString()
+        })
+}
+
+// const instruction_getbalance = '0x70a08231'
+// const instruction_transfer = '0xa9059cbb'
+
+// function getBalance(contract_address, address) {
+//     return {
+//         method: 'eth_call',
+//         params: [
+//             {
+//                 to: contract_address,
+//                 data: `${instruction_getbalance}${padLeft(
+//                     removeHexPrefix(address),
+//                     64
+//                 )}`
+//             }
+//         ]
+//     }
+// }
+
+// console.log(
+//     getBalance(
+//         '0x86fa049857e0209aa7d9e616f7eb3b3b78ecfdb0',
+//         '0xc0c2a4efe73a48091cca7b81fbe86bc631f88d80'
+//     )
+// )

@@ -1,6 +1,6 @@
 import Bitcoin from 'bitcoinjs-lib'
 import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
-import { decimalsMax, bigNumber } from '/api/numbers'
+import { formatCoin, decimalsMax, bigNumber } from '/api/numbers'
 import {
     decryptBIP38 as _decryptBIP38,
     encryptBIP38 as _encryptBIP38
@@ -26,13 +26,12 @@ export const symbol = 'BTC'
 export const name = 'Bitcoin'
 export const color = '#fdb033'
 export const ascii = 'Ƀ'
+export const coin_decimals = 10
 export const price_decimals = 0
 export const satoshis = 100000000
 
-export function format(value, dec = 18) {
-    const tof = typeof value
-    if (tof != 'number' && tof != 'string') value = '0'
-    return `${decimalsMax(value, dec)} ${symbol}`
+export function format(value) {
+    return formatCoin(value, coin_decimals, symbol)
 }
 
 export function generateRandomWallet() {
