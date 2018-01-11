@@ -12,6 +12,7 @@ import {
     getTotalAssets,
     getAssetsAsArray,
     generateDefaultAsset,
+    getNextCoinId,
     getCoinId
 } from '/store/getters'
 import { CryptoPriceManager } from '/api/prices'
@@ -34,7 +35,7 @@ export function setHref(href) {
 
 export function createAsset(type, symbol, address) {
     const asset = generateDefaultAsset({ type, symbol, address })
-    const asset_id = getCoinId({ symbol, address, type })
+    const asset_id = getNextCoinId()
     state.assets[asset_id] = asset
     saveAssetsLocalStorage()
     setAssetsExported(false)
