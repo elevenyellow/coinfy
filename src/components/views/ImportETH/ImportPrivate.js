@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
-import { minpassword } from '/api/crypto'
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
+import { isAssetRegistered, getCoinId } from '/store/getters'
 
+import { minpassword } from '/api/crypto'
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/Coins/ETH'
-import { isAssetRegistered } from '/store/getters'
-import { Coins, getCoinId } from '/api/Coins'
+import { Coins } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'

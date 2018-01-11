@@ -4,10 +4,10 @@ import { createObserver, collect } from 'dop'
 
 import { setHref, createAsset, copyPrivateKey } from '/store/actions'
 import state from '/store/state'
+import { isAssetRegistered, getCoinId } from '/store/getters'
 
 import { isAddress, addHexPrefix } from '/api/Coins/ETH'
-import { isAssetRegistered } from '/store/getters'
-import { Coins, ETH, getCoinId } from '/api/Coins'
+import { Coins, ETH } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'

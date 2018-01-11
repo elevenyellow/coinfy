@@ -11,7 +11,3 @@ export const Coins = {
 export const BTC = btc
 export const ETH = eth
 export const ANT = ant
-
-export function getCoinId({ symbol, address, type = 'wallet' }) {
-    return `${symbol}-${address}`
-}

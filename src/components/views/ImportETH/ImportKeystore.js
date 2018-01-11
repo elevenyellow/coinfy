@@ -7,14 +7,14 @@ import { decryptAES128CTR } from '/api/crypto'
 
 import { setPrivateKey, setHref, createAsset } from '/store/actions'
 import state from '/store/state'
+import { isAssetRegistered, getCoinId } from '/store/getters'
 
 import {
     isAddress,
     addHexPrefix,
     getAddressFromPrivateKey
 } from '/api/Coins/ETH'
-import { isAssetRegistered } from '/store/getters'
-import { Coins, getCoinId } from '/api/Coins'
+import { Coins } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'

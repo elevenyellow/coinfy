@@ -1,6 +1,6 @@
 import React from 'react'
 import { set, collect } from 'dop'
-import { Coins, getCoinId } from '/api/Coins'
+import { Coins } from '/api/Coins'
 import { now } from '/api/time'
 import { keysToRemoveWhenExporting } from '/const/state'
 import routes from '/const/routes'
@@ -11,7 +11,8 @@ import state from '/store/state'
 import {
     getTotalAssets,
     getAssetsAsArray,
-    generateDefaultAsset
+    generateDefaultAsset,
+    getCoinId
 } from '/store/getters'
 import { CryptoPriceManager } from '/api/prices'
 import { decimals } from '/api/numbers'

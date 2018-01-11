@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
-import { Coins, getCoinId } from '/api/Coins'
+import { Coins } from '/api/Coins'
 import { round } from '/api/numbers'
 import styles from '/const/styles'
 import routes from '/const/routes'
 import { Fiats } from '/api/Fiats'
 import state from '/store/state'
 import { setHref } from '/store/actions'
-import { convertBalance, formatCurrency } from '/store/getters'
+import { convertBalance, formatCurrency, getCoinId } from '/store/getters'
 
 export default class Asset extends Component {
     componentWillMount() {

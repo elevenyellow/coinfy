@@ -7,10 +7,11 @@ import { generateQRCode } from '/api/qr'
 import { generateRandomWallet } from '/api/Coins/BTC'
 import { minpassword } from '/api/crypto'
 
-import { BTC, getCoinId } from '/api/Coins'
+import { BTC } from '/api/Coins'
 import routes from '/const/routes'
 import state from '/store/state'
 import styles from '/const/styles'
+import { getCoinId } from '/store/getters'
 
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'

@@ -60,3 +60,7 @@ export function generateDefaultAsset(object = {}) {
 export function formatCurrency(value, n = 0, currencySymbol = state.fiat) {
     return Fiats[currencySymbol].format(value, n)
 }
+
+export function getCoinId({ symbol, address }) {
+    return `${symbol}-${address}`
+}

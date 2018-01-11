@@ -6,11 +6,13 @@ import { Show } from '/doprouter/react'
 import { generateQRCode } from '/api/qr'
 import { generateRandomWallet } from '/api/Coins/ETH'
 import { minpassword } from '/api/crypto'
+import { ETH } from '/api/Coins'
 
-import { ETH, getCoinId } from '/api/Coins'
-import routes from '/const/routes'
+import { getCoinId } from '/store/getters'
 import state from '/store/state'
+
 import styles from '/const/styles'
+import routes from '/const/routes'
 
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'

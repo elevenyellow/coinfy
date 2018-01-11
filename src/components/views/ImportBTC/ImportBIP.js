@@ -5,11 +5,11 @@ import { Show } from '/doprouter/react'
 
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
+import { isAssetRegistered, getCoinId } from '/store/getters'
 
 import { isPrivateKeyBip, getAddressFromPrivateKey } from '/api/Coins/BTC'
 import { decryptBIP38 } from '/api/crypto'
-import { isAssetRegistered } from '/store/getters'
-import { BTC, getCoinId } from '/api/Coins'
+import { BTC } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'

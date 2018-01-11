@@ -3,12 +3,12 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
 import { minpassword } from '/api/crypto'
+import { isPrivateKey, getAddressFromPrivateKey } from '/api/Coins/BTC'
+import { BTC } from '/api/Coins'
+
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
-
-import { isPrivateKey, getAddressFromPrivateKey } from '/api/Coins/BTC'
-import { isAssetRegistered } from '/store/getters'
-import { BTC, getCoinId } from '/api/Coins'
+import { isAssetRegistered, getCoinId } from '/store/getters'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
