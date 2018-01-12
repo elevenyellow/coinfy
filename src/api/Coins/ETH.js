@@ -20,17 +20,19 @@ import { WALLET } from '/const/coin_types'
 
 // private
 export const network = Number(localStorageGet('network')) || MAINNET
+export const api_key = 'GY9KKYEJF1HDEPIAIRGA66R2RIQWQXV9UZ'
+export const api_url =
+    network === MAINNET
+        ? 'https://api.etherscan.io/api'
+        : 'https://ropsten.etherscan.io/api'
 export const url =
     network === MAINNET
-        ? 'https://api.etherscan.io'
+        ? 'https://etherscan.io'
         : 'https://ropsten.etherscan.io'
 // export const url_myetherapi =
 //     network === MAINNET
 //         ? 'https://api.myetherapi.com/eth'
 //         : 'https://api.myetherapi.com/rop'
-
-export const api_url = `${url}/api`
-export const api_key = 'GY9KKYEJF1HDEPIAIRGA66R2RIQWQXV9UZ'
 
 // exports
 export const type = WALLET
@@ -97,11 +99,11 @@ export function removeHexPrefix(address) {
 }
 
 export function urlInfo(address) {
-    return `https://etherscan.io/address/${address}`
+    return `${url}/address/${address}`
 }
 
 export function urlInfoTx(txid) {
-    return `https://etherscan.io/tx/${txid}`
+    return `${url}/tx/${txid}`
 }
 
 export function urlDecodeTx() {

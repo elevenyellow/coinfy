@@ -8,7 +8,7 @@ export { ascii, format, encrypt, decrypt, fetchSummary, urlInfoTx } from './ETH'
 export const type = ERC20
 
 export function urlInfoRaw(address, handler) {
-    return `https://etherscan.io/token/${handler}?a=${address}`
+    return `${url}/token/${handler}?a=${address}`
 }
 
 export function fetchBalanceRaw(address, contract_address, coin_decimals = 18) {
