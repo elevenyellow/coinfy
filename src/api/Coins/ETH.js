@@ -29,10 +29,10 @@ export const url =
     network === MAINNET
         ? 'https://etherscan.io'
         : 'https://ropsten.etherscan.io'
-// export const url_myetherapi =
-//     network === MAINNET
-//         ? 'https://api.myetherapi.com/eth'
-//         : 'https://api.myetherapi.com/rop'
+export const url_myetherapi =
+    network === MAINNET
+        ? 'https://api.myetherapi.com/eth'
+        : 'https://api.myetherapi.com/rop'
 
 // exports
 export const type = WALLET
@@ -110,15 +110,20 @@ export function urlDecodeTx() {
     return ''
 }
 
-export function fetchBalance(address) {
+export function fetchBalance(
+    address,
+    contract_address,
+    coin_decimals = satoshis
+) {
     return fetch(
-        `${api_url}?apikey=${api_key}&module=account&action=balance&address=${address}&tag=latest`
+        contract_address === undefined
+            ? `${api_url}?apikey=${api_key}&module=account&action=balance&address=${address}&tag=latest`
+            : `${api_url}?apikey=${api_key}&module=account&action=tokenbalance&address=${address}&contractaddress=${contract_address}&tag=latest`
     )
         .then(response => response.json())
         .then(response => {
-            // return Number(response.result)/satoshis
             return bigNumber(response.result)
-                .div(satoshis)
+                .div(Math.pow(10, coin_decimals))
                 .toString()
         })
 }
