@@ -31,8 +31,8 @@ export const coin_decimals = 10
 export const price_decimals = 0
 export const satoshis = 100000000
 
-export function format(value) {
-    return formatCoin(value, coin_decimals, symbol)
+export function format(value, decimals = coin_decimals) {
+    return formatCoin(value, decimals, symbol)
 }
 
 export function generateRandomWallet() {

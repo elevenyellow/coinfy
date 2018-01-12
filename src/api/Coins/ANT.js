@@ -19,6 +19,6 @@ export function fetchBalance(address) {
     return fetchBalanceRaw(address, contract_address, coin_decimals)
 }
 
-export function format(value) {
-    return formatCoin(value, coin_decimals, symbol)
+export function format(value, decimals = coin_decimals) {
+    return formatCoin(value, decimals, symbol)
 }

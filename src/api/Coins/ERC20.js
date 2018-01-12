@@ -2,12 +2,13 @@ import { bigNumber } from '/api/numbers'
 import { url, api_url, api_key } from '/api/Coins/ETH'
 import { ERC20 } from '/const/coin_types'
 
-export { ascii, format, encrypt, decrypt, fetchSummary } from './ETH' // '/api/Coins/ETH' not working
+// https://tokenstandard.codetract.io/
+export { ascii, format, encrypt, decrypt, fetchSummary, urlInfoTx } from './ETH' // '/api/Coins/ETH' not working
 
 export const type = ERC20
 
 export function urlInfoRaw(address, handler) {
-    return `${url}/token/${handler}?a=${address}`
+    return `https://etherscan.io/token/${handler}?a=${address}`
 }
 
 export function fetchBalanceRaw(address, contract_address, coin_decimals = 18) {

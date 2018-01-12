@@ -45,8 +45,8 @@ export const default_gas_limit = 21000
 
 export { addHexPrefix } from 'ethereumjs-util'
 
-export function format(value) {
-    return formatCoin(value, coin_decimals, symbol)
+export function format(value, decimals = coin_decimals) {
+    return formatCoin(value, decimals, symbol)
 }
 
 export function isAddress(string) {
@@ -97,11 +97,11 @@ export function removeHexPrefix(address) {
 }
 
 export function urlInfo(address) {
-    return `${url}/address/${address}`
+    return `https://etherscan.io/address/${address}`
 }
 
 export function urlInfoTx(txid) {
-    return `${url}/tx/${txid}`
+    return `https://etherscan.io/tx/${txid}`
 }
 
 export function urlDecodeTx() {
