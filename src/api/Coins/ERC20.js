@@ -19,7 +19,8 @@ export {
     decrypt,
     urlInfoTx,
     fetchBalance,
-    fetchSummary
+    fetchSummary,
+    fetchTxs
 } from './ETH' // '/api/Coins/ETH' not working
 
 export const type = ERC20

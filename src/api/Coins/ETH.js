@@ -129,6 +129,7 @@ export function fetchTxs(
     address,
     from = 0,
     to = from + 100,
+    contract_address,
     _satoshis = satoshis
 ) {
     const resolver =
@@ -146,21 +147,29 @@ export function fetchTxs(
             txs: []
         }
 
-        json.result.slice(from, to).forEach(txRaw => {
-            let tx = {
-                txid: txRaw.hash,
-                fees: bigNumber(txRaw.gasUsed),
-                time: txRaw.timeStamp,
-                confirmations: txRaw.confirmations,
-                value: bigNumber(txRaw.value)
-                    .div(_satoshis)
-                    .toString()
-                // raw: txRaw,
-            }
-            if (txRaw.from.toLowerCase() === address.toLowerCase())
-                tx.value = '-' + tx.value
+        json.result.forEach(txRaw => {
+            // console.log(txRaw)
+            if (
+                txRaw.to === contract_address ||
+                txRaw.from === contract_address ||
+                txRaw.contractAddress === contract_address ||
+                contract_address === undefined
+            ) {
+                let tx = {
+                    txid: txRaw.hash,
+                    fees: bigNumber(txRaw.gasUsed),
+                    time: txRaw.timeStamp,
+                    confirmations: txRaw.confirmations,
+                    value: bigNumber(txRaw.value)
+                        .div(_satoshis)
+                        .toString()
+                    // raw: txRaw,
+                }
+                if (txRaw.from.toLowerCase() === address.toLowerCase())
+                    tx.value = '-' + tx.value
 
-            data.txs.push(tx)
+                data.txs.push(tx)
+            }
         })
         return data
     })
@@ -172,7 +181,13 @@ export function fetchSummary(address, contract_address, satoshis) {
     return fetchBalance(address, contract_address, satoshis)
         .then(balance => {
             totals.balance = balance
-            return fetchTxs(address)
+            return fetchTxs(
+                address,
+                undefined,
+                undefined,
+                contract_address,
+                satoshis
+            )
         })
         .then(txs => Object.assign(txs, totals))
 }

@@ -2,6 +2,7 @@ import { formatCoin } from '/api/numbers'
 import {
     fetchBalance as fetchBalanceRaw,
     fetchSummary as fetchSummaryRaw,
+    fetchTxs as fetchTxsRaw,
     urlInfoRaw
 } from '/api/Coins/ERC20'
 
@@ -30,4 +31,8 @@ export function fetchBalance(address) {
 
 export function fetchSummary(address) {
     return fetchSummaryRaw(address, contract_address, satoshis)
+}
+
+export function fetchTxs(address, from, to) {
+    return fetchTxsRaw(address, from, to, contract_address, satoshis)
 }
