@@ -12,7 +12,15 @@ import {
 } from '/api/Coins/ETH'
 import { ERC20 } from '/const/coin_types'
 
-export { ascii, format, encrypt, decrypt, urlInfoTx, fetchBalance } from './ETH' // '/api/Coins/ETH' not working
+export {
+    ascii,
+    format,
+    encrypt,
+    decrypt,
+    urlInfoTx,
+    fetchBalance,
+    fetchSummary
+} from './ETH' // '/api/Coins/ETH' not working
 
 export const type = ERC20
 

@@ -42,7 +42,7 @@ export const color = '#7a8aec' //'#9c86fe'
 export const ascii = ''
 export const coin_decimals = 18
 export const price_decimals = 0
-export const satoshis = 1000000000000000000 // Math.pow(10,18) this is WEI actually
+export const satoshis = Math.pow(10, coin_decimals)
 export const default_gas_limit = 21000
 
 export { addHexPrefix } from 'ethereumjs-util'
@@ -110,58 +110,66 @@ export function urlDecodeTx() {
     return ''
 }
 
-export function fetchBalance(
-    address,
-    contract_address,
-    coin_decimals = satoshis
-) {
+export function fetchBalance(address, contract_address, _satoshis = satoshis) {
     return fetch(
         contract_address === undefined
             ? `${api_url}?apikey=${api_key}&module=account&action=balance&address=${address}&tag=latest`
             : `${api_url}?apikey=${api_key}&module=account&action=tokenbalance&address=${address}&contractaddress=${contract_address}&tag=latest`
     )
         .then(response => response.json())
-        .then(response => {
-            return bigNumber(response.result)
-                .div(Math.pow(10, coin_decimals))
+        .then(response =>
+            bigNumber(response.result)
+                .div(satoshis)
                 .toString()
-        })
+        )
 }
 
-export function fetchTxs(address, from = 0, to = from + 100) {
-    return fetch(
-        `${api_url}?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${api_key}`
-    )
-        .then(response => response.json())
-        .then(json => {
-            const data = {
-                totalTxs: json.result.length,
-                txs: []
+const txs_cache = {}
+export function fetchTxs(
+    address,
+    from = 0,
+    to = from + 100,
+    _satoshis = satoshis
+) {
+    const resolver =
+        from > 0 && txs_cache[address] !== undefined
+            ? Promise.resolve(txs_cache[address])
+            : fetch(
+                  `${api_url}?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${api_key}`
+              ).then(response => response.json())
+
+    return resolver.then(json => {
+        txs_cache[address] = json
+
+        const data = {
+            totalTxs: json.result.length,
+            txs: []
+        }
+
+        json.result.slice(from, to).forEach(txRaw => {
+            let tx = {
+                txid: txRaw.hash,
+                fees: bigNumber(txRaw.gasUsed),
+                time: txRaw.timeStamp,
+                confirmations: txRaw.confirmations,
+                value: bigNumber(txRaw.value)
+                    .div(_satoshis)
+                    .toString()
+                // raw: txRaw,
             }
+            if (txRaw.from.toLowerCase() === address.toLowerCase())
+                tx.value = '-' + tx.value
 
-            json.result.slice(from, to).forEach(txRaw => {
-                let tx = {
-                    txid: txRaw.hash,
-                    fees: bigNumber(txRaw.gasUsed),
-                    time: txRaw.timeStamp,
-                    confirmations: txRaw.confirmations,
-                    value: bigNumber(txRaw.value)
-                        .div(satoshis)
-                        .toString()
-                    // raw: txRaw,
-                }
-                if (txRaw.from.toLowerCase() === address.toLowerCase())
-                    tx.value = '-' + tx.value
-
-                data.txs.push(tx)
-            })
-            return data
+            data.txs.push(tx)
         })
+        return data
+    })
+    // }
 }
 
-export function fetchSummary(address) {
+export function fetchSummary(address, contract_address, satoshis) {
     const totals = {}
-    return fetchBalance(address)
+    return fetchBalance(address, contract_address, satoshis)
         .then(balance => {
             totals.balance = balance
             return fetchTxs(address)
