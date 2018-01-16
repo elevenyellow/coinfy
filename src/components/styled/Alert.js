@@ -20,6 +20,10 @@ export default function Alert({ children, color = ALERT }) {
 
 const AlertStyled = styled.div`
     text-align: center;
+    /* background-color: ${props => props.color};
+    padding: 5px;
+    box-sizing: border-box;
+    border-radius: 3px; */
 
     & .icon {
         width: 20px;

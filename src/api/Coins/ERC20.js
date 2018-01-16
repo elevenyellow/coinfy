@@ -9,11 +9,14 @@ import {
     url_myetherapi,
     // removeHexPrefix
     fetchSummary,
-    fetchTxs
+    fetchTxs,
+    fetchRecomendedFee as fetchRecomendedFeeRaw
 } from '/api/Coins/ETH'
 import { ERC20 } from '/const/coin_types'
 
 export {
+    isAddress,
+    isAddressCheck,
     ascii,
     format,
     encrypt,
@@ -23,15 +26,21 @@ export {
     fetchSummary,
     fetchTxs,
     getSendProviders,
-    fetchRecomendedFee,
     urlDecodeTx
 } from './ETH' // '/api/Coins/ETH' not working
 
 export const type = ERC20
 export const symbol_fee = symbol
+export const default_gas_limit = 80000
 
 export function urlInfoRaw(address, handler) {
     return `${url}/token/${handler}?a=${address}`
+}
+
+export function fetchRecomendedFee() {
+    return fetchRecomendedFeeRaw({
+        gas_limit: default_gas_limit
+    })
 }
 
 // // https://tokenstandard.codetract.io/

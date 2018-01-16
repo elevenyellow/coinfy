@@ -195,7 +195,7 @@ export function fetchSummary(address, contract_address, satoshis) {
 
 // http://ipfs.b9lab.com:8080/ipfs/QmTHdYEYiJPmbkcth3mQvEQQgEamFypLhc9zapsBatQW7Y/throttled_faucet.html
 let last_gas_price
-export function fetchRecomendedFee() {
+export function fetchRecomendedFee({ gas_limit = default_gas_limit }) {
     // return JSONRpc(url_myetherapi, 'eth_gasPrice')
     return fetch(
         `${api_url}?module=proxy&action=eth_gasPrice&apikey=${api_key}`
@@ -204,7 +204,7 @@ export function fetchRecomendedFee() {
         .then(e => {
             last_gas_price = bigNumber(parseInt(e.result, 16))
             return last_gas_price
-                .times(default_gas_limit)
+                .times(gas_limit)
                 .div(satoshis)
                 .toString()
         })

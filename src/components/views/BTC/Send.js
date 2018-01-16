@@ -42,6 +42,8 @@ export default class Send extends Component {
         this.observer.observe(state.location, 'pathname')
 
         // Initial state
+        this.balance = this.asset.balance
+        this.balance_fee = this.balance
         this.amount = 0
         this.fee = 0
         this.fee_recomended = 0
@@ -214,8 +216,8 @@ export default class Send extends Component {
                 const collector = collect()
                 state.view.loading = false
                 state.view.is_sent = true
-                this.asset.balance = Number(
-                    bigNumber(this.asset.balance)
+                this.balance = Number(
+                    bigNumber(this.balance)
                         .minus(this.amount)
                         .minus(this.fee)
                 )
@@ -231,12 +233,16 @@ export default class Send extends Component {
     }
 
     getMax() {
-        const max = bigNumber(this.asset.balance).minus(this.fee)
+        const max = bigNumber(this.balance).minus(this.fee)
         return max.gt(0) ? max : 0
     }
 
     get isEnoughBalance() {
         return this.amount.lte(this.getMax())
+    }
+
+    get isEnoughBalanceForFee() {
+        return this.fee.lte(this.balance_fee)
     }
 
     get isValidForm() {
@@ -278,6 +284,7 @@ export default class Send extends Component {
         this.amount = bigNumber(parseNumber(amount1))
         this.fee = bigNumber(parseNumber(state.view.fee_input))
         const isEnoughBalance = this.isEnoughBalance
+        const isEnoughBalanceForFee = this.isEnoughBalanceForFee
 
         return React.createElement(SendTemplate, {
             step: step,
@@ -304,7 +311,9 @@ export default class Send extends Component {
             password_input: state.view.password_input,
             password_input_invalid: state.view.password_input_invalid,
             isEnoughBalance: isEnoughBalance,
-            isValidForm: this.isValidForm && this.isEnoughBalance,
+            isEnoughBalanceForFee: isEnoughBalanceForFee,
+            isValidForm:
+                this.isValidForm && isEnoughBalance && isEnoughBalanceForFee,
             isFeeLowerThanRecomended: this.fee.lt(this.fee_recomended),
             error_when_create: state.view.error_when_create,
             send_provider_selected: state.view.send_provider_selected,
@@ -350,6 +359,7 @@ function SendTemplate({
     password_input,
     password_input_invalid,
     isEnoughBalance,
+    isEnoughBalanceForFee,
     isValidForm,
     isFeeLowerThanRecomended,
     error_when_create,
@@ -439,6 +449,16 @@ function SendTemplate({
                         </Div>
                     </Show>
 
+                    <Show if={isFeeLowerThanRecomended}>
+                        <Div padding-top="10px">
+                            <Alert>
+                                If you don’t apply enough funds for the network
+                                fee, is probably that your transaction would
+                                never be confirmed.
+                            </Alert>
+                        </Div>
+                    </Show>
+
                     <Div text-align="center" padding="10px 0">
                         <TextFee href="#" onClick={onClickFee}>
                             <span>Recommended Network Fee </span>
@@ -480,12 +500,11 @@ function SendTemplate({
                         </ButtonBig>
                     </Div>
 
-                    <Show if={isFeeLowerThanRecomended}>
+                    <Show if={!isEnoughBalanceForFee}>
                         <Div padding-top="10px">
-                            <Alert>
-                                If you don’t apply enough funds for the network
-                                fee, is probably that your transaction would
-                                never be confirmed.
+                            <Alert color={ERROR}>
+                                This wallet does not have enough funds to afford
+                                the network fee.
                             </Alert>
                         </Div>
                     </Show>
