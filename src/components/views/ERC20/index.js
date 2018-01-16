@@ -28,13 +28,13 @@ import {
 } from '/components/styled/Menu'
 
 import HeaderAsset from '/components/partials/HeaderAsset'
-import Summary from '/components/views/ETH/Summary'
-import Send from '/components/views/ETH/Send'
-import ExportETH from '/components/views/ETH/Export'
-import ChangePassword from '/components/views/ETH/ChangePassword'
-import Delete from '/components/views/ETH/Delete'
+import Summary from '/components/views/ERC20/Summary'
+import Send from '/components/views/ERC20/Send'
+import Export from '/components/views/ERC20/Export'
+import ChangePassword from '/components/views/ERC20/ChangePassword'
+import Delete from '/components/views/ERC20/Delete'
 
-export default class ViewETH extends Component {
+export default class ViewERC20 extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.location, 'pathname')
@@ -53,7 +53,7 @@ export default class ViewETH extends Component {
     render() {
         const asset_id = state.location.path[1]
         const hasPrivateKey = isAssetWithPrivateKey(asset_id)
-        return React.createElement(ViewETHTemplate, {
+        return React.createElement(ViewERC20Template, {
             location: state.location,
             hasPrivateKey: hasPrivateKey,
             routes_summaryAsset: routes.summaryAsset(asset_id),
@@ -66,7 +66,7 @@ export default class ViewETH extends Component {
     }
 }
 
-function ViewETHTemplate({
+function ViewERC20Template({
     location,
     isRegistered,
     hasPrivateKey,
@@ -162,7 +162,7 @@ function ViewETHTemplate({
                     </Route>
 
                     <Route if={hasPrivateKey} pathname={routes_printAsset}>
-                        <ExportETH />
+                        <Export />
                     </Route>
 
                     <Route

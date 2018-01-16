@@ -37,6 +37,7 @@ export const url_myetherapi =
 // exports
 export const type = WALLET
 export const symbol = 'ETH'
+export const symbol_fee = symbol
 export const name = 'Ethereum'
 export const color = '#7a8aec' //'#9c86fe'
 export const ascii = ''
@@ -194,7 +195,7 @@ export function fetchSummary(address, contract_address, satoshis) {
 
 // http://ipfs.b9lab.com:8080/ipfs/QmTHdYEYiJPmbkcth3mQvEQQgEamFypLhc9zapsBatQW7Y/throttled_faucet.html
 let last_gas_price
-export function fetchRecomendedFee(from, to) {
+export function fetchRecomendedFee() {
     // return JSONRpc(url_myetherapi, 'eth_gasPrice')
     return fetch(
         `${api_url}?module=proxy&action=eth_gasPrice&apikey=${api_key}`

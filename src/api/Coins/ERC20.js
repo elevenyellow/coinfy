@@ -2,6 +2,7 @@ import { bigNumber } from '/api/numbers'
 // import { padLeft } from '/api/strings'
 // import JSONRpc from '/api/jsonrpc'
 import {
+    symbol,
     url,
     api_url,
     api_key,
@@ -20,10 +21,14 @@ export {
     urlInfoTx,
     fetchBalance,
     fetchSummary,
-    fetchTxs
+    fetchTxs,
+    getSendProviders,
+    fetchRecomendedFee,
+    urlDecodeTx
 } from './ETH' // '/api/Coins/ETH' not working
 
 export const type = ERC20
+export const symbol_fee = symbol
 
 export function urlInfoRaw(address, handler) {
     return `${url}/token/${handler}?a=${address}`

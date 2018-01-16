@@ -287,16 +287,17 @@ export default class Send extends Component {
             amount1_input: amount1,
             amount2_input: amount2,
             symbol_crypto: symbol,
+            symbol_crypto_fee: this.Coin.symbol_fee,
             symbol_currency: state.fiat,
             fee_input: state.view.fee_input,
             fee_input_visible: state.view.fee_input_visible,
             fee_fiat: formatCurrency(
-                convertBalance(this.asset.symbol, this.fee),
+                convertBalance(this.Coin.symbol_fee, this.fee),
                 2
             ),
             fee_recomended: this.fee_recomended,
             fee_recomended_fiat: formatCurrency(
-                convertBalance(this.asset.symbol, this.fee_recomended),
+                convertBalance(this.Coin.symbol_fee, this.fee_recomended),
                 2
             ),
             total: this.amount.plus(this.fee).toString(),
@@ -338,6 +339,7 @@ function SendTemplate({
     amount1_input,
     amount2_input,
     symbol_crypto,
+    symbol_crypto_fee,
     symbol_currency,
     fee_fiat,
     fee_input,
@@ -446,6 +448,9 @@ function SendTemplate({
                             <Span color="#000" font-weight="bold">
                                 {fee_recomended_fiat}
                             </Span>
+                            <Show if={symbol_crypto !== symbol_crypto_fee}>
+                                <span> ({symbol_crypto_fee})</span>
+                            </Show>
                         </TextFee>
                     </Div>
 

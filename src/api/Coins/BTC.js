@@ -24,6 +24,7 @@ const api_url = `${url}/api` // https://github.com/bitpay/insight-api
 // exports
 export const type = WALLET
 export const symbol = 'BTC'
+export const symbol_fee = symbol
 export const name = 'Bitcoin'
 export const color = '#fdb033'
 export const ascii = 'Ƀ'
