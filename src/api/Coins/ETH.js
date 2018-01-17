@@ -201,6 +201,7 @@ export function fetchRecomendedFee({ gas_limit = default_gas_limit }) {
     )
         .then(response => response.json())
         .then(e => {
+            // console.log(parseInt(e.result, 16), gas_limit)
             last_gas_price = bigNumber(parseInt(e.result, 16))
             return last_gas_price
                 .times(gas_limit)
@@ -255,6 +256,8 @@ export function createSimpleTx({
                             .round()
                     )
                 ),
+                // gasPrice: '0x04a817c800',
+                // gasLimit: '0x016f2e',
                 nonce: sanitizeHex(e.result),
                 to: sanitizeHex(toAddress),
                 value: sanitizeHex(decimalToHex(amount.times(satoshis).round()))

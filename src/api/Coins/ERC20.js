@@ -32,7 +32,7 @@ export {
 
 export const type = ERC20
 export const symbol_fee = symbol
-export const default_gas_limit = 80000
+export const default_gas_limit = 130000
 
 export function urlInfoRaw(address, handler) {
     return `${url}/token/${handler}?a=${address}`
