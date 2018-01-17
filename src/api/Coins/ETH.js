@@ -149,28 +149,27 @@ export function fetchTxs(
         }
 
         json.result.forEach(txRaw => {
-            // console.log(txRaw)
-            if (
-                txRaw.to === contract_address ||
-                txRaw.from === contract_address ||
-                txRaw.contractAddress === contract_address ||
-                contract_address === undefined
-            ) {
-                let tx = {
-                    txid: txRaw.hash,
-                    fees: bigNumber(txRaw.gasUsed),
-                    time: txRaw.timeStamp,
-                    confirmations: txRaw.confirmations,
-                    value: bigNumber(txRaw.value)
-                        .div(_satoshis)
-                        .toString()
-                    // raw: txRaw,
-                }
-                if (txRaw.from.toLowerCase() === address.toLowerCase())
-                    tx.value = '-' + tx.value
-
-                data.txs.push(tx)
+            // if (
+            //     txRaw.to === contract_address ||
+            //     txRaw.from === contract_address ||
+            //     txRaw.contractAddress === contract_address ||
+            //     contract_address === undefined
+            // ) {
+            let tx = {
+                txid: txRaw.hash,
+                fees: bigNumber(txRaw.gasUsed),
+                time: txRaw.timeStamp,
+                confirmations: txRaw.confirmations,
+                value: bigNumber(txRaw.value)
+                    .div(_satoshis)
+                    .toString()
+                // raw: txRaw,
             }
+            if (txRaw.from.toLowerCase() === address.toLowerCase())
+                tx.value = '-' + tx.value
+
+            data.txs.push(tx)
+            // }
         })
         return data
     })
@@ -210,13 +209,15 @@ export function fetchRecomendedFee({ gas_limit = default_gas_limit }) {
         })
 }
 
-export function createSimpleTx(
+export function createSimpleTx({
     private_key,
     toAddress,
     amount,
     fee,
-    backAddress
-) {
+    backAddress,
+    gas_limit = default_gas_limit,
+    data
+}) {
     const fromAddress = getAddressFromPrivateKey(private_key)
     backAddress = isAddressCheck(backAddress) ? backAddress : fromAddress
 
@@ -231,7 +232,7 @@ export function createSimpleTx(
         .then(e => {
             // console.log('fee', fee.toString())
             // console.log('last_gas_price', last_gas_price.toString())
-            // console.log('default_gas_limit', default_gas_limit.toString())
+            // console.log('gas_limit', gas_limit.toString())
             // const gas_limit = bigNumber(fee)
             //     .div(last_gas_price.div(satoshis))
             //     .toString()
@@ -239,19 +240,18 @@ export function createSimpleTx(
             //     'gas_price',
             //     fee
             //         .times(satoshis)
-            //         .div(default_gas_limit)
+            //         .div(gas_limit)
             //         .toString()
             // )
-            // console.log('gas_limit', default_gas_limit.toString())
+            // console.log('gas_limit', gas_limit.toString())
 
             const txJson = {
-                // data: '',
-                gasLimit: sanitizeHex(decimalToHex(default_gas_limit)),
+                gasLimit: sanitizeHex(decimalToHex(gas_limit)),
                 gasPrice: sanitizeHex(
                     decimalToHex(
                         fee
                             .times(satoshis)
-                            .div(default_gas_limit)
+                            .div(gas_limit)
                             .round()
                     )
                 ),
@@ -260,14 +260,9 @@ export function createSimpleTx(
                 value: sanitizeHex(decimalToHex(amount.times(satoshis).round()))
             }
 
-            // console.log(
-            //     fee
-            //         .times(satoshis)
-            //         .div(default_gas_limit)
-            //         .round()
-            //         .toString()
-            // )
+            if (typeof data == 'string') txJson.data = data
 
+            console.log(txJson)
             const tx = new EthereumTx(txJson)
             tx.sign(Buffer.from(private_key, 'hex'))
             return sanitizeHex(tx.serialize().toString('hex'))

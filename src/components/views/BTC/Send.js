@@ -168,12 +168,12 @@ export default class Send extends Component {
 
         if (private_key) {
             state.view.loading = true
-            this.Coin.createSimpleTx(
+            this.Coin.createSimpleTx({
                 private_key,
-                state.view.address_input, // to/destiny
-                this.amount, // amount to send
-                this.fee
-            )
+                toAddress: state.view.address_input, // to/destiny
+                amount: this.amount, // amount to send
+                fee: this.fee
+            })
                 .then(tx_raw => {
                     this.tx_raw = tx_raw
                     const collector = collect()
@@ -538,17 +538,19 @@ function SendTemplate({
                         <Resume>
                             <ResumeLabel>Network Fee</ResumeLabel>
                             <ResumeValue>
-                                {fee_input} {symbol_crypto}
+                                {fee_input} {symbol_crypto_fee}
                             </ResumeValue>
                         </Resume>
-                        <Resume>
-                            <ResumeLabel color={styles.color.background3}>
-                                Total
-                            </ResumeLabel>
-                            <ResumeValue color={styles.color.background3}>
-                                {total} {symbol_crypto}
-                            </ResumeValue>
-                        </Resume>
+                        <Show if={symbol_crypto === symbol_crypto_fee}>
+                            <Resume>
+                                <ResumeLabel color={styles.color.background3}>
+                                    Total
+                                </ResumeLabel>
+                                <ResumeValue color={styles.color.background3}>
+                                    {total} {symbol_crypto}
+                                </ResumeValue>
+                            </Resume>
+                        </Show>
                     </Div>
                     <Div padding-top="10px" clear="both">
                         <List>
