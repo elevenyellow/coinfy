@@ -269,13 +269,13 @@ export function fetchTotals(address) {
         .then(totals => totals)
 }
 
-export function createSimpleTx(
+export function createSimpleTx({
     private_key,
     toAddress,
     amount,
     fee,
     backAddress
-) {
+}) {
     const fromAddress = getAddressFromPrivateKey(private_key)
     backAddress = isAddressCheck(backAddress) ? backAddress : fromAddress
     return fetch(`${api_url}/addr/${fromAddress}/utxo?noCache=1`)
