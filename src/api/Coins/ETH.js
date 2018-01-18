@@ -144,35 +144,27 @@ export function fetchTxs(
     return resolver.then(json => {
         txs_cache[address] = json
 
+        const raw_txs = json.result.filter(tx => tx.value > 0)
         const data = {
-            totalTxs: json.result.length,
+            totalTxs: raw_txs.length,
             txs: []
         }
 
-        json.result.forEach(txRaw => {
-            // if (
-            //     txRaw.to === contract_address ||
-            //     txRaw.from === contract_address ||
-            //     txRaw.contractAddress === contract_address ||
-            //     contract_address === undefined
-            // ) {
-            if (txRaw.value > 0) {
-                let tx = {
-                    txid: txRaw.hash,
-                    fees: bigNumber(txRaw.gasUsed),
-                    time: txRaw.timeStamp,
-                    confirmations: txRaw.confirmations,
-                    value: bigNumber(txRaw.value)
-                        .div(_satoshis)
-                        .toString()
-                    // raw: txRaw,
-                }
-                if (txRaw.from.toLowerCase() === address.toLowerCase())
-                    tx.value = '-' + tx.value
-
-                data.txs.push(tx)
+        raw_txs.forEach(txRaw => {
+            let tx = {
+                txid: txRaw.hash,
+                fees: bigNumber(txRaw.gasUsed),
+                time: txRaw.timeStamp,
+                confirmations: txRaw.confirmations,
+                value: bigNumber(txRaw.value)
+                    .div(_satoshis)
+                    .toString()
+                // raw: txRaw,
             }
-            // }
+            if (txRaw.from.toLowerCase() === address.toLowerCase())
+                tx.value = '-' + tx.value
+
+            data.txs.push(tx)
         })
         return data
     })
