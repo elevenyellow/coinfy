@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import styles from '/const/styles'
 import Select from '/components/styled/Select'
 
-
 export class Menu extends Component {
     componentWillMount() {
         this.onChange = this.onChange.bind(this)
@@ -52,7 +51,7 @@ export class Menu extends Component {
 
 const MenuSelectable = styled.div`
     display: none;
-    & > * {
+    & > * > * {
         width: 100%;
     }
     ${styles.media.second} {

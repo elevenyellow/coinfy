@@ -1,6 +1,7 @@
-import { bigNumber } from '/api/numbers'
+import { bigNumber, hexToDec } from '/api/numbers'
 import { padLeft } from '/api/strings'
 // import JSONRpc from '/api/jsonrpc'
+import sortBy from '/api/sortBy'
 import {
     symbol,
     url,
@@ -8,8 +9,7 @@ import {
     api_key,
     url_myetherapi,
     removeHexPrefix,
-    fetchSummary,
-    fetchTxs,
+    fetchBalance,
     fetchRecomendedFee as fetchRecomendedFeeRaw,
     createSimpleTx
 } from '/api/Coins/ETH'
@@ -24,8 +24,6 @@ export {
     decrypt,
     urlInfoTx,
     fetchBalance,
-    fetchSummary,
-    fetchTxs,
     getSendProviders,
     urlDecodeTx
 } from './ETH' // '/api/Coins/ETH' not working
@@ -57,6 +55,81 @@ export function createSimpleTxRaw(params, contract_address, coin_decimals) {
     params.toAddress = contract_address
     params.amount = bigNumber(0)
     return createSimpleTx(params)
+}
+
+export function fetchSummary(address, contract_address, satoshis) {
+    const totals = {}
+    return fetchBalance(address, contract_address, satoshis)
+        .then(balance => {
+            totals.balance = balance
+            return fetchTxs(
+                address,
+                undefined,
+                undefined,
+                contract_address,
+                satoshis
+            )
+        })
+        .then(txs => Object.assign(txs, totals))
+}
+
+const txs_cache = {}
+export function fetchTxs(
+    address,
+    from = 0,
+    to = from + 100,
+    contract_address,
+    _satoshis
+) {
+    const unique_index = contract_address + address
+    const address64 = `0x000000000000000000000000${removeHexPrefix(
+        address
+    )}`.toLowerCase()
+    let raw_txs = []
+    const resolver =
+        from > 0 && txs_cache[unique_index] !== undefined
+            ? Promise.resolve(txs_cache[unique_index])
+            : fetch(
+                  `${api_url}?module=logs&action=getLogs&fromBlock=0&toBlock=latest&address=${contract_address}&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic1=${address64}&apikey=${api_key}`
+              )
+                  .then(response => response.json())
+                  .then(json => (raw_txs = raw_txs.concat(json.result)))
+                  .then(() =>
+                      fetch(
+                          `${api_url}?module=logs&action=getLogs&fromBlock=0&toBlock=latest&address=${contract_address}&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic2=${address64}&apikey=${api_key}`
+                      )
+                  )
+                  .then(response => response.json())
+                  .then(json => raw_txs.concat(json.result))
+
+    return resolver.then(raw_txs => {
+        txs_cache[unique_index] = raw_txs
+
+        const data = {
+            totalTxs: raw_txs.length,
+            txs: []
+        }
+
+        // console.log(2, raw_txs)
+        raw_txs.forEach(txRaw => {
+            let tx = {
+                txid: txRaw.transactionHash,
+                fees: bigNumber(hexToDec(txRaw.gasUsed)),
+                time: hexToDec(txRaw.timeStamp),
+                value: bigNumber(hexToDec(removeHexPrefix(txRaw.data)))
+                    .div(_satoshis)
+                    .toString()
+            }
+            if (txRaw.topics[1].toLowerCase() === address64)
+                tx.value = '-' + tx.value
+
+            data.txs.push(tx)
+        })
+
+        sortBy(data.txs, '-time')
+
+        return data
+    })
 }
 
 // var value = ethFuncs.padLeft(

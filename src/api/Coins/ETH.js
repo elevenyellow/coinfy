@@ -9,7 +9,8 @@ import EthereumTx from 'ethereumjs-tx'
 import {
     formatCoin,
     decimalsMax,
-    decimalToHex,
+    decToHex,
+    hexToDec,
     sanitizeHex,
     bigNumber
 } from '/api/numbers'
@@ -95,8 +96,8 @@ export function generateRandomWallet() {
     }
 }
 
-export function removeHexPrefix(address) {
-    return address.toLowerCase().replace('0x', '')
+export function removeHexPrefix(hex) {
+    return hex.toLowerCase().replace('0x', '')
 }
 
 export function urlInfo(address) {
@@ -155,20 +156,22 @@ export function fetchTxs(
             //     txRaw.contractAddress === contract_address ||
             //     contract_address === undefined
             // ) {
-            let tx = {
-                txid: txRaw.hash,
-                fees: bigNumber(txRaw.gasUsed),
-                time: txRaw.timeStamp,
-                confirmations: txRaw.confirmations,
-                value: bigNumber(txRaw.value)
-                    .div(_satoshis)
-                    .toString()
-                // raw: txRaw,
-            }
-            if (txRaw.from.toLowerCase() === address.toLowerCase())
-                tx.value = '-' + tx.value
+            if (txRaw.value > 0) {
+                let tx = {
+                    txid: txRaw.hash,
+                    fees: bigNumber(txRaw.gasUsed),
+                    time: txRaw.timeStamp,
+                    confirmations: txRaw.confirmations,
+                    value: bigNumber(txRaw.value)
+                        .div(_satoshis)
+                        .toString()
+                    // raw: txRaw,
+                }
+                if (txRaw.from.toLowerCase() === address.toLowerCase())
+                    tx.value = '-' + tx.value
 
-            data.txs.push(tx)
+                data.txs.push(tx)
+            }
             // }
         })
         return data
@@ -202,7 +205,7 @@ export function fetchRecomendedFee({ gas_limit = default_gas_limit }) {
         .then(response => response.json())
         .then(e => {
             // console.log(parseInt(e.result, 16), gas_limit)
-            last_gas_price = bigNumber(parseInt(e.result, 16))
+            last_gas_price = bigNumber(hexToDec(e.result))
             return last_gas_price
                 .times(gas_limit)
                 .div(satoshis)
@@ -247,9 +250,9 @@ export function createSimpleTx({
             // console.log('gas_limit', gas_limit.toString())
 
             const txJson = {
-                gasLimit: sanitizeHex(decimalToHex(gas_limit)),
+                gasLimit: sanitizeHex(decToHex(gas_limit)),
                 gasPrice: sanitizeHex(
-                    decimalToHex(
+                    decToHex(
                         fee
                             .times(satoshis)
                             .div(gas_limit)
@@ -260,7 +263,7 @@ export function createSimpleTx({
                 // gasLimit: '0x016f2e',
                 nonce: sanitizeHex(e.result),
                 to: sanitizeHex(toAddress),
-                value: sanitizeHex(decimalToHex(amount.times(satoshis).round()))
+                value: sanitizeHex(decToHex(amount.times(satoshis).round()))
             }
 
             if (typeof data == 'string') txJson.data = data

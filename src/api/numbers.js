@@ -33,12 +33,6 @@ export function parseNumber(number) {
     return isNaN(number) ? 0 : number
 }
 
-export function decimalToHex(number) {
-    return bigNumber(number).toString(16)
-    // if (typeof number !== 'number') number = Number(number)
-    // return number.toString(16)
-}
-
 export function sanitizeHex(hex) {
     hex = hex.substring(0, 2) == '0x' ? hex.substring(2) : hex
     if (hex == '') return ''
@@ -58,4 +52,14 @@ export function formatCoin(value, dec, symbol) {
     const tof = typeof value
     if (tof != 'number' && tof != 'string') value = '0'
     return `${decimalsMax(value, dec)} ${symbol}`
+}
+
+export function decToHex(number) {
+    return bigNumber(number).toString(16)
+    // if (typeof number !== 'number') number = Number(number)
+    // return number.toString(16)
+}
+
+export function hexToDec(hex_string) {
+    return parseInt(hex_string, 16)
 }
