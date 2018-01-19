@@ -11,7 +11,6 @@ export * from './ERC20'
 
 export const symbol = 'QTUM'
 export const name = 'Qtum'
-export const etherscan_handler = 'Qtum'
 export const color = '#6FC5EB'
 export const contract_address = '0x9a642d6b3368ddc662ca244badf32cda716005bc'
 export const coin_decimals = 18
@@ -19,7 +18,7 @@ export const price_decimals = 2
 export const satoshis = Math.pow(10, coin_decimals)
 
 export function urlInfo(address) {
-    return urlInfoRaw(address, etherscan_handler)
+    return urlInfoRaw(address, contract_address)
 }
 
 export function format(value, decimals = coin_decimals) {

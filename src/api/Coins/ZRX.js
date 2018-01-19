@@ -11,7 +11,6 @@ export * from './ERC20'
 
 export const symbol = 'ZRX'
 export const name = '0x'
-export const etherscan_handler = 'ZRX'
 export const color = '#1E2227'
 export const contract_address = '0xe41d2489571d322189246dafa5ebde1f4699f498'
 export const coin_decimals = 18
@@ -19,7 +18,7 @@ export const price_decimals = 2
 export const satoshis = Math.pow(10, coin_decimals)
 
 export function urlInfo(address) {
-    return urlInfoRaw(address, etherscan_handler)
+    return urlInfoRaw(address, contract_address)
 }
 
 export function format(value, decimals = coin_decimals) {

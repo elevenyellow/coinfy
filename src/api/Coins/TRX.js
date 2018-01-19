@@ -9,10 +9,10 @@ import {
 
 export * from './ERC20'
 
-export const symbol = 'ANT'
-export const name = 'Aragon'
-export const color = '#2cdee1'
-export const contract_address = '0x960b236a07cf122663c4303350609a66a7b288c0'
+export const symbol = 'TRX'
+export const name = 'Tron'
+export const color = '#000000'
+export const contract_address = '0xf230b790e05390fc8295f4d3f60332c93bed42e2'
 export const coin_decimals = 18
 export const price_decimals = 2
 export const satoshis = Math.pow(10, coin_decimals)

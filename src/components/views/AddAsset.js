@@ -79,7 +79,35 @@ export default class AddAsset extends Component {
                 title: 'Import QTUM token',
                 url: routes.importerc20('QTUM'),
                 logo: '/static/image/coins/QTUM.svg',
-                labels: 'qtm qtum eth token erc20 ecr20'
+                labels: 'qtm eth token erc20 ecr20'
+            },
+            {
+                name: 'Tron',
+                title: 'Import TRX token',
+                url: routes.importerc20('TRX'),
+                logo: '/static/image/coins/TRX.svg',
+                labels: 'tronix eth token erc20 ecr20'
+            },
+            {
+                name: 'Binance',
+                title: 'Import BNB token',
+                url: routes.importerc20('BNB'),
+                logo: '/static/image/coins/BNB.svg',
+                labels: 'bnb qtum eth token erc20 ecr20'
+            },
+            {
+                name: 'EOS',
+                title: 'Import EOS token',
+                url: routes.importerc20('EOS'),
+                logo: '/static/image/coins/EOS.svg',
+                labels: 'eos eth token erc20 ecr20'
+            },
+            {
+                name: 'OmiseGO',
+                title: 'Import OMG token',
+                url: routes.importerc20('OMG'),
+                logo: '/static/image/coins/OMG.svg',
+                labels: 'omg eth token erc20 ecr20'
             }
         ]
     }
