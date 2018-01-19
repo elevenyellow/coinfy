@@ -13,20 +13,12 @@ CryptoPriceManager.prototype.fetch = function(arrayassets, currency) {
     })
 
     const update = (crypto, value, source) => {
-        if (!finished) {
-            const pricesArray = this.prices[crypto]
-            pricesArray.push(value)
-            if (this.onUpdate) this.onUpdate(crypto, value, source)
-            if (pricesArray.length === this.totalServicesUsing) {
-                assetsFinished += 1
-                if (this.onFinish) this.onFinish(crypto, pricesArray)
-                if (assetsFinished === this.totalServicesUsing) {
-                    finished = true
-                    if (this.onFinishAll) {
-                        this.onFinishAll()
-                    }
-                }
-            }
+        const pricesArray = this.prices[crypto]
+        pricesArray.push(value)
+        if (this.onUpdate) this.onUpdate(crypto, value, source)
+        if (pricesArray.length === this.totalServicesUsing) {
+            assetsFinished += 1
+            if (this.onFinish) this.onFinish(crypto, pricesArray)
         }
     }
 
@@ -55,7 +47,6 @@ CryptoPriceManager.prototype.fetch = function(arrayassets, currency) {
                 )
                     this.onFinish(crypto, pricesArray)
             })
-            if (this.onFinishAll) this.onFinishAll()
         }
     }, this.timeoutMiliseconds)
 
