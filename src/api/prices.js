@@ -1,12 +1,10 @@
-
 export function CryptoPriceManager() {
     this.timeoutMiliseconds = 5000
     this.prices = {}
 }
 
 CryptoPriceManager.prototype.fetch = function(arrayassets, currency) {
-    if (this.cancel)
-        this.cancel()
+    if (this.cancel) this.cancel()
 
     let assetsFinished = 0
     let finished = false
@@ -18,8 +16,7 @@ CryptoPriceManager.prototype.fetch = function(arrayassets, currency) {
         if (!finished) {
             const pricesArray = this.prices[crypto]
             pricesArray.push(value)
-            if (this.onUpdate)
-                this.onUpdate(crypto, value, source)
+            if (this.onUpdate) this.onUpdate(crypto, value, source)
             if (pricesArray.length === this.totalServicesUsing) {
                 assetsFinished += 1
                 if (this.onFinish) this.onFinish(crypto, pricesArray)
@@ -76,36 +73,37 @@ function getPriceFromCryptocompare(assets, currency, update, error) {
         ','
     )}&tsyms=${currency}`
     fetch(url)
-    .then(response => response.json())
-    .then(json => {
-        const prices = {}
-        assets.forEach(crypto => {
-            update(crypto, json[crypto][currency])
+        .then(response => response.json())
+        .then(json => {
+            const prices = {}
+            assets.forEach(crypto => {
+                update(crypto, json[crypto][currency])
+            })
         })
-    })
-    .catch(error)
+        .catch(error)
 }
 
 // getPriceFromCoinmarketcap(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
 function getPriceFromCoinmarketcap(assets, currency, update, error) {
-    const url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=50`
+    const url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=1000`
     fetch(url)
-    .then(response => response.json())
-    .then(json => {
-        const prices = {}
-        let count = 0
-        let price
-        for (let index = 0, total = json.length; index < total; ++index) {
-            price = json[index]
-            if (assets.indexOf(price.symbol) > -1)
-                update(
-                    price.symbol,
-                    Number(price[`price_${currency.toLowerCase()}`])
-                )
-            if (++count > assets.length) break
-        }
-    })
-    .catch(error)
+        .then(response => response.json())
+        .then(json => {
+            const prices = {}
+            let count = 0
+            let price
+            for (let index = 0, total = json.length; index < total; ++index) {
+                price = json[index]
+                if (assets.indexOf(price.symbol) > -1) {
+                    update(
+                        price.symbol,
+                        Number(price[`price_${currency.toLowerCase()}`])
+                    )
+                    if (++count >= assets.length) break
+                }
+            }
+        })
+        .catch(error)
 }
 
 // window.getCurrencyPrice = function() {

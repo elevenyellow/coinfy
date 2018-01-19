@@ -61,11 +61,25 @@ export default class AddAsset extends Component {
                 labels: 'eth coin etereum'
             },
             {
+                name: '0x',
+                title: 'Import ZRX token',
+                url: routes.importerc20('ZRX'),
+                logo: '/static/image/coins/ZRX.svg',
+                labels: 'zrx project eth token erc20 ecr20'
+            },
+            {
                 name: 'Aragon',
                 title: 'Import ANT token',
                 url: routes.importerc20('ANT'),
                 logo: '/static/image/coins/ANT.svg',
                 labels: 'ant eth token erc20 ecr20'
+            },
+            {
+                name: 'Qtum',
+                title: 'Import QTUM token',
+                url: routes.importerc20('QTUM'),
+                logo: '/static/image/coins/QTUM.svg',
+                labels: 'qtm qtum eth token erc20 ecr20'
             }
         ]
     }

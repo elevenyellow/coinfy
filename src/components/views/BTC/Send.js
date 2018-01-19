@@ -8,7 +8,12 @@ import { parseNumber, decimalsMax, bigNumber } from '/api/numbers'
 
 import state from '/store/state'
 import { fetchBalance, setHref } from '/store/actions'
-import { getAsset, formatCurrency, convertBalance } from '/store/getters'
+import {
+    getAsset,
+    getPrice,
+    formatCurrency,
+    convertBalance
+} from '/store/getters'
 
 import styles from '/const/styles'
 import { OK, ERROR, ALERT, NORMAL } from '/const/info'
@@ -259,7 +264,7 @@ export default class Send extends Component {
     render() {
         let amount1, amount2
         const symbol = this.asset.symbol
-        const price = state.prices[symbol]
+        const price = getPrice(symbol)
         const step_path = state.location.path[3]
         let step = state.view.is_sent
             ? 2
@@ -270,13 +275,13 @@ export default class Send extends Component {
         if (state.view.amount1_input !== undefined) {
             amount1 = state.view.amount1_input
             amount2 = decimalsMax(
-                bigNumber(state.prices[symbol]).times(parseNumber(amount1)),
+                bigNumber(getPrice(symbol)).times(parseNumber(amount1)),
                 2
             )
         } else {
             amount2 = state.view.amount2_input
             amount1 = decimalsMax(
-                bigNumber(parseNumber(amount2)).div(state.prices[symbol]),
+                bigNumber(parseNumber(amount2)).div(getPrice(symbol)),
                 10
             )
         }

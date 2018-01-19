@@ -10,7 +10,7 @@ export function getTotalAssets(assets) {
 }
 
 export function convertBalance(symbol, value) {
-    return state.prices[symbol] * (value || 0)
+    return getPrice(symbol) * (value || 0)
 }
 
 export function getAsset(asset_id) {
@@ -78,4 +78,10 @@ export function getCoinId({ symbol, address }) {
     //         state.assets[asset_id].address === address
     //     )
     //         return asset_id
+}
+
+export function getPrice(symbol) {
+    return state && state.prices && state.prices[symbol]
+        ? state.prices[symbol]
+        : 0
 }

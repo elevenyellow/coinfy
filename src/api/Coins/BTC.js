@@ -281,6 +281,8 @@ export function createSimpleTx({
     return fetch(`${api_url}/addr/${fromAddress}/utxo?noCache=1`)
         .then(response => response.json())
         .then(txs => {
+            console.log(txs)
+
             let totalInput = bigNumber(0)
             const totalOutput = bigNumber(amount).plus(fee)
             const txb = new Bitcoin.TransactionBuilder(network)
@@ -315,6 +317,8 @@ export function createSimpleTx({
                     console.error(e)
                 }
             })
+
+            console.log(txb.inputs)
 
             const txHex = txb.build().toHex()
             return txHex

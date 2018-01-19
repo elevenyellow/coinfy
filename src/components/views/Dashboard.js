@@ -12,7 +12,7 @@ import { Coins } from '/api/Coins'
 import sortBy from '/api/sortBy'
 
 import state from '/store/state'
-import { convertBalance, formatCurrency } from '/store/getters'
+import { convertBalance, formatCurrency, getPrice } from '/store/getters'
 import { setHref } from '/store/actions'
 
 import { RightContainerPadding } from '/components/styled/Right'
@@ -29,7 +29,7 @@ export default class Dashboard extends Component {
         this.balance_start = state.balance
     }
     componentWillUnmount() {
-        // this.observer.destroy()
+        this.observer.destroy()
     }
     shouldComponentUpdate() {
         return false
@@ -191,7 +191,7 @@ function DashboardTemplate({
                                     {symbol} ≈{' '}
                                     <span>
                                         {Fiats[currency].format(
-                                            cryptoPrices[symbol],
+                                            getPrice(symbol),
                                             Coins[symbol].price_decimals
                                         )}
                                     </span>

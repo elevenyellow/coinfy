@@ -22,7 +22,8 @@ const initialState = {
         let totalAssets = this.totalAssets
         Object.keys(this.assets).forEach(asset_id => {
             asset = this.assets[asset_id]
-            if (asset) total += this.prices[asset.symbol] * (asset.balance || 0)
+            if (asset)
+                total += (this.prices[asset.symbol] || 0) * (asset.balance || 0)
         })
         // console.log( 'recalculating balance...', totalAssets, total )
         return total
