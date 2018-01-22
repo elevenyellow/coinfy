@@ -3,11 +3,14 @@ import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 
-import state from '/store/state'
-import { getAsset, isAssetRegistered } from '/store/getters'
-import { Coins } from '/api/Coins'
 import styles from '/const/styles'
 import routes from '/const/routes'
+import { WALLET, ERC20 } from '/const/coin_types'
+
+import { Coins } from '/api/Coins'
+
+import state from '/store/state'
+import { getAsset, isAssetRegistered } from '/store/getters'
 
 // Styled
 import { RightContainer, RightContainerMiddle } from '/components/styled/Right'
@@ -40,18 +43,26 @@ export default class Right extends Component {
     }
 
     render() {
-        const asset = getAsset(state.location.path[1])
+        const location_path = state.location.path
+        const asset = getAsset(location_path[1])
         const symbol = asset !== undefined ? asset.symbol : false
         return React.createElement(RightTemplate, {
             location: state.location,
             totalAssets: state.totalAssets,
-            isRegistered: isAssetRegistered(state.location.path[1]),
-            symbol: symbol
+            isRegistered: isAssetRegistered(location_path[1]),
+            symbol: symbol,
+            symbol_add: location_path[location_path.length - 1]
         })
     }
 }
 
-function RightTemplate({ location, totalAssets, isRegistered, symbol }) {
+function RightTemplate({
+    location,
+    totalAssets,
+    isRegistered,
+    symbol,
+    symbol_add
+}) {
     return (
         <RightContainer>
             <Router source={location}>
@@ -82,10 +93,11 @@ function RightTemplate({ location, totalAssets, isRegistered, symbol }) {
                     <ImportETH />
                 </Route>
                 <Route
-                    pathname={new RegExp(routes.import('[A-Z0-9]{3,}'))}
-                    if={Coins.hasOwnProperty(
-                        location.path[location.path.length - 1]
-                    )}
+                    pathname={new RegExp(routes.import(symbol_add))}
+                    if={
+                        Coins.hasOwnProperty(symbol_add) &&
+                        Coins[symbol_add].type === ERC20
+                    }
                 >
                     <ImportERC20 />
                 </Route>

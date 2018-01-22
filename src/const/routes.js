@@ -4,8 +4,8 @@ export default {
 
     // Add
     add: () => `/add`,
-    create: symbol => `/add/create-${symbol}`.toLowerCase(),
-    import: symbol => `/add/import-${symbol}`.toLowerCase(),
+    create: symbol => `/create/${symbol}`,
+    import: symbol => `/import/${symbol}`,
 
     // Assets
     asset: asset_id => `/asset/${asset_id}/summary`, // default

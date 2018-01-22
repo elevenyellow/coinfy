@@ -1,4 +1,25 @@
-const list = ['BTC', 'ETH', 'ANT', 'ZRX', 'QTUM', 'TRX', 'EOS', 'OMG', 'BNB']
+const list = [
+    'BTC',
+    'ETH',
+    'ANT',
+    'ZRX',
+    'QTUM',
+    'TRX',
+    'EOS',
+    'OMG',
+    'BNB',
+    'MKR',
+    'SNT',
+    'REP',
+    'SALT',
+    'QASH',
+    'BAT',
+    'GNT',
+    'ETHOS',
+    'FUN',
+    'REQ',
+    'KNC'
+]
 const Coins = {}
 
 exports.Coins = Coins

@@ -9,14 +9,14 @@ import {
 
 export * from './ERC20'
 
-export const symbol = 'TRX'
-export const name = 'Tron'
-export const color = '#000000'
-export const contract_address = '0xf230b790e05390fc8295f4d3f60332c93bed42e2'
+export const symbol = 'QASH'
+export const name = 'Qash'
+export const color = '#1A4EE4'
+export const contract_address = '0x618e75ac90b12c6049ba3b27f5d5f8651b0037f6'
+export const labels = 'qahs eth token erc20 ecr20'
 export const coin_decimals = 6
 export const price_decimals = 2
 export const satoshis = Math.pow(10, coin_decimals)
-export const labels = 'tronix eth token erc20 ecr20'
 
 export function urlInfo(address) {
     return urlInfoRaw(address, contract_address)
