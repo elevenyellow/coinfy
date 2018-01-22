@@ -10,16 +10,14 @@ export default function Footer() {
                 <ul>
                     <li>
                         <a
-                            href={repository}
-                            target="https://github.com/elevenyellow/coinfy/blob/master/FAQ.md"
+                            href="https://github.com/elevenyellow/coinfy/blob/master/FAQ.md"
+                            target="_blank"
                         >
                             FAQ
                         </a>
                     </li>
                     <li>
-                        <a href={repository} target="mailto:support@coinfy.com">
-                            Support
-                        </a>
+                        <a href="mailto:support@coinfy.com">Support</a>
                     </li>
                     <li>
                         <a href={repository} target="_blank">
