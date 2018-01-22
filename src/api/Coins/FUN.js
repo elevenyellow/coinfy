@@ -15,7 +15,7 @@ export const color = '#EF3B5D'
 export const contract_address = '0x419d0d8bdd9af5e606ae2232ed285aff190e711b'
 export const labels = 'fum eth token erc20 ecr20'
 export const coin_decimals = 8
-export const price_decimals = 2
+export const price_decimals = 3
 export const satoshis = Math.pow(10, coin_decimals)
 
 export function urlInfo(address) {

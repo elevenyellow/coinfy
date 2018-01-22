@@ -7,10 +7,27 @@ export default function Footer() {
     return (
         <FooterDiv>
             <div>
-                <a href={repository} target="_blank">
-                    {' '}
-                    v{version}
-                </a>
+                <ul>
+                    <li>
+                        <a
+                            href={repository}
+                            target="https://github.com/elevenyellow/coinfy/blob/master/FAQ.md"
+                        >
+                            FAQ
+                        </a>
+                    </li>
+                    <li>
+                        <a href={repository} target="mailto:support@coinfy.com">
+                            Support
+                        </a>
+                    </li>
+                    <li>
+                        <a href={repository} target="_blank">
+                            {' '}
+                            v{version}
+                        </a>
+                    </li>
+                </ul>
             </div>
         </FooterDiv>
     )
@@ -27,6 +44,17 @@ const FooterDiv = styled.div`
     div {
         padding-top: 15px;
     }
+    ul {
+        list-style: none;
+        margin: 0;
+    padding: 0;
+    text-align: right;
+    }
+    li {
+        display: inline-block;
+    margin-left: 10px;
+}
+    }
     a {
         font-size: 12px;
         color: #000;
@@ -35,7 +63,7 @@ const FooterDiv = styled.div`
         display: block;
         padding-right: 10px;
         text-align: right;
-        opacity: 0.3;
+        opacity: 0.35;
     }
     a:hover {
         opacity: 0.5;

@@ -457,9 +457,9 @@ function SendTemplate({
                     <Show if={isFeeLowerThanRecomended}>
                         <Div padding-top="10px">
                             <Alert>
-                                If you don’t apply enough funds for the network
-                                fee, is probably that your transaction would
-                                never be confirmed.
+                                An appropriate network fee is required to
+                                confirm this transaction. It is suggested to
+                                apply the recommended network fee.
                             </Alert>
                         </Div>
                     </Show>
