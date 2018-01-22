@@ -122,7 +122,7 @@ export function fetchBalance(address, contract_address, _satoshis = satoshis) {
         .then(response => response.json())
         .then(response =>
             bigNumber(response.result)
-                .div(satoshis)
+                .div(_satoshis)
                 .toString()
         )
 }
@@ -172,9 +172,9 @@ export function fetchTxs(
     // }
 }
 
-export function fetchSummary(address, contract_address, satoshis) {
+export function fetchSummary(address, contract_address, _satoshis = satoshis) {
     const totals = {}
-    return fetchBalance(address, contract_address, satoshis)
+    return fetchBalance(address, contract_address, _satoshis)
         .then(balance => {
             totals.balance = balance
             return fetchTxs(
@@ -182,7 +182,7 @@ export function fetchSummary(address, contract_address, satoshis) {
                 undefined,
                 undefined,
                 contract_address,
-                satoshis
+                _satoshis
             )
         })
         .then(txs => Object.assign(txs, totals))

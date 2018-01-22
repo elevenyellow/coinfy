@@ -70,7 +70,7 @@ export default class AddAsset extends Component {
                 }
             })
 
-        this.assetList = sortBy(this.assetList, 'position', 'name')
+        this.assetList = sortBy(this.assetList, 'position', 'name', 'title')
     }
 
     componentWillUnmount() {
