@@ -46,6 +46,7 @@ export default class Dashboard extends Component {
             let asset = state.assets[id]
             if (dataUnformated[asset.symbol] === undefined)
                 dataUnformated[asset.symbol] = {
+                    symbol: asset.symbol,
                     label: Coins[asset.symbol].name,
                     color: Coins[asset.symbol].color,
                     balance_asset_big: bigNumber(0),
@@ -124,7 +125,6 @@ export default class Dashboard extends Component {
             ascii: Fiats[state.fiat].ascii,
             balance_start: balance_start,
             balance_end: state.balance,
-            cryptoPrices: state.prices,
             currency: state.fiat
         })
     }
@@ -175,24 +175,27 @@ function DashboardTemplate({
                     </ChartChart>
                 </Chart>
                 <CurrenciesStyled>
-                    {Object.keys(cryptoPrices).map(symbol => (
+                    {data.map(coin => (
                         <Currency>
                             <CurrencyIco>
                                 <img
-                                    src={`/static/image/coins/${symbol}.svg`}
+                                    src={`/static/image/coins/${
+                                        coin.symbol
+                                    }.svg`}
                                     width="25"
+                                    height="25"
                                 />
                             </CurrencyIco>
                             <CurrencyText>
                                 <CurrencyLabel>
-                                    {Coins[symbol].name}
+                                    {Coins[coin.symbol].name}
                                 </CurrencyLabel>
                                 <CurrencyValue>
-                                    {symbol} ≈{' '}
+                                    {coin.symbol} ≈{' '}
                                     <span>
                                         {Fiats[currency].format(
-                                            getPrice(symbol),
-                                            Coins[symbol].price_decimals
+                                            getPrice(coin.symbol),
+                                            Coins[coin.symbol].price_decimals
                                         )}
                                     </span>
                                 </CurrencyValue>
@@ -666,6 +669,7 @@ const CurrencyLabel = styled.div`
     font-weight: 900;
     color: ${styles.color.black};
     font-size: 18px;
+    width: 130px;
 `
 const CurrencyValue = styled.div`
     color: ${styles.color.front3};
