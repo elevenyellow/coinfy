@@ -2,12 +2,17 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
+
+import routes from '/const/routes'
+import { WALLET, ERC20 } from '/const/coin_types'
 import styles from '/const/styles'
 
+import sortBy from '/api/sortBy'
+import { Coins } from '/api/Coins'
 import searchInArray from '/api/searchInArray'
+
 import state from '/store/state'
 import { setHref } from '/store/actions'
-import routes from '/const/routes'
 
 import Div from '/components/styled/Div'
 import H1 from '/components/styled/H1'
@@ -31,85 +36,41 @@ export default class AddAsset extends Component {
             filter: ''
         }
 
-        this.assetList = [
-            {
-                name: 'Bitcoin',
-                title: 'Create a new wallet',
-                url: routes.createbtc(),
-                logo: '/static/image/coins/BTC.svg',
-                labels: 'btc coin'
-            },
-            {
-                name: 'Bitcoin',
-                title: 'Import wallet',
-                url: routes.importbtc(),
-                logo: '/static/image/coins/BTC.svg',
-                labels: 'btc coin'
-            },
-            {
-                name: 'Ethereum',
-                title: 'Create a new wallet',
-                url: routes.createeth(),
-                logo: '/static/image/coins/ETH.svg',
-                labels: 'eth coin etereum'
-            },
-            {
-                name: 'Ethereum',
-                title: 'Import wallet',
-                url: routes.importeth(),
-                logo: '/static/image/coins/ETH.svg',
-                labels: 'eth coin etereum'
-            },
-            {
-                name: '0x',
-                title: 'Import ZRX token',
-                url: routes.importerc20('ZRX'),
-                logo: '/static/image/coins/ZRX.svg',
-                labels: 'zrx project eth token erc20 ecr20'
-            },
-            {
-                name: 'Aragon',
-                title: 'Import ANT token',
-                url: routes.importerc20('ANT'),
-                logo: '/static/image/coins/ANT.svg',
-                labels: 'ant eth token erc20 ecr20'
-            },
-            {
-                name: 'Qtum',
-                title: 'Import QTUM token',
-                url: routes.importerc20('QTUM'),
-                logo: '/static/image/coins/QTUM.svg',
-                labels: 'qtm eth token erc20 ecr20'
-            },
-            {
-                name: 'Tron',
-                title: 'Import TRX token',
-                url: routes.importerc20('TRX'),
-                logo: '/static/image/coins/TRX.svg',
-                labels: 'tronix eth token erc20 ecr20'
-            },
-            {
-                name: 'Binance',
-                title: 'Import BNB token',
-                url: routes.importerc20('BNB'),
-                logo: '/static/image/coins/BNB.svg',
-                labels: 'bnb qtum eth token erc20 ecr20'
-            },
-            {
-                name: 'EOS',
-                title: 'Import EOS token',
-                url: routes.importerc20('EOS'),
-                logo: '/static/image/coins/EOS.svg',
-                labels: 'eos eth token erc20 ecr20'
-            },
-            {
-                name: 'OmiseGO',
-                title: 'Import OMG token',
-                url: routes.importerc20('OMG'),
-                logo: '/static/image/coins/OMG.svg',
-                labels: 'omg eth token erc20 ecr20'
-            }
-        ]
+        this.assetList = []
+        Object.keys(Coins)
+            .filter(symbol => symbol !== 'Coins')
+            .forEach(symbol => {
+                const coin = Coins[symbol]
+                if (coin.type === WALLET) {
+                    this.assetList.push({
+                        name: coin.name,
+                        title: 'Create a new wallet',
+                        url: routes.create(symbol),
+                        logo: `/static/image/coins/${symbol}.svg`,
+                        labels: coin.labels,
+                        position: 0
+                    })
+                    this.assetList.push({
+                        name: coin.name,
+                        title: 'Import wallet',
+                        url: routes.import(symbol),
+                        logo: `/static/image/coins/${symbol}.svg`,
+                        labels: coin.labels,
+                        position: 0
+                    })
+                } else if (coin.type === ERC20) {
+                    this.assetList.push({
+                        name: coin.name,
+                        title: `Import ${symbol} token`,
+                        url: routes.import(symbol),
+                        logo: `/static/image/coins/${symbol}.svg`,
+                        labels: coin.labels,
+                        position: 1
+                    })
+                }
+            })
+
+        this.assetList = sortBy(this.assetList, 'position', 'name')
     }
 
     componentWillUnmount() {

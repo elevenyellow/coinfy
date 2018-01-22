@@ -69,20 +69,20 @@ function RightTemplate({ location, totalAssets, isRegistered, symbol }) {
                 <Route pathname={routes.add()}>
                     <AddAsset />
                 </Route>
-                <Route pathname={routes.createbtc()}>
+                <Route pathname={routes.create('BTC')}>
                     <CreateBTC />
                 </Route>
-                <Route pathname={routes.importbtc()}>
+                <Route pathname={routes.import('BTC')}>
                     <ImportBTC />
                 </Route>
-                <Route pathname={routes.createeth()}>
+                <Route pathname={routes.create('ETH')}>
                     <CreateETH />
                 </Route>
-                <Route pathname={routes.importeth()}>
+                <Route pathname={routes.import('ETH')}>
                     <ImportETH />
                 </Route>
                 <Route
-                    pathname={new RegExp(routes.importerc20('[A-Z0-9]{3,}'))}
+                    pathname={new RegExp(routes.import('[A-Z0-9]{3,}'))}
                     if={Coins.hasOwnProperty(
                         location.path[location.path.length - 1]
                     )}

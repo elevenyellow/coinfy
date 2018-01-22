@@ -4,11 +4,8 @@ export default {
 
     // Add
     add: () => `/add`,
-    createbtc: () => `/add/create-bitcoin`,
-    importbtc: () => `/add/import-bitcoin`,
-    createeth: () => `/add/create-ethereum`,
-    importeth: () => `/add/import-ethereum`,
-    importerc20: symbol => `/add/import-erc20/${symbol}`,
+    create: symbol => `/add/create-${symbol}`.toLowerCase(),
+    import: symbol => `/add/import-${symbol}`.toLowerCase(),
 
     // Assets
     asset: asset_id => `/asset/${asset_id}/summary`, // default

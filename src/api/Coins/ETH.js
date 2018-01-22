@@ -46,6 +46,7 @@ export const coin_decimals = 18
 export const price_decimals = 0
 export const satoshis = Math.pow(10, coin_decimals)
 export const default_gas_limit = 21000
+export const labels = 'eth coin etereum'
 
 export { addHexPrefix } from 'ethereumjs-util'
 

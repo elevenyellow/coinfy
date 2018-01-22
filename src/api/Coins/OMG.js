@@ -16,6 +16,7 @@ export const contract_address = '0xd26114cd6ee289accf82350c8d8487fedb8a0c07'
 export const coin_decimals = 18
 export const price_decimals = 2
 export const satoshis = Math.pow(10, coin_decimals)
+export const labels = 'omg eth token erc20 ecr20'
 
 export function urlInfo(address) {
     return urlInfoRaw(address, contract_address)
