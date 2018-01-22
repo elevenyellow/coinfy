@@ -68,7 +68,8 @@ function getPriceFromCryptocompare(assets, currency, update, error) {
         .then(json => {
             const prices = {}
             assets.forEach(crypto => {
-                update(crypto, json[crypto][currency])
+                if (json[crypto] && json[crypto][currency])
+                    update(crypto, json[crypto][currency])
             })
         })
         .catch(error)
