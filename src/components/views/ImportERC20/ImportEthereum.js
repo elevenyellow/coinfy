@@ -27,12 +27,34 @@ export default class ImportEthereum extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
 
+        this.Coin = Coins[state.location.path[state.location.path.length - 1]]
+        this.ethereum_wallets = Object.keys(state.assets)
+            .filter(asset_id => state.assets[asset_id].symbol === ETH.symbol)
+            .map(asset_id => {
+                const asset = state.assets[asset_id]
+                return {
+                    value: asset_id,
+                    label:
+                        asset.label === ''
+                            ? asset.address
+                            : `${asset.label} (${asset.address})`
+                }
+            })
+
+        const available_assets = this.ethereum_wallets.filter(asset =>
+            this.isAssetRegistered(asset.value)
+        )
         const collector = collect()
-        state.view.ethereum_asset_id = ''
-        state.view.is_valid_input = false
+        if (available_assets.length === 0) {
+            state.view.ethereum_asset_id = this.ethereum_wallets[0].value
+            state.view.is_valid_input = false
+        } else {
+            state.view.ethereum_asset_id = available_assets[0].value
+            state.view.is_valid_input = true
+        }
         collector.destroy()
 
-        this.Coin = Coins[state.location.path[state.location.path.length - 1]]
+        // binding
         this.onChange = this.onChange.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
@@ -43,12 +65,8 @@ export default class ImportEthereum extends Component {
         return false
     }
 
-    onChange(e) {
-        const collector = collect()
-        const asset_id = e.target.value
-        state.view.ethereum_asset_id = asset_id
-        state.view.is_valid_input = false
-        if (
+    isAssetRegistered(asset_id) {
+        return (
             state.assets.hasOwnProperty(asset_id) &&
             !isAssetRegistered(
                 getCoinId({
@@ -56,7 +74,15 @@ export default class ImportEthereum extends Component {
                     address: state.assets[asset_id].address
                 })
             )
-        ) {
+        )
+    }
+
+    onChange(e) {
+        const collector = collect()
+        const asset_id = e.target.value
+        state.view.ethereum_asset_id = asset_id
+        state.view.is_valid_input = false
+        if (this.isAssetRegistered(asset_id)) {
             state.view.is_valid_input = true
         }
 
@@ -77,21 +103,8 @@ export default class ImportEthereum extends Component {
     }
 
     render() {
-        const ethereum_wallets = Object.keys(state.assets)
-            .filter(asset_id => state.assets[asset_id].symbol === ETH.symbol)
-            .map(asset_id => {
-                const asset = state.assets[asset_id]
-                return {
-                    value: asset_id,
-                    label:
-                        asset.label === ''
-                            ? asset.address
-                            : `${asset.label} (${asset.address})`
-                }
-            })
-
         return React.createElement(ImportEthereumTemplate, {
-            ethereum_wallets: ethereum_wallets,
+            ethereum_wallets: this.ethereum_wallets,
             ethereum_asset_id: state.view.ethereum_asset_id,
             isValidForm: state.view.is_valid_input,
             onChange: this.onChange,
@@ -111,7 +124,7 @@ function ImportEthereumTemplate({
         <div>
             <FormField>
                 <FormFieldLeft>
-                    <Label>Ethereum wallet</Label>
+                    <Label>Select Ethereum wallet</Label>
                     <SubLabel>
                         Select a ethereum wallet that you previously added
                     </SubLabel>
@@ -123,7 +136,6 @@ function ImportEthereumTemplate({
                         invalid={ethereum_asset_id !== '' && !isValidForm}
                         error="You already have this asset"
                     >
-                        <option />
                         {ethereum_wallets.map(wallet => (
                             <option
                                 value={wallet.value}
