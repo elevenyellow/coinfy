@@ -136,7 +136,10 @@ function ViewERC20Template({
                             selected={
                                 location.pathname === routes_changePasswordAsset
                             }
-                            onClick={e => onClick(routes_changePasswordAsset)}
+                            onClick={e => {
+                                if (hasPrivateKey)
+                                    onClick(routes_changePasswordAsset)
+                            }}
                         >
                             <MenuContentItemText>
                                 Change password{tooltipPrivatekey}
@@ -178,7 +181,7 @@ function ViewERC20Template({
 
                     <Route>
                         <RightContainerMiddle2>
-                            <Message>In development</Message>
+                            <Message>Not found</Message>
                         </RightContainerMiddle2>
                     </Route>
                 </Router>
