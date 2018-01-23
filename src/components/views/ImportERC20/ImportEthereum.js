@@ -45,13 +45,13 @@ export default class ImportEthereum extends Component {
             this.isAssetRegistered(asset.value)
         )
         const collector = collect()
-        if (available_assets.length === 0) {
-            state.view.ethereum_asset_id = this.ethereum_wallets[0].value
-            state.view.is_valid_input = false
-        } else {
-            state.view.ethereum_asset_id = available_assets[0].value
-            state.view.is_valid_input = true
-        }
+        const asset_id =
+            available_assets.length === 0
+                ? this.ethereum_wallets[0].value
+                : available_assets[0].value
+        // state.view.address = state.assets[asset_id].address
+        state.view.ethereum_asset_id = asset_id
+        state.view.is_valid_input = available_assets.length > 0
         collector.destroy()
 
         // binding
@@ -80,6 +80,7 @@ export default class ImportEthereum extends Component {
     onChange(e) {
         const collector = collect()
         const asset_id = e.target.value
+        state.view.address = state.assets[asset_id].address
         state.view.ethereum_asset_id = asset_id
         state.view.is_valid_input = false
         if (this.isAssetRegistered(asset_id)) {

@@ -17,6 +17,14 @@ export default function Footer() {
                         </a>
                     </li>
                     <li>
+                        <a
+                            href="https://twitter.com/coinfydotcom"
+                            target="_blank"
+                        >
+                            Twitter
+                        </a>
+                    </li>
+                    <li>
                         <a href="mailto:support@coinfy.com">Support</a>
                     </li>
                     <li>
