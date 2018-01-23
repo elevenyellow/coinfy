@@ -11,7 +11,12 @@ export default function(props) {
     return (
         <Container value={props.value || ''}>
             <div className="icon">
-                <IconSearch size={24} color={styles.color.front5} />
+                <IconSearch
+                    size={22}
+                    color={
+                        props.invalid ? styles.color.error : styles.color.grey1
+                    }
+                />
             </div>
             <div className="input">
                 <Input {...props} />
@@ -28,28 +33,27 @@ const Container = styled.div`
     position: relative;
 
     & .icon {
-        float: left;
+        position: absolute;
         text-align: center;
         width: 40px;
         height: 31px;
-        background-image: linear-gradient(#fff, ${styles.color.background1});
-        border: 1px solid
-            ${props =>
-                props.invalid ? styles.color.error : styles.color.background5};
         font-weight: bold;
         font-size: 12px;
         display: inline-block;
         line-height: 20px;
         border-radius: 5px 0 0 5px;
         border-right: 0;
-        padding-top: 6px;
+        padding-top: 9px;
         ${styles.media.fourth} {
             height: 32px;
         }
     }
     & .input {
         float: left;
-        width: calc(100% - 42px);
+        width: calc(100%);
+    }
+    & .input input {
+        padding-left: 35px;
     }
     & .delete {
         display: ${props => (props.value.length > 0 ? 'block' : 'none')};
