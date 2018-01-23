@@ -16,7 +16,7 @@ export const contract_address = '0xb8c77482e45f1f44de1745f52c74426c631bdd52'
 export const coin_decimals = 18
 export const price_decimals = 2
 export const satoshis = Math.pow(10, coin_decimals)
-export const labels = 'bnb qtum eth token erc20 ecr20'
+export const labels = 'bnb qtum ethereum token erc20 ecr20'
 
 export function urlInfo(address) {
     return urlInfoRaw(address, contract_address)

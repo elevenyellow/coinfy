@@ -16,7 +16,7 @@ export const contract_address = '0xe41d2489571d322189246dafa5ebde1f4699f498'
 export const coin_decimals = 18
 export const price_decimals = 2
 export const satoshis = Math.pow(10, coin_decimals)
-export const labels = 'zrx project eth token erc20 ecr20'
+export const labels = 'zrx project ethereum token erc20 ecr20'
 
 export function urlInfo(address) {
     return urlInfoRaw(address, contract_address)
