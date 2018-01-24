@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
+import { Show } from '/doprouter/react'
 
 import { setHref, createAsset, copyPrivateKey } from '/store/actions'
 import state from '/store/state'
@@ -12,6 +13,7 @@ import { Coins, ETH } from '/api/Coins'
 import styles from '/const/styles'
 import routes from '/const/routes'
 
+import Div from '/components/styled/Div'
 import Select from '/components/styled/Select'
 import Button from '/components/styled/Button'
 import { Label, SubLabel } from '/components/styled/Label'
@@ -47,7 +49,9 @@ export default class ImportEthereum extends Component {
         const collector = collect()
         const asset_id =
             available_assets.length === 0
-                ? this.ethereum_wallets[0].value
+                ? this.ethereum_wallets.length > 0
+                  ? this.ethereum_wallets[0].value
+                  : ''
                 : available_assets[0].value
         // state.view.address = state.assets[asset_id].address
         state.view.ethereum_asset_id = asset_id
@@ -131,21 +135,34 @@ function ImportEthereumTemplate({
                     </SubLabel>
                 </FormFieldLeft>
                 <FormFieldRight>
-                    <Select
-                        width="100%"
-                        onChange={onChange}
-                        invalid={ethereum_asset_id !== '' && !isValidForm}
-                        error="You already have this asset"
-                    >
-                        {ethereum_wallets.map(wallet => (
-                            <option
-                                value={wallet.value}
-                                selected={ethereum_asset_id === wallet.value}
-                            >
-                                {wallet.label}
-                            </option>
-                        ))}
-                    </Select>
+                    <Show if={ethereum_wallets.length > 0}>
+                        <Select
+                            width="100%"
+                            onChange={onChange}
+                            invalid={ethereum_asset_id !== '' && !isValidForm}
+                            error="You already have this asset"
+                        >
+                            {ethereum_wallets.map(wallet => (
+                                <option
+                                    value={wallet.value}
+                                    selected={
+                                        ethereum_asset_id === wallet.value
+                                    }
+                                >
+                                    {wallet.label}
+                                </option>
+                            ))}
+                        </Select>
+                    </Show>
+                    <Show if={ethereum_wallets.length === 0}>
+                        <Div
+                            color={styles.color.error}
+                            padding-top="10px"
+                            font-weight="bold"
+                        >
+                            You do not have any Ethereum wallet yet
+                        </Div>
+                    </Show>
                 </FormFieldRight>
             </FormField>
 
