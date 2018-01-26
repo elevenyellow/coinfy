@@ -121,7 +121,7 @@ export default class ExportETH extends Component {
                 '--' +
                 address
 
-            downloadFile(fileString, name)
+            downloadFile({ data: fileString, name })
         }
     }
     render() {

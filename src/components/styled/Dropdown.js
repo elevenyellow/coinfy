@@ -81,7 +81,9 @@ export const DropDownMenu = styled.div`
     top: ${props => props.top};
 `
 
-export const DropDownItem = styled.div`
+export const DropDownItem = styled.a`
+    display: block;
+    text-decoration: none;
     padding: 10px 20px;
     font-size: 13px;
     color: ${props =>

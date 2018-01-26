@@ -96,8 +96,8 @@ export default class Header extends Component {
         changeNetwork(MAINNET)
     }
 
-    onExport() {
-        exportAssets()
+    onExport(e) {
+        exportAssets(e.target)
     }
     onImport() {
         importAssetsFromFile()

@@ -79,11 +79,12 @@ export function readFile(file, onRead) {
     reader.readAsText(file)
 }
 
-export function downloadFile(data, name, filetype = 'charset=UTF-8') {
-    const a = document.createElement('a')
+export function downloadFile({ data, name, a, filetype = 'charset=UTF-8' }) {
+    const is_a_undefined = a === undefined
+    const a_created = is_a_undefined ? document.createElement('a') : a
     const file = new Blob([data], { type: filetype }) //,
     // const date = new Date().toJSON().replace(/\..+$/,'')
-    a.href = URL.createObjectURL(file)
-    a.download = name
-    a.click()
+    a_created.href = URL.createObjectURL(file)
+    a_created.download = name
+    if (is_a_undefined) a_created.click()
 }

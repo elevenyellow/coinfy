@@ -98,7 +98,7 @@ export function setAssetsExported(value) {
     localStorageSet('assetsExported', value, state.network)
 }
 
-export function exportAssets() {
+export function exportAssets(a) {
     if (state.totalAssets > 0) {
         const data = btoa(
             JSON.stringify(state.assets, (key, value) => {
@@ -108,7 +108,7 @@ export function exportAssets() {
                     : value
             })
         ) // btoa
-        downloadFile(data, 'YOU_MUST_RENAME_THIS_FOR_SECURITY')
+        downloadFile({ data, a, name: 'YOU_MUST_RENAME_THIS_FOR_SECURITY' })
         setAssetsExported(true)
     }
 }
@@ -262,17 +262,19 @@ fetchAllBalances()
 
 export function fetchBalance(asset_id) {
     const asset = state.assets[asset_id]
-    Coins[asset.symbol]
-        .fetchBalance(asset.address)
-        .then(balance => {
-            showNotConnectionNotification(false)
-            updateBalance(asset_id, balance)
-            return balance
-        })
-        .catch(e => {
-            console.error(asset.symbol, 'fetchBalance', e)
-            showNotConnectionNotification(true)
-        })
+    if (asset !== undefined) {
+        Coins[asset.symbol]
+            .fetchBalance(asset.address)
+            .then(balance => {
+                showNotConnectionNotification(false)
+                updateBalance(asset_id, balance)
+                return balance
+            })
+            .catch(e => {
+                console.error(asset.symbol, 'fetchBalance', e)
+                showNotConnectionNotification(true)
+            })
+    }
 }
 
 export function fetchSummaryAssetIfReady(asset_id) {
