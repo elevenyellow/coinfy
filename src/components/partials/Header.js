@@ -182,11 +182,13 @@ function HeaderTemplate({
                         <IconMenu size={28} color="white" />
                     </div>
                 </HeaderLeft>
-                <HeaderCenter onClick={onHome}>
-                    <div>
-                        <IconHome size={15} color="white" />
-                    </div>
-                    <img src="/static/image/logo.svg" width="80" />
+                <HeaderCenter>
+                    <HeaderLogo onClick={onHome}>
+                        <div>
+                            <IconHome size={15} color="white" />
+                        </div>
+                        <img src="/static/image/logo.svg" width="80" />
+                    </HeaderLogo>
 
                     {/* {Object.keys(cryptoPrices).map(symbol => {
                         if ( typeof cryptoPrices[symbol] == 'number' && cryptoPrices[symbol]>0 )
@@ -280,16 +282,14 @@ const HeaderDiv = styled.div`
         margin: 0 ${styles.paddingOutMobile};
     }
 `
-const HeaderContent = styled.div`
-    padding-top: 25px;
-`
+const HeaderContent = styled.div``
 const HeaderLeft = styled.div`
+    margin-top: 28px;
     float: left;
     text-align: center;
     cursor: pointer;
     width: 28px;
     height: 28px;
-    margin-top: 3px;
     min-height: 1px;
     box-shadow: 0 0 0px 4px rgba(255, 255, 255, 0);
     background: rgba(255, 255, 255, 0);
@@ -316,21 +316,23 @@ const HeaderCenter = styled.div`
     width: calc(100% - 60px);
     float: left;
     text-align: center;
-    cursor: pointer;
-    padding-top: 3px;
     position: relative;
+`
+const HeaderLogo = styled.div`
+    cursor: pointer;
+    padding-top: 10px;
+    width: 100px;
+    margin: 0 auto;
     & div {
-        display: none;
-        position: absolute;
-        text-align: center;
-        width: 100%;
-        top: -18px;
+        opacity: 0;
     }
     &:hover div {
-        display: block;
+        opacity: 1;
     }
 `
+
 const HeaderRight = styled.div`
+    margin-top: 25px;
     width: 30px;
     height: 30px;
     float: right;

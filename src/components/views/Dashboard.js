@@ -286,20 +286,20 @@ function DashboardTemplate({
                                             </AssetIcon>
                                             <AssetText>
                                                 <AssetLeft>
-                                                    <AssetTitle1>
+                                                    <AssetLabel>
                                                         {asset.label}
-                                                    </AssetTitle1>
-                                                    <AssetSubtitle>
+                                                    </AssetLabel>
+                                                    <AssetAddress>
                                                         {asset.address}
-                                                    </AssetSubtitle>
+                                                    </AssetAddress>
                                                 </AssetLeft>
                                                 <AssetRight>
-                                                    <AssetTitle2>
+                                                    <AssetBalanceCurrency>
                                                         {asset.balance_currency}
-                                                    </AssetTitle2>
-                                                    <AssetSubtitle>
+                                                    </AssetBalanceCurrency>
+                                                    <AssetBalance>
                                                         {asset.balance_asset}
-                                                    </AssetSubtitle>
+                                                    </AssetBalance>
                                                 </AssetRight>
                                                 <AssetPercentage>
                                                     <AssetPercentageLeft
@@ -375,6 +375,7 @@ const Left = styled.div`
     ${styles.media.fourth} {
         width: 100%;
         float: none;
+        height: 150px;
     }
 `
 const Right = styled.div`
@@ -386,10 +387,7 @@ const Right = styled.div`
         width: 100%;
         float: none;
         padding-left: 0;
-        margin-top: 100px;
         clear: both;
-        & > div {
-        }
     }
 `
 
@@ -440,6 +438,9 @@ const Category = styled.div`
 
 const HeaderAsset = styled.div`
     min-height: 50px;
+    ${styles.media.fourth} {
+        display: none;
+    }
 `
 
 const HeaderLeft = styled.div``
@@ -556,6 +557,11 @@ const Asset = styled.div`
         height: 120px;
         margin-left: 10px;
     }
+    ${styles.media.fourth} {
+        height: auto;
+        margin-left: 0;
+        margin-top: 80px;
+    }
 `
 const AssetIcon = styled.div`
     padding-top: 5px;
@@ -585,16 +591,19 @@ const AssetRight = styled.div`
         text-align: left;
         float: none;
     }
+    ${styles.media.fourth} {
+        clear: none;
+    }
 `
 
-const AssetTitle1 = styled.div`
+const AssetLabel = styled.div`
     color: ${styles.color.front3};
     font-weight: bold;
     font-size: 16px;
     text-overflow: ellipsis;
     overflow: hidden;
 `
-const AssetTitle2 = styled.div`
+const AssetBalanceCurrency = styled.div`
     color: ${styles.color.front3};
     font-weight: bold;
     font-size: 16px;
@@ -607,7 +616,24 @@ const AssetTitle2 = styled.div`
         color: ${styles.color.grey1};
     }
 `
-const AssetSubtitle = styled.div`
+const AssetAddress = styled.div`
+    padding-top: 3px;
+    color: ${styles.color.grey1};
+    letter-spacing: 0.5px;
+    font-weight: 100;
+    font-size: 12px;
+    clear: both;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    line-height: 20px;
+    ${styles.media.third} {
+        padding-top: 0;
+    }
+    ${styles.media.fourth} {
+        display: none;
+    }
+`
+const AssetBalance = styled.div`
     padding-top: 3px;
     color: ${styles.color.grey1};
     letter-spacing: 0.5px;
@@ -621,6 +647,7 @@ const AssetSubtitle = styled.div`
         padding-top: 0;
     }
 `
+
 const AssetPercentage = styled.div`
     padding-top: 3px;
     clear: both;
@@ -647,6 +674,9 @@ const AssetPercentageRight = styled.span`
 const CurrenciesStyled = styled.div`
     width: 200px;
     margin: 0 auto;
+    ${styles.media.fourth} {
+        display: none;
+    }
 `
 const Currency = styled.div`
     clear: both;

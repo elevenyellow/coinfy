@@ -168,7 +168,11 @@ const Right = styled.div`
     padding-top: 10px;
     float: right;
     ${styles.media.fourth} {
-        display: none;
+        float: left;
+        padding-top: 0;
+        width: 100%;
+        text-align: left;
+        padding-left: 2px;
     }
 `
 
@@ -182,5 +186,8 @@ const H1b = styled.div`
     ${styles.media.first} {
         font-size: 19px;
         line-height: 23px;
+    }
+    ${styles.media.fourth} {
+        display: none;
     }
 `
