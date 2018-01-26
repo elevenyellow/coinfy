@@ -7,7 +7,7 @@ const {
 const scrypt = require('scrypt.js') // or from 'scryptsy'
 const { sha3 } = require('ethereumjs-util')
 
-function encryptAES128CTR(string, password, hex = false, mac = false) {
+function encryptAES128CTR(string, password, hex = false, mac = true) {
     const string_buffer = new Buffer(string, hex ? 'hex' : undefined) // ethereum: new Buffer(string,'hex')
     const ciphertype = 'aes-128-ctr'
     const salt = randomBytes(32)
@@ -16,7 +16,7 @@ function encryptAES128CTR(string, password, hex = false, mac = false) {
     const kdfparams = {
         dklen: 32,
         salt: salt.toString('hex'),
-        n: 1024,
+        n: 8192,
         r: 8,
         p: 1
     }
@@ -81,6 +81,12 @@ function decryptAES128CTR(encryption, password, hex = false) {
                   encryption.kdfparams.dklen,
                   'sha256'
               )
+
+    const mac = sha3(Buffer.concat([derivedKey.slice(16, 32), ciphertext]))
+    if (mac.toString('hex') !== encryption.mac) {
+        throw new Error('Key derivation failed - possibly wrong passphrase')
+    }
+
     const decipher = createDecipheriv(
         ciphertype,
         derivedKey.slice(0, 16),
@@ -93,4 +99,6 @@ function decryptAES128CTR(encryption, password, hex = false) {
 }
 
 const pwd = '1234'
-console.log(decryptAES128CTR(encryptAES128CTR('Hola Mundo', pwd), pwd))
+const enc = encryptAES128CTR('Hola Mundo', pwd)
+const dec = decryptAES128CTR(enc, pwd)
+console.log(dec)

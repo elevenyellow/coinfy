@@ -13,8 +13,8 @@ export { randomBytes } from 'crypto'
 
 export const minpassword = 8
 
-export function encryptAES128CTR(string, password, hex = false, mac = false) {
-    const string_buffer = new Buffer(string, hex ? 'hex' : undefined) // ethereum: new Buffer(string,'hex')
+export function encryptAES128CTR(string, password, isHex = false, mac = false) {
+    const string_buffer = new Buffer(string, isHex ? 'hex' : undefined) // ethereum: new Buffer(string,'hex')
     const ciphertype = 'aes-128-ctr'
     const salt = randomBytes(32)
     const iv = randomBytes(16)
@@ -22,7 +22,7 @@ export function encryptAES128CTR(string, password, hex = false, mac = false) {
     const kdfparams = {
         dklen: 32,
         salt: salt.toString('hex'),
-        n: 1024,
+        n: 1024 * 8,
         r: 8,
         p: 1
     }
@@ -36,8 +36,6 @@ export function encryptAES128CTR(string, password, hex = false, mac = false) {
         kdfparams.dklen
     )
     const cipher = createCipheriv(ciphertype, derivedKey.slice(0, 16), iv)
-    if (!cipher) throw new Error('Unsupported cipher')
-
     const ciphertext = Buffer.concat([
         cipher.update(string_buffer),
         cipher.final()
@@ -67,7 +65,7 @@ export function encryptAES128CTR(string, password, hex = false, mac = false) {
     return private_key
 }
 
-export function decryptAES128CTR(encryption, password, hex = false) {
+export function decryptAES128CTR(encryption, password, isHex = false) {
     const ciphertype = 'aes-128-ctr'
     const ciphertext = new Buffer(encryption.ciphertext, 'hex')
     const derivedKey =
@@ -87,6 +85,13 @@ export function decryptAES128CTR(encryption, password, hex = false) {
                   encryption.kdfparams.dklen,
                   'sha256'
               )
+
+    // if (typeof encryption.mac == 'string') {
+    //     const mac = sha3(Buffer.concat([derivedKey.slice(16, 32), ciphertext]))
+    //     if (mac.toString('hex') !== encryption.mac)
+    //         throw new Error('Key derivation failed - possibly wrong passphrase')
+    // }
+
     const decipher = createDecipheriv(
         ciphertype,
         derivedKey.slice(0, 16),
@@ -95,7 +100,7 @@ export function decryptAES128CTR(encryption, password, hex = false) {
     let seed = Buffer.concat([decipher.update(ciphertext), decipher.final()])
     while (seed.length < 32) seed = Buffer.concat([new Buffer([0x00]), seed])
 
-    return seed.toString(hex ? 'hex' : undefined) //ethereum seed.toString('hex')
+    return seed.toString(isHex ? 'hex' : undefined) //ethereum seed.toString('hex')
 }
 
 export function encryptBIP38(privateKey, password, progressCallback) {
