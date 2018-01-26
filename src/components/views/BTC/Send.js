@@ -3,21 +3,22 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 import { Show } from '/doprouter/react'
 
+import { MAINNET } from '/const/networks'
+import styles from '/const/styles'
+import { OK, ERROR, ALERT, NORMAL } from '/const/info'
+import routes from '/const/routes'
+
 import { Coins } from '/api/Coins'
 import { parseNumber, decimalsMax, bigNumber } from '/api/numbers'
 
 import state from '/store/state'
-import { fetchBalance, setHref } from '/store/actions'
+import { fetchBalance, setHref, sendEventToAnalytics } from '/store/actions'
 import {
     getAsset,
     getPrice,
     formatCurrency,
     convertBalance
 } from '/store/getters'
-
-import styles from '/const/styles'
-import { OK, ERROR, ALERT, NORMAL } from '/const/info'
-import routes from '/const/routes'
 
 import Div from '/components/styled/Div'
 import Span from '/components/styled/Span'
@@ -217,6 +218,7 @@ export default class Send extends Component {
         provider
             .send(this.tx_raw)
             .then(tx_id => {
+                sendEventToAnalytics('send', this.Coin.symbol, this.amount)
                 this.tx_id = tx_id
                 const collector = collect()
                 state.view.loading = false

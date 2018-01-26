@@ -1,12 +1,16 @@
 import React from 'react'
 import { set, collect } from 'dop'
-import { Coins } from '/api/Coins'
-import { now } from '/api/time'
+
+import { MAINNET } from '/const/networks'
 import { keysToRemoveWhenExporting } from '/const/state'
 import routes from '/const/routes'
 import styles from '/const/styles'
 import { OK, ERROR, ALERT, NORMAL } from '/const/info'
 import timeouts from '/const/timeouts'
+
+import { Coins } from '/api/Coins'
+import { now } from '/api/time'
+
 import state from '/store/state'
 import {
     getTotalAssets,
@@ -34,6 +38,7 @@ export function setHref(href) {
 }
 
 export function createAsset(type, symbol, address) {
+    sendEventToAnalytics('createAsset', symbol)
     const asset = generateDefaultAsset({ type, symbol, address })
     const asset_id = getNextCoinId({ symbol, address })
     state.assets[asset_id] = asset
@@ -347,3 +352,11 @@ export const fetchPrices = (function() {
     }
 })()
 fetchPrices()
+
+export function sendEventToAnalytics() {
+    if (state.network === MAINNET && typeof ga == 'function') {
+        const args = Array.prototype.slice.call(arguments, 0)
+        args.unshift('send', 'event')
+        ga.apply(this, args)
+    }
+}

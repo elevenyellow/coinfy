@@ -4,11 +4,14 @@
   "description": "",
   "main": "generate.js",
   "dependencies": {
+    "aes-js": "^3.1.0",
     "bigi": "^1.4.2",
     "bip39": "^2.4.0",
     "bitcoinjs-lib": "^3.3.0",
     "crypto": "^1.0.1",
     "request": "^2.81.0",
+    "scrypt-js": "^2.0.3",
+    "scrypt.js": "^0.2.0",
     "scryptsy": "^2.0.0"
   },
   "devDependencies": {},
