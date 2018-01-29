@@ -1,5 +1,5 @@
 import Bitcoin from 'bitcoinjs-lib'
-import bip39 from 'bip39'
+import { getBip32RootKey } from '/api/bip39'
 import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
 import { formatCoin, decimalsMax, bigNumber } from '/api/numbers'
 import {
@@ -43,7 +43,7 @@ export function format(value, decimals = coin_decimals) {
     return formatCoin(value, decimals, symbol)
 }
 
-export function getDerivedWallet({
+export function getWalletByWords({
     words,
     index = 0,
     derived_path,
@@ -55,18 +55,21 @@ export function getDerivedWallet({
                 ? derivation_path.mainnet(index)
                 : derivation_path.testnet(index)
     }
-    const seed = bip39.mnemonicToSeed(words, passphase)
-    const bip32RootKey = Bitcoin.HDNode.fromSeedHex(seed, network)
-    const key = bip32RootKey.derivePath(derived_path)
+    const key = getBip32RootKey({
+        words,
+        derived_path,
+        passphase,
+        network: network
+    })
     const wallet = key.keyPair
     return { address: wallet.getAddress(), private_key: wallet.toWIF() }
 }
 
-export function generateRandomWallet() {
-    const wallet = Bitcoin.ECPair.makeRandom({ network: network })
-    wallet.compressed = false
-    return { address: wallet.getAddress(), private_key: wallet.toWIF() }
-}
+// export function generateRandomWallet() {
+//     const wallet = Bitcoin.ECPair.makeRandom({ network: network })
+//     wallet.compressed = false
+//     return { address: wallet.getAddress(), private_key: wallet.toWIF() }
+// }
 
 // https://en.bitcoin.it/wiki/List_of_address_prefixes
 export function isAddress(address) {

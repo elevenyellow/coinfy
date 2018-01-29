@@ -6,8 +6,7 @@ import {
     privateToPublic
 } from 'ethereumjs-util'
 import EthereumTx from 'ethereumjs-tx'
-import bip39 from 'bip39'
-import Bitcoin from 'bitcoinjs-lib'
+import { getBip32RootKey } from '/api/bip39'
 import {
     formatCoin,
     decimalsMax,
@@ -93,7 +92,7 @@ export function stringToBuffer(string) {
     return new Buffer(string, 'hex')
 }
 
-export function getDerivedWallet({
+export function getWalletByWords({
     words,
     index = 0,
     derived_path,
@@ -102,12 +101,7 @@ export function getDerivedWallet({
     if (derived_path === undefined) {
         derived_path = derivation_path.mainnet(index)
     }
-    const seed = bip39.mnemonicToSeed(words, passphase)
-    const bip32RootKey = Bitcoin.HDNode.fromSeedHex(
-        seed,
-        Bitcoin.networks.bitcoin
-    )
-    const key = bip32RootKey.derivePath(derived_path)
+    const key = getBip32RootKey({ words, derived_path, passphase })
     const wallet = key.keyPair.d.toBuffer()
     return {
         address: addHexPrefix(privateToAddress(wallet).toString('hex')),
@@ -115,16 +109,15 @@ export function getDerivedWallet({
     }
 }
 
-export function generateRandomWallet() {
-    const bytes = randomBytes(32)
-    const private_key = new Buffer(bytes, 'hex')
-    const address = privateToAddress(private_key)
-    // console.log( private_key.toString('hex') );
-    return {
-        address: addHexPrefix(address.toString('hex')),
-        private_key: private_key.toString('hex')
-    }
-}
+// export function generateRandomWallet() {
+//     const bytes = randomBytes(32)
+//     const private_key = new Buffer(bytes, 'hex')
+//     const address = privateToAddress(private_key)
+//     return {
+//         address: addHexPrefix(address.toString('hex')),
+//         private_key: private_key.toString('hex')
+//     }
+// }
 
 export function removeHexPrefix(hex) {
     return hex.toLowerCase().replace('0x', '')
