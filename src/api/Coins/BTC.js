@@ -1,4 +1,5 @@
 import Bitcoin from 'bitcoinjs-lib'
+import bip39 from 'bip39'
 import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
 import { formatCoin, decimalsMax, bigNumber } from '/api/numbers'
 import {
@@ -33,8 +34,32 @@ export const price_decimals = 0
 export const satoshis = 100000000
 export const labels = 'btc coin'
 
+export const derivation_path = {
+    mainnet: index => `m/44'/0'/0'/0/${index}`,
+    testnet: index => `m/44'/1'/0'/0/${index}`
+}
+
 export function format(value, decimals = coin_decimals) {
     return formatCoin(value, decimals, symbol)
+}
+
+export function getDerivedWallet({
+    words,
+    index = 0,
+    derived_path,
+    passphase = ''
+}) {
+    if (derived_path === undefined) {
+        derived_path =
+            network_int === MAINNET
+                ? derivation_path.mainnet(index)
+                : derivation_path.testnet(index)
+    }
+    const seed = bip39.mnemonicToSeed(words, passphase)
+    const bip32RootKey = Bitcoin.HDNode.fromSeedHex(seed, network)
+    const key = bip32RootKey.derivePath(derived_path)
+    const wallet = key.keyPair
+    return { address: wallet.getAddress(), private_key: wallet.toWIF() }
 }
 
 export function generateRandomWallet() {

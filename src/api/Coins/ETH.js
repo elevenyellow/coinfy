@@ -6,6 +6,8 @@ import {
     privateToPublic
 } from 'ethereumjs-util'
 import EthereumTx from 'ethereumjs-tx'
+import bip39 from 'bip39'
+import Bitcoin from 'bitcoinjs-lib'
 import {
     formatCoin,
     decimalsMax,
@@ -50,6 +52,11 @@ export const labels = 'eth coin etereum'
 
 export { addHexPrefix } from 'ethereumjs-util'
 
+export const derivation_path = {
+    mainnet: (index = 0) => `m/44'/60'/0'/0/${index}`,
+    testnet: (index = 0) => `m/44'/60'/0'/0/${index}`
+}
+
 export function format(value, decimals = coin_decimals) {
     return formatCoin(value, decimals, symbol)
 }
@@ -84,6 +91,28 @@ export function getPublicFromPrivateKey(private_key) {
 
 export function stringToBuffer(string) {
     return new Buffer(string, 'hex')
+}
+
+export function getDerivedWallet({
+    words,
+    index = 0,
+    derived_path,
+    passphase = ''
+}) {
+    if (derived_path === undefined) {
+        derived_path = derivation_path.mainnet(index)
+    }
+    const seed = bip39.mnemonicToSeed(words, passphase)
+    const bip32RootKey = Bitcoin.HDNode.fromSeedHex(
+        seed,
+        Bitcoin.networks.bitcoin
+    )
+    const key = bip32RootKey.derivePath(derived_path)
+    const wallet = key.keyPair.d.toBuffer()
+    return {
+        address: addHexPrefix(privateToAddress(wallet).toString('hex')),
+        private_key: wallet.toString('hex')
+    }
 }
 
 export function generateRandomWallet() {
