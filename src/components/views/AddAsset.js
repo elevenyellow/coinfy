@@ -1,204 +1,70 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { createObserver } from 'dop'
-import { Router, Route } from '/doprouter/react'
+import { createObserver, collect } from 'dop'
+import { Router, Route, Show } from '/doprouter/react'
 
+import { generateQRCode } from '/api/qr'
+import { Coins } from '/api/Coins'
+import { isAddress } from '/api/Coins/ETH'
 import routes from '/const/routes'
-import { WALLET, ERC20 } from '/const/coin_types'
+import state from '/store/state'
+
 import styles from '/const/styles'
 
-import sortBy from '/api/sortBy'
-import { Coins } from '/api/Coins'
-import searchInArray from '/api/searchInArray'
-
-import state from '/store/state'
-import { setHref } from '/store/actions'
-
-import Div from '/components/styled/Div'
+import IconHeader from '/components/styled/IconHeader'
 import H1 from '/components/styled/H1'
 import H2 from '/components/styled/H2'
-import InputSearch from '/components/styled/InputSearch'
 import {
     RightContainerPadding,
     RightHeader,
     RightContent
 } from '/components/styled/Right'
+import Div from '/components/styled/Div'
 
 export default class AddAsset extends Component {
     componentWillMount() {
-        this.observer = createObserver(mutations => this.forceUpdate())
-        this.observer.observe(state.location.path, 'length')
-        this.observer.observe(state.location.path, '1')
-        this.observer.observe(state.view, 'filter')
+        this.observer = createObserver(m => this.forceUpdate())
+        this.observer.observe(state.view)
 
-        // Initial state
-        state.view = {
-            filter: ''
-        }
+        this.Coin = Coins[state.location.path[state.location.path.length - 1]]
 
-        this.assetList = []
-        Object.keys(Coins)
-            .filter(symbol => symbol !== 'Coins')
-            .forEach(symbol => {
-                const coin = Coins[symbol]
-                if (coin.type === WALLET) {
-                    this.assetList.push({
-                        name: coin.name,
-                        title: 'Create a new wallet',
-                        url: routes.create(symbol),
-                        logo: `/static/image/coins/${symbol}.svg`,
-                        labels: coin.labels,
-                        position: 0
-                    })
-                    this.assetList.push({
-                        name: coin.name,
-                        title: 'Import wallet',
-                        url: routes.import(symbol),
-                        logo: `/static/image/coins/${symbol}.svg`,
-                        labels: coin.labels,
-                        position: 0
-                    })
-                } else if (coin.type === ERC20) {
-                    this.assetList.push({
-                        name: coin.name,
-                        title: `Import ${symbol} token`,
-                        url: routes.import(symbol),
-                        logo: `/static/image/coins/${symbol}.svg`,
-                        labels: coin.labels,
-                        position: 1
-                    })
-                }
-            })
+        console.log(this.Coin)
 
-        this.assetList = sortBy(this.assetList, 'position', 'name', 'title')
+        // binding
+        this.onSelectOption = this.onSelectOption.bind(this)
     }
-
     componentWillUnmount() {
         this.observer.destroy()
     }
-
     shouldComponentUpdate() {
         return false
     }
 
-    onChangeFilter(e) {
-        state.view.filter = e.target.value
-    }
-
-    onClick(route) {
-        setHref(route)
-    }
+    // Actions
+    onSelectOption(e) {}
 
     render() {
-        return React.createElement(AddAssetTemplate, {
-            location: state.location,
-            assetList: searchInArray(this.assetList, state.view.filter, [
-                'name',
-                'title',
-                'labels'
-            ]),
-            filter: state.view.filter,
-            onChangeFilter: this.onChangeFilter,
-            onClick: this.onClick
+        return React.createElement(ImportTemplate, {
+            Coin: this.Coin,
+            onSelectOption: this.onSelectOption
         })
     }
 }
 
-function AddAssetTemplate({
-    location,
-    assetList,
-    filter,
-    onChangeFilter,
-    onClick
-}) {
+function ImportTemplate({ Coin, onSelectOption }) {
     return (
         <RightContainerPadding>
             <RightHeader>
+                <IconHeader>
+                    <img src={`/static/image/coins/${Coin.symbol}.svg`} />
+                </IconHeader>
                 <Div float="left">
-                    <H1>Add asset</H1>
-                    <H2>Create or Import assets</H2>
+                    <H1>{Coin.name}</H1>
+                    <H2>{Coin.symbol}</H2>
                 </Div>
                 <Div clear="both" />
             </RightHeader>
-            <RightContent>
-                <Div padding-bottom="20px">
-                    <InputSearch
-                        ref={e => {
-                            if (e && e.base && e.base.getElementsByTagName)
-                                setTimeout(a => {
-                                    e.base
-                                        .getElementsByTagName('input')[0]
-                                        .focus()
-                                }, 10)
-                        }}
-                        value={filter}
-                        onChange={onChangeFilter}
-                        onClear={e => onChangeFilter({ target: { value: '' } })}
-                        placeholder="Filter"
-                        invalid={assetList.length === 0}
-                        width="100%"
-                    />
-                </Div>
-                <Items>
-                    {assetList.map(asset => (
-                        <Item onClick={e => onClick(asset.url)}>
-                            <ItemIco>
-                                <img src={asset.logo} width="20" height="20" />
-                            </ItemIco>
-                            <ItemText>
-                                <ItemTitle>{asset.name}</ItemTitle>
-                                <ItemSubtitle>{asset.title}</ItemSubtitle>
-                            </ItemText>
-                        </Item>
-                    ))}
-                </Items>
-            </RightContent>
+            <RightContent />
         </RightContainerPadding>
     )
 }
-
-const Items = styled.div``
-const Item = styled.div`
-    height: 34px;
-    width: calc(50% - 50px);
-    float: left;
-    margin-bottom: 20px;
-    margin-right: 20px;
-    padding: 20px;
-    background-color: ${styles.color.background1};
-    border-radius: 5px;
-    cursor: pointer;
-    color: ${styles.color.black};
-    &:hover {
-        color: white;
-        background-color: ${styles.color.background2};
-    }
-    &:nth-child(even) {
-        margin-right: 0;
-    }
-
-    ${styles.media.third} {
-        float: none;
-        clear: both;
-        width: calc(100% - 40px);
-        margin-right: 0;
-    }
-`
-const ItemIco = styled.div`
-    padding-top: 2px;
-    float: left;
-`
-const ItemText = styled.div`
-    float: left;
-    padding-left: 10px;
-`
-const ItemTitle = styled.div`
-    color: inherit;
-    letter-spacing: 0.3px;
-    font-size: 20px;
-    font-weight: 900;
-    line-height: 20px;
-`
-const ItemSubtitle = styled.div`
-    font-size: 14px;
-`
