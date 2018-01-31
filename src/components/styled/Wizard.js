@@ -32,7 +32,7 @@ const widthItem = 76
 const WizardStyled = styled.div`
     box-sizing: content-box;
     position: relative;
-    height: 125px;
+    height: 76px;
 
     & .wizardBackground {
         box-sizing: content-box;

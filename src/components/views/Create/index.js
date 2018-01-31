@@ -5,6 +5,7 @@ import { Router, Route, Show } from '/doprouter/react'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
+import { minpassword } from '/api/crypto'
 
 import { generateQRCode } from '/api/qr'
 import { Coins } from '/api/Coins'
@@ -23,6 +24,9 @@ import {
     RightContent
 } from '/components/styled/Right'
 import Div from '/components/styled/Div'
+import { FormField } from '/components/styled/Form'
+import Input from '/components/styled/Input'
+import Password from '/components/styled/Password'
 
 export default class AddAsset extends Component {
     componentWillMount() {
@@ -49,7 +53,8 @@ export default class AddAsset extends Component {
     render() {
         return React.createElement(ImportTemplate, {
             Coin: this.Coin,
-            onSelectOption: this.onSelectOption
+            onSelectOption: this.onSelectOption,
+            minpassword: minpassword
         })
     }
 }
@@ -69,20 +74,50 @@ function ImportTemplate({ Coin, onSelectOption }) {
             </RightHeader>
             <RightContent>
                 <Wizard>
-                    <WizardItem label="Select type" status="3">
-                        ✓
-                    </WizardItem>
-                    <WizardItem label="Select type" status="2">
-                        2
-                    </WizardItem>
-                    <WizardItem label="Configure" status="1">
-                        3
-                    </WizardItem>
-                    <WizardItem label="Finish" status="1">
-                        4
-                    </WizardItem>
+                    <WizardItem status="2">✓</WizardItem>
+                    <WizardItem status="1">2</WizardItem>
+                    <WizardItem status="1">3</WizardItem>
                 </Wizard>
+                <Title>Create Your Password</Title>
+                <Div>
+                    <form>
+                        <FormField>
+                            <Password
+                                placeholder="Password"
+                                minlength={minpassword}
+                                value={''}
+                                onChange={e => onChangePassword}
+                                width="100%"
+                                type="password"
+                            />
+                        </FormField>
+                        <FormField>
+                            <Input
+                                placeholder="Repeat Password"
+                                minlength={minpassword}
+                                error={
+                                    'isInvalidRepassword' === ''
+                                        ? 'Passwords do not match'
+                                        : null
+                                }
+                                invalid={'isInvalidRepassword' === ''}
+                                value={''}
+                                onChange={e => onChangeRepassword}
+                                width="100%"
+                                type="password"
+                            />
+                        </FormField>
+                    </form>
+                </Div>
             </RightContent>
         </RightContainerPadding>
     )
 }
+
+const Title = styled.div`
+    text-align: center;
+    padding-top: 20px;
+    color: ${styles.color.grey3};
+    font-weight: bold;
+    font-size: 22px;
+`
