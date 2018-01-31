@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import styles from '/const/styles'
+import { OK, ERROR, ALERT, NORMAL } from '/const/'
 import IconInfo from 'react-icons/lib/ti/info-large'
 import IconError from 'react-icons/lib/md/error'
-import { OK, ERROR, ALERT, NORMAL } from '/const/info'
 
 export default function Alert({ children, color = ALERT }) {
     let Icon = IconInfo

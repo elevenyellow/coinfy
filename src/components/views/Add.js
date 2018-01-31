@@ -4,7 +4,7 @@ import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 
 import routes from '/const/routes'
-import { WALLET, ERC20 } from '/const/coin_types'
+import { WALLET, ERC20 } from '/const/'
 import styles from '/const/styles'
 
 import sortBy from '/api/sortBy'

@@ -4,7 +4,7 @@ import { createObserver, collect } from 'dop'
 
 import routes from '/const/routes'
 import styles from '/const/styles'
-import { OK, ERROR, ALERT, NORMAL } from '/const/info'
+import { OK, ERROR, ALERT, NORMAL } from '/const/'
 
 import { Coins } from '/api/Coins'
 import { minpassword } from '/api/crypto'

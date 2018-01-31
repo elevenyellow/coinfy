@@ -1,12 +1,20 @@
 import React from 'react'
 import { set, collect } from 'dop'
 
-import { MAINNET } from '/const/networks'
-import { keysToRemoveWhenExporting } from '/const/state'
+import {
+    MAINNET,
+    KEYS_TO_REMOVE_WHEN_EXPORTING,
+    OK,
+    ERROR,
+    ALERT,
+    NORMAL,
+    TIMEOUT_FETCH_PRICES,
+    TIMEOUT_FETCH_SUMMARY,
+    TIMEOUT_UPDATE_ALL_BALANCES,
+    TIMEOUT_BETWEEN_EACH_GETBALANCE
+} from '/const/'
 import routes from '/const/routes'
 import styles from '/const/styles'
-import { OK, ERROR, ALERT, NORMAL } from '/const/info'
-import timeouts from '/const/timeouts'
 
 import { Coins } from '/api/Coins'
 import { now } from '/api/time'
@@ -103,7 +111,7 @@ export function exportAssets(a) {
         const data = btoa(
             JSON.stringify(state.assets, (key, value) => {
                 key = key.toLocaleLowerCase()
-                return keysToRemoveWhenExporting.indexOf(key) > -1
+                return KEYS_TO_REMOVE_WHEN_EXPORTING.indexOf(key) > -1
                     ? undefined
                     : value
             })
@@ -253,10 +261,10 @@ export function fetchAllBalances() {
     getAssetsAsArray().forEach((asset, index) => {
         setTimeout(
             () => fetchBalance(getCoinId(asset)),
-            index * timeouts.between_each_getbalance
+            index * TIMEOUT_BETWEEN_EACH_GETBALANCE
         )
     })
-    setTimeout(fetchAllBalances, timeouts.update_all_balances)
+    setTimeout(fetchAllBalances, TIMEOUT_UPDATE_ALL_BALANCES)
 }
 fetchAllBalances()
 
@@ -341,7 +349,7 @@ export const fetchPrices = (function() {
     }
     manager.onFinishAll = () => {
         // console.log( 'onFinishAll', manager.prices.BTC )
-        timeout = setTimeout(fetchPrices, timeouts.fetch_prices)
+        timeout = setTimeout(fetchPrices, TIMEOUT_FETCH_PRICES)
     }
     manager.onError = e => {
         showNotConnectionNotification(true)

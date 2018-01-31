@@ -4,7 +4,7 @@ import { Coins } from '/api/Coins'
 import { Fiats, USD } from '/api/Fiats'
 import { getTotalAssets, generateDefaultAsset } from '/store/getters'
 import { localStorageGet } from '/api/browser'
-import { MAINNET, TESTNET } from '/const/networks'
+import { MAINNET, TESTNET } from '/const/'
 
 // initial state
 const network = Number(localStorageGet('network')) || MAINNET

@@ -17,8 +17,7 @@ import {
 } from '/api/numbers'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
 import { localStorageGet } from '/api/browser'
-import { MAINNET, TESTNET } from '/const/networks'
-import { WALLET } from '/const/coin_types'
+import { WALLET, MAINNET, TESTNET } from '/const/'
 
 // private
 export const network = Number(localStorageGet('network')) || MAINNET

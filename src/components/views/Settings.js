@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 import styles from '/const/styles'
-import { MAINNET, TESTNET } from '/const/networks'
+import { MAINNET, TESTNET } from '/const/'
 import { Fiats } from '/api/Fiats'
 
 import state from '/store/state'

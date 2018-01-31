@@ -5,7 +5,7 @@ import { Router, Route } from '/doprouter/react'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
-import { WALLET, ERC20 } from '/const/coin_types'
+import { WALLET, ERC20 } from '/const/'
 
 import { Coins } from '/api/Coins'
 

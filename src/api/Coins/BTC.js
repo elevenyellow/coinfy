@@ -8,8 +8,7 @@ import {
 } from '/api/crypto'
 import sortBy from '/api/sortBy'
 import { localStorageGet } from '/api/browser'
-import { MAINNET, TESTNET } from '/const/networks'
-import { WALLET } from '/const/coin_types'
+import { WALLET, MAINNET, TESTNET } from '/const/'
 
 // private
 const network_int = Number(localStorageGet('network')) || MAINNET

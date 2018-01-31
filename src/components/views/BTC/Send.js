@@ -3,9 +3,8 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 import { Show } from '/doprouter/react'
 
-import { MAINNET } from '/const/networks'
+import { MAINNET, OK, ERROR, ALERT, NORMAL } from '/const/'
 import styles from '/const/styles'
-import { OK, ERROR, ALERT, NORMAL } from '/const/info'
 import routes from '/const/routes'
 
 import { Coins } from '/api/Coins'

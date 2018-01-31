@@ -1,5 +1,5 @@
 import { supplant } from '/api/strings'
-import { MAINNET } from '/const/networks'
+import { MAINNET } from '/const/'
 
 export function printTemplate(template, data = {}, printIn = 1000) {
     const html = supplant(template, data)

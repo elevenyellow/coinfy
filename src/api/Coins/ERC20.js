@@ -13,7 +13,7 @@ import {
     fetchRecomendedFee as fetchRecomendedFeeRaw,
     createSimpleTx
 } from '/api/Coins/ETH'
-import { ERC20 } from '/const/coin_types'
+import { ERC20 } from '/const/'
 
 export {
     isAddress,

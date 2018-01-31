@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { createObserver } from 'dop'
 import styles from '/const/styles'
 import routes from '/const/routes'
-import { MAINNET, TESTNET } from '/const/networks'
+import { MAINNET, TESTNET } from '/const/'
 import { Show } from '/doprouter/react'
 
 import IconMenu from 'react-icons/lib/md/menu'
