@@ -355,10 +355,12 @@ export const fetchPrices = (function() {
 })()
 fetchPrices()
 
-export function sendEventToAnalytics() {
-    if (state.network === MAINNET && typeof ga == 'function') {
-        const args = Array.prototype.slice.call(arguments, 0)
-        args.unshift('send', 'event')
-        ga.apply(this, args)
-    }
+export function sendEventToAnalytics(
+    eventCategory,
+    eventAction,
+    eventLabel,
+    eventValue
+) {
+    if (state.network === MAINNET && typeof ga == 'function')
+        ga('send', 'event', eventCategory, eventAction)
 }
