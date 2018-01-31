@@ -2,7 +2,7 @@ export default {
     headerHeight: '75px',
     paddingOut: '50px',
     paddingOutMobile: '15px',
-    paddingContent: '40px',
+    paddingContent: '30px',
     paddingContentMobile: '20px',
     leftColumn: '250px',
     leftColumnMobile: '300px',
@@ -45,6 +45,8 @@ export default {
         black: '#000',
 
         //
-        grey1: '#aaaaaa'
+        grey1: '#aaaaaa',
+        grey2: '#efefef',
+        grey3: '#c8c8c8'
     }
 }

@@ -16,6 +16,7 @@ import { setHref } from '/store/actions'
 import IconHeader from '/components/styled/IconHeader'
 import H1 from '/components/styled/H1'
 import H2 from '/components/styled/H2'
+import { Wizard, WizardItem } from '/components/styled/Wizard'
 import {
     RightContainerPadding,
     RightHeader,
@@ -62,21 +63,25 @@ function ImportTemplate({ Coin, onSelectOption }) {
                 </IconHeader>
                 <Div float="left">
                     <H1>{Coin.name}</H1>
-                    <H2>Add {Coin.symbol} asset</H2>
+                    <H2>Create {Coin.symbol} asset</H2>
                 </Div>
                 <Div clear="both" />
             </RightHeader>
             <RightContent>
-                <button
-                    onClick={e => onSelectOption(routes.create(Coin.symbol))}
-                >
-                    Create
-                </button>
-                <button
-                    onClick={e => onSelectOption(routes.import(Coin.symbol))}
-                >
-                    Import
-                </button>
+                <Wizard>
+                    <WizardItem label="Select type" status="3">
+                        ✓
+                    </WizardItem>
+                    <WizardItem label="Select type" status="2">
+                        2
+                    </WizardItem>
+                    <WizardItem label="Configure" status="1">
+                        3
+                    </WizardItem>
+                    <WizardItem label="Finish" status="1">
+                        4
+                    </WizardItem>
+                </Wizard>
             </RightContent>
         </RightContainerPadding>
     )

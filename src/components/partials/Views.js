@@ -21,9 +21,8 @@ import Dashboard from '/components/views/Dashboard'
 import Settings from '/components/views/Settings'
 import Add from '/components/views/Add'
 import AddAsset from '/components/views/AddAsset'
-import CreateBTC from '/components/views/CreateBTC'
+import Create from '/components/views/Create'
 import ImportBTC from '/components/views/ImportBTC'
-import CreateETH from '/components/views/CreateETH'
 import ImportETH from '/components/views/ImportETH'
 import ImportERC20 from '/components/views/ImportERC20'
 import ViewBTC from '/components/views/BTC/'
@@ -87,14 +86,11 @@ function ContentTemplate({
                     <Route pathname={routes.addAsset(symbol_add)}>
                         <AddAsset />
                     </Route>
-                    <Route pathname={routes.create('BTC')}>
-                        <CreateBTC />
+                    <Route pathname={routes.create(symbol_add)}>
+                        <Create />
                     </Route>
                     <Route pathname={routes.import('BTC')}>
                         <ImportBTC />
-                    </Route>
-                    <Route pathname={routes.create('ETH')}>
-                        <CreateETH />
                     </Route>
                     <Route pathname={routes.import('ETH')}>
                         <ImportETH />
