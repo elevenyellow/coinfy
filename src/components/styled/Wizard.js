@@ -40,7 +40,7 @@ const WizardStyled = styled.div`
         background-color: ${styles.color.grey2};
         height: 16px;
         width: 100%;
-        top: 33px;
+        top: 32px;
         border-radius: 20px;
     }
     & .wizardItems {

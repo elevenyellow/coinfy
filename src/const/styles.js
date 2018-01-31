@@ -2,7 +2,7 @@ export default {
     headerHeight: '75px',
     paddingOut: '50px',
     paddingOutMobile: '15px',
-    paddingContent: '30px',
+    paddingContent: '40px',
     paddingContentMobile: '20px',
     leftColumn: '250px',
     leftColumnMobile: '300px',

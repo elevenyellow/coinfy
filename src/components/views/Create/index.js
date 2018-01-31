@@ -24,9 +24,15 @@ import {
     RightContent
 } from '/components/styled/Right'
 import Div from '/components/styled/Div'
-import { FormField } from '/components/styled/Form'
+import {
+    FormField,
+    FormFieldButtonLeft,
+    FormFieldButtonRight
+} from '/components/styled/Form'
 import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
+import ButtonBig from '/components/styled/ButtonBig'
+import Button from '/components/styled/Button'
 
 export default class AddAsset extends Component {
     componentWillMount() {
@@ -78,41 +84,76 @@ function ImportTemplate({ Coin, onSelectOption }) {
                     <WizardItem status="1">2</WizardItem>
                     <WizardItem status="1">3</WizardItem>
                 </Wizard>
-                <Title>Create Your Password</Title>
-                <Div>
-                    <form>
-                        <FormField>
-                            <Password
-                                placeholder="Password"
-                                minlength={minpassword}
-                                value={''}
-                                onChange={e => onChangePassword}
-                                width="100%"
-                                type="password"
-                            />
-                        </FormField>
-                        <FormField>
-                            <Input
-                                placeholder="Repeat Password"
-                                minlength={minpassword}
-                                error={
-                                    'isInvalidRepassword' === ''
-                                        ? 'Passwords do not match'
-                                        : null
-                                }
-                                invalid={'isInvalidRepassword' === ''}
-                                value={''}
-                                onChange={e => onChangeRepassword}
-                                width="100%"
-                                type="password"
-                            />
-                        </FormField>
-                    </form>
-                </Div>
+                <Container>
+                    <Title>Create Your Password</Title>
+                    <Description>
+                        Coinfy will protect this asset with a password. You must
+                        remember your password as there is no way it can be
+                        recovered! Think of this password as a key. It protects
+                        your money if someone else tries to access your
+                        computer.
+                    </Description>
+
+                    <Content>
+                        <form>
+                            <FormField>
+                                <Password
+                                    placeholder="Password"
+                                    minlength={minpassword}
+                                    value={''}
+                                    onChange={e => onChangePassword}
+                                    width="100%"
+                                    type="password"
+                                />
+                            </FormField>
+                            <FormField>
+                                <Input
+                                    placeholder="Repeat Password"
+                                    minlength={minpassword}
+                                    error={
+                                        'isInvalidRepassword' === ''
+                                            ? 'Passwords do not match'
+                                            : null
+                                    }
+                                    invalid={'isInvalidRepassword' === ''}
+                                    value={''}
+                                    onChange={e => onChangeRepassword}
+                                    width="100%"
+                                    type="password"
+                                />
+                            </FormField>
+                            <FormField>
+                                {/* <FormFieldButtonLeft width="49%">
+                                    <ButtonBig
+                                        width="100%"
+                                        disabled={false}
+                                        onClick={e => onSubmit}
+                                    >
+                                        Next
+                                    </ButtonBig>
+                                </FormFieldButtonLeft> */}
+                                <FormFieldButtonRight width="100%">
+                                    <ButtonBig
+                                        width="100%"
+                                        disabled={true}
+                                        onClick={e => onSubmit}
+                                    >
+                                        Next
+                                    </ButtonBig>
+                                </FormFieldButtonRight>
+                            </FormField>
+                        </form>
+                    </Content>
+                </Container>
             </RightContent>
         </RightContainerPadding>
     )
 }
+
+const Container = styled.div`
+    max-width: 550px;
+    margin: 0 auto;
+`
 
 const Title = styled.div`
     text-align: center;
@@ -120,4 +161,15 @@ const Title = styled.div`
     color: ${styles.color.grey3};
     font-weight: bold;
     font-size: 22px;
+`
+
+const Description = styled.div`
+    padding-top: 20px;
+    color: ${styles.color.front3};
+    font-weight: bold;
+    font-size: 14px;
+`
+
+const Content = styled.div`
+    padding-top: 20px;
 `
