@@ -28,8 +28,6 @@ export default class AddAsset extends Component {
 
         this.Coin = Coins[state.location.path[state.location.path.length - 1]]
 
-        console.log(this.Coin)
-
         // binding
         this.onSelectOption = this.onSelectOption.bind(this)
     }
@@ -60,11 +58,13 @@ function ImportTemplate({ Coin, onSelectOption }) {
                 </IconHeader>
                 <Div float="left">
                     <H1>{Coin.name}</H1>
-                    <H2>{Coin.symbol}</H2>
+                    <H2>Add {Coin.symbol} asset</H2>
                 </Div>
                 <Div clear="both" />
             </RightHeader>
-            <RightContent />
+            <RightContent>
+                hola
+            </RightContent>
         </RightContainerPadding>
     )
 }
