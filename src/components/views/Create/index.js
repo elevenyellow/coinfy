@@ -33,11 +33,16 @@ import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
 import ButtonBig from '/components/styled/ButtonBig'
 import Button from '/components/styled/Button'
+import StepContainer from '/components/styled/StepContainer'
 
 export default class AddAsset extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
+
+        state.view = {
+            step: 1
+        }
 
         this.Coin = Coins[state.location.path[state.location.path.length - 1]]
 
@@ -197,62 +202,64 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                     </Content>
                 </Container> */}
 
-                <Container>
-                    <Title>Verify Your Recovery Phrase</Title>
+                <StepContainer active={true}>
+                    <Container>
+                        <Title>Verify Your Recovery Phrase</Title>
 
-                    <Content>
-                        <Div>
-                            <Words error={false}>
-                                cycle ladder vault piano steel put copy cancel
-                                purse
-                            </Words>
-                            <Div position="relative" top="-20px">
-                                <Button
-                                    margin="0 auto"
-                                    red={true}
-                                    disabled={true}
-                                >
-                                    Clear
-                                </Button>
+                        <Content>
+                            <Div>
+                                <Words error={false}>
+                                    cycle ladder vault piano steel put copy
+                                    cancel purse
+                                </Words>
+                                <Div position="relative" top="-20px">
+                                    <Button
+                                        margin="0 auto"
+                                        red={true}
+                                        disabled={true}
+                                    >
+                                        Clear
+                                    </Button>
+                                </Div>
                             </Div>
-                        </Div>
-                        <WordsButtons>
-                            <Button>cycle</Button>
-                            <Button>ladder</Button>
-                            <Button>vault</Button>
-                            <Button>piano</Button>
-                            <Button>steel</Button>
-                            <Button>put</Button>
-                            <Button>copy</Button>
-                            <Button>verylongwordwhatever</Button>
-                            <Button>purse</Button>
-                            <Button>scare</Button>
-                            <Button>before</Button>
-                            <Button>wood</Button>
-                        </WordsButtons>
+                            <WordsButtons>
+                                <Button>cycle</Button>
+                                <Button>ladder</Button>
+                                <Button>vault</Button>
+                                <Button>piano</Button>
+                                <Button>steel</Button>
+                                <Button>put</Button>
+                                <Button>copy</Button>
+                                <Button>verylongwordwhatever</Button>
+                                <Button>purse</Button>
+                                <Button>scare</Button>
+                                <Button>before</Button>
+                                <Button>wood</Button>
+                            </WordsButtons>
 
-                        <FormField>
-                            <FormFieldButtonLeft width="29%">
-                                <ButtonBig
-                                    width="100%"
-                                    disabled={false}
-                                    onClick={e => onBack}
-                                >
-                                    Back
-                                </ButtonBig>
-                            </FormFieldButtonLeft>
-                            <FormFieldButtonRight width="69%">
-                                <ButtonBig
-                                    width="100%"
-                                    disabled={true}
-                                    onClick={e => onNext}
-                                >
-                                    Create!
-                                </ButtonBig>
-                            </FormFieldButtonRight>
-                        </FormField>
-                    </Content>
-                </Container>
+                            <FormField>
+                                <FormFieldButtonLeft width="29%">
+                                    <ButtonBig
+                                        width="100%"
+                                        disabled={false}
+                                        onClick={e => onBack}
+                                    >
+                                        Back
+                                    </ButtonBig>
+                                </FormFieldButtonLeft>
+                                <FormFieldButtonRight width="69%">
+                                    <ButtonBig
+                                        width="100%"
+                                        disabled={true}
+                                        onClick={e => onNext}
+                                    >
+                                        Create!
+                                    </ButtonBig>
+                                </FormFieldButtonRight>
+                            </FormField>
+                        </Content>
+                    </Container>
+                </StepContainer>
             </RightContent>
         </RightContainerPadding>
     )
