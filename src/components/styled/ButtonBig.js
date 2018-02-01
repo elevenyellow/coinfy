@@ -24,6 +24,7 @@ ${props => {
         pointer-events: none;
         cursor:default;
         background-color: ${styles.color.disabled} !important;
+        color: ${styles.color.grey1};
     `
     }
     if (props.loading) {

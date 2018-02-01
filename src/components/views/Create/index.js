@@ -86,6 +86,9 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                         <WizardItem status="1">3</WizardItem>
                     </Wizard>
                 </WizardContainer>
+                <WizardContainerMobile>
+                    Step <span>2</span> of 3
+                </WizardContainerMobile>
 
                 {/* <Container>
                     <Title>Create Your Password</Title>
@@ -260,6 +263,18 @@ const WizardContainer = styled.div`
         display: none;
     }
 `
+const WizardContainerMobile = styled.div`
+    font-weight: 100;
+    color: #007095;
+    font-size: 12px;
+    display: none;
+    & > span {
+        font-weight: normal;
+    }
+    ${styles.media.fourth} {
+        display: block;
+    }
+`
 
 const Container = styled.div`
     max-width: 550px;
@@ -269,12 +284,14 @@ const Container = styled.div`
 const Title = styled.div`
     text-align: center;
     padding-top: 20px;
-    color: ${styles.color.grey3};
-    font-weight: bold;
+    color: ${styles.color.background2};
+    font-weight: 900;
     font-size: 22px;
     ${styles.media.fourth} {
         padding-top: 0;
         font-size: 20px;
+        text-align: left;
+        line-height: 16px;
     }
 `
 

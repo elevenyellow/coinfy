@@ -52,7 +52,7 @@ export default styled.button`
     background-image: none;
     background-color: ${styles.color.disabled};
     border-color: ${styles.color.disabled} !important;
-    color: grey !important;
+    color: ${styles.color.grey1} !important;
     `
         if (props.loading)
             css += `
