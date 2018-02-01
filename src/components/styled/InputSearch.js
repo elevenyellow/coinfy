@@ -44,6 +44,7 @@ const Container = styled.div`
         border-radius: 5px 0 0 5px;
         border-right: 0;
         padding-top: 9px;
+        left: 0;
         ${styles.media.fourth} {
             height: 32px;
         }

@@ -10,7 +10,7 @@ export default styled.div`
         width: 30px;
         height: 30px;
     }
-    ${styles.media.first} {
+    ${styles.media.second} {
         padding-top: 2px;
         padding-right: 5px;
         & > img {

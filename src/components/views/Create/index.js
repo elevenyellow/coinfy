@@ -57,7 +57,7 @@ export default class AddAsset extends Component {
     }
 
     render() {
-        return React.createElement(ImportTemplate, {
+        return React.createElement(AddAssetTemplate, {
             Coin: this.Coin,
             onSelectOption: this.onSelectOption,
             minpassword: minpassword
@@ -65,7 +65,7 @@ export default class AddAsset extends Component {
     }
 }
 
-function ImportTemplate({ Coin, onSelectOption }) {
+function AddAssetTemplate({ Coin, onSelectOption }) {
     return (
         <RightContainerPadding>
             <RightHeader>
@@ -98,7 +98,6 @@ function ImportTemplate({ Coin, onSelectOption }) {
                     </Description>
 
                     <Content>
-                        <form>
                             <FormField>
                                 <Password
                                     placeholder="Password"
@@ -136,7 +135,6 @@ function ImportTemplate({ Coin, onSelectOption }) {
                                     </ButtonBig>
                                 </FormFieldButtonRight>
                             </FormField>
-                        </form>
                     </Content>
                 </Container> */}
 
@@ -144,51 +142,55 @@ function ImportTemplate({ Coin, onSelectOption }) {
                     <Title>Write Down or Print Your Recovery Phrase</Title>
                     <Description>
                         Write or print this and store it in a safe or locked
-                        valult. <strong>Do not share it with anyone.</strong>
+                        valult.{' '}
+                        <strong>
+                            <span>Do not share it with anyone.</span>
+                        </strong>
                         <br />
                         These words allows you to recover this asset in case of
                         loss or damage.{' '}
                         <strong>
-                            Without it you will not be able to recover your
-                            money if something goes wrong.
-                        </strong>
-                        This phrase is case sensitive. Make two copies and store
-                        them in separate physical locations.
+                            <span>
+                                Without it you will not be able to recover your
+                                money if something goes wrong.
+                            </span>
+                        </strong>{' '}
+                        Make two copies and store them in separate physical
+                        locations.This phrase is case sensitive and order is
+                        very important.
                     </Description>
 
                     <Content>
-                        <form>
-                            <Div>
-                                <Words>
-                                    cycle ladder vault piano steel put copy
-                                    cancel purse scare before wood
-                                </Words>
-                                <Div position="relative" top="-20px">
-                                    <Button margin="0 auto">Print</Button>
-                                </Div>
+                        <Div>
+                            <Words>
+                                cycle ladder vault piano steel put copy cancel
+                                purse scare before wood
+                            </Words>
+                            <Div position="relative" top="-20px">
+                                <Button margin="0 auto">Print</Button>
                             </Div>
+                        </Div>
 
-                            <FormField>
-                                <FormFieldButtonLeft width="29%">
-                                    <ButtonBig
-                                        width="100%"
-                                        disabled={false}
-                                        onClick={e => onBack}
-                                    >
-                                        Back
-                                    </ButtonBig>
-                                </FormFieldButtonLeft>
-                                <FormFieldButtonRight width="69%">
-                                    <ButtonBig
-                                        width="100%"
-                                        disabled={true}
-                                        onClick={e => onNext}
-                                    >
-                                        Next
-                                    </ButtonBig>
-                                </FormFieldButtonRight>
-                            </FormField>
-                        </form>
+                        <FormField>
+                            <FormFieldButtonLeft width="29%">
+                                <ButtonBig
+                                    width="100%"
+                                    disabled={false}
+                                    onClick={e => onBack}
+                                >
+                                    Back
+                                </ButtonBig>
+                            </FormFieldButtonLeft>
+                            <FormFieldButtonRight width="69%">
+                                <ButtonBig
+                                    width="100%"
+                                    disabled={true}
+                                    onClick={e => onNext}
+                                >
+                                    Next
+                                </ButtonBig>
+                            </FormFieldButtonRight>
+                        </FormField>
                     </Content>
                 </Container>
             </RightContent>
@@ -226,6 +228,9 @@ const Description = styled.div`
     & strong {
         font-weight: bold;
     }
+    & span {
+        color: ${styles.color.red3};
+    }
     ${styles.media.fourth} {
         font-size: 12px;
     }
@@ -236,15 +241,16 @@ const Content = styled.div`
 `
 
 const Words = styled.div`
-    font-size: 25px;
+    font-size: 24px;
     text-align: center;
     font-weight: bold;
-    border: 2px solid #eee;
+    border: 2px solid ${styles.color.background5};
     padding: 30px 20px 40px 20px;
-    color: black;
+    color: ${styles.color.background2};
     border-radius: 5px;
     user-select: text;
     cursor: auto;
     background: url('/static/image/patternbackground.png');
     box-shadow: 0 0 0px 1px rgba(255, 255, 255, 1) inset;
+    font-family: monospace;
 `

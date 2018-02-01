@@ -3,7 +3,7 @@ export default {
     paddingOut: '50px',
     paddingOutMobile: '15px',
     paddingContent: '40px',
-    paddingContentMobile: '20px',
+    paddingContentMobile: '25px',
     leftColumn: '250px',
     leftColumnMobile: '300px',
     media: {
