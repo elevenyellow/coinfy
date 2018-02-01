@@ -115,14 +115,14 @@ function AddAssetTemplate({
             <RightContent>
                 <Div padding-bottom="20px">
                     <InputSearch
-                        ref={e => {
-                            if (e && e.base && e.base.getElementsByTagName)
-                                setTimeout(a => {
-                                    e.base
-                                        .getElementsByTagName('input')[0]
-                                        .focus()
-                                }, 10)
-                        }}
+                        // ref={e => {
+                        //     if (e && e.base && e.base.getElementsByTagName)
+                        //         setTimeout(a => {
+                        //             e.base
+                        //                 .getElementsByTagName('input')[0]
+                        //                 .focus()
+                        //         }, 10)
+                        // }}
                         value={filter}
                         onChange={onChangeFilter}
                         onClear={e => onChangeFilter({ target: { value: '' } })}

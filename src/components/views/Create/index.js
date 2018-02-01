@@ -33,7 +33,7 @@ import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
 import ButtonBig from '/components/styled/ButtonBig'
 import Button from '/components/styled/Button'
-import StepContainer from '/components/styled/StepContainer'
+import SwitchView from '/components/styled/SwitchView'
 
 export default class AddAsset extends Component {
     componentWillMount() {
@@ -95,17 +95,18 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                     Step <span>2</span> of 3
                 </WizardContainerMobile>
 
-                {/* <Container>
-                    <Title>Create Your Password</Title>
-                    <Description>
-                        Coinfy will protect this asset with a password. You must
-                        remember your password as there is no way it can be
-                        recovered! Think of this password as a key. It protects
-                        your money if someone else tries to access your computer
-                        or phone.
-                    </Description>
+                <SwitchView active={0}>
+                    <Container>
+                        <Title>Create Your Password</Title>
+                        <Description>
+                            Coinfy will protect this asset with a password. You
+                            must remember your password as there is no way it
+                            can be recovered! Think of this password as a key.
+                            It protects your money if someone else tries to
+                            access your computer or phone.
+                        </Description>
 
-                    <Content>
+                        <Content>
                             <FormField>
                                 <Password
                                     placeholder="Password"
@@ -143,66 +144,65 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                                     </ButtonBig>
                                 </FormFieldButtonRight>
                             </FormField>
-                    </Content>
-                </Container> */}
-                {/* 
-                <Container>
-                    <Title>Write Down or Print Your Recovery Phrase</Title>
-                    <Description>
-                        Write or print this and store it in a safe or locked
-                        valult.{' '}
-                        <strong>
-                            <span>Do not share it with anyone.</span>
-                        </strong>
-                        <br />
-                        These words allows you to recover this asset in case of
-                        loss or damage.{' '}
-                        <strong>
-                            <span>
-                                Without it you will not be able to recover your
-                                money if something goes wrong.
-                            </span>
-                        </strong>{' '}
-                        Make two copies and store them in separate physical
-                        locations. This phrase is case sensitive and order is
-                        very important.
-                    </Description>
+                        </Content>
+                    </Container>
 
-                    <Content>
-                        <Div>
-                            <Words>
-                                cycle ladder vault piano steel put copy cancel
-                                purse scare before wood
-                            </Words>
-                            <Div position="relative" top="-20px">
-                                <Button margin="0 auto">Print</Button>
+                    <Container>
+                        <Title>Write Down or Print Your Recovery Phrase</Title>
+                        <Description>
+                            Write or print this and store it in a safe or locked
+                            valult.{' '}
+                            <strong>
+                                <span>Do not share it with anyone.</span>
+                            </strong>
+                            <br />
+                            These words allows you to recover this asset in case
+                            of loss or damage.{' '}
+                            <strong>
+                                <span>
+                                    Without it you will not be able to recover
+                                    your money if something goes wrong.
+                                </span>
+                            </strong>{' '}
+                            Make two copies and store them in separate physical
+                            locations. This phrase is case sensitive and order
+                            is very important.
+                        </Description>
+
+                        <Content>
+                            <Div>
+                                <Words>
+                                    cycle ladder vault piano steel put copy
+                                    cancel purse scare before wood
+                                </Words>
+                                <Div position="relative" top="-20px">
+                                    <Button margin="0 auto">Print</Button>
+                                </Div>
                             </Div>
-                        </Div>
 
-                        <FormField>
-                            <FormFieldButtonLeft width="29%">
-                                <ButtonBig
-                                    width="100%"
-                                    disabled={false}
-                                    onClick={e => onBack}
-                                >
-                                    Back
-                                </ButtonBig>
-                            </FormFieldButtonLeft>
-                            <FormFieldButtonRight width="69%">
-                                <ButtonBig
-                                    width="100%"
-                                    disabled={true}
-                                    onClick={e => onNext}
-                                >
-                                    Next
-                                </ButtonBig>
-                            </FormFieldButtonRight>
-                        </FormField>
-                    </Content>
-                </Container> */}
+                            <FormField>
+                                <FormFieldButtonLeft width="29%">
+                                    <ButtonBig
+                                        width="100%"
+                                        disabled={false}
+                                        onClick={e => onBack}
+                                    >
+                                        Back
+                                    </ButtonBig>
+                                </FormFieldButtonLeft>
+                                <FormFieldButtonRight width="69%">
+                                    <ButtonBig
+                                        width="100%"
+                                        disabled={true}
+                                        onClick={e => onNext}
+                                    >
+                                        Next
+                                    </ButtonBig>
+                                </FormFieldButtonRight>
+                            </FormField>
+                        </Content>
+                    </Container>
 
-                <StepContainer active={true}>
                     <Container>
                         <Title>Verify Your Recovery Phrase</Title>
 
@@ -259,7 +259,7 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                             </FormField>
                         </Content>
                     </Container>
-                </StepContainer>
+                </SwitchView>
             </RightContent>
         </RightContainerPadding>
     )
