@@ -137,7 +137,7 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                             </FormField>
                     </Content>
                 </Container> */}
-
+                {/* 
                 <Container>
                     <Title>Write Down or Print Your Recovery Phrase</Title>
                     <Description>
@@ -156,7 +156,7 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                             </span>
                         </strong>{' '}
                         Make two copies and store them in separate physical
-                        locations.This phrase is case sensitive and order is
+                        locations. This phrase is case sensitive and order is
                         very important.
                     </Description>
 
@@ -188,6 +188,63 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                                     onClick={e => onNext}
                                 >
                                     Next
+                                </ButtonBig>
+                            </FormFieldButtonRight>
+                        </FormField>
+                    </Content>
+                </Container> */}
+
+                <Container>
+                    <Title>Verify Your Recovery Phrase</Title>
+
+                    <Content>
+                        <Div>
+                            <Words error={false}>
+                                cycle ladder vault piano steel put copy cancel
+                                purse
+                            </Words>
+                            <Div position="relative" top="-20px">
+                                <Button
+                                    margin="0 auto"
+                                    red={true}
+                                    disabled={true}
+                                >
+                                    Clear
+                                </Button>
+                            </Div>
+                        </Div>
+                        <WordsButtons>
+                            <Button>cycle</Button>
+                            <Button>ladder</Button>
+                            <Button>vault</Button>
+                            <Button>piano</Button>
+                            <Button>steel</Button>
+                            <Button>put</Button>
+                            <Button>copy</Button>
+                            <Button>verylongwordwhatever</Button>
+                            <Button>purse</Button>
+                            <Button>scare</Button>
+                            <Button>before</Button>
+                            <Button>wood</Button>
+                        </WordsButtons>
+
+                        <FormField>
+                            <FormFieldButtonLeft width="29%">
+                                <ButtonBig
+                                    width="100%"
+                                    disabled={false}
+                                    onClick={e => onBack}
+                                >
+                                    Back
+                                </ButtonBig>
+                            </FormFieldButtonLeft>
+                            <FormFieldButtonRight width="69%">
+                                <ButtonBig
+                                    width="100%"
+                                    disabled={true}
+                                    onClick={e => onNext}
+                                >
+                                    Create!
                                 </ButtonBig>
                             </FormFieldButtonRight>
                         </FormField>
@@ -242,15 +299,40 @@ const Content = styled.div`
 
 const Words = styled.div`
     font-size: 24px;
+    padding: 30px 30px 40px 30px;
     text-align: center;
     font-weight: bold;
-    border: 2px solid ${styles.color.background5};
-    padding: 30px 20px 40px 20px;
-    color: ${styles.color.background2};
+    color: ${props => (props.error ? styles.color.red3 : 'black')};
+    border: 2px solid
+        ${props => (props.error ? styles.color.red3 : 'transparent')};
     border-radius: 5px;
     user-select: text;
     cursor: auto;
     background: url('/static/image/patternbackground.png');
-    box-shadow: 0 0 0px 1px rgba(255, 255, 255, 1) inset;
     font-family: monospace;
+    ${styles.media.fourth} {
+        font-size: 18px;
+        padding: 15px 15px 30px 15px;
+    }
+`
+
+const WordsButtons = styled.div`
+    position: relative;
+    top: -10px;
+    margin-bottom: 10px;
+    & > * {
+        display: inline-block;
+        width: calc(33.33% - 6.66px);
+        margin-left: 5px;
+        margin-right: 5px;
+        margin-bottom: 10px;
+        padding: 10px 0 10px;
+        font-size: 13px;
+    }
+    & > *:nth-child(3n - 2) {
+        margin-left: 0;
+    }
+    & > *:nth-child(3n) {
+        margin-right: 0;
+    }
 `
