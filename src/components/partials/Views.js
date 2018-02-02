@@ -5,7 +5,7 @@ import { Router, Route } from '/doprouter/react'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
-import { WALLET, ERC20 } from '/const/'
+import { TYPE_COIN, TYPE_ERC20 } from '/const/'
 
 import { Coins } from '/api/Coins'
 
@@ -99,7 +99,7 @@ function ContentTemplate({
                         pathname={new RegExp(routes.import(symbol_add))}
                         if={
                             Coins.hasOwnProperty(symbol_add) &&
-                            Coins[symbol_add].type === ERC20
+                            Coins[symbol_add].type === TYPE_ERC20
                         }
                     >
                         <ImportERC20 />

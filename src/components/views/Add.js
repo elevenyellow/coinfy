@@ -4,7 +4,7 @@ import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 
 import routes from '/const/routes'
-import { WALLET, ERC20 } from '/const/'
+import { WALLET, TYPE_ERC20 } from '/const/'
 import styles from '/const/styles'
 
 import sortBy from '/api/sortBy'
@@ -50,7 +50,7 @@ export default class AddAsset extends Component {
                         labels: coin.labels,
                         position: 0
                     })
-                } else if (coin.type === ERC20) {
+                } else if (coin.type === TYPE_ERC20) {
                     this.assetList.push({
                         name: coin.name,
                         title: `${symbol}`,

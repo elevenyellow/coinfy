@@ -1,8 +1,8 @@
 import styles from '/const/styles'
 
-// coin types
-export const WALLET = 'wallet'
-export const ERC20 = 'erc20'
+// asset types
+export const TYPE_COIN = 'coin'
+export const TYPE_ERC20 = 'erc20'
 
 // info alerts colors
 export const OK = styles.infoColor.green

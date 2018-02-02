@@ -17,7 +17,7 @@ import {
 } from '/api/numbers'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
 import { localStorageGet } from '/api/browser'
-import { WALLET, MAINNET, TESTNET } from '/const/'
+import { TYPE_COIN, MAINNET, TESTNET } from '/const/'
 
 // private
 export const network = Number(localStorageGet('network')) || MAINNET
@@ -36,7 +36,7 @@ export const url_myetherapi =
         : 'https://api.myetherapi.com/rop'
 
 // exports
-export const type = WALLET
+export const type = TYPE_COIN
 export const symbol = 'ETH'
 export const symbol_fee = symbol
 export const name = 'Ethereum'

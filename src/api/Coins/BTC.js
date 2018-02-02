@@ -8,7 +8,7 @@ import {
 } from '/api/crypto'
 import sortBy from '/api/sortBy'
 import { localStorageGet } from '/api/browser'
-import { WALLET, MAINNET, TESTNET } from '/const/'
+import { TYPE_COIN, MAINNET, TESTNET } from '/const/'
 
 // private
 const network_int = Number(localStorageGet('network')) || MAINNET
@@ -22,7 +22,7 @@ const url =
 const api_url = `${url}/api` // https://github.com/bitpay/insight-api
 
 // exports
-export const type = WALLET
+export const type = TYPE_COIN
 export const symbol = 'BTC'
 export const symbol_fee = symbol
 export const name = 'Bitcoin'
