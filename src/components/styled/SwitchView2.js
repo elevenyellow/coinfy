@@ -1,45 +1,22 @@
-import React from 'react'
 import styled from 'styled-components'
-// import styles from '/const/styles'
-import Div from '/components/styled/Div'
+import styles from '/const/styles'
 
-export default function SwitchView({ children, active = 0 }) {
-    let childrens = Array.isArray(children) ? children : [children]
-    if (childrens.length > 1) {
-        childrens = childrens.map((child, index) => (
-            <View left={(index - active) * 100}>{child}</View>
-        ))
+export default styled.div`
+    & > * {
+        display: none;
     }
-    return <SwitchViewStyled ref={onRef}>{childrens}</SwitchViewStyled>
-}
-function onRef(e) {
-    if (e && e.base) {
-        const container = e.base
-        const views = container.childNodes
-        let height = 0
-        views.forEach((view, index) => {
-            view = view.childNodes[0]
-            if (view.offsetHeight > height) height = view.offsetHeight
-        })
-        container.style.height = `${height}px`
-    }
-}
-
-const SwitchViewStyled = styled.div`
-    width: 100%;
-    overflow-x: hidden;
-    position: relative;
-    & > div {
-        transition: 0.75s ease left;
+    & > *:nth-child(${props => Number(props.active) + 1 || 1}) {
         display: block;
-        position: absolute;
-
-        width: 100%;
+        animation: movetoactive 1s forwards;
     }
-    & > div > div {
-        width: 100%;
+    @keyframes movetoactive {
+        0% {
+            transform: translateX(100px);
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
     }
-`
-const View = styled.div`
-    left: ${props => props.left}%;
 `

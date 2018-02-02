@@ -185,7 +185,7 @@ const Item = styled.div`
 `
 const ItemBackground = styled.div`
     position: absolute;
-    opacity: 0.03;
+    opacity: 0.04;
     padding-top: 25px;
     margin: 0 auto;
     width: 100%;
@@ -222,6 +222,7 @@ const ItemSymbol = styled.div`
     text-align: center;
     font-weight: 100;
     font-size: 13px;
+    letter-spacing: 1px;
 `
 const ItemName = styled.div`
     text-align: center;

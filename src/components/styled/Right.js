@@ -12,6 +12,7 @@ export function RightContainer({ children }) {
 
 export const RightContainerTemplate = styled.div`
     height: 100%;
+    overflow-x: hidden;
     overflow-y: auto;
     margin-left: ${styles.leftColumn};
     box-shadow: inset 4px 0 4px -2px rgba(0, 0, 0, 0.1);

@@ -95,123 +95,127 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                     Step <span>2</span> of 3
                 </WizardContainerMobile>
 
-                <SwitchView active={1}>
-                    <Container>
-                        <Title>Create Your Password</Title>
-                        <Description>
-                            Coinfy will protect this asset with a password. You
-                            must remember your password as there is no way it
-                            can be recovered! Think of this password as a key.
-                            It protects your money if someone else tries to
-                            access your computer or phone.
-                        </Description>
+                <Container>
+                    <SwitchView active={1}>
+                        <ContainerView>
+                            <Title>Create Your Password</Title>
+                            <Description>
+                                Coinfy will protect this asset with a password.
+                                You must remember your password as there is no
+                                way it can be recovered! Think of this password
+                                as a key. It protects your money if someone else
+                                tries to access your computer or phone.
+                            </Description>
 
-                        <Content>
-                            <FormField>
-                                <Password
-                                    placeholder="Password"
-                                    minlength={minpassword}
-                                    value={''}
-                                    onChange={e => onChangePassword}
-                                    width="100%"
-                                    type="password"
-                                />
-                            </FormField>
-                            <FormField>
-                                <Input
-                                    placeholder="Repeat Password"
-                                    minlength={minpassword}
-                                    error={
-                                        'isInvalidRepassword' === ''
-                                            ? 'Passwords do not match'
-                                            : null
-                                    }
-                                    invalid={'isInvalidRepassword' === ''}
-                                    value={''}
-                                    onChange={e => onChangeRepassword}
-                                    width="100%"
-                                    type="password"
-                                />
-                            </FormField>
-                            <FormField>
-                                <FormFieldButtonRight width="100%">
-                                    <ButtonBig
+                            <Content>
+                                <FormField>
+                                    <Password
+                                        placeholder="Password"
+                                        minlength={minpassword}
+                                        value={''}
+                                        onChange={e => onChangePassword}
                                         width="100%"
-                                        disabled={true}
-                                        onClick={e => onNext}
-                                    >
-                                        Next
-                                    </ButtonBig>
-                                </FormFieldButtonRight>
-                            </FormField>
-                        </Content>
-                    </Container>
+                                        type="password"
+                                    />
+                                </FormField>
+                                <FormField>
+                                    <Input
+                                        placeholder="Repeat Password"
+                                        minlength={minpassword}
+                                        error={
+                                            'isInvalidRepassword' === ''
+                                                ? 'Passwords do not match'
+                                                : null
+                                        }
+                                        invalid={'isInvalidRepassword' === ''}
+                                        value={''}
+                                        onChange={e => onChangeRepassword}
+                                        width="100%"
+                                        type="password"
+                                    />
+                                </FormField>
+                                <FormField>
+                                    <FormFieldButtonRight width="100%">
+                                        <ButtonBig
+                                            width="100%"
+                                            disabled={true}
+                                            onClick={e => onNext}
+                                        >
+                                            Next
+                                        </ButtonBig>
+                                    </FormFieldButtonRight>
+                                </FormField>
+                            </Content>
+                        </ContainerView>
 
-                    <Container>
-                        <Title>Write Down or Print Your Recovery Phrase</Title>
-                        <Description>
-                            Write or print this and store it in a safe or locked
-                            valult.{' '}
-                            <strong>
-                                <span>Do not share it with anyone.</span>
-                            </strong>
-                            <br />
-                            These words allows you to recover this asset in case
-                            of loss or damage.{' '}
-                            <strong>
-                                <span>
-                                    Without it you will not be able to recover
-                                    your money if something goes wrong.
-                                </span>
-                            </strong>{' '}
-                            Make two copies and store them in separate physical
-                            locations. This phrase is case sensitive and order
-                            is very important.
-                        </Description>
+                        <ContainerView>
+                            <Title>
+                                Write Down or Print Your Recovery Phrase
+                            </Title>
+                            <Description>
+                                Write or print this and store it in a safe or
+                                locked valult.{' '}
+                                <strong>
+                                    <span>Do not share it with anyone.</span>
+                                </strong>
+                                <br />
+                                These words allows you to recover this asset in
+                                case of loss or damage.{' '}
+                                <strong>
+                                    <span>
+                                        Without it you will not be able to
+                                        recover your money if something goes
+                                        wrong.
+                                    </span>
+                                </strong>{' '}
+                                Make two copies and store them in separate
+                                physical locations. This phrase is case
+                                sensitive and order is very important.
+                            </Description>
 
-                        <Content>
-                            <Div>
-                                <Words>
-                                    cycle ladder vault piano steel put copy
-                                    cancel purse scare before wood
-                                </Words>
-                                <Div position="relative" top="-20px">
-                                    <Button margin="0 auto">Print</Button>
+                            <Content>
+                                <Div>
+                                    <Words>
+                                        cycle ladder vault piano steel put copy
+                                        cancel purse scare before wood
+                                    </Words>
+                                    <Div position="relative" top="-20px">
+                                        <Button margin="0 auto">Print</Button>
+                                    </Div>
                                 </Div>
-                            </Div>
 
-                            <FormField>
-                                <FormFieldButtonLeft width="29%">
-                                    <ButtonBig
-                                        width="100%"
-                                        disabled={false}
-                                        onClick={e => onBack}
-                                    >
-                                        Back
-                                    </ButtonBig>
-                                </FormFieldButtonLeft>
-                                <FormFieldButtonRight width="69%">
-                                    <ButtonBig
-                                        width="100%"
-                                        disabled={true}
-                                        onClick={e => onNext}
-                                    >
-                                        Next
-                                    </ButtonBig>
-                                </FormFieldButtonRight>
-                            </FormField>
-                        </Content>
-                    </Container>
+                                <FormField>
+                                    <FormFieldButtonLeft width="29%">
+                                        <ButtonBig
+                                            width="100%"
+                                            disabled={false}
+                                            onClick={e => onBack}
+                                        >
+                                            Back
+                                        </ButtonBig>
+                                    </FormFieldButtonLeft>
+                                    <FormFieldButtonRight width="69%">
+                                        <ButtonBig
+                                            width="100%"
+                                            disabled={true}
+                                            onClick={e => onNext}
+                                        >
+                                            Next
+                                        </ButtonBig>
+                                    </FormFieldButtonRight>
+                                </FormField>
+                            </Content>
+                        </ContainerView>
 
-                    <Container>
-                        <Title>Verify Your Recovery Phrase</Title>
+                        <ContainerView>
+                            <Title>Verify Your Recovery Phrase</Title>
 
-                        <Content>
-                            <Div>
-                                <Words error={false}>
-                                    cycle ladder vault piano
-                                </Words>
-                                {/* <Div position="relative" top="-20px">
+                            <Content>
+                                <Div>
+                                    <Words error={false}>
+                                        cycle ladder vault piano
+                                    </Words>
+                                    {/* <Div position="relative" top="-20px">
                                     <Button
                                         margin="0 auto"
                                         red={true}
@@ -220,45 +224,46 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                                         Clear
                                     </Button>
                                 </Div> */}
-                            </Div>
-                            <WordsButtons>
-                                <Button>cycle</Button>
-                                <Button>ladder</Button>
-                                <Button>vault</Button>
-                                <Button>piano</Button>
-                                <Button>steel</Button>
-                                <Button>put</Button>
-                                <Button>copy</Button>
-                                <Button>verylongwordwhatever</Button>
-                                <Button>purse</Button>
-                                <Button>scare</Button>
-                                <Button>before</Button>
-                                <Button>wood</Button>
-                            </WordsButtons>
+                                </Div>
+                                <WordsButtons>
+                                    <Button>cycle</Button>
+                                    <Button>ladder</Button>
+                                    <Button>vault</Button>
+                                    <Button>piano</Button>
+                                    <Button>steel</Button>
+                                    <Button>put</Button>
+                                    <Button>copy</Button>
+                                    <Button>verylongwordwhatever</Button>
+                                    <Button>purse</Button>
+                                    <Button>scare</Button>
+                                    <Button>before</Button>
+                                    <Button>wood</Button>
+                                </WordsButtons>
 
-                            <FormField>
-                                <FormFieldButtonLeft width="29%">
-                                    <ButtonBig
-                                        width="100%"
-                                        disabled={false}
-                                        onClick={e => onBack}
-                                    >
-                                        Back
-                                    </ButtonBig>
-                                </FormFieldButtonLeft>
-                                <FormFieldButtonRight width="69%">
-                                    <ButtonBig
-                                        width="100%"
-                                        disabled={true}
-                                        onClick={e => onNext}
-                                    >
-                                        Create!
-                                    </ButtonBig>
-                                </FormFieldButtonRight>
-                            </FormField>
-                        </Content>
-                    </Container>
-                </SwitchView>
+                                <FormField>
+                                    <FormFieldButtonLeft width="29%">
+                                        <ButtonBig
+                                            width="100%"
+                                            disabled={false}
+                                            onClick={e => onBack}
+                                        >
+                                            Back
+                                        </ButtonBig>
+                                    </FormFieldButtonLeft>
+                                    <FormFieldButtonRight width="69%">
+                                        <ButtonBig
+                                            width="100%"
+                                            disabled={true}
+                                            onClick={e => onNext}
+                                        >
+                                            Create!
+                                        </ButtonBig>
+                                    </FormFieldButtonRight>
+                                </FormField>
+                            </Content>
+                        </ContainerView>
+                    </SwitchView>
+                </Container>
             </RightContent>
         </RightContainerPadding>
     )
@@ -286,6 +291,8 @@ const Container = styled.div`
     max-width: 550px;
     margin: 0 auto;
 `
+
+const ContainerView = styled.div``
 
 const Title = styled.div`
     text-align: center;
