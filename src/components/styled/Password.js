@@ -33,59 +33,60 @@ export default function Password(props) {
     const message =
         strength.message == undefined ? 'Excelent!' : strength.message
     const label =
-        password.length === 0
-            ? null
-            : <PasswordLabel color={color}>
-                  {message}
-              </PasswordLabel>
+        password.length === 0 ? null : (
+            <PasswordLabel color={color}>{message}</PasswordLabel>
+        )
     return (
-        <div>
+        <PasswordStyled>
             <Input
                 {...props}
                 invalid={password.length > 0 && password.length < minpassword}
             />
             <PasswordIndicator score={score} total={5} />
             {label}
-        </div>
+        </PasswordStyled>
     )
 }
 
 function PasswordIndicator({ total, score }) {
-    const width = 100 / total
+    // const width = 100 / total
     const indicators = []
 
     for (let i = 1, color; i <= total; ++i) {
         color = i <= score ? colors[score] : null
-        indicators.push(<PasswordIndicatorStyled width={width} color={color} />)
+        indicators.push(<PasswordIndicatorStyled color={color} />)
     }
 
-    return (
-        <div>
-            {indicators}
-        </div>
-    )
+    return <div>{indicators}</div>
 }
 
 function getMessages(minpassword) {
     return {
         length: 'Invalid. At least ' + minpassword + ' characters',
-        lowercase: 'Add at least one lowercase letter',
+        lowercase: 'Add an optional lowercase letter',
         uppercase: 'Add an optional upper case letter',
         numbers: 'Add an optional number',
         specials: 'Add an optional special character'
     }
 }
 
+const PasswordStyled = styled.div`
+    position: relative;
+`
+
 const PasswordIndicatorStyled = styled.div`
     float: left;
-    width: calc(${props => props.width}% - 2px);
+    width: calc(20% - 2px);
     height: 3px;
     background-color: ${props => props.color || '#EEE'};
-    margin-top: 2px;
-    border-right: 2px solid white;
+    margin: 1px 2px 1px 0;
+    :first-child {
+        margin-left: 0;
+        width: calc(20% - 1px);
+    }
     :last-child {
-        border-right: 0;
-        width: ${props => props.width};
+        margin-right: 0;
+        width: calc(20% - 1px);
     }
 `
 const PasswordLabel = styled.div`
@@ -94,4 +95,7 @@ const PasswordLabel = styled.div`
     font-size: 10px;
     font-weight: bold;
     letter-spacing: 0.3px;
+    position: absolute;
+    right: 0;
+    bottom: -18px;
 `

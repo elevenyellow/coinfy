@@ -95,7 +95,7 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                     Step <span>2</span> of 3
                 </WizardContainerMobile>
 
-                <SwitchView active={0}>
+                <SwitchView active={1}>
                     <Container>
                         <Title>Create Your Password</Title>
                         <Description>
@@ -209,10 +209,9 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                         <Content>
                             <Div>
                                 <Words error={false}>
-                                    cycle ladder vault piano steel put copy
-                                    cancel purse
+                                    cycle ladder vault piano
                                 </Words>
-                                <Div position="relative" top="-20px">
+                                {/* <Div position="relative" top="-20px">
                                     <Button
                                         margin="0 auto"
                                         red={true}
@@ -220,7 +219,7 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                                     >
                                         Clear
                                     </Button>
-                                </Div>
+                                </Div> */}
                             </Div>
                             <WordsButtons>
                                 <Button>cycle</Button>
@@ -323,7 +322,7 @@ const Content = styled.div`
 
 const Words = styled.div`
     font-size: 24px;
-    padding: 30px 30px 40px 30px;
+    padding: 30px 30px 30px 30px;
     text-align: center;
     font-weight: bold;
     color: ${props => (props.error ? styles.color.red3 : 'black')};
@@ -341,9 +340,8 @@ const Words = styled.div`
 `
 
 const WordsButtons = styled.div`
-    position: relative;
-    top: -10px;
-    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 15px;
     & > * {
         display: inline-block;
         width: calc(33.33% - 6.66px);
