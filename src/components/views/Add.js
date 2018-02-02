@@ -44,7 +44,8 @@ export default class AddAsset extends Component {
                 if (coin.type === TYPE_COIN) {
                     this.assetList.push({
                         name: coin.name,
-                        title: `${symbol}`,
+                        symbol: symbol,
+                        type: coin.type,
                         url: routes.addAsset(symbol),
                         logo: `/static/image/coins/${symbol}.svg`,
                         labels: coin.labels,
@@ -53,7 +54,8 @@ export default class AddAsset extends Component {
                 } else if (coin.type === TYPE_ERC20) {
                     this.assetList.push({
                         name: coin.name,
-                        title: `${symbol}`,
+                        symbol: symbol,
+                        type: coin.type,
                         url: routes.addAsset(symbol),
                         logo: `/static/image/coins/${symbol}.svg`,
                         labels: coin.labels,
@@ -62,7 +64,7 @@ export default class AddAsset extends Component {
                 }
             })
 
-        this.assetList = sortBy(this.assetList, 'position', 'name', 'title')
+        this.assetList = sortBy(this.assetList, 'position', 'name', 'symbol')
     }
 
     componentWillUnmount() {
@@ -86,7 +88,7 @@ export default class AddAsset extends Component {
             location: state.location,
             assetList: searchInArray(this.assetList, state.view.filter, [
                 'name',
-                'title',
+                'symbol',
                 'labels'
             ]),
             filter: state.view.filter,
@@ -135,14 +137,18 @@ function AddAssetTemplate({
                     {assetList.map(asset => (
                         <Item>
                             <ItemBackground>
-                                <img src="/static/image/coin_background.svg" />
+                                <img
+                                    src={`/static/image/${
+                                        asset.type
+                                    }_background.svg`}
+                                />
                             </ItemBackground>
                             <ItemContent>
                                 <ItemLinks />
                                 <ItemLogo>
                                     <img src={asset.logo} />
                                 </ItemLogo>
-                                <ItemSymbol>{asset.title}</ItemSymbol>
+                                <ItemSymbol>{asset.symbol}</ItemSymbol>
                                 <ItemName>{asset.name}</ItemName>
                                 <ItemButtons>
                                     <ItemButton>Create</ItemButton>
@@ -166,7 +172,7 @@ const Items = styled.div`
 const Item = styled.div`
     position: relative;
     display: inline-block;
-    width: 210px;
+    width: 220px;
     height: 310px;
     margin: 15px;
     background: white;
@@ -193,6 +199,11 @@ const ItemContent = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
+    /* cursor: pointer;
+    &:hover button:first-child {
+        border-color: ${styles.color.background4};
+        background-color: white;
+    } */
 `
 
 const ItemLinks = styled.div`
@@ -226,6 +237,7 @@ const ItemButtons = styled.div`
     padding: 10px;
     box-sizing: border-box;
 `
+
 const ItemButton = styled.button`
     width: 100%;
     border: 0;
