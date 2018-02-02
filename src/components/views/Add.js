@@ -4,7 +4,7 @@ import { createObserver } from 'dop'
 import { Router, Route } from '/doprouter/react'
 
 import routes from '/const/routes'
-import { WALLET, TYPE_ERC20 } from '/const/'
+import { TYPE_COIN, TYPE_ERC20 } from '/const/'
 import styles from '/const/styles'
 
 import sortBy from '/api/sortBy'
@@ -41,7 +41,7 @@ export default class AddAsset extends Component {
             .filter(symbol => symbol !== 'Coins')
             .forEach(symbol => {
                 const coin = Coins[symbol]
-                if (coin.type === WALLET) {
+                if (coin.type === TYPE_COIN) {
                     this.assetList.push({
                         name: coin.name,
                         title: `${symbol}`,
@@ -133,14 +133,22 @@ function AddAssetTemplate({
                 </Div>
                 <Items>
                     {assetList.map(asset => (
-                        <Item onClick={e => onClick(asset.url)}>
-                            <ItemIco>
-                                <img src={asset.logo} width="20" height="20" />
-                            </ItemIco>
-                            <ItemText>
-                                <ItemTitle>{asset.name}</ItemTitle>
-                                <ItemSubtitle>{asset.title}</ItemSubtitle>
-                            </ItemText>
+                        <Item>
+                            <ItemBackground>
+                                <img src="/static/image/coin_background.svg" />
+                            </ItemBackground>
+                            <ItemContent>
+                                <ItemLinks />
+                                <ItemLogo>
+                                    <img src={asset.logo} />
+                                </ItemLogo>
+                                <ItemSymbol>{asset.title}</ItemSymbol>
+                                <ItemName>{asset.name}</ItemName>
+                                <ItemButtons>
+                                    <ItemButton>Create</ItemButton>
+                                    <ItemButton>Restore / Import</ItemButton>
+                                </ItemButtons>
+                            </ItemContent>
                         </Item>
                     ))}
                 </Items>
@@ -149,48 +157,95 @@ function AddAssetTemplate({
     )
 }
 
-const Items = styled.div``
-const Item = styled.div`
-    height: 34px;
-    width: calc(50% - 50px);
-    float: left;
-    margin-bottom: 20px;
-    margin-right: 20px;
-    padding: 20px;
-    background-color: ${styles.color.background1};
-    border-radius: 5px;
-    cursor: pointer;
-    color: ${styles.color.black};
-    &:hover {
-        color: white;
-        background-color: ${styles.color.background2};
-    }
-    &:nth-child(even) {
-        margin-right: 0;
-    }
+const Items = styled.div`
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+`
 
-    ${styles.media.third} {
-        float: none;
-        clear: both;
-        width: calc(100% - 40px);
-        margin-right: 0;
+const Item = styled.div`
+    position: relative;
+    display: inline-block;
+    width: 210px;
+    height: 310px;
+    margin: 15px;
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 0 14px 3px rgba(0, 0, 0, 0.03);
+    ${styles.media.fifth} {
+        margin: 15px 0;
+        width: 100%;
     }
 `
-const ItemIco = styled.div`
-    padding-top: 2px;
-    float: left;
+const ItemBackground = styled.div`
+    position: absolute;
+    opacity: 0.03;
+    padding-top: 25px;
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+    & > img {
+        width: 150px;
+        height: 150px;
+    }
 `
-const ItemText = styled.div`
-    float: left;
-    padding-left: 10px;
+const ItemContent = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
 `
-const ItemTitle = styled.div`
-    color: inherit;
-    letter-spacing: 0.3px;
-    font-size: 20px;
+
+const ItemLinks = styled.div`
+    height: 25px;
+`
+const ItemLogo = styled.div`
+    width: 70px;
+    height: 70px;
+    margin: 30px auto 20px auto;
+    & > img {
+        width: 100%;
+        height: 100%;
+    }
+`
+const ItemSymbol = styled.div`
+    text-align: center;
+    font-weight: 100;
+    font-size: 13px;
+`
+const ItemName = styled.div`
+    text-align: center;
     font-weight: 900;
-    line-height: 20px;
+    font-size: 23px;
+    line-height: 25px;
+    color: ${styles.color.front3};
 `
-const ItemSubtitle = styled.div`
-    font-size: 14px;
+const ItemButtons = styled.div`
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    padding: 10px;
+    box-sizing: border-box;
+`
+const ItemButton = styled.button`
+    width: 100%;
+    border: 0;
+    background: ${styles.color.background1};
+    color: ${styles.color.front3};
+    border-radius: 25px;
+    padding: 7px;
+    font-weight: bold;
+    color: #596167;
+    font-family: Roboto;
+    font-size: 12px;
+    margin-top: 5px;
+    cursor: pointer;
+    box-sizing: border-box;
+    border: 2px solid transparent;
+    &:first-child {
+        background-color: ${styles.color.background4};
+    }
+    &:hover {
+        border-color: ${styles.color.background4};
+        background-color: white;
+    }
 `

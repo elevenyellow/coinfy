@@ -10,7 +10,8 @@ export default {
         first: '@media screen and (max-width: 1000px)',
         second: '@media screen and (max-width: 850px)',
         third: '@media screen and (max-width: 750px)',
-        fourth: '@media screen and (max-width: 500px)'
+        fourth: '@media screen and (max-width: 500px)',
+        fifth: '@media screen and (max-width: 350px)'
     },
     infoColor: {
         red: '#DD0044',

@@ -13,7 +13,7 @@ import {
     fetchRecomendedFee as fetchRecomendedFeeRaw,
     createSimpleTx
 } from '/api/Coins/ETH'
-import { ERC20 } from '/const/'
+import { TYPE_ERC20 } from '/const/'
 
 export {
     isAddress,
@@ -28,7 +28,7 @@ export {
     urlDecodeTx
 } from './ETH' // '/api/Coins/ETH' not working
 
-export const type = ERC20
+export const type = TYPE_ERC20
 export const symbol_fee = symbol
 export const default_gas_limit = 130000
 

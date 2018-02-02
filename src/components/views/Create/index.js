@@ -331,7 +331,7 @@ const Words = styled.div`
     border-radius: 5px;
     user-select: text;
     cursor: auto;
-    background: url('/static/image/patternbackground.png');
+    background: url('/static/image/pattern_background.png');
     font-family: monospace;
     ${styles.media.fourth} {
         font-size: 18px;
