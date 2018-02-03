@@ -6,11 +6,11 @@ export default styled.div`
     & > * {
         display: none;
     }
-    & > *:nth-child(${props => Number(props.active) + 1}) {
+    & > *:nth-child(${({ active = 1 }) => Number(active) + 1}) {
         display: block;
         ${({ active = 1 }) => {
-            active = Number(active) + 1
             const last = active_last
+            active = Number(active) + 1
             active_last = active
             return last === active || last === undefined
                 ? ''
