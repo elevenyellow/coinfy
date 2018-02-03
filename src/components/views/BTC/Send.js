@@ -273,6 +273,9 @@ export default class Send extends Component {
               ? Number(step_path)
               : 0
 
+        // Removing tx_raw in case user click back in browser
+        if (step === 0) delete this.tx_raw
+
         if (state.view.amount1_input !== undefined) {
             amount1 = state.view.amount1_input
             amount2 = decimalsMax(

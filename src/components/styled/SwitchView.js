@@ -1,27 +1,43 @@
 import styled from 'styled-components'
 import styles from '/const/styles'
 
+let active_last
 export default styled.div`
-    position: relative;
     & > * {
-        /* display: none; */
-        width: 100%;
-        position: absolute;
-        top: 0;
-        transition: 0.75s ease all;
-    }
-    & > *:nth-child(-n + ${props => Number(props.active) + 1 - 1}) {
-        left: -100%;
-        opacity: 0;
-        pointer-events: none;
+        display: none;
     }
     & > *:nth-child(${props => Number(props.active) + 1}) {
-        left: 0;
-        opacity: 1;
+        display: block;
+        ${({ active = 1 }) => {
+            active = Number(active) + 1
+            const last = active_last
+            active_last = active
+            return last === active || last === undefined
+                ? ''
+                : last > active
+                  ? 'animation: back 0.75s ease;'
+                  : 'animation: next 0.75s ease;'
+        }};
     }
-    & > *:nth-child(n + ${props => Number(props.active) + 1 + 1}) {
-        left: 100%;
-        opacity: 0;
-        pointer-events: none;
+
+    @keyframes next {
+        0% {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    @keyframes back {
+        0% {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
     }
 `
