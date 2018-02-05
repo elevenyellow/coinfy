@@ -143,6 +143,7 @@ function AddAssetTemplate({
                                     }_background.svg`}
                                 />
                             </ItemBackground>
+                            <ItemOverlay />
                             <ItemContent>
                                 <ItemLinks />
                                 <ItemLogo>
@@ -182,6 +183,14 @@ const Item = styled.div`
         margin: 15px 0;
         width: 100%;
     }
+    &:hover div img {
+        transform: scale(1.15);
+        transition: 1s ease transform;
+    }
+    &:hover div div img {
+        transform: scale(1.1);
+        transition: 0.5s ease transform;
+    }
 `
 const ItemBackground = styled.div`
     position: absolute;
@@ -191,6 +200,7 @@ const ItemBackground = styled.div`
     width: 100%;
     text-align: center;
     & > img {
+        transition: 0.5s ease transform;
         width: 150px;
         height: 150px;
     }
@@ -199,11 +209,19 @@ const ItemContent = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
-    /* cursor: pointer;
-    &:hover button:first-child {
+`
+const ItemOverlay = styled.div`
+    position: absolute;
+    z-index: 1;
+    opacity: 0;
+    cursor: pointer;
+    top: 25px;
+    width: 100%;
+    height: calc(100% - 74px);
+    &:hover + div button:first-child {
         border-color: ${styles.color.background4};
         background-color: white;
-    } */
+    }
 `
 
 const ItemLinks = styled.div`
@@ -214,6 +232,7 @@ const ItemLogo = styled.div`
     height: 70px;
     margin: 30px auto 20px auto;
     & > img {
+        transition: 0.5s ease transform;
         width: 100%;
         height: 100%;
     }

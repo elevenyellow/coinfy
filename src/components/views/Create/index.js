@@ -41,7 +41,7 @@ export default class AddAsset extends Component {
         this.observer.observe(state.view)
 
         state.view = {
-            step: 1
+            step: 0
         }
 
         this.Coin = Coins[state.location.path[state.location.path.length - 1]]
@@ -63,6 +63,7 @@ export default class AddAsset extends Component {
 
     render() {
         return React.createElement(AddAssetTemplate, {
+            step: state.view.step,
             Coin: this.Coin,
             onSelectOption: this.onSelectOption,
             minpassword: minpassword
@@ -70,7 +71,7 @@ export default class AddAsset extends Component {
     }
 }
 
-function AddAssetTemplate({ Coin, onSelectOption }) {
+function AddAssetTemplate({ step, Coin, onSelectOption }) {
     return (
         <RightContainerPadding>
             <RightHeader>
@@ -96,7 +97,7 @@ function AddAssetTemplate({ Coin, onSelectOption }) {
                 </WizardContainerMobile>
 
                 <Container>
-                    <SwitchView active={1}>
+                    <SwitchView active={step}>
                         <ContainerView>
                             <Title>Create Your Password</Title>
                             <Description>
