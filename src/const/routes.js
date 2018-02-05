@@ -4,7 +4,6 @@ export default {
 
     // Add
     add: () => `/add`,
-    addAsset: symbol => `/add/${symbol}`,
     create: symbol => `/create/${symbol}`,
     import: symbol => `/import/${symbol}`,
 

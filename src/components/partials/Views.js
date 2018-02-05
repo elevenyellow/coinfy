@@ -20,7 +20,6 @@ import Message from '/components/styled/Message'
 import Dashboard from '/components/views/Dashboard'
 import Settings from '/components/views/Settings'
 import Add from '/components/views/Add'
-import AddAsset from '/components/views/AddAsset'
 import Create from '/components/views/Create'
 import ImportBTC from '/components/views/ImportBTC'
 import ImportETH from '/components/views/ImportETH'
@@ -82,9 +81,6 @@ function ContentTemplate({
                     </Route>
                     <Route pathname={routes.add()}>
                         <Add />
-                    </Route>
-                    <Route pathname={routes.addAsset(symbol_add)}>
-                        <AddAsset />
                     </Route>
                     <Route pathname={routes.create(symbol_add)}>
                         <Create />

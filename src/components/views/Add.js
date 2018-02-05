@@ -46,20 +46,26 @@ export default class AddAsset extends Component {
                         name: coin.name,
                         symbol: symbol,
                         type: coin.type,
-                        url: routes.addAsset(symbol),
+                        url_create: routes.create(symbol),
+                        url_import: routes.import(symbol),
                         logo: `/static/image/coins/${symbol}.svg`,
                         labels: coin.labels,
-                        position: 0
+                        position: 0,
+                        background_image: '/static/image/coin_background.png',
+                        background_image_opacity: 0.2
                     })
                 } else if (coin.type === TYPE_ERC20) {
                     this.assetList.push({
                         name: coin.name,
                         symbol: symbol,
                         type: coin.type,
-                        url: routes.addAsset(symbol),
+                        url_create: routes.create(symbol),
+                        url_import: routes.import(symbol),
                         logo: `/static/image/coins/${symbol}.svg`,
                         labels: coin.labels,
-                        position: 1
+                        position: 1,
+                        background_image: '/static/image/erc20_background.svg',
+                        background_image_opacity: 0.04
                     })
                 }
             })
@@ -136,14 +142,14 @@ function AddAssetTemplate({
                 <Items>
                     {assetList.map(asset => (
                         <Item>
-                            <ItemBackground>
-                                <img
-                                    src={`/static/image/${
-                                        asset.type
-                                    }_background.svg`}
-                                />
+                            <ItemBackground
+                                opacity={asset.background_image_opacity}
+                            >
+                                <img src={asset.background_image} />
                             </ItemBackground>
-                            <ItemOverlay />
+                            <ItemOverlay
+                                onClick={e => onClick(asset.url_create)}
+                            />
                             <ItemContent>
                                 <ItemLinks />
                                 <ItemLogo>
@@ -153,7 +159,11 @@ function AddAssetTemplate({
                                 <ItemName>{asset.name}</ItemName>
                                 <ItemButtons>
                                     <ItemButton>Create</ItemButton>
-                                    <ItemButton>Restore / Import</ItemButton>
+                                    <ItemButton
+                                        onClick={e => onClick(asset.url_import)}
+                                    >
+                                        Restore / Import
+                                    </ItemButton>
                                 </ItemButtons>
                             </ItemContent>
                         </Item>
@@ -194,12 +204,13 @@ const Item = styled.div`
 `
 const ItemBackground = styled.div`
     position: absolute;
-    opacity: 0.04;
     padding-top: 25px;
     margin: 0 auto;
     width: 100%;
     text-align: center;
     & > img {
+        filter: grayscale(100%);
+        opacity: ${props => props.opacity};
         transition: 0.5s ease transform;
         width: 150px;
         height: 150px;
@@ -211,10 +222,9 @@ const ItemContent = styled.div`
     height: 100%;
 `
 const ItemOverlay = styled.div`
+    cursor: pointer;
     position: absolute;
     z-index: 1;
-    opacity: 0;
-    cursor: pointer;
     top: 25px;
     width: 100%;
     height: calc(100% - 74px);
