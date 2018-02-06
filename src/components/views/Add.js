@@ -194,11 +194,11 @@ const Item = styled.div`
         width: 100%;
     }
     &:hover div img {
-        transform: scale(1.15);
-        transition: 1s ease transform;
+        transform: scale(1.2);
+        transition: 1.5s ease transform;
     }
     &:hover div div img {
-        transform: scale(1.1);
+        transform: scale(1.15);
         transition: 0.5s ease transform;
     }
 `

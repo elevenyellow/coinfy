@@ -8,12 +8,16 @@ export default function Input(props) {
             <InputError>{props.error}</InputError>
         ) : null
     return (
-        <div>
+        <InputContainerStyled>
             <InputStyled {...props} />
             {showerror}
-        </div>
+        </InputContainerStyled>
     )
 }
+
+const InputContainerStyled = styled.div`
+    position: relative;
+`
 
 const InputStyled = styled.input`
     ${props => {
@@ -65,4 +69,7 @@ const InputError = styled.div`
     color: ${styles.color.error};
     font-weight: bold;
     letter-spacing: 0.3px;
+    position: absolute;
+    right: 0;
+    bottom: -14px;
 `

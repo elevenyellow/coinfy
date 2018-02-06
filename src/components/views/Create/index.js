@@ -41,13 +41,18 @@ export default class AddAsset extends Component {
         this.observer.observe(state.view)
 
         state.view = {
-            step: 0
+            step: 0,
+            password: '',
+            repassword: ''
         }
 
         this.Coin = Coins[state.location.path[state.location.path.length - 1]]
 
         // binding
-        this.onSelectOption = this.onSelectOption.bind(this)
+        this.onChangePassword = this.onChangePassword.bind(this)
+        this.onChangeRepassword = this.onChangeRepassword.bind(this)
+        this.onNext = this.onNext.bind(this)
+        this.onBack = this.onBack.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -56,22 +61,64 @@ export default class AddAsset extends Component {
         return false
     }
 
-    // Actions
-    onSelectOption(route) {
-        setHref(route)
+    onChangePassword(e) {
+        state.view.password = e.target.value
+    }
+    onChangeRepassword(e) {
+        state.view.repassword = e.target.value
+    }
+
+    onNext(e) {
+        state.view.step += 1
+    }
+    onBack(e) {
+        state.view.step -= 1
+    }
+
+    // Getters
+    get isFormValid() {
+        return (
+            state.view.password.length >= minpassword &&
+            state.view.password === state.view.repassword
+        )
+    }
+    get isInvalidRepassword() {
+        return (
+            state.view.password.length > 0 &&
+            state.view.repassword.length > 0 &&
+            state.view.password.length === state.view.repassword.length &&
+            state.view.password !== state.view.repassword
+        )
     }
 
     render() {
         return React.createElement(AddAssetTemplate, {
-            step: state.view.step,
             Coin: this.Coin,
-            onSelectOption: this.onSelectOption,
-            minpassword: minpassword
+            step: state.view.step,
+            password: state.view.password,
+            repassword: state.view.repassword,
+            isFormValid: this.isFormValid,
+            isInvalidRepassword: this.isInvalidRepassword,
+            onChangePassword: this.onChangePassword,
+            onChangeRepassword: this.onChangeRepassword,
+            onNext: this.onNext,
+            onBack: this.onBack
         })
     }
 }
 
-function AddAssetTemplate({ step, Coin, onSelectOption }) {
+function AddAssetTemplate({
+    Coin,
+    step,
+    password,
+    repassword,
+    isFormValid,
+    isInvalidRepassword,
+    onChangePassword,
+    onChangeRepassword,
+    onNext,
+    onBack
+}) {
     return (
         <RightContainerPadding>
             <RightHeader>
@@ -87,13 +134,19 @@ function AddAssetTemplate({ step, Coin, onSelectOption }) {
             <RightContent>
                 <WizardContainer>
                     <Wizard>
-                        <WizardItem status="3">✓</WizardItem>
-                        <WizardItem status="2">2</WizardItem>
-                        <WizardItem status="1">3</WizardItem>
+                        {[0, 1, 2].map(item => {
+                            return item < step ? (
+                                <WizardItem status="3">✓</WizardItem>
+                            ) : (
+                                <WizardItem status={item > step ? 1 : 2}>
+                                    {item + 1}
+                                </WizardItem>
+                            )
+                        })}
                     </Wizard>
                 </WizardContainer>
                 <WizardContainerMobile>
-                    Step <span>2</span> of 3
+                    Step <span>{step + 1}</span> of 3
                 </WizardContainerMobile>
 
                 <Container>
@@ -113,8 +166,8 @@ function AddAssetTemplate({ step, Coin, onSelectOption }) {
                                     <Password
                                         placeholder="Password"
                                         minlength={minpassword}
-                                        value={''}
-                                        onChange={e => onChangePassword}
+                                        value={password}
+                                        onChange={onChangePassword}
                                         width="100%"
                                         type="password"
                                     />
@@ -124,13 +177,13 @@ function AddAssetTemplate({ step, Coin, onSelectOption }) {
                                         placeholder="Repeat Password"
                                         minlength={minpassword}
                                         error={
-                                            'isInvalidRepassword' === ''
+                                            isInvalidRepassword
                                                 ? 'Passwords do not match'
                                                 : null
                                         }
-                                        invalid={'isInvalidRepassword' === ''}
-                                        value={''}
-                                        onChange={e => onChangeRepassword}
+                                        invalid={isInvalidRepassword}
+                                        value={repassword}
+                                        onChange={onChangeRepassword}
                                         width="100%"
                                         type="password"
                                     />
@@ -139,8 +192,8 @@ function AddAssetTemplate({ step, Coin, onSelectOption }) {
                                     <FormFieldButtonRight width="100%">
                                         <ButtonBig
                                             width="100%"
-                                            disabled={true}
-                                            onClick={e => onNext}
+                                            disabled={!isFormValid}
+                                            onClick={onNext}
                                         >
                                             Next
                                         </ButtonBig>
@@ -189,8 +242,7 @@ function AddAssetTemplate({ step, Coin, onSelectOption }) {
                                     <FormFieldButtonLeft width="29%">
                                         <ButtonBig
                                             width="100%"
-                                            disabled={false}
-                                            onClick={e => onBack}
+                                            onClick={onBack}
                                         >
                                             Back
                                         </ButtonBig>
@@ -198,8 +250,7 @@ function AddAssetTemplate({ step, Coin, onSelectOption }) {
                                     <FormFieldButtonRight width="69%">
                                         <ButtonBig
                                             width="100%"
-                                            disabled={true}
-                                            onClick={e => onNext}
+                                            onClick={onNext}
                                         >
                                             Next
                                         </ButtonBig>
@@ -246,7 +297,7 @@ function AddAssetTemplate({ step, Coin, onSelectOption }) {
                                         <ButtonBig
                                             width="100%"
                                             disabled={false}
-                                            onClick={e => onBack}
+                                            onClick={onBack}
                                         >
                                             Back
                                         </ButtonBig>
@@ -255,7 +306,7 @@ function AddAssetTemplate({ step, Coin, onSelectOption }) {
                                         <ButtonBig
                                             width="100%"
                                             disabled={true}
-                                            onClick={e => onNext}
+                                            onClick={onNext}
                                         >
                                             Create!
                                         </ButtonBig>

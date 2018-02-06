@@ -73,7 +73,7 @@ const WizardItemStyled = styled.div`
     & .wizardNumber {
         box-sizing: content-box;
         background: ${props => {
-            switch (props.status) {
+            switch (String(props.status)) {
                 case '1':
                     return styles.color.grey3
                     break
@@ -105,7 +105,7 @@ const WizardItemStyled = styled.div`
         font-weight: bold;
         letter-spacing: 0.2px;
         color: ${props => {
-            switch (props.status) {
+            switch (String(props.status)) {
                 case '1':
                     return styles.color.grey3
                     break
