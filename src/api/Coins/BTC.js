@@ -6,7 +6,7 @@ import {
     decryptBIP38 as _decryptBIP38,
     encryptBIP38 as _encryptBIP38
 } from '/api/crypto'
-import sortBy from '/api/sortBy'
+import { sortBy } from '/api/arrays'
 import { localStorageGet } from '/api/browser'
 import { TYPE_COIN, MAINNET, TESTNET } from '/const/'
 

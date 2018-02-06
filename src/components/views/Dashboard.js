@@ -9,7 +9,7 @@ import routes from '/const/routes'
 
 import { round, bigNumber } from '/api/numbers'
 import { Coins } from '/api/Coins'
-import sortBy from '/api/sortBy'
+import { sortBy } from '/api/arrays'
 
 import state from '/store/state'
 import { convertBalance, formatCurrency, getPrice } from '/store/getters'

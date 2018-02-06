@@ -1,7 +1,7 @@
 import { bigNumber, hexToDec } from '/api/numbers'
 import { padLeft } from '/api/strings'
 // import JSONRpc from '/api/jsonrpc'
-import sortBy from '/api/sortBy'
+import { sortBy } from '/api/arrays'
 import {
     symbol,
     url,

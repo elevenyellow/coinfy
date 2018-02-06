@@ -7,9 +7,9 @@ import routes from '/const/routes'
 import { TYPE_COIN, TYPE_ERC20 } from '/const/'
 import styles from '/const/styles'
 
-import sortBy from '/api/sortBy'
+import { sortBy } from '/api/arrays'
 import { Coins } from '/api/Coins'
-import searchInArray from '/api/searchInArray'
+import { searchInArray } from '/api/arrays'
 
 import state from '/store/state'
 import { setHref } from '/store/actions'

@@ -7,6 +7,8 @@ import styles from '/const/styles'
 import routes from '/const/routes'
 import { minpassword } from '/api/crypto'
 
+import { gerRandomMnemonic } from '/api/bip39'
+import { shuffle } from '/api/arrays'
 import { generateQRCode } from '/api/qr'
 import { Coins } from '/api/Coins'
 import { isAddress } from '/api/Coins/ETH'
@@ -38,21 +40,27 @@ import SwitchView from '/components/styled/SwitchView'
 export default class AddAsset extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
-        this.observer.observe(state.view)
-
         state.view = {
-            step: 0,
+            step: 1,
             password: '',
-            repassword: ''
+            repassword: '',
+            words_verified: []
         }
+        this.observer.observe(state.view)
+        this.observer.observe(state.view.words_verified, 'length')
 
+        this.words = 'multiply multiply protect cart denial group piano replace spin fetch vast grace' /*gerRandomMnemonic()*/
+            .split(' ')
+        this.words_shuffle = []
         this.Coin = Coins[state.location.path[state.location.path.length - 1]]
 
         // binding
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onChangeRepassword = this.onChangeRepassword.bind(this)
+        this.onVerifyWord = this.onVerifyWord.bind(this)
         this.onNext = this.onNext.bind(this)
         this.onBack = this.onBack.bind(this)
+        this.onCreate = this.onCreate.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -67,22 +75,37 @@ export default class AddAsset extends Component {
     onChangeRepassword(e) {
         state.view.repassword = e.target.value
     }
+    onVerifyWord(word) {
+        const words_verified = state.view.words_verified
+        if (this.words[words_verified.length] === word)
+            words_verified.push(word)
+        else words_verified.length = 0
+    }
 
     onNext(e) {
+        const collector = collect()
         state.view.step += 1
+        if (state.view.step === 2) {
+            this.words_shuffle = shuffle(this.words.slice(0))
+            state.view.words_verified.length = 0
+        }
+        collector.emit()
     }
     onBack(e) {
         state.view.step -= 1
     }
+    onCreate(e) {
+        console.log('onCreate')
+    }
 
     // Getters
-    get isFormValid() {
+    get isPasswordFormValid() {
         return (
             state.view.password.length >= minpassword &&
             state.view.password === state.view.repassword
         )
     }
-    get isInvalidRepassword() {
+    get isRepasswordInvalid() {
         return (
             state.view.password.length > 0 &&
             state.view.repassword.length > 0 &&
@@ -97,12 +120,17 @@ export default class AddAsset extends Component {
             step: state.view.step,
             password: state.view.password,
             repassword: state.view.repassword,
-            isFormValid: this.isFormValid,
-            isInvalidRepassword: this.isInvalidRepassword,
+            words: this.words,
+            words_shuffle: this.words_shuffle,
+            words_verified: state.view.words_verified,
+            isPasswordFormValid: this.isPasswordFormValid,
+            isRepasswordInvalid: this.isRepasswordInvalid,
             onChangePassword: this.onChangePassword,
             onChangeRepassword: this.onChangeRepassword,
+            onVerifyWord: this.onVerifyWord,
             onNext: this.onNext,
-            onBack: this.onBack
+            onBack: this.onBack,
+            onCreate: this.onCreate
         })
     }
 }
@@ -112,12 +140,17 @@ function AddAssetTemplate({
     step,
     password,
     repassword,
-    isFormValid,
-    isInvalidRepassword,
+    words,
+    words_shuffle,
+    words_verified,
+    isPasswordFormValid,
+    isRepasswordInvalid,
     onChangePassword,
     onChangeRepassword,
+    onVerifyWord,
     onNext,
-    onBack
+    onBack,
+    onCreate
 }) {
     return (
         <RightContainerPadding>
@@ -177,11 +210,11 @@ function AddAssetTemplate({
                                         placeholder="Repeat Password"
                                         minlength={minpassword}
                                         error={
-                                            isInvalidRepassword
+                                            isRepasswordInvalid
                                                 ? 'Passwords do not match'
                                                 : null
                                         }
-                                        invalid={isInvalidRepassword}
+                                        invalid={isRepasswordInvalid}
                                         value={repassword}
                                         onChange={onChangeRepassword}
                                         width="100%"
@@ -192,7 +225,7 @@ function AddAssetTemplate({
                                     <FormFieldButtonRight width="100%">
                                         <ButtonBig
                                             width="100%"
-                                            disabled={!isFormValid}
+                                            disabled={!isPasswordFormValid}
                                             onClick={onNext}
                                         >
                                             Next
@@ -229,10 +262,7 @@ function AddAssetTemplate({
 
                             <Content>
                                 <Div>
-                                    <Words>
-                                        cycle ladder vault piano steel put copy
-                                        cancel purse scare before wood
-                                    </Words>
+                                    <Words>{words.join(' ')}</Words>
                                     <Div position="relative" top="-20px">
                                         <Button margin="0 auto">Print</Button>
                                     </Div>
@@ -265,7 +295,7 @@ function AddAssetTemplate({
                             <Content>
                                 <Div>
                                     <Words error={false}>
-                                        cycle ladder vault piano
+                                        {words_verified.join(' ')}
                                     </Words>
                                     {/* <Div position="relative" top="-20px">
                                     <Button
@@ -278,18 +308,17 @@ function AddAssetTemplate({
                                 </Div> */}
                                 </Div>
                                 <WordsButtons>
-                                    <Button>cycle</Button>
-                                    <Button>ladder</Button>
-                                    <Button>vault</Button>
-                                    <Button>piano</Button>
-                                    <Button>steel</Button>
-                                    <Button>put</Button>
-                                    <Button>copy</Button>
-                                    <Button>verylongwordwhatever</Button>
-                                    <Button>purse</Button>
-                                    <Button>scare</Button>
-                                    <Button>before</Button>
-                                    <Button>wood</Button>
+                                    {words_shuffle.map(word => (
+                                        <Button
+                                            disabled={
+                                                words_verified.indexOf(word) >
+                                                -1
+                                            }
+                                            onClick={e => onVerifyWord(word)}
+                                        >
+                                            {word}
+                                        </Button>
+                                    ))}
                                 </WordsButtons>
 
                                 <FormField>
@@ -305,8 +334,11 @@ function AddAssetTemplate({
                                     <FormFieldButtonRight width="69%">
                                         <ButtonBig
                                             width="100%"
-                                            disabled={true}
-                                            onClick={onNext}
+                                            disabled={
+                                                words.length >
+                                                words_verified.length
+                                            }
+                                            onClick={onCreate}
                                         >
                                             Create!
                                         </ButtonBig>

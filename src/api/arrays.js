@@ -1,10 +1,13 @@
-/*
-    https://github.com/Josenzo/sortBy
-    Copyright (c) 2015 Josema Enzo
-    http://opensource.org/licenses/MIT
-*/
+export function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[a[i], a[j]] = [a[j], a[i]]
+    }
+    return a
+}
 
-var sortBy = (Array.prototype.sortBy = (function() {
+// https://github.com/Josenzo/sortBy
+export const sortBy = (Array.prototype.sortBy = (function() {
     // Utility to get deep properties by the path given
     var get = function(obj, path) {
         try {
@@ -112,3 +115,32 @@ var data = [
 console.log( sortBy(data.slice(0), 'name', 'work.isworking', '-age', 'id') );
 
 */
+
+export function searchInArray(
+    list,
+    sentence_original,
+    props_list,
+    min_letters = 2
+) {
+    const sentence = sentence_original.trim().toLowerCase()
+    const words = sentence.split(' ').filter(e => e.length > 1)
+    return sentence.length < min_letters
+        ? list
+        : list.filter(item => {
+              const props =
+                  props_list === undefined ? Object.keys(item) : props_list
+              for (let i = 0; i < words.length; ++i) {
+                  let notFounds = 0
+                  props.forEach(prop => {
+                      if (
+                          !item.hasOwnProperty(prop) ||
+                          item[prop].toLowerCase().indexOf(words[i]) === -1
+                      )
+                          notFounds += 1
+                  })
+                  if (notFounds === props.length) return false
+              }
+
+              return true
+          })
+}
