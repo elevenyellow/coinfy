@@ -39,18 +39,18 @@ import SwitchView from '/components/styled/SwitchView'
 
 export default class AddAsset extends Component {
     componentWillMount() {
-        this.observer = createObserver(m => this.forceUpdate())
         state.view = {
             step: 1,
             password: '',
             repassword: '',
-            words_verified: []
+            words_shuffle_clicked: []
         }
-        this.observer.observe(state.view)
-        this.observer.observe(state.view.words_verified, 'length')
 
-        this.words = 'multiply multiply protect cart denial group piano replace spin fetch vast grace' /*gerRandomMnemonic()*/
-            .split(' ')
+        this.observer = createObserver(m => this.forceUpdate())
+        this.observer.observe(state.view)
+        this.observer.observe(state.view.words_shuffle_clicked, 'length')
+
+        this.words = gerRandomMnemonic().split(' ')
         this.words_shuffle = []
         this.Coin = Coins[state.location.path[state.location.path.length - 1]]
 
@@ -75,11 +75,11 @@ export default class AddAsset extends Component {
     onChangeRepassword(e) {
         state.view.repassword = e.target.value
     }
-    onVerifyWord(word) {
-        const words_verified = state.view.words_verified
-        if (this.words[words_verified.length] === word)
-            words_verified.push(word)
-        else words_verified.length = 0
+    onVerifyWord(word, index) {
+        const words_shuffle_clicked = state.view.words_shuffle_clicked
+        this.words[words_shuffle_clicked.length] === word
+            ? words_shuffle_clicked.push(index)
+            : (words_shuffle_clicked.length = 0)
     }
 
     onNext(e) {
@@ -87,7 +87,7 @@ export default class AddAsset extends Component {
         state.view.step += 1
         if (state.view.step === 2) {
             this.words_shuffle = shuffle(this.words.slice(0))
-            state.view.words_verified.length = 0
+            state.view.words_shuffle_clicked.length = 0
         }
         collector.emit()
     }
@@ -122,7 +122,7 @@ export default class AddAsset extends Component {
             repassword: state.view.repassword,
             words: this.words,
             words_shuffle: this.words_shuffle,
-            words_verified: state.view.words_verified,
+            words_shuffle_clicked: state.view.words_shuffle_clicked,
             isPasswordFormValid: this.isPasswordFormValid,
             isRepasswordInvalid: this.isRepasswordInvalid,
             onChangePassword: this.onChangePassword,
@@ -142,7 +142,7 @@ function AddAssetTemplate({
     repassword,
     words,
     words_shuffle,
-    words_verified,
+    words_shuffle_clicked,
     isPasswordFormValid,
     isRepasswordInvalid,
     onChangePassword,
@@ -295,7 +295,9 @@ function AddAssetTemplate({
                             <Content>
                                 <Div>
                                     <Words error={false}>
-                                        {words_verified.join(' ')}
+                                        {words_shuffle_clicked
+                                            .map(index => words_shuffle[index])
+                                            .join(' ')}
                                     </Words>
                                     {/* <Div position="relative" top="-20px">
                                     <Button
@@ -308,13 +310,16 @@ function AddAssetTemplate({
                                 </Div> */}
                                 </Div>
                                 <WordsButtons>
-                                    {words_shuffle.map(word => (
+                                    {words_shuffle.map((word, index) => (
                                         <Button
                                             disabled={
-                                                words_verified.indexOf(word) >
-                                                -1
+                                                words_shuffle_clicked.indexOf(
+                                                    index
+                                                ) > -1
                                             }
-                                            onClick={e => onVerifyWord(word)}
+                                            onClick={e =>
+                                                onVerifyWord(word, index)
+                                            }
                                         >
                                             {word}
                                         </Button>
@@ -336,7 +341,7 @@ function AddAssetTemplate({
                                             width="100%"
                                             disabled={
                                                 words.length >
-                                                words_verified.length
+                                                words_shuffle_clicked.length
                                             }
                                             onClick={onCreate}
                                         >
