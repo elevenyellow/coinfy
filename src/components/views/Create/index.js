@@ -40,10 +40,11 @@ import SwitchView from '/components/styled/SwitchView'
 export default class AddAsset extends Component {
     componentWillMount() {
         state.view = {
-            step: 1,
+            step: 0,
             password: '',
             repassword: '',
-            words_shuffle_clicked: []
+            words_shuffle_clicked: [],
+            word_wrong_selected: false
         }
 
         this.observer = createObserver(m => this.forceUpdate())
@@ -60,6 +61,7 @@ export default class AddAsset extends Component {
         this.onVerifyWord = this.onVerifyWord.bind(this)
         this.onNext = this.onNext.bind(this)
         this.onBack = this.onBack.bind(this)
+        this.onClear = this.onClear.bind(this)
         this.onCreate = this.onCreate.bind(this)
     }
     componentWillUnmount() {
@@ -69,6 +71,19 @@ export default class AddAsset extends Component {
         return false
     }
 
+    onNext(e) {
+        const collector = collect()
+        state.view.step += 1
+        if (state.view.step === 2) {
+            this.words_shuffle = shuffle(this.words.slice(0))
+            state.view.words_shuffle_clicked.length = 0
+            state.view.word_wrong_selected = false
+        }
+        collector.emit()
+    }
+    onBack(e) {
+        state.view.step -= 1
+    }
     onChangePassword(e) {
         state.view.password = e.target.value
     }
@@ -76,23 +91,18 @@ export default class AddAsset extends Component {
         state.view.repassword = e.target.value
     }
     onVerifyWord(word, index) {
-        const words_shuffle_clicked = state.view.words_shuffle_clicked
-        this.words[words_shuffle_clicked.length] === word
-            ? words_shuffle_clicked.push(index)
-            : (words_shuffle_clicked.length = 0)
-    }
-
-    onNext(e) {
         const collector = collect()
-        state.view.step += 1
-        if (state.view.step === 2) {
-            this.words_shuffle = shuffle(this.words.slice(0))
-            state.view.words_shuffle_clicked.length = 0
-        }
+        const words_shuffle_clicked = state.view.words_shuffle_clicked
+        words_shuffle_clicked.push(index)
+        state.view.word_wrong_selected =
+            this.words[words_shuffle_clicked.length - 1] !== word
         collector.emit()
     }
-    onBack(e) {
-        state.view.step -= 1
+    onClear(e) {
+        const collector = collect()
+        state.view.words_shuffle_clicked.length = 0
+        state.view.word_wrong_selected = false
+        collector.emit()
     }
     onCreate(e) {
         console.log('onCreate')
@@ -123,6 +133,7 @@ export default class AddAsset extends Component {
             words: this.words,
             words_shuffle: this.words_shuffle,
             words_shuffle_clicked: state.view.words_shuffle_clicked,
+            word_wrong_selected: state.view.word_wrong_selected,
             isPasswordFormValid: this.isPasswordFormValid,
             isRepasswordInvalid: this.isRepasswordInvalid,
             onChangePassword: this.onChangePassword,
@@ -130,6 +141,7 @@ export default class AddAsset extends Component {
             onVerifyWord: this.onVerifyWord,
             onNext: this.onNext,
             onBack: this.onBack,
+            onClear: this.onClear,
             onCreate: this.onCreate
         })
     }
@@ -143,6 +155,7 @@ function AddAssetTemplate({
     words,
     words_shuffle,
     words_shuffle_clicked,
+    word_wrong_selected,
     isPasswordFormValid,
     isRepasswordInvalid,
     onChangePassword,
@@ -150,6 +163,7 @@ function AddAssetTemplate({
     onVerifyWord,
     onNext,
     onBack,
+    onClear,
     onCreate
 }) {
     return (
@@ -294,25 +308,38 @@ function AddAssetTemplate({
 
                             <Content>
                                 <Div>
-                                    <Words error={false}>
-                                        {words_shuffle_clicked
-                                            .map(index => words_shuffle[index])
-                                            .join(' ')}
+                                    <Words error={word_wrong_selected}>
+                                        {words_shuffle_clicked.length > 0
+                                            ? words_shuffle_clicked
+                                                  .map(
+                                                      index =>
+                                                          words_shuffle[index]
+                                                  )
+                                                  .join(' ')
+                                            : '\u00A0'}
                                     </Words>
-                                    {/* <Div position="relative" top="-20px">
-                                    <Button
-                                        margin="0 auto"
-                                        red={true}
-                                        disabled={true}
+                                    {/* <Show if={word_wrong_selected}> */}
+                                    <Div
+                                        position="relative"
+                                        top="-20px"
+                                        height="20px"
                                     >
-                                        Clear
-                                    </Button>
-                                </Div> */}
+                                        <Button
+                                            onClick={onClear}
+                                            margin="0 auto"
+                                            disabled={!word_wrong_selected}
+                                            red={true}
+                                        >
+                                            Clear
+                                        </Button>
+                                    </Div>
+                                    {/* </Show> */}
                                 </Div>
                                 <WordsButtons>
                                     {words_shuffle.map((word, index) => (
                                         <Button
                                             disabled={
+                                                word_wrong_selected ||
                                                 words_shuffle_clicked.indexOf(
                                                     index
                                                 ) > -1
@@ -418,7 +445,7 @@ const Content = styled.div`
 
 const Words = styled.div`
     font-size: 24px;
-    padding: 30px 30px 30px 30px;
+    padding: 30px 30px 40px 30px;
     text-align: center;
     font-weight: bold;
     color: ${props => (props.error ? styles.color.red3 : 'black')};
@@ -429,9 +456,36 @@ const Words = styled.div`
     cursor: auto;
     background: url('/static/image/pattern_background.png');
     font-family: monospace;
+    animation: ${props =>
+        props.error
+            ? 'shake 0.82s cubic-bezier(.36,.07,.19,.97) both'
+            : 'unset'};
     ${styles.media.fourth} {
         font-size: 18px;
         padding: 15px 15px 30px 15px;
+    }
+
+    @keyframes shake {
+        10%,
+        90% {
+            transform: translate3d(-1px, 0, 0);
+        }
+
+        20%,
+        80% {
+            transform: translate3d(2px, 0, 0);
+        }
+
+        30%,
+        50%,
+        70% {
+            transform: translate3d(-4px, 0, 0);
+        }
+
+        40%,
+        60% {
+            transform: translate3d(4px, 0, 0);
+        }
     }
 `
 

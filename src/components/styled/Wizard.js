@@ -72,7 +72,7 @@ const WizardItemStyled = styled.div`
     width: ${widthItem}px;
     & .wizardNumber {
         box-sizing: content-box;
-        background: ${props => {
+        background-color: ${props => {
             switch (String(props.status)) {
                 case '1':
                     return styles.color.grey3
@@ -85,6 +85,7 @@ const WizardItemStyled = styled.div`
                     break
             }
         }};
+        transition: 0.75s ease background-color;
         border-radius: 50%;
         text-align: center;
         color: white;
