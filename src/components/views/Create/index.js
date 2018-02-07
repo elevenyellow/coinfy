@@ -5,7 +5,7 @@ import { Router, Route, Show } from '/doprouter/react'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
-import { minpassword } from '/api/crypto'
+import { minpassword } from '/const/'
 
 import { gerRandomMnemonic } from '/api/bip39'
 import { shuffle } from '/api/arrays'

@@ -21,12 +21,12 @@ const strenghs = {
 }
 
 export default function Password(props) {
-    const minpassword = props.minlength
+    const min_password = props.minlength
     const password = props.value || ''
     const strength = getPasswordStrength(
         password,
-        minpassword,
-        getMessages(minpassword)
+        min_password,
+        getMessages(min_password)
     )
     const score = password.length === 0 ? 0 : strength.score + 1
     const color = colors[score]
@@ -40,7 +40,7 @@ export default function Password(props) {
         <PasswordStyled>
             <Input
                 {...props}
-                invalid={password.length > 0 && password.length < minpassword}
+                invalid={password.length > 0 && password.length < min_password}
             />
             <PasswordIndicator score={score} total={5} />
             {label}
@@ -60,9 +60,9 @@ function PasswordIndicator({ total, score }) {
     return <div>{indicators}</div>
 }
 
-function getMessages(minpassword) {
+function getMessages(min_password) {
     return {
-        length: 'Invalid. At least ' + minpassword + ' characters',
+        length: 'Invalid. At least ' + min_password + ' characters',
         lowercase: 'Add an optional lowercase letter',
         uppercase: 'Add an optional upper case letter',
         numbers: 'Add an optional number',

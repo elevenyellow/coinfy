@@ -22,3 +22,6 @@ export const TIMEOUT_FETCH_PRICES = 30000 // 30 seconds
 export const TIMEOUT_FETCH_SUMMARY = 60000 // 60 seconds
 export const TIMEOUT_UPDATE_ALL_BALANCES = 60000 * 2 // 2 minutes
 export const TIMEOUT_BETWEEN_EACH_GETBALANCE = 5000 // 5 seconds
+
+// security
+export const minpassword = 8

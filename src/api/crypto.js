@@ -11,8 +11,6 @@ import { sha3 } from 'ethereumjs-util'
 
 export { randomBytes } from 'crypto'
 
-export const minpassword = 8
-
 export function encryptAES128CTR(string, password, isHex = false, mac = false) {
     const string_buffer = new Buffer(string, isHex ? 'hex' : undefined) // ethereum: new Buffer(string,'hex')
     const ciphertype = 'aes-128-ctr'

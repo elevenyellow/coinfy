@@ -6,12 +6,12 @@ import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
 import { isAssetRegistered, getCoinId } from '/store/getters'
 
-import { minpassword } from '/api/crypto'
 import { isPrivateKey, getAddressFromPrivateKey } from '/api/Coins/ETH'
 import { Coins } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
+import { minpassword } from '/const/'
 
 import Input from '/components/styled/Input'
 import Password from '/components/styled/Password'
