@@ -8,7 +8,7 @@ export default function Input(props) {
             <InputError>{props.error}</InputError>
         ) : null
     return (
-        <InputContainerStyled>
+        <InputContainerStyled {...props}>
             <InputStyled {...props} />
             {showerror}
         </InputContainerStyled>
@@ -40,6 +40,34 @@ const InputStyled = styled.input`
     color: ${props => props.color || '#000'};
     letter-spacing: 1px;
 
+    animation: ${props =>
+        props.invalid
+            ? 'shake 0.82s cubic-bezier(.36,.07,.19,.97) both'
+            : 'unset'};
+
+    @keyframes shake {
+        10%,
+        90% {
+            transform: translate3d(-1px, 0, 0);
+        }
+
+        20%,
+        80% {
+            transform: translate3d(2px, 0, 0);
+        }
+
+        30%,
+        50%,
+        70% {
+            transform: translate3d(-4px, 0, 0);
+        }
+
+        40%,
+        60% {
+            transform: translate3d(4px, 0, 0);
+        }
+    }
+
     &:focus {
         box-shadow: none !important;
         border-color: ${styles.color.background3};
@@ -69,7 +97,7 @@ const InputError = styled.div`
     color: ${styles.color.error};
     font-weight: bold;
     letter-spacing: 0.3px;
-    position: absolute;
+    /* position: absolute;
     right: 0;
-    bottom: -14px;
+    bottom: -14px; */
 `

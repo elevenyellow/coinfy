@@ -30,18 +30,22 @@ export default styled.button`
     outline: none;
     &:hover {
         ${props =>
-            !props.red
-                ? `
+            props.disabled || props.loading
+                ? styles.color.disabled
+                : !props.red
+                  ? `
         color: ${styles.color.background3};
         border-color: ${styles.color.background3};
     `
-                : `
+                  : `
         background: ${styles.color.red3};
     `};
     }
     &:active {
         background: ${props =>
-            props.red ? styles.color.red4 : styles.color.background1};
+            props.disabled || props.loading
+                ? styles.color.disabled
+                : props.red ? styles.color.red4 : styles.color.background1};
     }
     ${props => {
         let css = ''

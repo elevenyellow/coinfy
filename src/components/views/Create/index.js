@@ -6,12 +6,14 @@ import { Router, Route, Show } from '/doprouter/react'
 import styles from '/const/styles'
 import routes from '/const/routes'
 import { minpassword } from '/const/'
+import { Words as template } from '/const/paperwallets'
 
 import { gerRandomMnemonic } from '/api/bip39'
 import { shuffle } from '/api/arrays'
 import { generateQRCode } from '/api/qr'
 import { Coins } from '/api/Coins'
 import { isAddress } from '/api/Coins/ETH'
+import { printTemplate } from '/api/browser'
 
 import state from '/store/state'
 import { setHref } from '/store/actions'
@@ -61,6 +63,7 @@ export default class AddAsset extends Component {
         this.onVerifyWord = this.onVerifyWord.bind(this)
         this.onNext = this.onNext.bind(this)
         this.onBack = this.onBack.bind(this)
+        this.onPrint = this.onPrint.bind(this)
         this.onClear = this.onClear.bind(this)
         this.onCreate = this.onCreate.bind(this)
     }
@@ -98,7 +101,10 @@ export default class AddAsset extends Component {
             this.words[words_shuffle_clicked.length - 1] !== word
         collector.emit()
     }
-    onClear(e) {
+    onPrint() {
+        printTemplate(template(this.words.join(' ')))
+    }
+    onClear() {
         const collector = collect()
         state.view.words_shuffle_clicked.length = 0
         state.view.word_wrong_selected = false
@@ -141,6 +147,7 @@ export default class AddAsset extends Component {
             onVerifyWord: this.onVerifyWord,
             onNext: this.onNext,
             onBack: this.onBack,
+            onPrint: this.onPrint,
             onClear: this.onClear,
             onCreate: this.onCreate
         })
@@ -163,6 +170,7 @@ function AddAssetTemplate({
     onVerifyWord,
     onNext,
     onBack,
+    onPrint,
     onClear,
     onCreate
 }) {
@@ -278,7 +286,12 @@ function AddAssetTemplate({
                                 <Div>
                                     <Words>{words.join(' ')}</Words>
                                     <Div position="relative" top="-20px">
-                                        <Button margin="0 auto">Print</Button>
+                                        <Button
+                                            margin="0 auto"
+                                            onClick={onPrint}
+                                        >
+                                            Print
+                                        </Button>
                                     </Div>
                                 </Div>
 
@@ -461,8 +474,8 @@ const Words = styled.div`
             ? 'shake 0.82s cubic-bezier(.36,.07,.19,.97) both'
             : 'unset'};
     ${styles.media.fourth} {
-        font-size: 18px;
-        padding: 15px 15px 30px 15px;
+        font-size: 16px;
+        padding: 15px 15px 25px 15px;
     }
 
     @keyframes shake {

@@ -95,3 +95,62 @@ body {
 </html>
 `
 }
+
+export const Words = words => {
+    return `
+<html>
+<head>
+    <style>
+        body {
+            font-family: sans-serif;
+            font-size: 1rem;
+            color: black;
+        }
+        #content {
+            width: 90%;
+            margin: 0 auto;
+        }
+        #logo {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #info {
+            margin-top: 30px;
+            color: gray;
+            font-size: 12px;
+        }
+        #words {
+            margin-top: 20px;
+            margin-bottom: 30px;
+            font-size: 27px;
+            color: black;
+            padding: 25px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 5px;
+            background: url('/static/image/pattern_background.png');
+            font-family: monospace;
+        }
+        #claim {
+            text-align: center;
+            color: #CCC
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <div id="logo">
+            <img src="/static/image/logo2.svg" height="40" />
+        </div>
+        <div id="info">
+            <strong>Do not share it with anyone.</strong>
+            These words allows you to recover this asset in case of loss or damage
+            <strong>Without it you will not be able to recover your money if something goes wrong.</strong> Make two copies and store
+            them in separate physical locations. This phrase is case sensitive and order is very important.
+        </div>
+        <div id="words">${words}</div>
+        <div id="claim">COINFY.COM</div>
+    </div>
+</body>
+</html>`
+}
