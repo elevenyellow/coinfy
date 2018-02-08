@@ -162,7 +162,7 @@ export default class Send extends Component {
         const address = asset.address
         const password = state.view.password_input
         const private_key_encrypted = asset.private_key
-        const private_key = this.Coin.decrypt(
+        const private_key = this.Coin.decryptPrivateKey(
             address,
             private_key_encrypted,
             password

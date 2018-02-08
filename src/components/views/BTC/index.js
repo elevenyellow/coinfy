@@ -9,7 +9,7 @@ import styles from '/const/styles'
 import { BTC } from '/api/Coins'
 import routes from '/const/routes'
 import state from '/store/state'
-import { isAssetWithPrivateKey } from '/store/getters'
+import { isAssetWithPrivateKeyOrSeed } from '/store/getters'
 
 import Help from '/components/styled/Help'
 import Select from '/components/styled/Select'
@@ -52,7 +52,7 @@ export default class ViewBTC extends Component {
 
     render() {
         const asset_id = state.location.path[1]
-        const hasPrivateKey = isAssetWithPrivateKey(asset_id)
+        const hasPrivateKey = isAssetWithPrivateKeyOrSeed(asset_id)
         return React.createElement(ViewBTCTemplate, {
             location: state.location,
             hasPrivateKey: hasPrivateKey,

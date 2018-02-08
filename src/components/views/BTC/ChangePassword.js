@@ -10,7 +10,7 @@ import { Coins } from '/api/Coins'
 
 import state from '/store/state'
 import { setHref, setPrivateKey, addNotification } from '/store/actions'
-import { getAsset } from '/store/getters'
+import { getAsset, isAssetWithSeed, getRawPrivateKey } from '/store/getters'
 
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
@@ -71,11 +71,8 @@ export default class ChangePassword extends Component {
         const asset = getAsset(asset_id)
         const Coin = Coins[asset.symbol]
         const collector = collect()
-        const private_key = Coin.decrypt(
-            asset.address,
-            asset.private_key,
-            state.view.oldpassword
-        )
+        const is_seed = isAssetWithSeed(asset_id)
+        const private_key = getRawPrivateKey(asset_id, state.view.oldpassword)
         if (private_key) {
             const name = asset.label || asset.address
             setPrivateKey(asset_id, private_key, state.view.password)

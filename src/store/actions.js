@@ -1,6 +1,5 @@
 import React from 'react'
 import { set, collect } from 'dop'
-import { sha3 } from 'ethereumjs-util'
 
 import {
     MAINNET,
@@ -67,33 +66,35 @@ export function setPublicKey(asset_id, public_key) {
 }
 
 export function setPrivateKey(asset_id, private_key, password) {
+    return setPrivateKeyOrSeed(asset_id, seed, password, false)
+}
+
+export function setSeed(asset_id, seed, password) {
+    return setPrivateKeyOrSeed(asset_id, seed, password, true)
+}
+
+export function setPrivateKeyOrSeed(asset_id, key, password, is_seed) {
     const asset = state.assets[asset_id]
     set(
         asset,
-        'private_key',
-        Coins[asset.symbol].encrypt(private_key, password),
+        is_seed ? 'seed' : 'private_key',
+        Coins[asset.symbol][is_seed ? 'encryptSeed' : 'encryptPrivateKey'](
+            key,
+            password
+        ),
         { deep: false }
     )
     saveAssetsLocalStorage()
     setAssetsExported(false)
 }
 
-export function setSeed(asset_id, seed, password) {
-    const asset = state.assets[asset_id]
-    const seed_encrypted = encryptAES128CTR(seed, password)
-    seed_encrypted.hash = sha3(seed).toString('hex')
-    set(asset, 'seed', seed_encrypted, { deep: false })
-    saveAssetsLocalStorage()
-    setAssetsExported(false)
-}
-
-export function copyPrivateKey(asset_id_from, asset_id_to) {
-    const from = state.assets[asset_id_from]
-    const to = state.assets[asset_id_to]
-    set(to, 'private_key', from.private_key, { deep: false })
-    saveAssetsLocalStorage()
-    setAssetsExported(false)
-}
+// export function copyPrivateKey(asset_id_from, asset_id_to) {
+//     const from = state.assets[asset_id_from]
+//     const to = state.assets[asset_id_to]
+//     set(to, 'private_key', from.private_key, { deep: false })
+//     saveAssetsLocalStorage()
+//     setAssetsExported(false)
+// }
 
 export function deleteAsset(asset_id) {
     const collector = collect()

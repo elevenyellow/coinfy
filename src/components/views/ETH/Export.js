@@ -72,7 +72,7 @@ export default class ExportETH extends Component {
         const password = state.view.password
         if (state.view.isPaperwallet) {
             const private_key_encrypted = asset.private_key
-            const private_key = ETH.decrypt(
+            const private_key = ETH.decryptPrivateKey(
                 address,
                 private_key_encrypted,
                 password

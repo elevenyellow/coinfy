@@ -71,7 +71,7 @@ export default class ExportBTC extends Component {
         const address = asset.address
         const password = state.view.password
         const private_key_encrypted = asset.private_key
-        const private_key = BTC.decrypt(
+        const private_key = BTC.decryptPrivateKey(
             address,
             private_key_encrypted,
             password

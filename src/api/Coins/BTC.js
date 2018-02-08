@@ -170,11 +170,11 @@ export function urlDecodeTx() {
     return 'https://live.blockcypher.com/btc/decodetx/'
 }
 
-export function encrypt(private_key, password) {
+export function encryptPrivateKey(private_key, password) {
     return encryptAES128CTR(private_key, password)
 }
 
-export function decrypt(address, private_key_encrypted, password) {
+export function decryptPrivateKey(address, private_key_encrypted, password) {
     const private_key = decryptAES128CTR(private_key_encrypted, password)
 
     if (isPrivateKey(private_key)) {
@@ -183,6 +183,12 @@ export function decrypt(address, private_key_encrypted, password) {
     }
 
     return false
+}
+
+export function encryptSeed(seed, password) {
+    const seed_encrypted = encryptAES128CTR(seed, password)
+    seed_encrypted.hash = sha3(seed).toString('hex')
+    return seed_encrypted
 }
 
 export function encryptBIP38(privateKey, password, progressCallback) {

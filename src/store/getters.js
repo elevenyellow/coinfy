@@ -1,6 +1,4 @@
 import { util } from 'dop'
-import { Coins } from '/api/Coins'
-import { isPrivateKey, getAddressFromPrivateKey } from '/api/Coins/BTC'
 import state from '/store/state'
 import { Fiats } from '/api/Fiats'
 
@@ -21,10 +19,21 @@ export function isAssetRegistered(asset_id) {
     return state.assets.hasOwnProperty(asset_id)
 }
 
+export function isAssetWithPrivateKeyOrSeed(asset_id) {
+    return isAssetWithPrivateKey(asset_id) || isAssetWithSeed(asset_id)
+}
+
 export function isAssetWithPrivateKey(asset_id) {
     return (
         isAssetRegistered(asset_id) &&
         state.assets[asset_id].hasOwnProperty('private_key')
+    )
+}
+
+export function isAssetWithSeed(asset_id) {
+    return (
+        isAssetRegistered(asset_id) &&
+        state.assets[asset_id].hasOwnProperty('seed')
     )
 }
 
@@ -84,4 +93,14 @@ export function getPrice(symbol) {
     return state && state.prices && state.prices[symbol]
         ? state.prices[symbol]
         : 0
+}
+
+export function getRawPrivateKey(asset_id, password) {
+    const asset = getAsset(asset_id)
+    const address = asset.address
+    const Coin = Coins[asset.symbol]
+    const is_seed = isAssetWithSeed(asset_id)
+    return is_seed
+        ? Coin.decryptSeed(address, asset.seed, password)
+        : Coin.decryptPrivateKey(address, asset.private_key, password)
 }

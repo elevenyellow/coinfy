@@ -118,7 +118,7 @@ export default class ImportKeystore extends Component {
             const crypto = this.keystore.Crypto || this.keystore.crypto
 
             try {
-                const private_key = this.Coin.decrypt(address, crypto, password)
+                const private_key = this.Coin.decryptPrivateKey(address, crypto, password)
                 if (private_key) {
                     const asset = createAsset(
                         this.Coin.type,
