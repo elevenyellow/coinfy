@@ -11,6 +11,7 @@ import { sha3 } from 'ethereumjs-util'
 
 export { randomBytes } from 'crypto'
 
+// https://crypto.stackexchange.com/questions/55014/how-insecure-is-aes-128-ctr-to-encrypt-any-kind-of-data-using-the-ethereum-keyst
 export function encryptAES128CTR(string, password, isHex = false, mac = false) {
     const string_buffer = new Buffer(string, isHex ? 'hex' : undefined) // ethereum: new Buffer(string,'hex')
     const ciphertype = 'aes-128-ctr'

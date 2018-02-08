@@ -16,7 +16,8 @@ import { isAddress } from '/api/Coins/ETH'
 import { printTemplate } from '/api/browser'
 
 import state from '/store/state'
-import { setHref } from '/store/actions'
+import { createAsset, setSeed, setHref, addNotification } from '/store/actions'
+import { getCoinId } from '/store/getters'
 
 import IconHeader from '/components/styled/IconHeader'
 import H1 from '/components/styled/H1'
@@ -110,8 +111,18 @@ export default class AddAsset extends Component {
         state.view.word_wrong_selected = false
         collector.emit()
     }
-    onCreate(e) {
-        console.log('onCreate')
+    onCreate() {
+        const collector = collect()
+        const symbol = this.Coin.symbol
+        const words = this.words.join(' ')
+        const wallet = this.Coin.getWalletFromSeed({ words })
+        const address = wallet.address
+        const asset = createAsset(this.Coin.type, symbol, address)
+        const asset_id = getCoinId({ symbol, address })
+        setSeed(asset_id, words, state.view.password)
+        setHref(routes.asset(asset_id))
+        addNotification(`New "${symbol}" asset has been created`)
+        collector.emit()
     }
 
     // Getters

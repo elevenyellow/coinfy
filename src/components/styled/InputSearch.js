@@ -33,6 +33,7 @@ const Container = styled.div`
     position: relative;
 
     & .icon {
+        z-index: 1;
         position: absolute;
         text-align: center;
         width: 40px;

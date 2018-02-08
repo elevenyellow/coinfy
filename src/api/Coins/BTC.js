@@ -42,7 +42,7 @@ export function format(value, decimals = coin_decimals) {
     return formatCoin(value, decimals, symbol)
 }
 
-export function getWalletByWords({
+export function getWalletFromSeed({
     words,
     index = 0,
     derived_path,
@@ -170,8 +170,8 @@ export function urlDecodeTx() {
     return 'https://live.blockcypher.com/btc/decodetx/'
 }
 
-export function encrypt(private_key_encrypted, password) {
-    return encryptAES128CTR(private_key_encrypted, password)
+export function encrypt(private_key, password) {
+    return encryptAES128CTR(private_key, password)
 }
 
 export function decrypt(address, private_key_encrypted, password) {

@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { createObserver } from 'dop'
+import { createObserver, collect } from 'dop'
+
+import routes from '/const/routes'
+import styles from '/const/styles'
 
 import state from '/store/state'
-import { deleteAsset } from '/store/actions'
-import styles from '/const/styles'
+import { deleteAsset, addNotification, setHref } from '/store/actions'
 
 import Div from '/components/styled/Div'
 import ButtonBig from '/components/styled/ButtonBig'
@@ -28,8 +30,14 @@ export default class Delete extends Component {
         state.view.confirmed = !state.view.confirmed
     }
     onDelete() {
+        const collector = collect()
         const asset_id = state.location.path[1]
+        const name =
+            state.assets[asset_id].label || state.assets[asset_id].address
         deleteAsset(asset_id)
+        setHref(routes.home())
+        addNotification(`"${name}" asset has been deleted`)
+        collector.emit()
     }
     render() {
         return React.createElement(DeleteTemplate, {

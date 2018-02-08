@@ -91,7 +91,7 @@ export function stringToBuffer(string) {
     return new Buffer(string, 'hex')
 }
 
-export function getWalletByWords({
+export function getWalletFromSeed({
     words,
     index = 0,
     derived_path,
@@ -289,8 +289,8 @@ export function createSimpleTx({
         })
 }
 
-export function encrypt(private_key_encrypted, password) {
-    return encryptAES128CTR(private_key_encrypted, password, true, true)
+export function encrypt(private_key, password) {
+    return encryptAES128CTR(private_key, password, true, true)
 }
 
 export function decrypt(address, private_key_encrypted, password) {

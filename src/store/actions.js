@@ -1,5 +1,6 @@
 import React from 'react'
 import { set, collect } from 'dop'
+import { sha3 } from 'ethereumjs-util'
 
 import {
     MAINNET,
@@ -18,6 +19,7 @@ import styles from '/const/styles'
 
 import { Coins } from '/api/Coins'
 import { now } from '/api/time'
+import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
 
 import state from '/store/state'
 import {
@@ -46,13 +48,15 @@ export function setHref(href) {
 }
 
 export function createAsset(type, symbol, address) {
-    sendEventToAnalytics('createAsset', symbol)
+    const collector = collect()
     const asset = generateDefaultAsset({ type, symbol, address })
     const asset_id = getNextCoinId({ symbol, address })
     state.assets[asset_id] = asset
     saveAssetsLocalStorage()
     setAssetsExported(false)
     fetchBalanceAsset(asset_id)
+    sendEventToAnalytics('createAsset', symbol)
+    collector.emit()
     return asset
 }
 
@@ -74,6 +78,15 @@ export function setPrivateKey(asset_id, private_key, password) {
     setAssetsExported(false)
 }
 
+export function setSeed(asset_id, seed, password) {
+    const asset = state.assets[asset_id]
+    const seed_encrypted = encryptAES128CTR(seed, password)
+    seed_encrypted.hash = sha3(seed).toString('hex')
+    set(asset, 'seed', seed_encrypted, { deep: false })
+    saveAssetsLocalStorage()
+    setAssetsExported(false)
+}
+
 export function copyPrivateKey(asset_id_from, asset_id_to) {
     const from = state.assets[asset_id_from]
     const to = state.assets[asset_id_to]
@@ -84,10 +97,7 @@ export function copyPrivateKey(asset_id_from, asset_id_to) {
 
 export function deleteAsset(asset_id) {
     const collector = collect()
-    const name = state.assets[asset_id].label || state.assets[asset_id].address
     delete state.assets[asset_id]
-    setHref(routes.home())
-    addNotification(`Asset "${name}" has been deleted`, OK)
     saveAssetsLocalStorage()
     setAssetsExported(false)
     collector.emit()
@@ -195,7 +205,7 @@ export function forceLoseSession() {
 }
 
 let idNotification = 0
-export function addNotification(text, color, timeout = 5000) {
+export function addNotification(text, color = OK, timeout = 5000) {
     state.notifications[idNotification] = {
         id: idNotification,
         text: text,
