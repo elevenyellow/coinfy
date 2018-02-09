@@ -115,10 +115,15 @@ export default class ImportKeystore extends Component {
             const collector = collect()
             const address = state.view.address
             const password = state.view.keystore_password
-            const crypto = this.keystore.Crypto || this.keystore.crypto
+            const private_key_encrypted =
+                this.keystore.Crypto || this.keystore.crypto
 
             try {
-                const private_key = this.Coin.decryptPrivateKey(address, crypto, password)
+                const private_key = this.Coin.decryptPrivateKey(
+                    address,
+                    private_key_encrypted,
+                    password
+                )
                 if (private_key) {
                     const asset = createAsset(
                         this.Coin.type,

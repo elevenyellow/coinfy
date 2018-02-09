@@ -35,7 +35,7 @@ import ImportAddress from '/components/views/ImportBTC/ImportAddress'
 import ImportWIF from '/components/views/ImportBTC/ImportWIF'
 import ImportBIP from '/components/views/ImportBTC/ImportBIP'
 
-const types_import = {
+const TYPES_IMPORT = {
     address: 0,
     // public_key: 1,
     private_key: 2,
@@ -49,7 +49,7 @@ export default class ImportBitcoin extends Component {
 
         // Initial state
         state.view = {
-            type_import: types_import.address,
+            type_import: TYPES_IMPORT.address,
             address: ''
         }
 
@@ -131,34 +131,34 @@ function ImportTemplate({
                         <FormFieldRight>
                             <Select width="100%" onChange={onChangeTypeImport}>
                                 <option
-                                    value={types_import.address}
+                                    value={TYPES_IMPORT.address}
                                     selected={
-                                        type_import === types_import.address
+                                        type_import === TYPES_IMPORT.address
                                     }
                                 >
                                     Address
                                 </option>
                                 {/* <option
-                                    value={types_import.public_key}
+                                    value={TYPES_IMPORT.public_key}
                                     selected={
-                                        type_import === types_import.public_key
+                                        type_import === TYPES_IMPORT.public_key
                                     }
                                 >
                                     Public key
                                 </option> */}
                                 <option
-                                    value={types_import.private_key}
+                                    value={TYPES_IMPORT.private_key}
                                     selected={
-                                        type_import === types_import.private_key
+                                        type_import === TYPES_IMPORT.private_key
                                     }
                                 >
                                     Private key unencrypted (WIF)
                                 </option>
                                 <option
-                                    value={types_import.private_key_bip}
+                                    value={TYPES_IMPORT.private_key_bip}
                                     selected={
                                         type_import ===
-                                        types_import.private_key_bip
+                                        TYPES_IMPORT.private_key_bip
                                     }
                                 >
                                     Private key encrypted (BIP38)
@@ -168,17 +168,17 @@ function ImportTemplate({
                     </FormField>
 
                     <Router>
-                        <Route if={type_import === types_import.address}>
+                        <Route if={type_import === TYPES_IMPORT.address}>
                             <ImportAddress />
                         </Route>
-                        {/* <Route if={type_import===types_import.public_key}>
+                        {/* <Route if={type_import===TYPES_IMPORT.public_key}>
                             <ImportPublic />
                         </Route> */}
-                        <Route if={type_import === types_import.private_key}>
+                        <Route if={type_import === TYPES_IMPORT.private_key}>
                             <ImportWIF />
                         </Route>
                         <Route
-                            if={type_import === types_import.private_key_bip}
+                            if={type_import === TYPES_IMPORT.private_key_bip}
                         >
                             <ImportBIP />
                         </Route>

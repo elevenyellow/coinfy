@@ -1,6 +1,7 @@
 import { util } from 'dop'
 import state from '/store/state'
 import { Fiats } from '/api/Fiats'
+import { Coins } from '/api/Coins'
 
 // GETTERS
 export function getTotalAssets(assets) {
@@ -93,14 +94,4 @@ export function getPrice(symbol) {
     return state && state.prices && state.prices[symbol]
         ? state.prices[symbol]
         : 0
-}
-
-export function getRawPrivateKey(asset_id, password) {
-    const asset = getAsset(asset_id)
-    const address = asset.address
-    const Coin = Coins[asset.symbol]
-    const is_seed = isAssetWithSeed(asset_id)
-    return is_seed
-        ? Coin.decryptSeed(address, asset.seed, password)
-        : Coin.decryptPrivateKey(address, asset.private_key, password)
 }

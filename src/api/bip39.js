@@ -3,14 +3,12 @@ import Bitcoin from 'bitcoinjs-lib'
 import crypto from 'crypto'
 
 export function getBip32RootKey({
-    words,
-    derived_path,
+    seed,
     passphase = '',
     network = Bitcoin.networks.bitcoin
 }) {
-    const seed = bip39.mnemonicToSeed(words, passphase)
-    const bip32RootKey = Bitcoin.HDNode.fromSeedHex(seed, network)
-    return bip32RootKey.derivePath(derived_path)
+    const seed_raw = bip39.mnemonicToSeed(seed, passphase)
+    return Bitcoin.HDNode.fromSeedHex(seed_raw, network)
 }
 
 export function gerRandomMnemonic(words_number = 12) {

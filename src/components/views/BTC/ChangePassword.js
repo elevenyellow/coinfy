@@ -9,8 +9,13 @@ import { OK, ERROR, ALERT, NORMAL, minpassword } from '/const/'
 import { Coins } from '/api/Coins'
 
 import state from '/store/state'
-import { setHref, setPrivateKey, addNotification } from '/store/actions'
-import { getAsset, isAssetWithSeed, getRawPrivateKey } from '/store/getters'
+import {
+    setHref,
+    setPrivateKey,
+    setSeed,
+    addNotification
+} from '/store/actions'
+import { getAsset, isAssetWithSeed } from '/store/getters'
 
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
@@ -67,16 +72,24 @@ export default class ChangePassword extends Component {
     }
     onSubmit(e) {
         e.preventDefault()
+        const collector = collect()
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
+        const address = asset.address
+        const oldpassword = state.view.oldpassword
+        const password = state.view.password
         const Coin = Coins[asset.symbol]
-        const collector = collect()
         const is_seed = isAssetWithSeed(asset_id)
-        const private_key = getRawPrivateKey(asset_id, state.view.oldpassword)
-        if (private_key) {
+        const privatekey_or_seed = is_seed
+            ? Coin.decryptSeed(address, asset.seed, oldpassword)
+            : Coin.decryptPrivateKey(address, asset.private_key, oldpassword)
+
+        if (privatekey_or_seed) {
             const name = asset.label || asset.address
-            setPrivateKey(asset_id, private_key, state.view.password)
-            addNotification(`You have changed the password of "${name}"`, OK)
+            is_seed
+                ? setSeed(asset_id, privatekey_or_seed, password)
+                : setPrivateKey(asset_id, privatekey_or_seed, password)
+            addNotification(`You have changed the password of this asset`, OK)
             setHref(routes.summaryAsset(asset_id))
         } else state.view.isInvalidOldpassword = true
 

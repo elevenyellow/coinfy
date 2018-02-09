@@ -66,7 +66,7 @@ export function setPublicKey(asset_id, public_key) {
 }
 
 export function setPrivateKey(asset_id, private_key, password) {
-    return setPrivateKeyOrSeed(asset_id, seed, password, false)
+    return setPrivateKeyOrSeed(asset_id, private_key, password, false)
 }
 
 export function setSeed(asset_id, seed, password) {
@@ -375,7 +375,11 @@ export const fetchPrices = (function() {
 fetchPrices()
 
 export function sendEventToAnalytics() {
-    if (state.network === MAINNET && typeof ga == 'function') {
+    if (
+        state.network === MAINNET &&
+        typeof ga == 'function' &&
+        location.href.indexOf('coinfy.com') === 8
+    ) {
         const args = Array.prototype.slice.call(arguments, 0)
         args.unshift('send', 'event')
         ga.apply(this, args)

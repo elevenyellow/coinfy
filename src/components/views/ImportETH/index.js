@@ -34,7 +34,7 @@ import ImportAddress from '/components/views/ImportETH/ImportAddress'
 import ImportPrivate from '/components/views/ImportETH/ImportPrivate'
 import ImportKeystore from '/components/views/ImportETH/ImportKeystore'
 
-const types_import = {
+const TYPES_IMPORT = {
     address: 0,
     private: 1,
     keystore: 2
@@ -47,7 +47,7 @@ export default class ImportEthereum extends Component {
 
         // Initial state
         state.view = {
-            type_import: types_import.address,
+            type_import: TYPES_IMPORT.address,
             address: ''
         }
 
@@ -127,25 +127,25 @@ function ImportTemplate({
                         <FormFieldRight>
                             <Select width="100%" onChange={onChangeTypeImport}>
                                 <option
-                                    value={types_import.address}
+                                    value={TYPES_IMPORT.address}
                                     selected={
-                                        type_import === types_import.address
+                                        type_import === TYPES_IMPORT.address
                                     }
                                 >
                                     Address
                                 </option>
                                 <option
-                                    value={types_import.private}
+                                    value={TYPES_IMPORT.private}
                                     selected={
-                                        type_import === types_import.private
+                                        type_import === TYPES_IMPORT.private
                                     }
                                 >
                                     Private key
                                 </option>
                                 <option
-                                    value={types_import.keystore}
+                                    value={TYPES_IMPORT.keystore}
                                     selected={
-                                        type_import === types_import.keystore
+                                        type_import === TYPES_IMPORT.keystore
                                     }
                                 >
                                     Keystore file (UTC / JSON)
@@ -155,13 +155,13 @@ function ImportTemplate({
                     </FormField>
 
                     <Router>
-                        <Route if={type_import === types_import.address}>
+                        <Route if={type_import === TYPES_IMPORT.address}>
                             <ImportAddress />
                         </Route>
-                        <Route if={type_import === types_import.private}>
+                        <Route if={type_import === TYPES_IMPORT.private}>
                             <ImportPrivate />
                         </Route>
-                        <Route if={type_import === types_import.keystore}>
+                        <Route if={type_import === TYPES_IMPORT.keystore}>
                             <ImportKeystore />
                         </Route>
                     </Router>

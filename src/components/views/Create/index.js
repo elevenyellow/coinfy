@@ -20,6 +20,8 @@ import { createAsset, setSeed, setHref, addNotification } from '/store/actions'
 import { getCoinId } from '/store/getters'
 
 import IconHeader from '/components/styled/IconHeader'
+import IconPrint from 'react-icons/lib/fa/print'
+
 import H1 from '/components/styled/H1'
 import H2 from '/components/styled/H2'
 import { Wizard, WizardItem } from '/components/styled/Wizard'
@@ -301,7 +303,10 @@ function AddAssetTemplate({
                                             margin="0 auto"
                                             onClick={onPrint}
                                         >
-                                            Print
+                                            <IconPrint
+                                                size={20}
+                                                color="#617991"
+                                            />{' '}
                                         </Button>
                                     </Div>
                                 </Div>

@@ -1,4 +1,5 @@
 import Bitcoin from 'bitcoinjs-lib'
+import { sha3 } from 'ethereumjs-util'
 import { getBip32RootKey } from '/api/bip39'
 import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
 import { formatCoin, decimalsMax, bigNumber } from '/api/numbers'
@@ -43,25 +44,46 @@ export function format(value, decimals = coin_decimals) {
 }
 
 export function getWalletFromSeed({
-    words,
+    seed,
     index = 0,
-    derived_path,
+    derived_path_function,
     passphase = ''
 }) {
-    if (derived_path === undefined) {
-        derived_path =
+    return getWalletsFromSeed({
+        index,
+        seed,
+        derived_path_function,
+        passphase
+    })[0]
+}
+
+export function getWalletsFromSeed({
+    seed,
+    index = 0,
+    count = 1,
+    derived_path_function,
+    passphase = ''
+}) {
+    if (derived_path_function === undefined)
+        derived_path_function =
             network_int === MAINNET
-                ? derivation_path.mainnet(index)
-                : derivation_path.testnet(index)
+                ? derivation_path.mainnet
+                : derivation_path.testnet
+
+    const wallets = []
+    const bip32RootKey = getBip32RootKey({ seed, passphase, network })
+    while (count-- > 0) {
+        // console.log(index, count)
+        let path = derived_path_function(index++)
+        let key = bip32RootKey.derivePath(path)
+        let wallet = key.keyPair
+        wallets.push({
+            address: wallet.getAddress(),
+            private_key: wallet.toWIF()
+        })
     }
-    const key = getBip32RootKey({
-        words,
-        derived_path,
-        passphase,
-        network: network
-    })
-    const wallet = key.keyPair
-    return { address: wallet.getAddress(), private_key: wallet.toWIF() }
+
+    return wallets
 }
 
 // export function generateRandomWallet() {
@@ -176,19 +198,32 @@ export function encryptPrivateKey(private_key, password) {
 
 export function decryptPrivateKey(address, private_key_encrypted, password) {
     const private_key = decryptAES128CTR(private_key_encrypted, password)
-
-    if (isPrivateKey(private_key)) {
+    if (isPrivateKey(private_key))
         if (getAddressFromPrivateKey(private_key) === address)
             return private_key
-    }
-
-    return false
 }
 
 export function encryptSeed(seed, password) {
     const seed_encrypted = encryptAES128CTR(seed, password)
     seed_encrypted.hash = sha3(seed).toString('hex')
     return seed_encrypted
+}
+
+export function decryptSeed(address, seed_encrypted, password) {
+    const { seed } = decryptPrivateKeyFromSeed(
+        address,
+        seed_encrypted,
+        password
+    )
+    return seed
+}
+
+export function decryptPrivateKeyFromSeed(address, seed_encrypted, password) {
+    const seed = decryptAES128CTR(seed_encrypted, password)
+    const wallet = getWalletFromSeed({ seed })
+    return wallet.address === address
+        ? { private_key: wallet.private_key, seed }
+        : {}
 }
 
 export function encryptBIP38(privateKey, password, progressCallback) {
