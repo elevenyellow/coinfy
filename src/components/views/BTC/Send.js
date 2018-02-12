@@ -16,7 +16,8 @@ import {
     getAsset,
     getPrice,
     formatCurrency,
-    convertBalance
+    convertBalance,
+    isAssetWithSeed
 } from '/store/getters'
 
 import Div from '/components/styled/Div'
@@ -159,14 +160,25 @@ export default class Send extends Component {
 
     onNext(e) {
         const asset = this.asset
+        const asset_id = this.asset_id
         const address = asset.address
         const password = state.view.password_input
-        const private_key_encrypted = asset.private_key
-        const private_key = this.Coin.decryptPrivateKey(
-            address,
-            private_key_encrypted,
-            password
-        )
+        let private_key
+        if (isAssetWithSeed(asset_id)) {
+            const pk_and_seed = this.Coin.decryptPrivateKeyFromSeed(
+                address,
+                asset.seed,
+                password
+            )
+            private_key = pk_and_seed.private_key
+        } else {
+            private_key = this.Coin.decryptPrivateKey(
+                address,
+                asset.private_key,
+                password
+            )
+        }
+
         const collector = collect()
         state.view.error_when_create = false
         state.view.error_when_send = ''
@@ -662,6 +674,7 @@ const TextFee = styled.a`
 
 const DivOverInput = styled.div`
     position: absolute;
+    z-index: 1;
     line-height: 34px;
     font-weight: bold;
     font-size: 12px;

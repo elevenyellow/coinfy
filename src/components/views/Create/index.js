@@ -117,7 +117,7 @@ export default class AddAsset extends Component {
         const collector = collect()
         const symbol = this.Coin.symbol
         const words = this.words.join(' ')
-        const wallet = this.Coin.getWalletFromSeed({ words })
+        const wallet = this.Coin.getWalletFromSeed({ seed: words })
         const address = wallet.address
         const asset = createAsset(this.Coin.type, symbol, address)
         const asset_id = getCoinId({ symbol, address })

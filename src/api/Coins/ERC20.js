@@ -24,6 +24,7 @@ export {
     decryptPrivateKey,
     encryptSeed,
     decryptSeed,
+    decryptPrivateKeyFromSeed,
     urlInfoTx,
     fetchBalance,
     getSendProviders,
