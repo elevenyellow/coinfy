@@ -95,3 +95,30 @@ export function getPrice(symbol) {
         ? state.prices[symbol]
         : 0
 }
+
+export function getPrivateKey(asset_id, password) {
+    const { private_key } = decrypt(asset_id, password)
+    return private_key
+}
+
+export function decrypt(asset_id, password) {
+    const asset = getAsset(asset_id)
+    const Coin = Coins[asset.symbol]
+
+    if (isAssetWithSeed(asset_id)) {
+        return Coin.decryptPrivateKeyFromSeed(
+            asset.address,
+            asset.seed,
+            password
+        )
+    } else {
+        const private_key = Coin.decryptPrivateKey(
+            asset.address,
+            asset.private_key,
+            password
+        )
+        return { private_key }
+    }
+
+    return private_key
+}

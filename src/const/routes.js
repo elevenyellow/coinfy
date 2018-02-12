@@ -11,7 +11,7 @@ export default {
     asset: asset_id => `/asset/${asset_id}/summary`, // default
     summaryAsset: asset_id => `/asset/${asset_id}/summary`,
     sendAsset: asset_id => `/asset/${asset_id}/send`,
-    printAsset: asset_id => `/asset/${asset_id}/print`,
+    exportAsset: asset_id => `/asset/${asset_id}/export`,
     changePasswordAsset: asset_id => `/asset/${asset_id}/changepassword`,
     deleteAsset: asset_id => `/asset/${asset_id}/delete`
 }

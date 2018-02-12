@@ -58,7 +58,7 @@ export default class ViewBTC extends Component {
             hasPrivateKey: hasPrivateKey,
             routes_summaryAsset: routes.summaryAsset(asset_id),
             routes_sendAsset: routes.sendAsset(asset_id),
-            routes_printAsset: routes.printAsset(asset_id),
+            routes_exportAsset: routes.exportAsset(asset_id),
             routes_changePasswordAsset: routes.changePasswordAsset(asset_id),
             routes_deleteAsset: routes.deleteAsset(asset_id),
             onClick: this.onClick
@@ -73,7 +73,7 @@ function ViewBTCTemplate({
     onClick,
     routes_summaryAsset,
     routes_sendAsset,
-    routes_printAsset,
+    routes_exportAsset,
     routes_changePasswordAsset,
     routes_deleteAsset
 }) {
@@ -119,11 +119,11 @@ function ViewBTCTemplate({
                         <MenuContentItem
                             disabled={!hasPrivateKey}
                             selected={
-                                location.pathname === routes_printAsset ||
+                                location.pathname === routes_exportAsset ||
                                 location.path.length === 2
                             }
                             onClick={e => {
-                                if (hasPrivateKey) onClick(routes_printAsset)
+                                if (hasPrivateKey) onClick(routes_exportAsset)
                             }}
                         >
                             <MenuContentItemText>
@@ -171,7 +171,7 @@ function ViewBTCTemplate({
                         <ChangePassword />
                     </Route>
 
-                    <Route if={hasPrivateKey} pathname={routes_printAsset}>
+                    <Route if={hasPrivateKey} pathname={routes_exportAsset}>
                         <ExportBTC />
                     </Route>
 

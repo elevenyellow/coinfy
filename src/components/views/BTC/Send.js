@@ -17,7 +17,8 @@ import {
     getPrice,
     formatCurrency,
     convertBalance,
-    isAssetWithSeed
+    isAssetWithSeed,
+    getPrivateKey
 } from '/store/getters'
 
 import Div from '/components/styled/Div'
@@ -163,21 +164,7 @@ export default class Send extends Component {
         const asset_id = this.asset_id
         const address = asset.address
         const password = state.view.password_input
-        let private_key
-        if (isAssetWithSeed(asset_id)) {
-            const pk_and_seed = this.Coin.decryptPrivateKeyFromSeed(
-                address,
-                asset.seed,
-                password
-            )
-            private_key = pk_and_seed.private_key
-        } else {
-            private_key = this.Coin.decryptPrivateKey(
-                address,
-                asset.private_key,
-                password
-            )
-        }
+        const private_key = getPrivateKey(asset_id, password)
 
         const collector = collect()
         state.view.error_when_create = false
