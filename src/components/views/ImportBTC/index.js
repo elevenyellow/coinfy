@@ -30,16 +30,16 @@ import {
     FormFieldRight,
     FormFieldButtons
 } from '/components/styled/Form'
+import ImportSeed from '/components/views/ImportBTC/ImportSeed'
 import ImportAddress from '/components/views/ImportBTC/ImportAddress'
-// import ImportPublic from '/components/views/ImportBTC/ImportPublic'
-import ImportWIF from '/components/views/ImportBTC/ImportWIF'
+import ImportPrivate from '/components/views/ImportBTC/ImportPrivate'
 import ImportBIP from '/components/views/ImportBTC/ImportBIP'
 
 const TYPES_IMPORT = {
-    address: 0,
-    // public_key: 1,
-    private_key: 2,
-    private_key_bip: 3
+    seed: 'seed',
+    address: 'address',
+    private_key: 'private_key',
+    private_key_bip: 'private_key_bip'
 }
 
 export default class ImportBitcoin extends Component {
@@ -49,7 +49,7 @@ export default class ImportBitcoin extends Component {
 
         // Initial state
         state.view = {
-            type_import: TYPES_IMPORT.address,
+            type_import: TYPES_IMPORT.seed,
             address: ''
         }
 
@@ -67,7 +67,7 @@ export default class ImportBitcoin extends Component {
     onChangeTypeImport(e) {
         const collector = collect()
         state.view.address = ''
-        state.view.type_import = Number(e.target.value)
+        state.view.type_import = e.target.value
         collector.emit()
     }
 
@@ -105,7 +105,7 @@ function ImportTemplate({
                 <Div clear="both" />
             </RightHeader>
             <RightContent>
-                <FormField>
+                {/* <FormField>
                     <Div>
                         <QRCode>
                             <Show if={isValidAddress}>
@@ -118,74 +118,84 @@ function ImportTemplate({
                             <Address>{address}</Address>
                         </CenterElement>
                     </Div>
-                </FormField>
+                </FormField> */}
+                <Div padding="0 42px">
+                    <form>
+                        <FormField>
+                            <FormFieldLeft>
+                                <Label>I have my</Label>
+                                <SubLabel>
+                                    Select the option you prefer to import.
+                                </SubLabel>
+                            </FormFieldLeft>
+                            <FormFieldRight>
+                                <Select
+                                    width="100%"
+                                    onChange={onChangeTypeImport}
+                                >
+                                    <option
+                                        value={TYPES_IMPORT.seed}
+                                        selected={
+                                            type_import === TYPES_IMPORT.seed
+                                        }
+                                    >
+                                        Phrase Recovery (12 words)
+                                    </option>
+                                    <option
+                                        value={TYPES_IMPORT.address}
+                                        selected={
+                                            type_import === TYPES_IMPORT.address
+                                        }
+                                    >
+                                        Address
+                                    </option>
 
-                <form>
-                    <FormField>
-                        <FormFieldLeft>
-                            <Label>I have my</Label>
-                            <SubLabel>
-                                Select the option you prefer to import.
-                            </SubLabel>
-                        </FormFieldLeft>
-                        <FormFieldRight>
-                            <Select width="100%" onChange={onChangeTypeImport}>
-                                <option
-                                    value={TYPES_IMPORT.address}
-                                    selected={
-                                        type_import === TYPES_IMPORT.address
-                                    }
-                                >
-                                    Address
-                                </option>
-                                {/* <option
-                                    value={TYPES_IMPORT.public_key}
-                                    selected={
-                                        type_import === TYPES_IMPORT.public_key
-                                    }
-                                >
-                                    Public key
-                                </option> */}
-                                <option
-                                    value={TYPES_IMPORT.private_key}
-                                    selected={
-                                        type_import === TYPES_IMPORT.private_key
-                                    }
-                                >
-                                    Private key unencrypted (WIF)
-                                </option>
-                                <option
-                                    value={TYPES_IMPORT.private_key_bip}
-                                    selected={
-                                        type_import ===
-                                        TYPES_IMPORT.private_key_bip
-                                    }
-                                >
-                                    Private key encrypted (BIP38)
-                                </option>
-                            </Select>
-                        </FormFieldRight>
-                    </FormField>
+                                    <option
+                                        value={TYPES_IMPORT.private_key}
+                                        selected={
+                                            type_import ===
+                                            TYPES_IMPORT.private_key
+                                        }
+                                    >
+                                        Private key unencrypted (WIF)
+                                    </option>
+                                    <option
+                                        value={TYPES_IMPORT.private_key_bip}
+                                        selected={
+                                            type_import ===
+                                            TYPES_IMPORT.private_key_bip
+                                        }
+                                    >
+                                        Private key encrypted (BIP38)
+                                    </option>
+                                </Select>
+                            </FormFieldRight>
+                        </FormField>
 
-                    <Router>
-                        <Route if={type_import === TYPES_IMPORT.address}>
-                            <ImportAddress />
-                        </Route>
-                        {/* <Route if={type_import===TYPES_IMPORT.public_key}>
-                            <ImportPublic />
-                        </Route> */}
-                        <Route if={type_import === TYPES_IMPORT.private_key}>
-                            <ImportWIF />
-                        </Route>
-                        <Route
-                            if={type_import === TYPES_IMPORT.private_key_bip}
-                        >
-                            <ImportBIP />
-                        </Route>
-                    </Router>
+                        <Router>
+                            <Route if={type_import === TYPES_IMPORT.seed}>
+                                <ImportSeed />
+                            </Route>
+                            <Route if={type_import === TYPES_IMPORT.address}>
+                                <ImportAddress />
+                            </Route>
+                            <Route
+                                if={type_import === TYPES_IMPORT.private_key}
+                            >
+                                <ImportPrivate />
+                            </Route>
+                            <Route
+                                if={
+                                    type_import === TYPES_IMPORT.private_key_bip
+                                }
+                            >
+                                <ImportBIP />
+                            </Route>
+                        </Router>
 
-                    <Div clear="both" />
-                </form>
+                        <Div clear="both" />
+                    </form>
+                </Div>
             </RightContent>
         </RightContainerPadding>
     )

@@ -78,6 +78,10 @@ export function isPrivateKeyCheck(string) {
     return isValidPrivate(stringToBuffer(string))
 }
 
+export function wrapAddress(address) {
+    return addHexPrefix(address)
+}
+
 export function getAddressFromPrivateKey(private_key) {
     return addHexPrefix(
         privateToAddress(stringToBuffer(private_key)).toString('hex')

@@ -4,10 +4,14 @@ import { createObserver, collect } from 'dop'
 
 import { setHref, createAsset } from '/store/actions'
 import state from '/store/state'
-import { isAssetRegistered, getCoinId } from '/store/getters'
 
-import { isAddress, addHexPrefix } from '/api/Coins/ETH'
-import { Coins } from '/api/Coins'
+import {
+    isAddressCheck,
+    isPublicKey,
+    getAddressFromPublicKey
+} from '/api/Coins/BTC'
+import { isAssetRegistered } from '/store/getters'
+import { BTC, getCoinId } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -22,20 +26,15 @@ import {
     FormFieldButtons
 } from '/components/styled/Form'
 
-export default class ImportAddress extends Component {
+export default class ImportPublic extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
-
         const collector = collect()
         state.view.is_valid_input = false
-        state.view.address_input = ''
-        state.view.address_input_error = ''
+        state.view.public_input = ''
+        state.view.public_input_error = ''
         collector.destroy()
-
-        const symbol = state.location.path[state.location.path.length - 1]
-        this.Coin = Coins.hasOwnProperty(symbol) ? Coins[symbol] : Coins.ETH
-
         this.onChangeInput = this.onChangeInput.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
@@ -48,27 +47,34 @@ export default class ImportAddress extends Component {
 
     onChangeInput(e) {
         const collector = collect()
-        let value = e.target.value.trim()
-        state.view.address_input = value
-        value = value.toLowerCase()
+        const value = e.target.value.trim()
+        state.view.public_input = value
 
-        if (isAddress(value)) {
-            state.view.address = addHexPrefix(value)
+        if (isPublicKey(value)) {
+            try {
+                const address = getAddressFromPublicKey(value)
+                state.view.address = address
 
-            if (
-                isAssetRegistered(
-                    getCoinId({ symbol: this.Coin.symbol, address: value })
-                )
-            ) {
-                state.view.address_input_error = 'You already have this asset'
+                if (
+                    isAssetRegistered(
+                        getCoinId({ symbol: BTC.symbol, address: address })
+                    )
+                ) {
+                    state.view.public_input_error =
+                        'You already have this asset'
+                    state.view.is_valid_input = false
+                } else {
+                    state.view.public_input_error = ''
+                    state.view.is_valid_input = true
+                }
+            } catch (e) {
+                state.view.address = ''
                 state.view.is_valid_input = false
-            } else {
-                state.view.address_input_error = ''
-                state.view.is_valid_input = true
+                state.view.public_input_error = 'Invalid public key'
             }
         } else {
             state.view.address = ''
-            state.view.address_input_error = 'Invalid address'
+            state.view.public_input_error = 'Invalid public key'
             state.view.is_valid_input = false
         }
 
@@ -79,26 +85,29 @@ export default class ImportAddress extends Component {
         e.preventDefault()
         const collector = collect()
         const address = state.view.address
-        const asset = createAsset(this.Coin.type, this.Coin.symbol, address)
+        const asset = createAsset(BTC.type, BTC.symbol, address)
         setHref(routes.asset(getCoinId(asset)))
-        // setHref(routes.home())
         collector.emit()
     }
 
+    get isValidForm() {
+        return state.view.is_valid_input
+    }
+
     render() {
-        return React.createElement(ImportAddressTemplate, {
-            address_input: state.view.address_input,
-            address_input_error: state.view.address_input_error,
-            isValidForm: state.view.is_valid_input,
+        return React.createElement(ImportPublicTemplate, {
+            public_input: state.view.public_input,
+            public_input_error: state.view.public_input_error,
+            isValidForm: this.isValidForm,
             onChangeInput: this.onChangeInput,
             onSubmit: this.onSubmit
         })
     }
 }
 
-function ImportAddressTemplate({
-    address_input,
-    address_input_error,
+function ImportPublicTemplate({
+    public_input,
+    public_input_error,
     isValidForm,
     onChangeInput,
     onSubmit
@@ -107,18 +116,16 @@ function ImportAddressTemplate({
         <div>
             <FormField>
                 <FormFieldLeft>
-                    <Label>Address</Label>
-                    <SubLabel>Type or paste your address.</SubLabel>
+                    <Label>Public key</Label>
+                    <SubLabel>Type or paste your public key.</SubLabel>
                 </FormFieldLeft>
                 <FormFieldRight>
                     <Input
                         width="100%"
-                        value={address_input}
+                        value={public_input}
                         onChange={onChangeInput}
-                        error={address_input_error}
-                        invalid={
-                            address_input_error && address_input.length > 0
-                        }
+                        error={public_input_error}
+                        invalid={public_input_error && public_input.length > 0}
                     />
                 </FormFieldRight>
             </FormField>

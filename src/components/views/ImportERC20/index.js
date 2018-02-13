@@ -32,8 +32,8 @@ import {
     FormFieldButtons
 } from '/components/styled/Form'
 // import ImportEthereum from '/components/views/ImportERC20/ImportEthereum'
-import ImportAddress from '/components/views/ImportETH/ImportAddress'
-import ImportPrivate from '/components/views/ImportETH/ImportPrivate'
+import ImportAddress from '/components/views/ImportBTC/ImportAddress'
+import ImportPrivate from '/components/views/ImportBTC/ImportPrivate'
 import ImportKeystore from '/components/views/ImportETH/ImportKeystore'
 
 const TYPES_IMPORT = {

@@ -11,7 +11,7 @@ import { isAssetRegistered, getCoinId } from '/store/getters'
 
 import {
     isAddress,
-    addHexPrefix,
+    wrapAddress,
     getAddressFromPrivateKey
 } from '/api/Coins/ETH'
 import { Coins } from '/api/Coins'
@@ -68,7 +68,7 @@ export default class ImportKeystore extends Component {
                 state.view.keystore_selected = true
                 try {
                     const keystore = JSON.parse(dataString)
-                    const address = addHexPrefix(keystore.address)
+                    const address = wrapAddress(keystore.address)
                     if (
                         keystore.version === 3 &&
                         isAddress(address) &&

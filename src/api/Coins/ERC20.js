@@ -18,6 +18,9 @@ import { TYPE_ERC20 } from '/const/'
 export {
     isAddress,
     isAddressCheck,
+    isPrivateKey,
+    isPrivateKeyCheck,
+    getAddressFromPrivateKey,
     ascii,
     format,
     encryptPrivateKey,

@@ -151,6 +151,10 @@ export function isCompressedWalletImportFormat(key) {
           )
 }
 
+export function wrapAddress(address) {
+    return address
+}
+
 export function getAddressFromPrivateKey(private_key) {
     const wallet = Bitcoin.ECPair.fromWIF(private_key, network)
     return wallet.getAddress().toString()

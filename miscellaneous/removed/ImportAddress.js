@@ -6,7 +6,8 @@ import { setHref, createAsset } from '/store/actions'
 import state from '/store/state'
 import { isAssetRegistered, getCoinId } from '/store/getters'
 
-import { Coins } from '/api/Coins'
+import { isAddressCheck } from '/api/Coins/BTC'
+import { BTC } from '/api/Coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
@@ -25,16 +26,11 @@ export default class ImportAddress extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
-
         const collector = collect()
         state.view.is_valid_input = false
         state.view.address_input = ''
         state.view.address_input_error = ''
         collector.destroy()
-
-        const symbol = state.location.path[state.location.path.length - 1]
-        this.Coin = Coins[symbol]
-
         this.onChangeInput = this.onChangeInput.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
@@ -47,16 +43,15 @@ export default class ImportAddress extends Component {
 
     onChangeInput(e) {
         const collector = collect()
-        let value = e.target.value.trim()
+        const value = e.target.value.trim()
         state.view.address_input = value
-        value = value.toLowerCase()
 
-        if (this.Coin.isAddressCheck(value)) {
-            state.view.address = this.Coin.wrapAddress(value)
+        if (isAddressCheck(value)) {
+            state.view.address = value
 
             if (
                 isAssetRegistered(
-                    getCoinId({ symbol: this.Coin.symbol, address: value })
+                    getCoinId({ symbol: BTC.symbol, address: value })
                 )
             ) {
                 state.view.address_input_error = 'You already have this asset'
@@ -78,17 +73,20 @@ export default class ImportAddress extends Component {
         e.preventDefault()
         const collector = collect()
         const address = state.view.address
-        const asset = createAsset(this.Coin.type, this.Coin.symbol, address)
+        const asset = createAsset(BTC.type, BTC.symbol, address)
         setHref(routes.asset(getCoinId(asset)))
-        // setHref(routes.home())
         collector.emit()
+    }
+
+    get isValidForm() {
+        return state.view.is_valid_input
     }
 
     render() {
         return React.createElement(ImportAddressTemplate, {
             address_input: state.view.address_input,
             address_input_error: state.view.address_input_error,
-            isValidForm: state.view.is_valid_input,
+            isValidForm: this.isValidForm,
             onChangeInput: this.onChangeInput,
             onSubmit: this.onSubmit
         })

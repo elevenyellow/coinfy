@@ -14,6 +14,7 @@ import routes from '/const/routes'
 import { minpassword } from '/const/'
 
 import Input from '/components/styled/Input'
+import Textarea from '/components/styled/Textarea'
 import Password from '/components/styled/Password'
 import Button from '/components/styled/Button'
 import Help from '/components/styled/Help'
@@ -164,11 +165,11 @@ function ImportPrivateTemplate({
         <div>
             <FormField>
                 <FormFieldLeft>
-                    <Label>Private key</Label>
-                    <SubLabel>Type or paste your private key.</SubLabel>
+                    <Label>Recovery Phrase</Label>
+                    <SubLabel>Type your 12 words in the exact order.</SubLabel>
                 </FormFieldLeft>
                 <FormFieldRight>
-                    <Input
+                    <Textarea
                         width="100%"
                         value={private_input}
                         onChange={onChangeInput}
