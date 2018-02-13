@@ -51,11 +51,11 @@ export default class ExportBTC extends Component {
                 : TYPES_EXPORTS.wif,
             loading: false,
             password: '',
-            invalidPassword: false
+            invalid_password: false
         }
 
         // binding
-        this.onChangeTypeImport = this.onChangeTypeImport.bind(this)
+        this.onChangeTypeExport = this.onChangeTypeExport.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onExport = this.onExport.bind(this)
     }
@@ -66,13 +66,13 @@ export default class ExportBTC extends Component {
         return false
     }
 
-    onChangeTypeImport(e) {
+    onChangeTypeExport(e) {
         state.view.type_export = e.target.value
     }
     onChangePassword(e) {
         const collector = collect()
         state.view.password = e.target.value
-        state.view.invalidPassword = false
+        state.view.invalid_password = false
         collector.emit()
     }
     onExport(e) {
@@ -165,17 +165,17 @@ export default class ExportBTC extends Component {
                 }, 0)
             }
         } else {
-            state.view.invalidPassword = true
+            state.view.invalid_password = true
         }
     }
     render() {
         return React.createElement(ExportBTCTemplate, {
-            loading: state.view.loading,
             type_export: state.view.type_export,
             is_asset_with_seed: this.is_asset_with_seed,
             password: state.view.password,
-            invalidPassword: state.view.invalidPassword,
-            onChangeTypeImport: this.onChangeTypeImport,
+            invalid_password: state.view.invalid_password,
+            loading: state.view.loading,
+            onChangeTypeExport: this.onChangeTypeExport,
             onChangePassword: this.onChangePassword,
             onExport: this.onExport
         })
@@ -187,8 +187,8 @@ function ExportBTCTemplate({
     type_export,
     is_asset_with_seed,
     password,
-    invalidPassword,
-    onChangeTypeImport,
+    invalid_password,
+    onChangeTypeExport,
     onChangePassword,
     onExport
 }) {
@@ -198,41 +198,39 @@ function ExportBTCTemplate({
                 <FormField>
                     <FormFieldLeft>
                         <Label>Format</Label>
-                        <SubLabel>
-                            {type_export === TYPES_EXPORTS.bip
-                                ? 'You have to remember your current password in order to import this wallet in the future.'
-                                : ''}
-                        </SubLabel>
+                        <Show if={type_export === TYPES_EXPORTS.bip}>
+                            <SubLabel>
+                                You have to remember your current password in
+                                order to import this asset in the future.
+                            </SubLabel>
+                        </Show>
                     </FormFieldLeft>
                     <FormFieldRight>
-                        <Select width="100%" onChange={onChangeTypeImport}>
-                            <Show if={is_asset_with_seed}>
-                                <option
-                                    value={TYPES_EXPORTS.seed}
-                                    selected={
-                                        type_export === TYPES_EXPORTS.seed
-                                    }
-                                >
-                                    Recovery Phrase (12 words)
-                                </option>
-                            </Show>
+                        <Select width="100%" onChange={onChangeTypeExport}>
+                            <option
+                                disabled={!is_asset_with_seed}
+                                value={TYPES_EXPORTS.seed}
+                                selected={type_export === TYPES_EXPORTS.seed}
+                            >
+                                Recovery Phrase (12 words)
+                            </option>
                             <option
                                 value={TYPES_EXPORTS.wif}
                                 selected={type_export === TYPES_EXPORTS.wif}
                             >
-                                Unencrypted (WIF)
+                                Private Key Unencrypted (WIF)
                             </option>
                             <option
                                 value={TYPES_EXPORTS.bip}
                                 selected={type_export === TYPES_EXPORTS.bip}
                             >
-                                Encrypted (BIP38)
+                                Private Key Encrypted (BIP38)
                             </option>
                         </Select>
                     </FormFieldRight>
                     {/* <Checkbox
                         checked={encrypted}
-                        onChange={onChangeTypeImport}
+                        onChange={onChangeTypeExport}
                         label="Encrypted (BIP38)"
                     /> */}
                 </FormField>
@@ -248,7 +246,7 @@ function ExportBTCTemplate({
                             onChange={onChangePassword}
                             type="password"
                             error={'Invalid password'}
-                            invalid={invalidPassword}
+                            invalid={invalid_password}
                         />
                     </FormFieldRight>
                 </FormField>

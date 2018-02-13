@@ -10,7 +10,7 @@ import { getPublicFromPrivateKey } from '/api/Coins/ETH'
 import { printTemplate, downloadFile } from '/api/browser'
 
 import state from '/store/state'
-import { getAsset } from '/store/getters'
+import { getAsset, isAssetWithSeed, decrypt } from '/store/getters'
 
 import routes from '/const/routes'
 import styles from '/const/styles'
@@ -28,23 +28,33 @@ import {
 } from '/components/styled/Form'
 import { Label, SubLabel } from '/components/styled/Label'
 
-import { PrivateKey as template } from '/const/paperwallets'
+import { PrivateKey as template, Words as template2 } from '/const/paperwallets'
+
+const TYPES_EXPORTS = {
+    seed: 'seed',
+    privatekey: 'privatekey',
+    keystore: 'keystore'
+}
 
 export default class ExportETH extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
 
+        this.asset_id = state.location.path[1]
+        this.is_asset_with_seed = isAssetWithSeed(this.asset_id)
+
         // Initial state
         state.view = {
-            loading: false,
-            isPaperwallet: true,
+            type_export: this.is_asset_with_seed
+                ? TYPES_EXPORTS.seed
+                : TYPES_EXPORTS.privatekey,
             password: '',
-            invalidPassword: false
+            invalid_password: false
         }
 
         // binding
-        this.onChangeEncryption = this.onChangeEncryption.bind(this)
+        this.onChangeTypeExport = this.onChangeTypeExport.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onExport = this.onExport.bind(this)
     }
@@ -55,60 +65,26 @@ export default class ExportETH extends Component {
         return false
     }
 
-    onChangeEncryption(e) {
-        state.view.isPaperwallet = e.target.value === 'true'
+    onChangeTypeExport(e) {
+        state.view.type_export = e.target.value
     }
+
     onChangePassword(e) {
         const collector = collect()
         state.view.password = e.target.value
-        state.view.invalidPassword = false
+        state.view.invalid_password = false
         collector.emit()
     }
     onExport(e) {
         e.preventDefault()
+        const type_export = state.view.type_export
         const asset_id = state.location.path[1]
         const asset = getAsset(asset_id)
         const address = asset.address
         const password = state.view.password
-        if (state.view.isPaperwallet) {
-            const private_key_encrypted = asset.private_key
-            const private_key = ETH.decryptPrivateKey(
-                address,
-                private_key_encrypted,
-                password
-            )
-            if (private_key) {
-                const public_key = getPublicFromPrivateKey(private_key)
-                const qrs = [
-                    {
-                        img: generateQRCode(address),
-                        hash: address,
-                        title: 'Address',
-                        description:
-                            'You can share this address to receive funds.'
-                    },
-                    {
-                        img: generateQRCode(
-                            private_key,
-                            undefined,
-                            styles.color.red3
-                        ),
-                        hash: private_key,
-                        red: true,
-                        title: 'Private Key',
-                        description:
-                            'This CAN NOT BE SHARED. If you share this you will lose your funds.'
-                    },
-                    {
-                        title: `Public Key`,
-                        hash: public_key
-                    }
-                ]
-                printTemplate(template(qrs))
-            } else {
-                state.view.invalidPassword = true
-            }
-        } else {
+
+        // Keystore
+        if (type_export === TYPES_EXPORTS.keystore) {
             const fileString = JSON.stringify({
                 version: 3,
                 id: address,
@@ -120,16 +96,56 @@ export default class ExportETH extends Component {
                 new Date().toJSON().replace(/:/g, '-') +
                 '--' +
                 address
-
             downloadFile({ data: fileString, name })
+
+            // Seed & Privatekey
+        } else {
+            const { private_key, seed } = decrypt(asset_id, password)
+
+            if (private_key) {
+                if (type_export === TYPES_EXPORTS.seed) {
+                    printTemplate(template2(seed))
+                } else {
+                    const public_key = getPublicFromPrivateKey(private_key)
+                    const qrs = [
+                        {
+                            img: generateQRCode(address),
+                            hash: address,
+                            title: 'Address',
+                            description:
+                                'You can share this address to receive funds.'
+                        },
+                        {
+                            img: generateQRCode(
+                                private_key,
+                                undefined,
+                                styles.color.red3
+                            ),
+                            hash: private_key,
+                            red: true,
+                            title: 'Private Key',
+                            description:
+                                'This CAN NOT BE SHARED. If you share this you will lose your funds.'
+                        },
+                        {
+                            title: `Public Key`,
+                            hash: public_key
+                        }
+                    ]
+                    printTemplate(template(qrs))
+                }
+            } else {
+                state.view.invalid_password = true
+            }
         }
     }
     render() {
         return React.createElement(ExportETHTemplate, {
-            isPaperwallet: state.view.isPaperwallet,
+            type_export: state.view.type_export,
+            is_asset_with_seed: this.is_asset_with_seed,
             password: state.view.password,
-            invalidPassword: state.view.invalidPassword,
-            onChangeEncryption: this.onChangeEncryption,
+            invalid_password: state.view.invalid_password,
+            onChangeTypeExport: this.onChangeTypeExport,
             onChangePassword: this.onChangePassword,
             onExport: this.onExport
         })
@@ -137,10 +153,11 @@ export default class ExportETH extends Component {
 }
 
 function ExportETHTemplate({
-    isPaperwallet,
+    type_export,
+    is_asset_with_seed,
     password,
-    invalidPassword,
-    onChangeEncryption,
+    invalid_password,
+    onChangeTypeExport,
     onChangePassword,
     onExport
 }) {
@@ -150,25 +167,44 @@ function ExportETHTemplate({
                 <FormField>
                     <FormFieldLeft>
                         <Label>Format</Label>
-                        <SubLabel>
-                            {!isPaperwallet
-                                ? 'You have to remember your current password in order to import this wallet in the future.'
-                                : 'You will print your private key without any encryption.'}
-                        </SubLabel>
+                        <Show if={type_export === TYPES_EXPORTS.keystore}>
+                            <SubLabel>
+                                You have to remember your current password in
+                                order to import this asset in the future.
+                            </SubLabel>
+                        </Show>
                     </FormFieldLeft>
                     <FormFieldRight>
-                        <Select width="100%" onChange={onChangeEncryption}>
-                            <option value="true" selected={isPaperwallet}>
-                                Paper Walet
+                        <Select width="100%" onChange={onChangeTypeExport}>
+                            <option
+                                disabled={!is_asset_with_seed}
+                                value={TYPES_EXPORTS.seed}
+                                selected={type_export === TYPES_EXPORTS.seed}
+                            >
+                                Recovery Phrase (12 words)
                             </option>
-                            <option value="false" selected={!isPaperwallet}>
+
+                            <option
+                                value={TYPES_EXPORTS.privatekey}
+                                selected={
+                                    type_export === TYPES_EXPORTS.privatekey
+                                }
+                            >
+                                Private Key
+                            </option>
+                            <option
+                                value={TYPES_EXPORTS.keystore}
+                                selected={
+                                    type_export === TYPES_EXPORTS.keystore
+                                }
+                            >
                                 Keystore file (UTC / JSON)
                             </option>
                         </Select>
                     </FormFieldRight>
                 </FormField>
 
-                <Show if={isPaperwallet}>
+                <Show if={type_export !== TYPES_EXPORTS.keystore}>
                     <FormField>
                         <FormFieldLeft>
                             <Label>Password</Label>
@@ -181,7 +217,7 @@ function ExportETHTemplate({
                                 onChange={onChangePassword}
                                 type="password"
                                 error={'Invalid password'}
-                                invalid={invalidPassword}
+                                invalid={invalid_password}
                             />
                         </FormFieldRight>
                     </FormField>
@@ -190,7 +226,9 @@ function ExportETHTemplate({
                 <FormField>
                     <FormFieldButtons>
                         <Button onClick={onExport}>
-                            {isPaperwallet ? 'Unlock and Print' : 'Download'}
+                            {type_export === TYPES_EXPORTS.keystore
+                                ? 'Download'
+                                : 'Unlock and Print'}
                         </Button>
                     </FormFieldButtons>
                 </FormField>
