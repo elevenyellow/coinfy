@@ -126,7 +126,7 @@ function ImportTemplate({
                 <form>
                     <FormField>
                         <FormFieldLeft>
-                            <Label>Import from</Label>
+                            <Label>I have my</Label>
                             <SubLabel>
                                 Select the option you prefer to import.
                             </SubLabel>

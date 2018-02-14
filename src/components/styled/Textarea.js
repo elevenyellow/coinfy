@@ -20,8 +20,6 @@ const TextareaContainerStyled = styled.div`
 `
 
 const TextareaStyled = styled.textarea`
-    top: -2px;
-    position: relative;
     ${props => {
         if (props.width) return 'width:' + props.width + ';'
     }} border: 1px solid ${props =>
@@ -94,6 +92,8 @@ const TextareaStyled = styled.textarea`
     }
 `
 const TextareaError = styled.div`
+    top: -2px;
+    position: relative;
     font-size: 10px;
     text-align: right;
     color: ${styles.color.error};

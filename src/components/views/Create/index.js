@@ -8,7 +8,7 @@ import routes from '/const/routes'
 import { minpassword } from '/const/'
 import { Words as template } from '/const/paperwallets'
 
-import { gerRandomMnemonic } from '/api/bip39'
+import { getRandomMnemonic } from '/api/bip39'
 import { shuffle } from '/api/arrays'
 import { generateQRCode } from '/api/qr'
 import { Coins } from '/api/Coins'
@@ -56,7 +56,7 @@ export default class AddAsset extends Component {
         this.observer.observe(state.view)
         this.observer.observe(state.view.words_shuffle_clicked, 'length')
 
-        this.words = gerRandomMnemonic().split(' ')
+        this.words = getRandomMnemonic().split(' ')
         this.words_shuffle = []
         this.Coin = Coins[state.location.path[state.location.path.length - 1]]
 

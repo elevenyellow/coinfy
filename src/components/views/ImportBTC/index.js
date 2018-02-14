@@ -105,7 +105,7 @@ function ImportTemplate({
                 <Div clear="both" />
             </RightHeader>
             <RightContent>
-                {/* <FormField>
+                <FormField>
                     <Div>
                         <QRCode>
                             <Show if={isValidAddress}>
@@ -118,8 +118,8 @@ function ImportTemplate({
                             <Address>{address}</Address>
                         </CenterElement>
                     </Div>
-                </FormField> */}
-                <Div padding="0 42px">
+                </FormField>
+                <Div>
                     <form>
                         <FormField>
                             <FormFieldLeft>
