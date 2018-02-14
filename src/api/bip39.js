@@ -1,4 +1,4 @@
-import bip39 from 'bip39'
+import bip39 from 'bip39crypto'
 import Bitcoin from 'bitcoinjs-lib'
 import crypto from 'crypto'
 
@@ -11,7 +11,11 @@ export function getBip32RootKey({
     return Bitcoin.HDNode.fromSeedHex(seed_raw, network)
 }
 
-export function gerRandomMnemonic(words_number = 12) {
+export function getRandomMnemonic(words_number = 12) {
     const randomBytes = crypto.randomBytes(words_number === 12 ? 16 : 32)
     return bip39.entropyToMnemonic(randomBytes.toString('hex'))
+}
+
+export function validateSeed(seed) {
+    return bip39.validateMnemonic(seed)
 }
