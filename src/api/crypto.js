@@ -97,7 +97,11 @@ export function decryptAES128CTR(encryption, password, isHex = false) {
         new Buffer(encryption.cipherparams.iv, 'hex')
     )
     let seed = Buffer.concat([decipher.update(ciphertext), decipher.final()])
-    while (seed.length < 32) seed = Buffer.concat([new Buffer([0x00]), seed])
+
+    // https://stackoverflow.com/questions/48788874/convert-buffer-into-regular-string
+    if (isHex)
+        while (seed.length < 32)
+            seed = Buffer.concat([new Buffer([0x00]), seed])
 
     return seed.toString(isHex ? 'hex' : undefined) //ethereum seed.toString('hex')
 }
