@@ -30,14 +30,16 @@ import {
     FormFieldRight,
     FormFieldButtons
 } from '/components/styled/Form'
+import ImportSeed from '/components/views/ImportBTC/ImportSeed'
 import ImportAddress from '/components/views/ImportBTC/ImportAddress'
 import ImportPrivate from '/components/views/ImportBTC/ImportPrivate'
 import ImportKeystore from '/components/views/ImportETH/ImportKeystore'
 
 const TYPES_IMPORT = {
-    address: 0,
-    private: 1,
-    keystore: 2
+    seed: 'seed',
+    address: 'address',
+    private: 'private',
+    keystore: 'keystore'
 }
 
 export default class ImportEthereum extends Component {
@@ -47,7 +49,7 @@ export default class ImportEthereum extends Component {
 
         // Initial state
         state.view = {
-            type_import: TYPES_IMPORT.address,
+            type_import: TYPES_IMPORT.seed,
             address: ''
         }
 
@@ -65,7 +67,7 @@ export default class ImportEthereum extends Component {
     onChangeTypeImport(e) {
         const collector = collect()
         state.view.address = ''
-        state.view.type_import = Number(e.target.value)
+        state.view.type_import = e.target.value
         collector.emit()
     }
 
@@ -127,6 +129,12 @@ function ImportTemplate({
                         <FormFieldRight>
                             <Select width="100%" onChange={onChangeTypeImport}>
                                 <option
+                                    value={TYPES_IMPORT.seed}
+                                    selected={type_import === TYPES_IMPORT.seed}
+                                >
+                                    Phrase Recovery (12 words)
+                                </option>
+                                <option
                                     value={TYPES_IMPORT.address}
                                     selected={
                                         type_import === TYPES_IMPORT.address
@@ -155,6 +163,9 @@ function ImportTemplate({
                     </FormField>
 
                     <Router>
+                        <Route if={type_import === TYPES_IMPORT.seed}>
+                            <ImportSeed />
+                        </Route>
                         <Route if={type_import === TYPES_IMPORT.address}>
                             <ImportAddress />
                         </Route>

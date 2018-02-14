@@ -38,8 +38,8 @@ import ImportBIP from '/components/views/ImportBTC/ImportBIP'
 const TYPES_IMPORT = {
     seed: 'seed',
     address: 'address',
-    private_key: 'private_key',
-    private_key_bip: 'private_key_bip'
+    private: 'private',
+    bip38: 'bip38'
 }
 
 export default class ImportBitcoin extends Component {
@@ -151,19 +151,17 @@ function ImportTemplate({
                                     </option>
 
                                     <option
-                                        value={TYPES_IMPORT.private_key}
+                                        value={TYPES_IMPORT.private}
                                         selected={
-                                            type_import ===
-                                            TYPES_IMPORT.private_key
+                                            type_import === TYPES_IMPORT.private
                                         }
                                     >
                                         Private key unencrypted (WIF)
                                     </option>
                                     <option
-                                        value={TYPES_IMPORT.private_key_bip}
+                                        value={TYPES_IMPORT.bip38}
                                         selected={
-                                            type_import ===
-                                            TYPES_IMPORT.private_key_bip
+                                            type_import === TYPES_IMPORT.bip38
                                         }
                                     >
                                         Private key encrypted (BIP38)
@@ -179,16 +177,10 @@ function ImportTemplate({
                             <Route if={type_import === TYPES_IMPORT.address}>
                                 <ImportAddress />
                             </Route>
-                            <Route
-                                if={type_import === TYPES_IMPORT.private_key}
-                            >
+                            <Route if={type_import === TYPES_IMPORT.private}>
                                 <ImportPrivate />
                             </Route>
-                            <Route
-                                if={
-                                    type_import === TYPES_IMPORT.private_key_bip
-                                }
-                            >
+                            <Route if={type_import === TYPES_IMPORT.bip38}>
                                 <ImportBIP />
                             </Route>
                         </Router>
