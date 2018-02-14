@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 import { Show } from '/doprouter/react'
 
-import { setHref, createAsset, setPrivateKey } from '/store/actions'
+import { setHref, createAsset, setSeed, addNotification } from '/store/actions'
 import state from '/store/state'
 import { isAssetRegistered, getCoinId } from '/store/getters'
 
@@ -12,7 +12,7 @@ import { validateSeed } from '/api/bip39'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
-import { minpassword } from '/const/'
+import { minpassword, recovery_phrase_words } from '/const/'
 
 import Input from '/components/styled/Input'
 import Textarea from '/components/styled/Textarea'
@@ -60,13 +60,16 @@ export default class ImportPrivate extends Component {
     }
 
     onUpdateSeed() {
-        if (state.view.seed_input.length > 0) {
+        const seed = state.view.seed_input
+        if (seed.length > 0) {
             const collector = collect()
             const { address } = this.Coin.getWalletFromSeed({
-                seed: state.view.seed_input
+                seed: seed
             })
-            state.view.is_valid_seed = validateSeed(state.view.seed_input)
             state.view.address = address
+            state.view.is_valid_seed =
+                validateSeed(seed) &&
+                seed.trim().split(/\s+/g).length === recovery_phrase_words
 
             if (
                 isAssetRegistered(
@@ -111,10 +114,12 @@ export default class ImportPrivate extends Component {
         e.preventDefault()
         const collector = collect()
         const address = state.view.address
-        const asset = createAsset(this.Coin.type, this.Coin.symbol, address)
-        const asset_id = getCoinId({ symbol: this.Coin.symbol, address })
-        setPrivateKey(asset_id, state.view.seed_input, state.view.seed_password)
+        const symbol = this.Coin.symbol
+        const asset = createAsset(this.Coin.type, symbol, address)
+        const asset_id = getCoinId({ symbol, address })
+        setSeed(asset_id, state.view.seed_input, state.view.seed_password)
         setHref(routes.asset(asset_id))
+        addNotification(`New "${symbol}" asset has been imported`)
         collector.emit()
     }
 

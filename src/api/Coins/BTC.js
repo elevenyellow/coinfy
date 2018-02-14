@@ -50,8 +50,8 @@ export function getWalletFromSeed({
     passphase = ''
 }) {
     return getWalletsFromSeed({
-        index,
         seed,
+        index,
         derived_path_function,
         passphase
     })[0]
