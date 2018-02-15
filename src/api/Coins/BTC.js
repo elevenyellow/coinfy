@@ -247,9 +247,11 @@ export function fetchBalance(address) {
     //         return bigNumber(balance).div(satoshis).toString()
     //     })
     return fetchTotals(address).then(data => {
-        return data.unconfirmedBalance < 0
-            ? data.balance + data.unconfirmedBalance
-            : data.balance
+        return bigNumber(
+            data.unconfirmedBalance < 0
+                ? data.balance + data.unconfirmedBalance
+                : data.balance
+        ).toString()
     })
 }
 

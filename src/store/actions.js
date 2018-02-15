@@ -58,12 +58,6 @@ export function createAsset(type, symbol, address) {
     return asset
 }
 
-export function setPublicKey(asset_id, public_key) {
-    state.assets[asset_id].public_key = public_key
-    saveAssetsLocalStorage()
-    setAssetsExported(false)
-}
-
 export function setPrivateKey(asset_id, private_key, password) {
     return setPrivateKeyOrSeed(asset_id, private_key, password, false)
 }

@@ -3,7 +3,6 @@ import state from '/store/state'
 import { Fiats } from '/api/Fiats'
 import { Coins } from '/api/Coins'
 
-// GETTERS
 export function getTotalAssets(assets) {
     return Object.keys(assets).length
 }
@@ -121,4 +120,26 @@ export function decrypt(asset_id, password) {
     }
 
     return private_key
+}
+
+export function getReusableSeeds(symbol) {
+    const reusables = []
+    const groups = {}
+    const assets = getAssetsAsArray().filter(asset =>
+        asset.hasOwnProperty('seed')
+    )
+
+    assets.forEach(asset => {
+        const hash = asset.seed.hash
+        if (!groups.hasOwnProperty(hash)) groups[hash] = []
+        groups[hash].push(asset)
+    })
+
+    for (let hash in groups) {
+        const group = groups[hash]
+        if (group.filter(asset => asset.symbol === symbol).length === 0)
+            reusables.push(group)
+    }
+
+    return reusables
 }
