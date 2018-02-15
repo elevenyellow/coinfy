@@ -139,7 +139,7 @@ function ImportTemplate({
                                             type_import === TYPES_IMPORT.seed
                                         }
                                     >
-                                        Phrase Recovery (12 words)
+                                        Recovery Phrase (12 words)
                                     </option>
                                     <option
                                         value={TYPES_IMPORT.address}

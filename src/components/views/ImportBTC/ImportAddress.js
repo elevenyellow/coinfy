@@ -52,7 +52,7 @@ export default class ImportAddress extends Component {
         value = value.toLowerCase()
 
         if (this.Coin.isAddressCheck(value)) {
-            state.view.address = this.Coin.wrapAddress(value)
+            state.view.address = this.Coin.formatAddress(value)
 
             if (
                 isAssetRegistered(

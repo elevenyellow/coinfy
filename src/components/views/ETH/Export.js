@@ -8,6 +8,7 @@ import { generateQRCode } from '/api/qr'
 import { ETH } from '/api/Coins'
 import { getPublicFromPrivateKey } from '/api/Coins/ETH'
 import { printTemplate, downloadFile } from '/api/browser'
+import { encryptAES128CTR } from '/api/crypto'
 
 import state from '/store/state'
 import { getAsset, isAssetWithSeed, decrypt } from '/store/getters'
@@ -82,14 +83,32 @@ export default class ExportETH extends Component {
         const asset = getAsset(asset_id)
         const address = asset.address
         const password = state.view.password
+        let private_key_encrypted
 
         // Keystore
         if (type_export === TYPES_EXPORTS.keystore) {
+            if (this.is_asset_with_seed) {
+                const { private_key } = decrypt(asset_id, password)
+                if (private_key) {
+                    private_key_encrypted = encryptAES128CTR(
+                        private_key,
+                        password,
+                        true,
+                        true
+                    )
+                } else {
+                    state.view.invalid_password = true
+                    return
+                }
+            } else {
+                private_key_encrypted = asset.private_key
+            }
+
             const fileString = JSON.stringify({
                 version: 3,
                 id: address,
                 address: address,
-                Crypto: asset.private_key
+                Crypto: private_key_encrypted
             })
             const name =
                 'UTC--' +
@@ -204,7 +223,12 @@ function ExportETHTemplate({
                     </FormFieldRight>
                 </FormField>
 
-                <Show if={type_export !== TYPES_EXPORTS.keystore}>
+                <Show
+                    if={
+                        is_asset_with_seed ||
+                        type_export !== TYPES_EXPORTS.keystore
+                    }
+                >
                     <FormField>
                         <FormFieldLeft>
                             <Label>Password</Label>

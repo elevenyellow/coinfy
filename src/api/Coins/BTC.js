@@ -151,8 +151,8 @@ export function isCompressedWalletImportFormat(key) {
           )
 }
 
-export function wrapAddress(address) {
-    return address
+export function formatAddress(address) {
+    return address.trim()
 }
 
 export function getAddressFromPrivateKey(private_key) {

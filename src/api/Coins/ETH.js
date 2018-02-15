@@ -78,7 +78,7 @@ export function isPrivateKeyCheck(string) {
     return isValidPrivate(stringToBuffer(string))
 }
 
-export function wrapAddress(address) {
+export function formatAddress(address) {
     return addHexPrefix(address)
 }
 
