@@ -41,7 +41,10 @@ export const RightContainerTemplate = styled.div`
 `
 
 export const RightContainerPadding = styled.div`
+    position: relative;
     padding: ${styles.paddingContent};
+    min-height: 100%;
+    box-sizing: border-box;
     ${styles.media.second} {
         padding: ${styles.paddingContentMobile};
     }
