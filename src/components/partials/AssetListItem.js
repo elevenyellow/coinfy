@@ -8,7 +8,13 @@ import routes from '/const/routes'
 import { Fiats } from '/api/Fiats'
 import state from '/store/state'
 import { setHref } from '/store/actions'
-import { convertBalance, formatCurrency, getCoinId } from '/store/getters'
+import {
+    convertBalance,
+    formatCurrency,
+    getCoinId,
+    getLabelOrAddress
+} from '/store/getters'
+import AssetItem from '/components/styled/AssetItem'
 
 export default class Asset extends Component {
     componentWillMount() {
@@ -64,23 +70,15 @@ function AssetTemplate({
                 getCoinId({ symbol: asset.symbol, address: asset.address })
             }
         >
-            <div>
-                <AssetIcon>
-                    <img
-                        src={`/static/image/coins/${asset.symbol}.svg`}
-                        width="22"
-                        height="22"
-                    />
-                </AssetIcon>
-                <AssetInfo>
-                    <AssetLabel>
-                        {asset.label.length > 0 ? asset.label : asset.address}
-                    </AssetLabel>
-                    <AssetBalance>
+            <AssetItem
+                logo={`/static/image/coins/${asset.symbol}.svg`}
+                label={getLabelOrAddress(asset)}
+                balance={
+                    <span>
                         <strong>{balance_currency}</strong> ≈ {balance_asset}
-                    </AssetBalance>
-                </AssetInfo>
-            </div>
+                    </span>
+                }
+            />
         </AssetStyled>
     )
 }
@@ -108,27 +106,4 @@ const AssetStyled = styled.div`
         `
         }
     }};
-`
-const AssetIcon = styled.div`
-    float: left;
-    padding-top: 3px;
-`
-const AssetInfo = styled.div`
-    margin-left: 33px;
-`
-const AssetLabel = styled.div`
-    text-overflow: ellipsis;
-    overflow: hidden;
-    font-weight: bold;
-    font-size: 16px;
-    color: inherit;
-    line-height: 20px;
-`
-const AssetBalance = styled.div`
-    text-overflow: ellipsis;
-    font-size: 12px;
-    color: ${styles.color.front2};
-    padding-top: 2px;
-    font-weight: 100;
-    letter-spacing: 0.5px;
 `

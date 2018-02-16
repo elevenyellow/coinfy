@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 
+import styles from '/const/styles'
+
 import { Coins } from '/api/Coins'
 
 import state from '/store/state'
-import { getReusableSeeds } from '/store/getters'
+import { getReusableSeeds, getLabelOrAddress } from '/store/getters'
 
 import {
     RightContainerPadding,
@@ -14,9 +16,12 @@ import {
 import H1 from '/components/styled/H1'
 import H2 from '/components/styled/H2'
 import Div from '/components/styled/Div'
-import IconHeader from '/components/styled/IconHeader'
-import NewAsset from '/components/views/Create/new'
 import ButtonBig from '/components/styled/ButtonBig'
+import Input from '/components/styled/Input'
+import IconHeader from '/components/styled/IconHeader'
+import AssetItem from '/components/styled/AssetItem'
+
+import NewAsset from '/components/views/Create/new'
 
 export default class AddAsset extends Component {
     componentWillMount() {
@@ -24,7 +29,6 @@ export default class AddAsset extends Component {
         // this.observer.observe(state.view)
         this.Coin = Coins[state.location.path[state.location.path.length - 1]]
         this.reusable_seeds = getReusableSeeds(this.Coin.symbol)
-        console.log(this.reusable_seeds, this.Coin.symbol)
     }
     componentWillUnmount() {
         // this.observer.destroy()
@@ -61,7 +65,6 @@ function AddAssetTemplate({ Coin, reusable_seeds }) {
                             <Line />
                             <Or>OR</Or>
                         </Separator>
-
                         <Options>
                             <Option1>
                                 <div>
@@ -72,7 +75,38 @@ function AddAssetTemplate({ Coin, reusable_seeds }) {
                                     </OptionTitle>
                                 </div>
                                 <OptionContent>
-                                    <ButtonBig>Reuse</ButtonBig>
+                                    {reusable_seeds.map(group => (
+                                        <ReusableGroup>
+                                            <Assets>
+                                                {group.map(asset => (
+                                                    <Asset>
+                                                        <AssetItem
+                                                            logo={`/static/image/coins/${
+                                                                asset.symbol
+                                                            }.svg`}
+                                                            label={getLabelOrAddress(
+                                                                asset
+                                                            )}
+                                                            balance={Coins[
+                                                                asset.symbol
+                                                            ].format(
+                                                                asset.balance,
+                                                                5
+                                                            )}
+                                                        />
+                                                        {/* <AssetPassword>
+                                                            <Input
+                                                                width="100%"
+                                                                placeholder="Password of this asset"
+                                                                type="password"
+                                                            />
+                                                        </AssetPassword> */}
+                                                    </Asset>
+                                                ))}
+                                            </Assets>
+                                            <Button>Reuse</Button>
+                                        </ReusableGroup>
+                                    ))}
                                 </OptionContent>
                             </Option1>
                             <Option2>
@@ -126,19 +160,18 @@ const Options = styled.div``
 const Option1 = styled.div`
     float: left;
     width: 50%;
-    padding: 0 40px 0 40px;
+    padding-right: 60px;
     box-sizing: border-box;
 `
 const Option2 = styled.div`
     float: left;
     width: 50%;
-    padding: 0 40px 0 40px;
+    padding-left: 60px;
     box-sizing: border-box;
 `
 
 const OptionNumber = styled.div`
     float: left;
-    font-weight: bold;
     font-size: 50px;
     line-height: 38px;
     padding-right: 10px;
@@ -154,4 +187,59 @@ const OptionTitle = styled.div`
 
 const OptionContent = styled.div`
     padding-top: 30px;
+`
+
+const ReusableGroup = styled.div`
+    cursor: pointer;
+    margin-bottom: 30px;
+    &:hover > div {
+        border-color: #0789b3;
+    }
+    &:hover > button {
+        background-color: #0789b3;
+    }
+
+    &:hover > div > div {
+        opacity: 0.9;
+    }
+`
+
+const Assets = styled.div`
+    border: 4px solid #007095;
+    border-radius: 5px;
+    padding: 20px;
+`
+
+const Asset = styled.div`
+    position: relative;
+    clear: both;
+    margin-bottom: 15px;
+    height: 40px;
+    overflow: hidden;
+    &:last-child {
+        margin-bottom: 0;
+    }
+    & > * {
+        position: absolute;
+        height: 50px;
+        top: 0;
+        width: 100%;
+    }
+`
+// const AssetPassword = styled.div``
+
+const Button = styled.button`
+    position: relative;
+    top: -7px;
+    border: 0;
+    background-color: #007196;
+    color: white;
+    font-weight: bold;
+    height: 40px;
+    width: 100%;
+    border-radius: 0 0 4px 4px;
+    font-size: 15px;
+    letter-spacing: -0.2px;
+    outline: none;
+    pointer-events: none;
 `

@@ -122,6 +122,11 @@ export function decrypt(asset_id, password) {
     return private_key
 }
 
+export function getLabelOrAddress(asset) {
+    if (typeof asset == 'string') asset = getAsset(asset)
+    return asset.label.length > 0 ? asset.label : asset.address
+}
+
 export function getReusableSeeds(symbol) {
     const reusables = []
     const groups = {}
