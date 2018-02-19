@@ -21,10 +21,9 @@ import {
 
 import CountUp from 'react-countup'
 import {
-    DropDown,
-    DropDownItem,
-    DropDownMenu,
-    DropDownArrow
+    Dropdown,
+    DropdownItem,
+    DropdownMenu
 } from '/components/styled/Dropdown'
 import ButtonBig from '/components/styled/ButtonBig'
 import AssetList from '/components/partials/AssetList'

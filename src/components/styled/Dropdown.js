@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import styles from '/const/styles'
 
-export class DropDown extends React.Component {
+export class Dropdown extends React.Component {
     constructor(props) {
         super(props)
 
@@ -55,25 +55,28 @@ export class DropDown extends React.Component {
             // won't work in react
             let constructor = child.nodeName // || child.type
             let attrs = child.attributes // || child.props
-            attrs.ref = element => (this.dropdownmenu = element)
-            attrs.visible = props.open
+            if (attrs !== undefined) {
+                attrs.ref = element => (this.dropdownmenu = element)
+                attrs.visible = props.open
+            }
         })
 
         return (
-            <DropDownStyled onClick={this.onOpen}>{childrens}</DropDownStyled>
+            <DropdownStyled onClick={this.onOpen}>{childrens}</DropdownStyled>
         )
     }
 }
 
-const DropDownStyled = styled.div`
+const DropdownStyled = styled.div`
     position: relative;
     z-index: 1;
 `
 
-export const DropDownMenu = styled.div`
+export const DropdownMenu = styled.div`
+    width: ${props => props.width || 'auto'};
     position: absolute;
     background: white;
-    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.35);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
     border-radius: 3px;
     display: ${props => (props.visible ? 'block' : 'none')};
     left: ${props => props.left};
@@ -81,15 +84,15 @@ export const DropDownMenu = styled.div`
     top: ${props => props.top};
 `
 
-export const DropDownItem = styled.a`
+export const DropdownItem = styled.a`
     display: block;
     text-decoration: none;
-    padding: 10px 20px;
+    padding: 10px 18px;
     font-size: 13px;
     color: ${props =>
         props.disabled ? styles.color.disabled : styles.color.front1};
     border-top: 1px solid ${styles.color.background4};
-    width: 90px;
+    min-width: 90px;
     text-align: left;
     pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
     &:first-child {
@@ -99,13 +102,4 @@ export const DropDownItem = styled.a`
         background-color: ${styles.color.background1};
         color: ${styles.color.background2};
     }
-`
-
-export const DropDownArrow = styled.span`
-    display: inline-block;
-    vertical-align: middle;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 7px solid ${styles.color.front1};
-    margin-top: -2px;
 `

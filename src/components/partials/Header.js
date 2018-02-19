@@ -23,10 +23,9 @@ import state from '/store/state'
 
 import Div from '/components/styled/Div'
 import {
-    DropDown,
-    DropDownItem,
-    DropDownMenu,
-    DropDownArrow
+    Dropdown,
+    DropdownItem,
+    DropdownMenu
 } from '/components/styled/Dropdown'
 
 export default class Header extends Component {
@@ -200,37 +199,37 @@ function HeaderTemplate({
                     })} */}
                 </HeaderCenter>
                 <HeaderRight>
-                    <DropDown
+                    <Dropdown
                         onOpen={onMenuOpen}
                         onClose={onMenuClose}
                         open={menuOpen}
                     >
                         <IconMore size={30} color="white" />
-                        <DropDownMenu right="0">
-                            {/* <DropDownItem onClick={onAddAsset}>
+                        <DropdownMenu right="0">
+                            {/* <DropdownItem onClick={onAddAsset}>
                                 Add asset
-                            </DropDownItem> */}
-                            <DropDownItem onClick={onImport}>
+                            </DropdownItem> */}
+                            <DropdownItem onClick={onImport}>
                                 Import backup
-                            </DropDownItem>
-                            <DropDownItem
+                            </DropdownItem>
+                            <DropdownItem
                                 onClick={onExport}
                                 disabled={totalAssets === 0}
                             >
                                 Export backup
-                            </DropDownItem>
-                            <DropDownItem onClick={onSettings}>
+                            </DropdownItem>
+                            <DropdownItem onClick={onSettings}>
                                 Settings
-                            </DropDownItem>
-                            {/* <DropDownItem
+                            </DropdownItem>
+                            {/* <DropdownItem
                                 onClick={onClose}
                                 disabled={totalAssets === 0}
                             >
                                 Close session
-                            </DropDownItem> */}
-                        </DropDownMenu>
-                    </DropDown>
-                    {/* <DropDown
+                            </DropdownItem> */}
+                        </DropdownMenu>
+                    </Dropdown>
+                    {/* <Dropdown
                         onOpen={onMenuOpen}
                         onClose={onMenuClose}
                         open={menuOpen}
@@ -239,22 +238,22 @@ function HeaderTemplate({
                             <HeaderCurrencySelected>
                                 {currency}
                             </HeaderCurrencySelected>
-                            <DropDownArrow />
+                            <DropdownArrow />
                         </Div>
-                        <DropDownMenu right="0" top="25px">
+                        <DropdownMenu right="0" top="25px">
                             {currenciesList.map(item => {
                                 return (
-                                    <DropDownItem
+                                    <DropdownItem
                                         disabled={currency === item.symbol}
                                         onClick={e =>
                                             onChangeCurrency(item.symbol)}
                                     >
                                         {item.label}
-                                    </DropDownItem>
+                                    </DropdownItem>
                                 )
                             })}
-                        </DropDownMenu>
-                    </DropDown> */}
+                        </DropdownMenu>
+                    </Dropdown> */}
                 </HeaderRight>
             </HeaderContent>
         </HeaderDiv>

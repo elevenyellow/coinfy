@@ -20,6 +20,7 @@ import ButtonBig from '/components/styled/ButtonBig'
 import Input from '/components/styled/Input'
 import IconHeader from '/components/styled/IconHeader'
 import AssetItem from '/components/styled/AssetItem'
+import SelectDropdown from '/components/styled/SelectDropdown'
 
 import NewAsset from '/components/views/Create/new'
 
@@ -119,6 +120,12 @@ function AddAssetTemplate({ Coin, reusable_seeds }) {
                                 </div>
                                 <OptionContent>
                                     <ButtonBig>New</ButtonBig>
+                                    <br />
+                                    <br />
+                                    <SelectDropdown>
+                                        <option selected={true}>A</option>
+                                        <option>B</option>
+                                    </SelectDropdown>
                                 </OptionContent>
                             </Option2>
                         </Options>
@@ -141,7 +148,7 @@ const Line = styled.div`
     width: 4px;
     height: 100%;
     margin: 0 auto;
-    background: #f5f6f4;
+    background: ${styles.color.grey2};
 `
 const Or = styled.div`
     position: absolute;
@@ -152,7 +159,7 @@ const Or = styled.div`
     background: white;
     font-size: 30px;
     font-weight: 100;
-    color: #d7dbd5;
+    color: ${styles.color.grey3};
     width: 40px;
 `
 
@@ -175,14 +182,15 @@ const OptionNumber = styled.div`
     font-size: 50px;
     line-height: 38px;
     padding-right: 10px;
-    color: #d7dbd5;
+    color: ${styles.color.grey2};
 `
 const OptionTitle = styled.div`
     font-size: 18px;
     font-weight: bold;
     height: 48px;
     line-height: 20px;
-    color: #596167;
+    color: ${styles.color.grey3};
+    letter-spacing: 0.3px;
 `
 
 const OptionContent = styled.div`
@@ -193,10 +201,10 @@ const ReusableGroup = styled.div`
     cursor: pointer;
     margin-bottom: 30px;
     &:hover > div {
-        border-color: #0789b3;
+        border-color: ${styles.color.background3};
     }
     &:hover > button {
-        background-color: #0789b3;
+        background-color: ${styles.color.background3};
     }
 
     &:hover > div > div {
@@ -205,7 +213,7 @@ const ReusableGroup = styled.div`
 `
 
 const Assets = styled.div`
-    border: 4px solid #007095;
+    border: 4px solid ${styles.color.background2};
     border-radius: 5px;
     padding: 20px;
 `
@@ -232,7 +240,7 @@ const Button = styled.button`
     position: relative;
     top: -7px;
     border: 0;
-    background-color: #007196;
+    background-color: ${styles.color.background2};
     color: white;
     font-weight: bold;
     height: 40px;
