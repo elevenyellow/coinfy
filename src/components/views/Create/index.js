@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { createObserver } from 'dop'
+import { createObserver, collect } from 'dop'
 import { Show } from '/doprouter/react'
 
 import styles from '/const/styles'
@@ -43,7 +43,14 @@ export default class AddAsset extends Component {
     }
 
     onSelectGroup(index) {
+        const collector = collect()
         state.view.group_selected = index
+        state.view.asset_selected = 0
+        collector.emit()
+    }
+
+    onChangeAsset(e) {
+        state.view.asset_selected = e.target.value
     }
 
     render() {
@@ -52,7 +59,8 @@ export default class AddAsset extends Component {
             reusable_seeds: this.reusable_seeds,
             group_selected: state.view.group_selected,
             asset_selected: state.view.asset_selected,
-            onSelectGroup: this.onSelectGroup
+            onSelectGroup: this.onSelectGroup,
+            onChangeAsset: this.onChangeAsset
         })
     }
 }
@@ -62,7 +70,8 @@ function AddAssetTemplate({
     reusable_seeds,
     group_selected,
     asset_selected,
-    onSelectGroup
+    onSelectGroup,
+    onChangeAsset
 }) {
     return (
         <RightContainerPadding>
@@ -79,10 +88,6 @@ function AddAssetTemplate({
             <RightContent>
                 {reusable_seeds.length > 0 ? (
                     <div>
-                        <Separator>
-                            <Line />
-                            <Or>OR</Or>
-                        </Separator>
                         <Options>
                             <Option1>
                                 <div>
@@ -138,34 +143,37 @@ function AddAssetTemplate({
                                                     </Button>
                                                 </GroupSelectable>
                                                 <GroupConfirm>
-                                                    <Show if={group.length > 1}>
-                                                        <SelectDropdown
-                                                            onChange={e =>
-                                                                console.log(e)
-                                                            }
-                                                        >
-                                                            {group.map(
-                                                                (
-                                                                    asset,
-                                                                    index
-                                                                ) => (
-                                                                    <option
-                                                                        value={
-                                                                            index
-                                                                        }
-                                                                        selected={
-                                                                            index ===
-                                                                            asset_selected
-                                                                        }
+                                                    <SelectDropdown
+                                                        onChange={onChangeAsset}
+                                                    >
+                                                        {group.map(
+                                                            (asset, index) => (
+                                                                <option
+                                                                    value={
+                                                                        index
+                                                                    }
+                                                                    selected={
+                                                                        index ===
+                                                                        asset_selected
+                                                                    }
+                                                                >
+                                                                    <OptionIcon>
+                                                                        <img
+                                                                            src={`/static/image/coins/${
+                                                                                asset.symbol
+                                                                            }.svg`}
+                                                                        />
+                                                                    </OptionIcon>
+                                                                    <OptionLabel
                                                                     >
                                                                         {getLabelOrAddress(
                                                                             asset
                                                                         )}
-                                                                    </option>
-                                                                )
-                                                            )}
-                                                        </SelectDropdown>
-                                                    </Show>
+                                                                    </OptionLabel>
+                                                                </option>
+                                                            )
+                                                        )}
+                                                    </SelectDropdown>
                                                     <Div padding-top="10px">
                                                         <Input
                                                             type="password"
@@ -179,6 +187,19 @@ function AddAssetTemplate({
                                                             Unlock and Reuse
                                                         </ButtonBig>
                                                     </Div>
+                                                    {/* <Div
+                                                        padding-top="10px"
+                                                        font-size="11px"
+                                                        color={
+                                                            styles.color.grey1
+                                                        }
+                                                    >
+                                                        Remember that the
+                                                        password for this new
+                                                        asset will be the same
+                                                        that you are typing
+                                                        here.
+                                                    </Div> */}
                                                 </GroupConfirm>
                                                 <Div clear="both" />
                                             </GroupContainer>
@@ -186,6 +207,10 @@ function AddAssetTemplate({
                                     ))}
                                 </OptionContent>
                             </Option1>
+                            <Separator>
+                                <Line />
+                                <Or>OR</Or>
+                            </Separator>
                             <Option2>
                                 <div>
                                     <OptionNumber>02</OptionNumber>
@@ -213,12 +238,26 @@ const Separator = styled.div`
     height: calc(100% - 180px);
     width: calc(100% - 80px);
     pointer-events: none;
+    ${styles.media.second} {
+        width: calc(100% - 50px);
+    }
+    ${styles.media.third} {
+        position: relative;
+        height: 35px;
+        /* background: red; */
+        width: 100%;
+        margin-bottom: 40px;
+    }
 `
 const Line = styled.div`
     width: 4px;
     height: 100%;
     margin: 0 auto;
     background: ${styles.color.grey2};
+    ${styles.media.third} {
+        width: 100%;
+        height: 4px;
+    }
 `
 const Or = styled.div`
     position: absolute;
@@ -230,21 +269,35 @@ const Or = styled.div`
     font-size: 30px;
     font-weight: 100;
     color: ${styles.color.grey3};
-    width: 40px;
+    width: 60px;
+    ${styles.media.third} {
+        width: 40px;
+        top: auto;
+    }
 `
 
 const Options = styled.div``
 const Option1 = styled.div`
+    padding-right: 60px;
     float: left;
     width: 50%;
-    padding-right: 60px;
     box-sizing: border-box;
+    ${styles.media.third} {
+        float: none;
+        width: 100%;
+        padding: 0;
+    }
 `
 const Option2 = styled.div`
+    padding-left: 60px;
     float: left;
     width: 50%;
-    padding-left: 60px;
     box-sizing: border-box;
+    ${styles.media.third} {
+        float: none;
+        width: 100%;
+        padding: 0;
+    }
 `
 
 const OptionNumber = styled.div`
@@ -253,6 +306,9 @@ const OptionNumber = styled.div`
     line-height: 38px;
     padding-right: 10px;
     color: ${styles.color.grey2};
+    ${styles.media.third} {
+        display: none;
+    }
 `
 const OptionTitle = styled.div`
     font-size: 18px;
@@ -261,10 +317,17 @@ const OptionTitle = styled.div`
     line-height: 20px;
     color: ${styles.color.grey3};
     letter-spacing: 0.3px;
+    ${styles.media.third} {
+        height: auto;
+        text-align: center;
+    }
 `
 
 const OptionContent = styled.div`
     padding-top: 30px;
+    ${styles.media.third} {
+        padding-top: 15px;
+    }
 `
 
 const Group = styled.div`
@@ -298,7 +361,6 @@ const GroupConfirm = styled.div`
     float: left;
     width: 50%;
     box-sizing: border-box;
-    padding: 10px;
 `
 
 const Assets = styled.div`
@@ -338,4 +400,17 @@ const Button = styled.button`
     letter-spacing: -0.2px;
     outline: none;
     pointer-events: none;
+`
+
+const OptionIcon = styled.div`
+    position: absolute;
+    top: 11px;
+    & img {
+        height: 16px;
+    }
+`
+const OptionLabel = styled.div`
+    margin-left: 25px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 `

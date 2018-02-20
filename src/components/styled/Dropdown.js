@@ -87,6 +87,9 @@ export const DropdownMenu = styled.div`
 `
 
 export const DropdownItem = styled.a`
+    position: relative;
+    text-overflow: ellipsis;
+    overflow: hidden;
     display: block;
     text-decoration: none;
     padding: 10px 18px;
