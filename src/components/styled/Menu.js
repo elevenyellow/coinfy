@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import styles from '/const/styles'
-import Select from '/components/styled/Select'
+import SelectDropdown from '/components/styled/SelectDropdown'
 
 export class Menu extends Component {
     componentWillMount() {
@@ -40,8 +40,10 @@ export class Menu extends Component {
 
         return (
             <div>
-                <MenuSelectable onChange={this.onChange}>
-                    <Select>{selects}</Select>
+                <MenuSelectable>
+                    <SelectDropdown onChange={this.onChange}>
+                        {selects}
+                    </SelectDropdown>
                 </MenuSelectable>
                 <MenuContent>{childrens}</MenuContent>
             </div>

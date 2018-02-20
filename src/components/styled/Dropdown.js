@@ -69,10 +69,11 @@ export class Dropdown extends React.Component {
 
 const DropdownStyled = styled.div`
     position: relative;
-    z-index: 1;
+    /* z-index: 1; */
 `
 
 export const DropdownMenu = styled.div`
+    z-index: 999999;
     width: ${props => props.width || 'auto'};
     position: absolute;
     background: white;
@@ -90,7 +91,11 @@ export const DropdownItem = styled.a`
     padding: 10px 18px;
     font-size: 13px;
     color: ${props =>
-        props.disabled ? styles.color.disabled : styles.color.front1};
+        props.disabled
+            ? styles.color.disabled
+            : props.selected ? styles.color.front3 : styles.color.front1};
+    background-color: ${props =>
+        props.selected ? styles.color.background1 : 'transparent'};
     border-top: 1px solid ${styles.color.background4};
     min-width: 90px;
     text-align: left;
@@ -100,6 +105,6 @@ export const DropdownItem = styled.a`
     }
     &:hover {
         background-color: ${styles.color.background1};
-        color: ${styles.color.background2};
+        color: ${styles.color.front3};
     }
 `

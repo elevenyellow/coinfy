@@ -122,9 +122,14 @@ function AddAssetTemplate({ Coin, reusable_seeds }) {
                                     <ButtonBig>New</ButtonBig>
                                     <br />
                                     <br />
-                                    <SelectDropdown>
-                                        <option selected={true}>A</option>
-                                        <option>B</option>
+                                    <SelectDropdown
+                                        onChange={e => console.log(e)}
+                                    >
+                                        <option value="AA">A</option>
+                                        <option value="BB" selected={true}>
+                                            B
+                                        </option>
+                                        <option disabled={true}>C</option>
                                     </SelectDropdown>
                                 </OptionContent>
                             </Option2>

@@ -22,15 +22,30 @@ export default class SelectDropdown extends React.Component {
         this.setState({ open: false })
     }
 
-    render(props, state) {
-        // const props = this.props
-        // const state = this.state
-        const childrens = props.children
+    onChange(value, index, child) {
+        this.props.onChange({ target: { value: value } }, value, index)
+    }
+
+    render() {
+        const props = this.props
+        const state = this.state
+        const childrens = props.children || this.childrens
+        this.childrens = childrens
         let selected_index = 0
         const options = childrens.map((child, index) => {
             const attrs = child.attributes // || child.props
             if (attrs.selected) selected_index = index
-            return <DropdownItem {...props}>{child.children}</DropdownItem>
+            return (
+                <DropdownItem
+                    {...attrs}
+                    onClick={e => {
+                        if (!attrs.selected)
+                            this.onChange(attrs.value, index, child)
+                    }}
+                >
+                    {child.children}
+                </DropdownItem>
+            )
         })
         const selected = childrens[selected_index]
 
@@ -40,9 +55,11 @@ export default class SelectDropdown extends React.Component {
                 onClose={this.onClose.bind(this)}
                 open={state.open}
             >
-                <DropdownButton>
-                    <DropdownLabel>{selected.children}</DropdownLabel>
-                    <DropdownArrow>
+                <DropdownButton open={state.open}>
+                    <DropdownLabel open={state.open}>
+                        {selected.children}
+                    </DropdownLabel>
+                    <DropdownArrow open={state.open}>
                         <span />
                     </DropdownArrow>
                 </DropdownButton>
@@ -54,8 +71,10 @@ export default class SelectDropdown extends React.Component {
 
 const DropdownButton = styled.div`
     position: relative;
-    background-image: linear-gradient(#fff, #f3f6f8);
-    border: 1px solid #d4dde1;
+    background-image: linear-gradient(#fff, ${styles.color.background1});
+    border: 1px solid
+        ${props =>
+            props.open ? styles.color.background3 : styles.color.background5};
     border-radius: 4px;
     border-right: auto;
     margin: 0 auto;
@@ -65,10 +84,13 @@ const DropdownButton = styled.div`
     &:hover {
         border-color: ${styles.color.background3};
     }
+    &:hover > * {
+        border-left-color: ${styles.color.background3};
+    }
 `
 
 const DropdownLabel = styled.div`
-    color: #8b9bae;
+    color: ${styles.color.front3};
     font-weight: bold;
     font-size: 13px;
     padding: 8px 0px 8px 18px;
@@ -82,7 +104,9 @@ const DropdownArrow = styled.div`
     top: 0;
     position: absolute;
     padding: 8px 14px;
-    border-left: 1px solid #d4dde1;
+    border-left: 1px solid
+        ${props =>
+            props.open ? styles.color.background3 : styles.color.background5};
     box-sizing: content-box;
 
     & span {

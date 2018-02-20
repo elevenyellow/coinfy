@@ -32,7 +32,8 @@ export {
     fetchBalance,
     getSendProviders,
     urlDecodeTx,
-    getWalletFromSeed
+    getWalletFromSeed,
+    formatAddress
 } from './ETH' // '/api/Coins/ETH' not working
 
 export const type = TYPE_ERC20
