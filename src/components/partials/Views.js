@@ -82,7 +82,7 @@ function ContentTemplate({
                     <Route pathname={routes.add()}>
                         <Add />
                     </Route>
-                    <Route pathname={routes.create(symbol_add)}>
+                    <Route pathname={new RegExp(routes.create(symbol_add))}>
                         <Create />
                     </Route>
                     <Route pathname={routes.import('BTC')}>

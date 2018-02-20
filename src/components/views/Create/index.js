@@ -4,11 +4,13 @@ import { createObserver, collect } from 'dop'
 import { Show } from '/doprouter/react'
 
 import styles from '/const/styles'
+import routes from '/const/routes'
 
 import { Coins } from '/api/Coins'
 
 import state from '/store/state'
-import { getReusableSeeds, getLabelOrAddress } from '/store/getters'
+import { getReusableSeeds, getLabelOrAddress, getCoinId } from '/store/getters'
+import { setHref, createAsset, setSeed, addNotification } from '/store/actions'
 
 import {
     RightContainerPadding,
@@ -30,10 +32,20 @@ export default class AddAsset extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
-        state.view = { group_selected: -1, asset_selected: 0 }
+        state.view = {
+            group_selected: -1,
+            asset_selected: 0,
+            password: '',
+            password_error: false
+        }
 
         this.Coin = Coins[state.location.path[state.location.path.length - 1]]
         this.reusable_seeds = getReusableSeeds(this.Coin.symbol)
+        this.step = state.location.path[2]
+
+        this.onNew = this.onNew.bind(this)
+        this.onChangePassword = this.onChangePassword.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
     }
     componentWillUnmount() {
         // this.observer.destroy()
@@ -42,36 +54,91 @@ export default class AddAsset extends Component {
         return false
     }
 
+    onNew() {
+        console.log(routes.create(this.Coin.symbol) + '/1')
+        // setHref(routes.create(this.Coin.symbol) + '/1')
+    }
+
     onSelectGroup(index) {
         const collector = collect()
         state.view.group_selected = index
         state.view.asset_selected = 0
+        state.view.password = ''
+        state.view.password_error = false
         collector.emit()
     }
 
     onChangeAsset(e) {
+        const collector = collect()
         state.view.asset_selected = e.target.value
+        state.view.password_error = false
+        collector.emit()
+    }
+
+    onChangePassword(e) {
+        const collector = collect()
+        state.view.password = e.target.value
+        state.view.password_error = false
+        collector.emit()
+    }
+
+    onSubmit(e) {
+        const collector = collect()
+        const password = state.view.password
+        const asset_from = this.reusable_seeds[state.view.group_selected][
+            state.view.asset_selected
+        ]
+        const seed = Coins[asset_from.symbol].decryptSeed(
+            asset_from.address,
+            asset_from.seed,
+            password
+        )
+        if (seed) {
+            const { address } = this.Coin.getWalletFromSeed({ seed: seed })
+            const symbol = this.Coin.symbol
+            const asset = createAsset(this.Coin.type, symbol, address)
+            const asset_id = getCoinId({ symbol, address })
+            setSeed(asset_id, seed, password)
+            setHref(routes.asset(asset_id))
+            addNotification(`New "${symbol}" asset has been created`)
+        } else {
+            state.view.password_error = true
+        }
+        collector.emit()
     }
 
     render() {
         return React.createElement(AddAssetTemplate, {
             Coin: this.Coin,
+            is_reuse_view:
+                this.reusable_seeds.length > 0 && isNaN(Number(this.step)),
             reusable_seeds: this.reusable_seeds,
             group_selected: state.view.group_selected,
             asset_selected: state.view.asset_selected,
+            password: state.view.password,
+            password_error: state.view.password_error,
+            onNew: this.onNew,
             onSelectGroup: this.onSelectGroup,
-            onChangeAsset: this.onChangeAsset
+            onChangeAsset: this.onChangeAsset,
+            onChangePassword: this.onChangePassword,
+            onSubmit: this.onSubmit
         })
     }
 }
 
 function AddAssetTemplate({
     Coin,
+    is_reuse_view,
     reusable_seeds,
     group_selected,
     asset_selected,
+    password,
+    password_error,
+    onNew,
     onSelectGroup,
-    onChangeAsset
+    onChangeAsset,
+    onChangePassword,
+    onSubmit
 }) {
     return (
         <RightContainerPadding>
@@ -86,145 +153,125 @@ function AddAssetTemplate({
                 <Div clear="both" />
             </RightHeader>
             <RightContent>
-                {reusable_seeds.length > 0 ? (
-                    <div>
-                        <Options>
-                            <Option1>
-                                <div>
-                                    <OptionNumber>01</OptionNumber>
-                                    <OptionTitle>
-                                        Reuse the same Recovery Phrase that I am
-                                        using for
-                                    </OptionTitle>
-                                </div>
-                                <OptionContent>
-                                    {reusable_seeds.map((group, index) => (
-                                        <Group>
-                                            <GroupContainer
-                                                selected={
-                                                    group_selected === index
+                {is_reuse_view ? (
+                    <Options>
+                        <Option1>
+                            <div>
+                                <OptionNumber>01</OptionNumber>
+                                <OptionTitle>
+                                    Reuse the same Recovery Phrase that I am
+                                    using for
+                                </OptionTitle>
+                            </div>
+                            <OptionContent>
+                                {reusable_seeds.map((group, index) => (
+                                    <Group>
+                                        <GroupContainer
+                                            selected={group_selected === index}
+                                        >
+                                            <GroupSelectable
+                                                onClick={e =>
+                                                    onSelectGroup(index)
                                                 }
                                             >
-                                                <GroupSelectable
-                                                    onClick={e =>
-                                                        onSelectGroup(index)
-                                                    }
-                                                >
-                                                    <Assets>
-                                                        {group.map(asset => (
-                                                            <Asset>
-                                                                <AssetItem
-                                                                    logo={`/static/image/coins/${
-                                                                        asset.symbol
-                                                                    }.svg`}
-                                                                    label={getLabelOrAddress(
-                                                                        asset
-                                                                    )}
-                                                                    balance={Coins[
-                                                                        asset
-                                                                            .symbol
-                                                                    ].format(
-                                                                        asset.balance,
-                                                                        5
-                                                                    )}
-                                                                />
-                                                                {/* <AssetPassword>
-                                                            <Input
-                                                                width="100%"
-                                                                placeholder="Password of this asset"
-                                                                type="password"
+                                                <Assets>
+                                                    {group.map(asset => (
+                                                        <Asset>
+                                                            <AssetItem
+                                                                logo={`/static/image/coins/${
+                                                                    asset.symbol
+                                                                }.svg`}
+                                                                label={getLabelOrAddress(
+                                                                    asset
+                                                                )}
+                                                                balance={Coins[
+                                                                    asset.symbol
+                                                                ].format(
+                                                                    asset.balance,
+                                                                    5
+                                                                )}
                                                             />
-                                                        </AssetPassword> */}
-                                                            </Asset>
-                                                        ))}
-                                                    </Assets>
-                                                    <Button>
-                                                        Select group
-                                                    </Button>
-                                                </GroupSelectable>
-                                                <GroupConfirm>
-                                                    <SelectDropdown
-                                                        onChange={onChangeAsset}
-                                                    >
-                                                        {group.map(
-                                                            (asset, index) => (
-                                                                <option
-                                                                    value={
-                                                                        index
-                                                                    }
-                                                                    selected={
-                                                                        index ===
-                                                                        asset_selected
-                                                                    }
-                                                                >
-                                                                    <OptionIcon>
-                                                                        <img
-                                                                            src={`/static/image/coins/${
-                                                                                asset.symbol
-                                                                            }.svg`}
-                                                                        />
-                                                                    </OptionIcon>
-                                                                    <OptionLabel
-                                                                    >
-                                                                        {getLabelOrAddress(
-                                                                            asset
-                                                                        )}
-                                                                    </OptionLabel>
-                                                                </option>
-                                                            )
-                                                        )}
-                                                    </SelectDropdown>
-                                                    <Div padding-top="10px">
-                                                        <Input
-                                                            type="password"
-                                                            placeholder="Password of this asset"
-                                                            width="100%"
-                                                            text-align="center"
-                                                        />
-                                                    </Div>
-                                                    <Div padding-top="10px">
-                                                        <ButtonBig>
-                                                            Unlock and Reuse
-                                                        </ButtonBig>
-                                                    </Div>
-                                                    {/* <Div
-                                                        padding-top="10px"
-                                                        font-size="11px"
-                                                        color={
-                                                            styles.color.grey1
+                                                        </Asset>
+                                                    ))}
+                                                </Assets>
+                                                <Button>Select group</Button>
+                                            </GroupSelectable>
+                                            <GroupConfirm>
+                                                <SelectDropdown
+                                                    onChange={onChangeAsset}
+                                                >
+                                                    {group.map(
+                                                        (asset, index) => (
+                                                            <option
+                                                                value={index}
+                                                                selected={
+                                                                    index ===
+                                                                    asset_selected
+                                                                }
+                                                            >
+                                                                <OptionIcon>
+                                                                    <img
+                                                                        src={`/static/image/coins/${
+                                                                            asset.symbol
+                                                                        }.svg`}
+                                                                    />
+                                                                </OptionIcon>
+                                                                <OptionLabel>
+                                                                    {getLabelOrAddress(
+                                                                        asset
+                                                                    )}
+                                                                </OptionLabel>
+                                                            </option>
+                                                        )
+                                                    )}
+                                                </SelectDropdown>
+                                                <Div padding-top="10px">
+                                                    <Input
+                                                        type="password"
+                                                        placeholder="Password of this asset"
+                                                        value={password}
+                                                        invalid={password_error}
+                                                        error="Invalid password"
+                                                        width="100%"
+                                                        text-align="center"
+                                                        onChange={
+                                                            onChangePassword
+                                                        }
+                                                    />
+                                                </Div>
+                                                <Div padding-top="10px">
+                                                    <ButtonBig
+                                                        onClick={onSubmit}
+                                                        disabled={
+                                                            password_error
                                                         }
                                                     >
-                                                        Remember that the
-                                                        password for this new
-                                                        asset will be the same
-                                                        that you are typing
-                                                        here.
-                                                    </Div> */}
-                                                </GroupConfirm>
-                                                <Div clear="both" />
-                                            </GroupContainer>
-                                        </Group>
-                                    ))}
-                                </OptionContent>
-                            </Option1>
-                            <Separator>
-                                <Line />
-                                <Or>OR</Or>
-                            </Separator>
-                            <Option2>
-                                <div>
-                                    <OptionNumber>02</OptionNumber>
-                                    <OptionTitle>
-                                        Create a new Recovery Phrase for this
-                                        asset
-                                    </OptionTitle>
-                                </div>
-                                <OptionContent>
-                                    <ButtonBig>New</ButtonBig>
-                                </OptionContent>
-                            </Option2>
-                        </Options>
-                    </div>
+                                                        Unlock and Reuse
+                                                    </ButtonBig>
+                                                </Div>
+                                            </GroupConfirm>
+                                            <Div clear="both" />
+                                        </GroupContainer>
+                                    </Group>
+                                ))}
+                            </OptionContent>
+                        </Option1>
+                        <Separator>
+                            <Line />
+                            <Or>OR</Or>
+                        </Separator>
+                        <Option2>
+                            <div>
+                                <OptionNumber>02</OptionNumber>
+                                <OptionTitle>
+                                    Create a new Recovery Phrase for this asset
+                                </OptionTitle>
+                            </div>
+                            <OptionContent>
+                                <ButtonBig onClick={onNew}>New</ButtonBig>
+                            </OptionContent>
+                        </Option2>
+                    </Options>
                 ) : (
                     <NewAsset />
                 )}
@@ -244,9 +291,9 @@ const Separator = styled.div`
     ${styles.media.third} {
         position: relative;
         height: 35px;
-        /* background: red; */
         width: 100%;
-        margin-bottom: 40px;
+        margin-bottom: 30px;
+        padding-top: 10px;
     }
 `
 const Line = styled.div`
@@ -361,6 +408,7 @@ const GroupConfirm = styled.div`
     float: left;
     width: 50%;
     box-sizing: border-box;
+    padding-left: 5px;
 `
 
 const Assets = styled.div`
