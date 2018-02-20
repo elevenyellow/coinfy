@@ -73,8 +73,9 @@ const DropdownStyled = styled.div`
 `
 
 export const DropdownMenu = styled.div`
-    z-index: 999999;
-    width: ${props => props.width || 'auto'};
+    z-index: 99;
+    width: ${props => (props.width ? `calc(${props.width} - 2px)` : 'auto')};
+    margin-left: 1px;
     position: absolute;
     background: white;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);

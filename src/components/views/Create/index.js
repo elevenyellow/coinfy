@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import { createObserver } from 'dop'
+import { Show } from '/doprouter/react'
 
 import styles from '/const/styles'
 
@@ -26,8 +28,10 @@ import NewAsset from '/components/views/Create/new'
 
 export default class AddAsset extends Component {
     componentWillMount() {
-        // this.observer = createObserver(m => this.forceUpdate())
-        // this.observer.observe(state.view)
+        this.observer = createObserver(m => this.forceUpdate())
+        this.observer.observe(state.view)
+        state.view = { group_selected: -1, asset_selected: 0 }
+
         this.Coin = Coins[state.location.path[state.location.path.length - 1]]
         this.reusable_seeds = getReusableSeeds(this.Coin.symbol)
     }
@@ -38,15 +42,28 @@ export default class AddAsset extends Component {
         return false
     }
 
+    onSelectGroup(index) {
+        state.view.group_selected = index
+    }
+
     render() {
         return React.createElement(AddAssetTemplate, {
             Coin: this.Coin,
-            reusable_seeds: this.reusable_seeds
+            reusable_seeds: this.reusable_seeds,
+            group_selected: state.view.group_selected,
+            asset_selected: state.view.asset_selected,
+            onSelectGroup: this.onSelectGroup
         })
     }
 }
 
-function AddAssetTemplate({ Coin, reusable_seeds }) {
+function AddAssetTemplate({
+    Coin,
+    reusable_seeds,
+    group_selected,
+    asset_selected,
+    onSelectGroup
+}) {
     return (
         <RightContainerPadding>
             <RightHeader>
@@ -76,37 +93,96 @@ function AddAssetTemplate({ Coin, reusable_seeds }) {
                                     </OptionTitle>
                                 </div>
                                 <OptionContent>
-                                    {reusable_seeds.map(group => (
-                                        <ReusableGroup>
-                                            <Assets>
-                                                {group.map(asset => (
-                                                    <Asset>
-                                                        <AssetItem
-                                                            logo={`/static/image/coins/${
-                                                                asset.symbol
-                                                            }.svg`}
-                                                            label={getLabelOrAddress(
-                                                                asset
-                                                            )}
-                                                            balance={Coins[
-                                                                asset.symbol
-                                                            ].format(
-                                                                asset.balance,
-                                                                5
-                                                            )}
-                                                        />
-                                                        {/* <AssetPassword>
+                                    {reusable_seeds.map((group, index) => (
+                                        <Group>
+                                            <GroupContainer
+                                                selected={
+                                                    group_selected === index
+                                                }
+                                            >
+                                                <GroupSelectable
+                                                    onClick={e =>
+                                                        onSelectGroup(index)
+                                                    }
+                                                >
+                                                    <Assets>
+                                                        {group.map(asset => (
+                                                            <Asset>
+                                                                <AssetItem
+                                                                    logo={`/static/image/coins/${
+                                                                        asset.symbol
+                                                                    }.svg`}
+                                                                    label={getLabelOrAddress(
+                                                                        asset
+                                                                    )}
+                                                                    balance={Coins[
+                                                                        asset
+                                                                            .symbol
+                                                                    ].format(
+                                                                        asset.balance,
+                                                                        5
+                                                                    )}
+                                                                />
+                                                                {/* <AssetPassword>
                                                             <Input
                                                                 width="100%"
                                                                 placeholder="Password of this asset"
                                                                 type="password"
                                                             />
                                                         </AssetPassword> */}
-                                                    </Asset>
-                                                ))}
-                                            </Assets>
-                                            <Button>Reuse</Button>
-                                        </ReusableGroup>
+                                                            </Asset>
+                                                        ))}
+                                                    </Assets>
+                                                    <Button>
+                                                        Select group
+                                                    </Button>
+                                                </GroupSelectable>
+                                                <GroupConfirm>
+                                                    <Show if={group.length > 1}>
+                                                        <SelectDropdown
+                                                            onChange={e =>
+                                                                console.log(e)
+                                                            }
+                                                        >
+                                                            {group.map(
+                                                                (
+                                                                    asset,
+                                                                    index
+                                                                ) => (
+                                                                    <option
+                                                                        value={
+                                                                            index
+                                                                        }
+                                                                        selected={
+                                                                            index ===
+                                                                            asset_selected
+                                                                        }
+                                                                    >
+                                                                        {getLabelOrAddress(
+                                                                            asset
+                                                                        )}
+                                                                    </option>
+                                                                )
+                                                            )}
+                                                        </SelectDropdown>
+                                                    </Show>
+                                                    <Div padding-top="10px">
+                                                        <Input
+                                                            type="password"
+                                                            placeholder="Password of this asset"
+                                                            width="100%"
+                                                            text-align="center"
+                                                        />
+                                                    </Div>
+                                                    <Div padding-top="10px">
+                                                        <ButtonBig>
+                                                            Unlock and Reuse
+                                                        </ButtonBig>
+                                                    </Div>
+                                                </GroupConfirm>
+                                                <Div clear="both" />
+                                            </GroupContainer>
+                                        </Group>
                                     ))}
                                 </OptionContent>
                             </Option1>
@@ -120,17 +196,6 @@ function AddAssetTemplate({ Coin, reusable_seeds }) {
                                 </div>
                                 <OptionContent>
                                     <ButtonBig>New</ButtonBig>
-                                    <br />
-                                    <br />
-                                    <SelectDropdown
-                                        onChange={e => console.log(e)}
-                                    >
-                                        <option value="AA">A</option>
-                                        <option value="BB" selected={true}>
-                                            B
-                                        </option>
-                                        <option disabled={true}>C</option>
-                                    </SelectDropdown>
                                 </OptionContent>
                             </Option2>
                         </Options>
@@ -202,9 +267,21 @@ const OptionContent = styled.div`
     padding-top: 30px;
 `
 
-const ReusableGroup = styled.div`
-    cursor: pointer;
+const Group = styled.div`
     margin-bottom: 30px;
+    overflow: hidden;
+`
+const GroupContainer = styled.div`
+    position: relative;
+    width: 200%;
+    transition: 0.75s ease all;
+    left: ${props => (props.selected ? '-100%' : 0)};
+`
+
+const GroupSelectable = styled.div`
+    float: left;
+    width: 50%;
+    cursor: pointer;
     &:hover > div {
         border-color: ${styles.color.background3};
     }
@@ -217,6 +294,13 @@ const ReusableGroup = styled.div`
     }
 `
 
+const GroupConfirm = styled.div`
+    float: left;
+    width: 50%;
+    box-sizing: border-box;
+    padding: 10px;
+`
+
 const Assets = styled.div`
     border: 4px solid ${styles.color.background2};
     border-radius: 5px;
@@ -224,7 +308,6 @@ const Assets = styled.div`
 `
 
 const Asset = styled.div`
-    position: relative;
     clear: both;
     margin-bottom: 15px;
     height: 40px;
@@ -232,12 +315,12 @@ const Asset = styled.div`
     &:last-child {
         margin-bottom: 0;
     }
-    & > * {
+    /* & > * {
         position: absolute;
         height: 50px;
         top: 0;
         width: 100%;
-    }
+    } */
 `
 // const AssetPassword = styled.div``
 

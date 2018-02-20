@@ -30,9 +30,9 @@ export default class SelectDropdown extends React.Component {
         const props = this.props
         const state = this.state
         const childrens = props.children || this.childrens
-        this.childrens = childrens
+        this.childrens = Array.isArray(childrens) ? childrens : [childrens]
         let selected_index = 0
-        const options = childrens.map((child, index) => {
+        const options = this.childrens.map((child, index) => {
             const attrs = child.attributes // || child.props
             if (attrs.selected) selected_index = index
             return (
