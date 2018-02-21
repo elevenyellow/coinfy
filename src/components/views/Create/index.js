@@ -33,6 +33,7 @@ export default class AddAsset extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
         state.view = {
+            force_new: false,
             group_selected: -1,
             asset_selected: 0,
             password: '',
@@ -55,7 +56,9 @@ export default class AddAsset extends Component {
     }
 
     onNew() {
-        console.log(routes.create(this.Coin.symbol) + '/1')
+        state.view.force_new = true
+        this.observer.destroy()
+        // console.log(routes.create(this.Coin.symbol) + '/1')
         // setHref(routes.create(this.Coin.symbol) + '/1')
     }
 
@@ -111,7 +114,9 @@ export default class AddAsset extends Component {
         return React.createElement(AddAssetTemplate, {
             Coin: this.Coin,
             is_reuse_view:
-                this.reusable_seeds.length > 0 && isNaN(Number(this.step)),
+                !state.view.force_new &&
+                this.reusable_seeds.length > 0 &&
+                isNaN(Number(this.step)),
             reusable_seeds: this.reusable_seeds,
             group_selected: state.view.group_selected,
             asset_selected: state.view.asset_selected,
@@ -243,6 +248,8 @@ function AddAssetTemplate({
                                                     <ButtonBig
                                                         onClick={onSubmit}
                                                         disabled={
+                                                            password.length ===
+                                                                0 ||
                                                             password_error
                                                         }
                                                     >

@@ -37,6 +37,8 @@ import SwitchView from '/components/styled/SwitchView'
 
 export default class NewAsset extends Component {
     componentWillMount() {
+        console.log(1234)
+
         state.view = {
             step: 0,
             password: '',
