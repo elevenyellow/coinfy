@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
-import { Router, Route } from '/doprouter/react'
+import { Router, Route } from 'dop-router/react'
 
 import styles from '/const/styles'
 import routes from '/const/routes'

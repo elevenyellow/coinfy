@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { createObserver, collect } from 'dop'
 import styled from 'styled-components'
-import { Show } from '/doprouter/react'
+import { Show } from 'dop-router/react'
 
 // import { createWorker } from '/api/workers'
 import { generateQRCode } from '/api/qr'

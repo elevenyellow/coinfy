@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
-import { Show } from '/doprouter/react'
+import { Show } from 'dop-router/react'
 
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
-import { Show } from '/doprouter/react'
+import { Show } from 'dop-router/react'
 import IconMore from 'react-icons/lib/md/more-vert'
 
 import routes from '/const/routes'

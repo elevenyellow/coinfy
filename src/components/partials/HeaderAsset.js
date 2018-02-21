@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
-import { Router, Route, Show } from '/doprouter/react'
+import { Router, Route, Show } from 'dop-router/react'
 
 import { getAsset, convertBalance, formatCurrency } from '/store/getters'
 import {

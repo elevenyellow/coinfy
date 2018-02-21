@@ -1,5 +1,5 @@
 import { computed, register, createObserver } from 'dop'
-import { create } from '/doprouter/core'
+import { create } from 'dop-router'
 import { Coins } from '/api/Coins'
 import { Fiats, USD } from '/api/Fiats'
 import { getTotalAssets, generateDefaultAsset } from '/store/getters'
@@ -12,7 +12,7 @@ const initialState = {
     // Data
     network: network,
     fiat: localStorageGet('fiat') || USD.symbol,
-    // assetsExported: localStorageGet('assetsExported', network) !== 'false',
+    // assetsExported: loccdalStorageGet('assetsExported', network) !== 'false',
     assets: {},
     prices: {},
     totalAssets: 0,

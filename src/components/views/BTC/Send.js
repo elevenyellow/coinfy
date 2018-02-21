@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
-import { Show } from '/doprouter/react'
+import { Show } from 'dop-router/react'
 
 import { MAINNET, OK, ERROR, ALERT, NORMAL } from '/const/'
 import styles from '/const/styles'

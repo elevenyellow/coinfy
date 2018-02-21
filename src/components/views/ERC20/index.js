@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
-import { Router, Route, Show } from '/doprouter/react'
+import { Router, Route, Show } from 'dop-router/react'
 import styled from 'styled-components'
 
 import { setHref } from '/store/actions'

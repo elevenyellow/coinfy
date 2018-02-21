@@ -4,7 +4,7 @@ import { createObserver } from 'dop'
 import styles from '/const/styles'
 import routes from '/const/routes'
 import { MAINNET, TESTNET } from '/const/'
-import { Show } from '/doprouter/react'
+import { Show } from 'dop-router/react'
 
 import IconMenu from 'react-icons/lib/md/menu'
 import IconMore from 'react-icons/lib/md/more-vert'
