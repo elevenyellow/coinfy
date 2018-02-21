@@ -2,12 +2,18 @@ import React from 'react'
 import styled from 'styled-components'
 import styles from '/const/styles'
 
-export function RightContainer({ children }) {
-    return (
-        <RightContainerTemplate>
-            <div>{children}</div>
-        </RightContainerTemplate>
-    )
+export class RightContainer extends React.Component {
+    scrollTop(e) {
+        if (e && e.base) e.base.scrollTo(0, 0)
+    }
+    render() {
+        const { children } = this.props
+        return (
+            <RightContainerTemplate ref={this.scrollTop}>
+                <div>{children}</div>
+            </RightContainerTemplate>
+        )
+    }
 }
 
 export const RightContainerTemplate = styled.div`

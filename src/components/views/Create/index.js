@@ -199,7 +199,7 @@ function AddAssetTemplate({
                                                         </Asset>
                                                     ))}
                                                 </Assets>
-                                                <Button>Select group</Button>
+                                                <Button>Select</Button>
                                             </GroupSelectable>
                                             <GroupConfirm>
                                                 <SelectDropdown
