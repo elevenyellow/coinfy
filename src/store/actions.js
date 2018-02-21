@@ -367,7 +367,6 @@ export const fetchPrices = (function() {
 })()
 fetchPrices()
 
-<<<<<<< HEAD
 export function sendEventToAnalytics() {
     if (
         state.network === MAINNET &&
@@ -378,14 +377,4 @@ export function sendEventToAnalytics() {
         args.unshift('send', 'event')
         ga.apply(this, args)
     }
-=======
-export function sendEventToAnalytics(
-    eventCategory,
-    eventAction,
-    eventLabel,
-    eventValue
-) {
-    if (state.network === MAINNET && typeof ga == 'function')
-        ga('send', 'event', eventCategory, eventAction)
->>>>>>> master
 }
