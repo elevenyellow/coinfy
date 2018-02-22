@@ -9,7 +9,7 @@ import routes from '/const/routes'
 import { Coins } from '/api/Coins'
 
 import state from '/store/state'
-import { getReusableSeeds, getLabelOrAddress, getCoinId } from '/store/getters'
+import { getReusableSeeds, getLabelOrAddress, getAssetId } from '/store/getters'
 import { setHref, createAsset, setSeed, addNotification } from '/store/actions'
 
 import {
@@ -100,7 +100,7 @@ export default class AddAsset extends Component {
             const { address } = this.Coin.getWalletFromSeed({ seed: seed })
             const symbol = this.Coin.symbol
             const asset = createAsset(this.Coin.type, symbol, address)
-            const asset_id = getCoinId({ symbol, address })
+            const asset_id = getAssetId({ symbol, address })
             setSeed(asset_id, seed, password)
             setHref(routes.asset(asset_id))
             addNotification(`New "${symbol}" asset has been created`)

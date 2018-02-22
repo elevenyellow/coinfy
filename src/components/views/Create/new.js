@@ -17,7 +17,7 @@ import { printTemplate } from '/api/browser'
 
 import state from '/store/state'
 import { createAsset, setSeed, setHref, addNotification } from '/store/actions'
-import { getCoinId } from '/store/getters'
+import { getAssetId } from '/store/getters'
 
 import IconPrint from 'react-icons/lib/fa/print'
 
@@ -115,7 +115,7 @@ export default class NewAsset extends Component {
         const wallet = this.Coin.getWalletFromSeed({ seed: words })
         const address = wallet.address
         const asset = createAsset(this.Coin.type, symbol, address)
-        const asset_id = getCoinId({ symbol, address })
+        const asset_id = getAssetId({ symbol, address })
         setSeed(asset_id, words, state.view.password)
         setHref(routes.asset(asset_id))
         addNotification(`New "${symbol}" asset has been created`)

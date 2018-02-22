@@ -25,7 +25,7 @@ import {
     getAssetsAsArray,
     generateDefaultAsset,
     getNextCoinId,
-    getCoinId
+    getAssetId
 } from '/store/getters'
 import { CryptoPriceManager } from '/api/prices'
 import { decimals } from '/api/numbers'
@@ -264,7 +264,7 @@ export function updateBalance(asset_id, balance) {
 export function fetchAllBalances() {
     getAssetsAsArray().forEach((asset, index) => {
         setTimeout(
-            () => fetchBalance(getCoinId(asset)),
+            () => fetchBalance(getAssetId(asset)),
             index * TIMEOUT_BETWEEN_EACH_GETBALANCE
         )
     })

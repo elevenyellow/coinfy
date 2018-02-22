@@ -5,7 +5,7 @@ import { Show } from 'dop-router/react'
 
 import { setHref, createAsset, setSeed, addNotification } from '/store/actions'
 import state from '/store/state'
-import { isAssetRegistered, getCoinId } from '/store/getters'
+import { isAssetRegistered, getAssetId } from '/store/getters'
 
 import { Coins } from '/api/Coins'
 import { validateSeed } from '/api/bip39'
@@ -73,7 +73,7 @@ export default class ImportPrivate extends Component {
 
             if (
                 isAssetRegistered(
-                    getCoinId({
+                    getAssetId({
                         symbol: this.Coin.symbol,
                         address: address
                     })
@@ -116,7 +116,7 @@ export default class ImportPrivate extends Component {
         const address = state.view.address
         const symbol = this.Coin.symbol
         const asset = createAsset(this.Coin.type, symbol, address)
-        const asset_id = getCoinId({ symbol, address })
+        const asset_id = getAssetId({ symbol, address })
         setSeed(asset_id, state.view.seed_input, state.view.seed_password)
         setHref(routes.asset(asset_id))
         addNotification(`New "${symbol}" asset has been imported`)

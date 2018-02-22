@@ -71,7 +71,7 @@ export function formatCurrency(value, n = 0, currencySymbol = state.fiat) {
 }
 
 export function getNextCoinId(asset_data) {
-    return getCoinId(asset_data)
+    return getAssetId(asset_data)
     // let id = 0
     // for (let asset_id in state.assets)
     //     if (Number(asset_id) > id) id = Number(asset_id)
@@ -79,7 +79,7 @@ export function getNextCoinId(asset_data) {
     // return id + 1
 }
 
-export function getCoinId({ symbol, address }) {
+export function getAssetId({ symbol, address }) {
     return `${symbol}-${address}`
     // for (let asset_id in state.assets)
     //     if (

@@ -8,7 +8,7 @@ import { parse } from '/api/objects'
 
 import { setPrivateKey, setHref, createAsset } from '/store/actions'
 import state from '/store/state'
-import { isAssetRegistered, getCoinId } from '/store/getters'
+import { isAssetRegistered, getAssetId } from '/store/getters'
 
 import {
     isAddress,
@@ -77,7 +77,7 @@ export default class ImportKeystore extends Component {
                     ) {
                         if (
                             isAssetRegistered(
-                                getCoinId({
+                                getAssetId({
                                     symbol: this.Coin.symbol,
                                     address: address
                                 })
@@ -131,11 +131,11 @@ export default class ImportKeystore extends Component {
                         address
                     )
                     setPrivateKey(
-                        getCoinId({ symbol: this.Coin.symbol, address }),
+                        getAssetId({ symbol: this.Coin.symbol, address }),
                         private_key,
                         password
                     )
-                    setHref(routes.asset(getCoinId(asset)))
+                    setHref(routes.asset(getAssetId(asset)))
                 } else {
                     state.view.keystore_password_error = 'Invalid password'
                 }

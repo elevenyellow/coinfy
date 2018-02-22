@@ -4,7 +4,7 @@ import { createObserver, collect } from 'dop'
 
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
-import { isAssetRegistered, getCoinId } from '/store/getters'
+import { isAssetRegistered, getAssetId } from '/store/getters'
 
 import { Coins } from '/api/Coins'
 
@@ -63,7 +63,7 @@ export default class ImportPrivate extends Component {
 
                 if (
                     isAssetRegistered(
-                        getCoinId({
+                        getAssetId({
                             symbol: this.Coin.symbol,
                             address: address
                         })
@@ -103,7 +103,7 @@ export default class ImportPrivate extends Component {
         const collector = collect()
         const address = state.view.address
         const asset = createAsset(this.Coin.type, this.Coin.symbol, address)
-        const asset_id = getCoinId({ symbol: this.Coin.symbol, address })
+        const asset_id = getAssetId({ symbol: this.Coin.symbol, address })
         setPrivateKey(
             asset_id,
             state.view.private_input,

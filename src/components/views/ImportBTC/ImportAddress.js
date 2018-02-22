@@ -4,7 +4,7 @@ import { createObserver, collect } from 'dop'
 
 import { setHref, createAsset } from '/store/actions'
 import state from '/store/state'
-import { isAssetRegistered, getCoinId } from '/store/getters'
+import { isAssetRegistered, getAssetId } from '/store/getters'
 
 import { Coins } from '/api/Coins'
 
@@ -56,7 +56,7 @@ export default class ImportAddress extends Component {
 
             if (
                 isAssetRegistered(
-                    getCoinId({ symbol: this.Coin.symbol, address: value })
+                    getAssetId({ symbol: this.Coin.symbol, address: value })
                 )
             ) {
                 state.view.address_input_error = 'You already have this asset'
@@ -79,7 +79,7 @@ export default class ImportAddress extends Component {
         const collector = collect()
         const address = state.view.address
         const asset = createAsset(this.Coin.type, this.Coin.symbol, address)
-        setHref(routes.asset(getCoinId(asset)))
+        setHref(routes.asset(getAssetId(asset)))
         // setHref(routes.home())
         collector.emit()
     }

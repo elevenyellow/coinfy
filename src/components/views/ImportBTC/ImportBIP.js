@@ -5,7 +5,7 @@ import { Show } from 'dop-router/react'
 
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
-import { isAssetRegistered, getCoinId } from '/store/getters'
+import { isAssetRegistered, getAssetId } from '/store/getters'
 
 import { isPrivateKeyBip, getAddressFromPrivateKey } from '/api/Coins/BTC'
 import { decryptBIP38 } from '/api/crypto'
@@ -83,7 +83,7 @@ export default class ImportBIP extends Component {
                     password
                 )
                 const address = getAddressFromPrivateKey(private_key)
-                const asset_id = getCoinId({
+                const asset_id = getAssetId({
                     symbol: BTC.symbol,
                     address: address
                 })
@@ -95,7 +95,7 @@ export default class ImportBIP extends Component {
                 } else {
                     const asset = createAsset(BTC.type, BTC.symbol, address)
                     setPrivateKey(asset_id, private_key, password)
-                    setHref(routes.asset(getCoinId(asset)))
+                    setHref(routes.asset(getAssetId(asset)))
                 }
             } catch (e) {
                 if (e.toString().indexOf('checksum') > -1) {

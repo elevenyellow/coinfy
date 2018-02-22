@@ -11,7 +11,7 @@ import { setHref } from '/store/actions'
 import {
     convertBalance,
     formatCurrency,
-    getCoinId,
+    getAssetId,
     getLabelOrAddress
 } from '/store/getters'
 import AssetItem from '/components/styled/AssetItem'
@@ -37,7 +37,7 @@ export default class Asset extends Component {
     }
 
     onClick() {
-        setHref(routes.asset(getCoinId(this.props.asset)))
+        setHref(routes.asset(getAssetId(this.props.asset)))
     }
 
     render() {
@@ -67,7 +67,7 @@ function AssetTemplate({
             onClick={onClick}
             selected={
                 state.location.path[1] ===
-                getCoinId({ symbol: asset.symbol, address: asset.address })
+                getAssetId({ symbol: asset.symbol, address: asset.address })
             }
         >
             <AssetItem
