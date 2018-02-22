@@ -82,17 +82,23 @@ function ContentTemplate({
                     <Route pathname={routes.add()}>
                         <Add />
                     </Route>
-                    <Route pathname={new RegExp(routes.create(symbol_add))}>
+                    <Route
+                        pathname={
+                            new RegExp(routes.create({ symbol: symbol_add }))
+                        }
+                    >
                         <Create />
                     </Route>
-                    <Route pathname={routes.import('BTC')}>
+                    <Route pathname={routes.import({ symbol: 'BTC' })}>
                         <ImportBTC />
                     </Route>
-                    <Route pathname={routes.import('ETH')}>
+                    <Route pathname={routes.import({ symbol: 'ETH' })}>
                         <ImportETH />
                     </Route>
                     <Route
-                        pathname={new RegExp(routes.import(symbol_add))}
+                        pathname={
+                            new RegExp(routes.import({ symbol: symbol_add }))
+                        }
                         if={
                             Coins.hasOwnProperty(symbol_add) &&
                             Coins[symbol_add].type === TYPE_ERC20

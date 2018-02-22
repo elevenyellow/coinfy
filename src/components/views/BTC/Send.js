@@ -182,7 +182,9 @@ export default class Send extends Component {
                     this.tx_raw = tx_raw
                     const collector = collect()
                     state.view.loading = false
-                    setHref(routes.sendAsset(this.asset_id) + '/1')
+                    setHref(
+                        routes.sendAsset({ asset_id: this.asset_id }) + '/1'
+                    )
                     collector.emit()
                 })
                 .catch(e => {

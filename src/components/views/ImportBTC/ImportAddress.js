@@ -79,7 +79,7 @@ export default class ImportAddress extends Component {
         const collector = collect()
         const address = state.view.address
         const asset = createAsset(this.Coin.type, this.Coin.symbol, address)
-        setHref(routes.asset(getAssetId(asset)))
+        setHref(routes.asset({ asset_id: getAssetId(asset) }))
         // setHref(routes.home())
         collector.emit()
     }

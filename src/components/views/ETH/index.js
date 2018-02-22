@@ -56,11 +56,13 @@ export default class ViewETH extends Component {
         return React.createElement(ViewETHTemplate, {
             location: state.location,
             hasPrivateKey: hasPrivateKey,
-            routes_summaryAsset: routes.summaryAsset(asset_id),
-            routes_sendAsset: routes.sendAsset(asset_id),
-            routes_exportAsset: routes.exportAsset(asset_id),
-            routes_changePasswordAsset: routes.changePasswordAsset(asset_id),
-            routes_deleteAsset: routes.deleteAsset(asset_id),
+            routes_summaryAsset: routes.summaryAsset({ asset_id: asset_id }),
+            routes_sendAsset: routes.sendAsset({ asset_id: asset_id }),
+            routes_exportAsset: routes.exportAsset({ asset_id: asset_id }),
+            routes_changePasswordAsset: routes.changePasswordAsset({
+                asset_id: asset_id
+            }),
+            routes_deleteAsset: routes.deleteAsset({ asset_id: asset_id }),
             onClick: this.onClick
         })
     }

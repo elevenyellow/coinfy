@@ -37,7 +37,7 @@ export default class Asset extends Component {
     }
 
     onClick() {
-        setHref(routes.asset(getAssetId(this.props.asset)))
+        setHref(routes.asset({ asset_id: getAssetId(this.props.asset) }))
     }
 
     render() {

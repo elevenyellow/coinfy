@@ -36,7 +36,7 @@ export default class Dashboard extends Component {
     }
 
     onClick(asset_id) {
-        setHref(routes.asset(asset_id))
+        setHref(routes.asset({ asset_id: asset_id }))
     }
 
     render() {

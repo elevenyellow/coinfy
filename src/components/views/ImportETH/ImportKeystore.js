@@ -135,7 +135,7 @@ export default class ImportKeystore extends Component {
                         private_key,
                         password
                     )
-                    setHref(routes.asset(getAssetId(asset)))
+                    setHref(routes.asset({ asset_id: getAssetId(asset) }))
                 } else {
                     state.view.keystore_password_error = 'Invalid password'
                 }

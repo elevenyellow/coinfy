@@ -58,8 +58,6 @@ export default class AddAsset extends Component {
     onNew() {
         state.view.force_new = true
         this.observer.destroy()
-        // console.log(routes.create(this.Coin.symbol) + '/1')
-        // setHref(routes.create(this.Coin.symbol) + '/1')
     }
 
     onSelectGroup(index) {
@@ -102,7 +100,7 @@ export default class AddAsset extends Component {
             const asset = createAsset(this.Coin.type, symbol, address)
             const asset_id = getAssetId({ symbol, address })
             setSeed(asset_id, seed, password)
-            setHref(routes.asset(asset_id))
+            setHref(routes.asset({ asset_id: asset_id }))
             addNotification(`New "${symbol}" asset has been created`)
         } else {
             state.view.password_error = true

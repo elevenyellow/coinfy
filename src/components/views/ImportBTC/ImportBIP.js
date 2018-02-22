@@ -95,7 +95,7 @@ export default class ImportBIP extends Component {
                 } else {
                     const asset = createAsset(BTC.type, BTC.symbol, address)
                     setPrivateKey(asset_id, private_key, password)
-                    setHref(routes.asset(getAssetId(asset)))
+                    setHref(routes.asset({ asset_id: getAssetId(asset) }))
                 }
             } catch (e) {
                 if (e.toString().indexOf('checksum') > -1) {

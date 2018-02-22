@@ -109,7 +109,7 @@ export default class ImportPrivate extends Component {
             state.view.private_input,
             state.view.private_password
         )
-        setHref(routes.asset(asset_id))
+        setHref(routes.asset({ asset_id: asset_id }))
         collector.emit()
     }
 

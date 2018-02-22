@@ -118,7 +118,7 @@ export default class ImportPrivate extends Component {
         const asset = createAsset(this.Coin.type, symbol, address)
         const asset_id = getAssetId({ symbol, address })
         setSeed(asset_id, state.view.seed_input, state.view.seed_password)
-        setHref(routes.asset(asset_id))
+        setHref(routes.asset({ asset_id: asset_id }))
         addNotification(`New "${symbol}" asset has been imported`)
         collector.emit()
     }

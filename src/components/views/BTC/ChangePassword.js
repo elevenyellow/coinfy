@@ -90,7 +90,7 @@ export default class ChangePassword extends Component {
                 ? setSeed(asset_id, privatekey_or_seed, password)
                 : setPrivateKey(asset_id, privatekey_or_seed, password)
             addNotification(`You have changed the password of this asset`, OK)
-            setHref(routes.summaryAsset(asset_id))
+            setHref(routes.summaryAsset({ asset_id: asset_id }))
         } else state.view.isInvalidOldpassword = true
 
         collector.emit()
