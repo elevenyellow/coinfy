@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
-import { Router, Route, Show } from 'dop-router/react'
+import { Router, Route, Show } from '/router/components'
 
 import styles from '/const/styles'
-import routes from '/const/routes'
+import routes from '/router/routes'
 import { minpassword } from '/const/'
 import { Words as template } from '/const/paperwallets'
 

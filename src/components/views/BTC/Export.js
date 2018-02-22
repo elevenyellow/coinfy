@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { createObserver, collect } from 'dop'
 import styled from 'styled-components'
-import { Show } from 'dop-router/react'
+import { Show } from '/router/components'
 
 // import { createWorker } from '/api/workers'
 import { generateQRCode } from '/api/qr'
@@ -12,7 +12,7 @@ import { printTemplate } from '/api/browser'
 import state from '/store/state'
 import { getAsset, isAssetWithSeed, decrypt } from '/store/getters'
 
-import routes from '/const/routes'
+import routes from '/router/routes'
 import styles from '/const/styles'
 
 import Div from '/components/styled/Div'

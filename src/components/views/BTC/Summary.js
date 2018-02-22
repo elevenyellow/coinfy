@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
-import { Show } from 'dop-router/react'
+import { Show } from '/router/components'
 
 import styles from '/const/styles'
 import { Fiats } from '/api/Fiats'

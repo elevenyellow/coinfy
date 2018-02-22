@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
-import { Show } from 'dop-router/react'
+import { Show } from '/router/components'
 
 import { MAINNET, OK, ERROR, ALERT, NORMAL } from '/const/'
 import styles from '/const/styles'
-import routes from '/const/routes'
+import routes from '/router/routes'
 
 import { Coins } from '/api/Coins'
 import { parseNumber, decimalsMax, bigNumber } from '/api/numbers'

@@ -18,7 +18,7 @@ import {
 import { Coins } from '/api/Coins'
 
 import styles from '/const/styles'
-import routes from '/const/routes'
+import routes from '/router/routes'
 
 import Input from '/components/styled/Input'
 import InputFile from '/components/styled/InputFile'

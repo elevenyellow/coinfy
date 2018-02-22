@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
-import { Show } from 'dop-router/react'
+import { Show } from '/router/components'
 import IconMore from 'react-icons/lib/md/more-vert'
 
-import routes from '/const/routes'
+import routes from '/router/routes'
 import styles from '/const/styles'
 import { Fiats } from '/api/Fiats'
 

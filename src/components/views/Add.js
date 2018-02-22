@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
-import { Router, Route } from 'dop-router/react'
+import { Router, Route } from '/router/components'
 
-import routes from '/const/routes'
+import routes from '/router/routes'
 import { TYPE_COIN, TYPE_ERC20 } from '/const/'
 import styles from '/const/styles'
 

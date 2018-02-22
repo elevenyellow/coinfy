@@ -1,5 +1,5 @@
 import { computed, register, createObserver } from 'dop'
-import { create } from 'dop-router'
+import { create } from 'dop-router/location'
 import { Coins } from '/api/Coins'
 import { Fiats, USD } from '/api/Fiats'
 import { getTotalAssets, generateDefaultAsset } from '/store/getters'

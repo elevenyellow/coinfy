@@ -9,7 +9,7 @@ import { isAssetRegistered, getAssetId } from '/store/getters'
 import { Coins } from '/api/Coins'
 
 import styles from '/const/styles'
-import routes from '/const/routes'
+import routes from '/router/routes'
 
 import Input from '/components/styled/Input'
 import Button from '/components/styled/Button'

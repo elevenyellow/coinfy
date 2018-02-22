@@ -13,7 +13,7 @@ import {
     TIMEOUT_UPDATE_ALL_BALANCES,
     TIMEOUT_BETWEEN_EACH_GETBALANCE
 } from '/const/'
-import routes from '/const/routes'
+import routes from '/router/routes'
 import styles from '/const/styles'
 
 import { Coins } from '/api/Coins'
