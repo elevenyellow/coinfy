@@ -813,6 +813,7 @@ const ResumeValue = styled.div`
 `
 
 const ConfirmationCircle = styled.div`
+    position: relative;
     width: 155px;
     height: 155px;
     background: #34c362;
@@ -822,9 +823,50 @@ const ConfirmationCircle = styled.div`
     margin: 0 auto;
     line-height: 205px;
     box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.2);
-    transform: scale(${props => (props.sent ? 1 : 0.5)});
-    transition: 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
-    transition-delay: 0.5s;
+    animation: ${props =>
+        props.sent ? 'sent 2s cubic-bezier(.175, .885, .32, 1.275)' : 'none'};
+    @keyframes sent {
+        0% {
+            transform: scale(.7);
+        }
+        30% {
+            transform: scale(.5);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    & img {
+        display: block;
+        position: absolute;
+        transform: translate(148px,-73px);
+        opacity: 0;
+        animation: ${props =>
+            props.sent
+                ? 'sent2 2.5s cubic-bezier(.175, .885, .32, 1.275)'
+                : 'none'};
+        @keyframes sent2 {
+            0% {
+                transform: translate(45px,45px);
+                opacity: 1;
+            }
+            80% {
+                transform: translate(45px,45px);
+                opacity: 1;
+            }
+            85% {
+                transform: translate(35px,55px);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(148px,-73px);
+                opacity: 1;
+            }
+        }
+    }
+}
+    
 `
 
 const ConfirmationLink = styled.a`

@@ -32,6 +32,7 @@ export default class Header extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'menuOpen')
+        this.observer.observe(state.location, 'pathname')
 
         // this.currenciesList = [
         //     {
@@ -182,7 +183,10 @@ function HeaderTemplate({
                     </div>
                 </HeaderLeft>
                 <HeaderCenter>
-                    <HeaderLogo onClick={onHome}>
+                    <HeaderLogo
+                        isHome={state.location.pathname === routes.home()}
+                        onClick={onHome}
+                    >
                         <div>
                             <IconHome size={15} color="white" />
                         </div>
@@ -323,7 +327,7 @@ const HeaderLogo = styled.div`
     width: 100px;
     margin: 0 auto;
     & div {
-        opacity: 0;
+        opacity: ${props => (props.isHome ? 1 : 0)}};
     }
     &:hover div {
         opacity: 1;
