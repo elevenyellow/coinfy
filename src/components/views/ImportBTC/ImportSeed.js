@@ -91,7 +91,8 @@ export default class ImportPrivate extends Component {
 
     onChangeInput(e) {
         const collector = collect()
-        state.view.seed_input = e.target.value.trim()
+        const value = e.target.value.trim().replace(/\s+/g, ' ')
+        state.view.seed_input = value
         if (this.already_blur) this.onUpdateSeed()
         collector.emit()
     }
