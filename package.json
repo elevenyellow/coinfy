@@ -1,6 +1,6 @@
 {
     "name": "coinfy",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "repository": "https://github.com/elevenyellow/coinfy",
     "scripts": {
         "stats":
