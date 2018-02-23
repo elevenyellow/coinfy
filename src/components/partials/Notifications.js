@@ -6,7 +6,6 @@ import { deleteNotification } from '/store/actions'
 import styles from '/const/styles'
 import Notification from '/components/styled/Notification'
 
-
 export default class Notifications extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => {
@@ -48,15 +47,18 @@ export default class Notifications extends Component {
     }
 }
 
-
 function NotificationsTemplate({ notifications, onClose }) {
     const items = []
     let notification
-    const ids = Object.keys(notifications).map(Number).sort()
+    const ids = Object.keys(notifications)
+        .map(Number)
+        .reverse()
+
     ids.forEach(id => {
         notification = notifications[id]
         items.push(
             <Notification
+                key={id}
                 color={notification.color}
                 onClose={e => onClose(id)}
             >
@@ -64,18 +66,13 @@ function NotificationsTemplate({ notifications, onClose }) {
             </Notification>
         )
     })
-    return (
-        <NotificationContainer>
-            {items}
-        </NotificationContainer>
-    )
+    return <NotificationContainer>{items}</NotificationContainer>
 }
 
 const NotificationContainer = styled.div`
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-z-index: 4;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 4;
 `
-

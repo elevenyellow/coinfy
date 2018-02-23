@@ -844,7 +844,7 @@ const ConfirmationCircle = styled.div`
         opacity: 0;
         animation: ${props =>
             props.sent
-                ? 'sent2 2.5s cubic-bezier(.175, .885, .32, 1.275)'
+                ? 'sent2 3s cubic-bezier(.175, .885, .32, 1.275)'
                 : 'none'};
         @keyframes sent2 {
             0% {
