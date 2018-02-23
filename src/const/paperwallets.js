@@ -144,9 +144,9 @@ export const Words = words => {
         </div>
         <div id="info">
             <strong>Do not share it with anyone.</strong>
-            These words allows you to recover this asset in case of loss or damage
+            These words allow you to recover this asset in case of loss or damage
             <strong>Without it you will not be able to recover your money if something goes wrong.</strong> Make two copies and store
-            them in separate physical locations. This phrase is case sensitive and order is very important.
+            them in separates physical locations. This phrase is case sensitive and the order is very important.
         </div>
         <div id="words">${words}</div>
         <div id="claim">COINFY.COM</div>

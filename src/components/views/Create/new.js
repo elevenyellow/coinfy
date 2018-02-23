@@ -37,8 +37,6 @@ import SwitchView from '/components/styled/SwitchView'
 
 export default class NewAsset extends Component {
     componentWillMount() {
-        console.log(1234)
-
         state.view = {
             step: 0,
             password: '',
@@ -263,7 +261,7 @@ function NewAssetTemplate({
                                 <span>Do not share it with anyone.</span>
                             </strong>
                             <br />
-                            These words allows you to recover this asset in case
+                            These words allow you to recover this asset in case
                             of loss or damage.{' '}
                             <strong>
                                 <span>
@@ -271,9 +269,9 @@ function NewAssetTemplate({
                                     your money if something goes wrong.
                                 </span>
                             </strong>{' '}
-                            Make two copies and store them in separate physical
-                            locations. This phrase is case sensitive and order
-                            is very important.
+                            Make two copies and store them in separates physical
+                            locations. This phrase is case sensitive and the
+                            order is very important.
                         </Description>
 
                         <Content>

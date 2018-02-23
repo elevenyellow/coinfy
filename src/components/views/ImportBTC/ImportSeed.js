@@ -194,9 +194,8 @@ function ImportPrivateTemplate({
                         {/* <Div padding-top="10px"> */}
                         <Alert>
                             You typed a non-standard or invalid Recovery Phrase.
-                            But coinfy allows you to import any other format
-                            that comes from other wallets. Including other
-                            languages.
+                            But coinfy allow you to import any other format that
+                            comes from other wallets. Including other languages.
                         </Alert>
                         {/* </Div> */}
                     </Show>
