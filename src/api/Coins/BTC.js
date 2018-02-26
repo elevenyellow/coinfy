@@ -1,4 +1,5 @@
 import Bitcoin from 'bitcoinjs-lib'
+import BitcoinFee from 'bitcoin-fee'
 import { sha3 } from 'ethereumjs-util'
 import { getBip32RootKey } from '/api/bip39'
 import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
@@ -7,8 +8,10 @@ import {
     decryptBIP38 as _decryptBIP38,
     encryptBIP38 as _encryptBIP38
 } from '/api/crypto'
-import { sortBy } from '/api/arrays'
+import { sortBy, highest } from '/api/arrays'
 import { localStorageGet } from '/api/browser'
+import { resolveAll } from '/api/promises'
+
 import { TYPE_COIN, MAINNET, TESTNET } from '/const/'
 
 // private
@@ -255,15 +258,29 @@ export function fetchBalance(address) {
     })
 }
 
-// In shatosis
-export function fetchRecomendedFee() {
-    // https://btc-bitcore1.trezor.io/api/utils/estimatefee
-    // https://bitcoinfees.21.co/api/v1/fees/recommended
-    // https://www.bitgo.com/api/v1/tx/fee
-    return fetch(`https://insight.bitpay.com/api/utils/estimatefee`)
+export function fetchRecomendedFee({ address }) {
+    let fee
+    return resolveAll(
+        BitcoinFee.SERVICES.map(service => BitcoinFee.fetchFee(service))
+    )
+        .then(fees => {
+            fee = highest(fees)
+            return fetch(`${api_url}/addr/${address}/utxo?noCache=1`)
+        })
         .then(response => response.json())
-        .then(fees => fees[2])
+        .then(utxo => {
+            console.log(utxo, fee)
+            return 0.00001
+        })
 }
+// export function fetchRecomendedFee() {
+//     // https://btc-bitcore1.trezor.io/api/utils/estimatefee
+//     // https://bitcoinfees.21.co/api/v1/fees/recommended
+//     // https://www.bitgo.com/api/v1/tx/fee
+//     return fetch(`https://insight.bitpay.com/api/utils/estimatefee`)
+//         .then(response => response.json())
+//         .then(fees => fees[2]) // In shatosis
+// }
 
 export function fetchTxs(address, from = 0, to = from + 25) {
     return fetch(
@@ -356,7 +373,7 @@ export function createSimpleTx({
     return fetch(`${api_url}/addr/${fromAddress}/utxo?noCache=1`)
         .then(response => response.json())
         .then(txs => {
-            console.log(txs)
+            // console.log(txs)
 
             let totalInput = bigNumber(0)
             const totalOutput = bigNumber(amount).plus(fee)

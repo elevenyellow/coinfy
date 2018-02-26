@@ -98,9 +98,11 @@ export default class Send extends Component {
     }
 
     fetchRecomendedFee() {
-        this.Coin.fetchRecomendedFee(this.asset.address).then(fee => {
-            state.view.fee_input = this.fee_recomended = bigNumber(fee)
-        })
+        this.Coin.fetchRecomendedFee({ address: this.asset.address }).then(
+            fee => {
+                state.view.fee_input = this.fee_recomended = bigNumber(fee)
+            }
+        )
     }
 
     onChangeAddress(e) {

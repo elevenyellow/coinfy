@@ -1,3 +1,13 @@
+export function highest(array) {
+    return array.reduce((highest, fee) => (fee > highest ? fee : highest))
+}
+export function lowest(array) {
+    return array.reduce((lowest, fee) => (fee < lowest ? fee : lowest))
+}
+export function median(array) {
+    return array.reduce((sum, current) => sum + current) / array.length
+}
+
 export function shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))
