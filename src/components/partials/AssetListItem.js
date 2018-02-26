@@ -18,14 +18,7 @@ import AssetItem from '/components/styled/AssetItem'
 
 export default class Asset extends Component {
     componentWillMount() {
-        const asset = this.props.asset
-        this.observer = createObserver(mutations => this.forceUpdate())
-        this.observer.observe(state.location, 'pathname')
-        this.observer.observe(state.prices)
-        this.observer.observe(state.assets)
-        this.observer.observe(asset, 'label')
-        this.observer.observe(asset, 'balance')
-
+        this.observe(this.props.asset)
         // binding
         this.onClick = this.onClick.bind(this)
     }
@@ -33,7 +26,21 @@ export default class Asset extends Component {
         this.observer.destroy()
     }
     shouldComponentUpdate(nextProps) {
-        return this.props.asset !== nextProps.asset
+        if (this.props.asset !== nextProps.asset) {
+            this.observer.destroy()
+            this.observe(nextProps.asset)
+            return true
+        }
+        return false
+    }
+
+    observe(asset) {
+        this.observer = createObserver(mutations => this.forceUpdate())
+        this.observer.observe(state.location, 'pathname')
+        this.observer.observe(state.prices)
+        this.observer.observe(state.assets)
+        this.observer.observe(asset, 'label')
+        this.observer.observe(asset, 'balance')
     }
 
     onClick() {

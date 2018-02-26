@@ -169,11 +169,10 @@ export function fetchBalance(address, contract_address, _satoshis = satoshis) {
             : `${api_url}?apikey=${api_key}&module=account&action=tokenbalance&address=${address}&contractaddress=${contract_address}&tag=latest`
     )
         .then(response => response.json())
-        .then(response =>
-            bigNumber(response.result)
-                .div(_satoshis)
-                .toString()
-        )
+        .then(response => {
+            const n = bigNumber(response.result).div(_satoshis)
+            return n.isNaN() ? '0' : n.toString()
+        })
 }
 
 const txs_cache = {}
