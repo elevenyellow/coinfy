@@ -107,7 +107,10 @@ export default class Send extends Component {
     }
 
     fetchRecomendedFee() {
-        this.Coin.fetchRecomendedFee({ address: this.asset.address })
+        this.Coin.fetchRecomendedFee({
+            address: this.asset.address,
+            force_fetch: true
+        })
             .then(fee => {
                 const collector = collect()
                 state.view.fee_input = this.fee_recomended = bigNumber(fee)

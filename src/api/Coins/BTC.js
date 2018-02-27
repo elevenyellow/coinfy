@@ -258,36 +258,59 @@ export function fetchBalance(address) {
     })
 }
 
-export function fetchRecomendedFee({ address, amount, outputs = 1 }) {
-    let fee_per_kb
-    let inputs
+const fetchRecomendedFeeAddresses = {}
+export function fetchRecomendedFee({
+    address,
+    amount,
+    outputs = 1,
+    force_fetch = false
+}) {
+    const first_time = fetchRecomendedFeeAddresses[address] === undefined
+    if (first_time) fetchRecomendedFeeAddresses[address] = {}
+    const address_data = fetchRecomendedFeeAddresses[address]
+    const promise =
+        first_time || force_fetch
+            ? fetchFees()
+                  .catch(e =>
+                      Promise.reject(
+                          "BTC.fetchRecomendedFee: We couldn't fetch fee prices"
+                      )
+                  )
+                  .then(fee => {
+                      address_data.fee_per_kb = fee
+                      return fetch(`${api_url}/addr/${address}/utxo?noCache=1`)
+                  })
+                  .then(response => response.json())
+                  .catch(e =>
+                      Promise.reject(
+                          "BTC.fetchRecomendedFee: We couldn't fetch utxo"
+                      )
+                  )
+                  .then(utxo => {
+                      return (address_data.inputs = sortBy(
+                          utxo || [],
+                          '-amount'
+                      ).map(input => input.amount))
+                  })
+            : Promise.resolve()
 
-    return fetchFee()
-        .catch(e =>
-            Promise.reject(
-                "BTC.fetchRecomendedFee: We couldn't fetch fee prices"
-            )
-        )
-        .then(fee => {
-            fee_per_kb = fee
-            return fetch(`${api_url}/addr/${address}/utxo?noCache=1`)
+    return promise.then(() => {
+        // console.log({
+        //     force_fetch: force_fetch,
+        //     amount: amount || sum(address_data.inputs),
+        //     fee_per_kb: address_data.fee_per_kb,
+        //     inputs: address_data.inputs,
+        //     outputs: outputs + 1 // extra output for changeAddress
+        // })
+        return calcFee({
+            amount: amount || sum(address_data.inputs),
+            fee_per_kb: address_data.fee_per_kb,
+            inputs: address_data.inputs,
+            outputs: outputs + 1 // extra output for changeAddress
         })
-        .then(response => response.json())
-        .catch(e =>
-            Promise.reject("BTC.fetchRecomendedFee: We couldn't fetch utxo")
-        )
-        .then(utxo => {
-            inputs = sortBy(utxo || [], '-amount').map(input => input.amount)
-            return calcFee({
-                amount: amount || sum(inputs),
-                fee_per_kb,
-                inputs,
-                outputs: outputs + 1 // extra output for changeAddress
-            })
-        })
+    })
 }
-
-function fetchFee() {
+function fetchFees() {
     const promises = BitcoinFee.SERVICES.map(service =>
         BitcoinFee.fetchFee(service)
     )
@@ -295,7 +318,6 @@ function fetchFee() {
         fees => (fees.length > 0 ? median(fees) : Promise.reject(null))
     )
 }
-
 function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
     let amount_sum = 0
     let index = 0
@@ -313,7 +335,6 @@ function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
         coin_decimals
     )
 }
-
 // export function fetchRecomendedFee() {
 //     // https://btc-bitcore1.trezor.io/api/utils/estimatefee
 //     // https://bitcoinfees.21.co/api/v1/fees/recommended
