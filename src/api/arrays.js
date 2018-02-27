@@ -7,6 +7,9 @@ export function lowest(array) {
 export function median(array) {
     return array.reduce((sum, current) => sum + current) / array.length
 }
+export function sum(array) {
+    return array.reduce((x, y) => x + y)
+}
 
 export function shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {

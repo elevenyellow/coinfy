@@ -8,7 +8,7 @@ import {
     decryptBIP38 as _decryptBIP38,
     encryptBIP38 as _encryptBIP38
 } from '/api/crypto'
-import { sortBy, highest } from '/api/arrays'
+import { sortBy, median, sum } from '/api/arrays'
 import { localStorageGet } from '/api/browser'
 import { resolveAll } from '/api/promises'
 
@@ -258,28 +258,69 @@ export function fetchBalance(address) {
     })
 }
 
-export function fetchRecomendedFee({ address }) {
-    let fee
-    return resolveAll(
-        BitcoinFee.SERVICES.map(service => BitcoinFee.fetchFee(service))
-    )
-        .then(fees => {
-            fee = highest(fees)
+export function fetchRecomendedFee({ address, amount, outputs = 1 }) {
+    let fee_per_kb
+    let inputs
+
+    return fetchFee()
+        .catch(e =>
+            Promise.reject(
+                "BTC.fetchRecomendedFee: We couldn't fetch fee prices"
+            )
+        )
+        .then(fee => {
+            fee_per_kb = fee
             return fetch(`${api_url}/addr/${address}/utxo?noCache=1`)
         })
         .then(response => response.json())
+        .catch(e =>
+            Promise.reject("BTC.fetchRecomendedFee: We couldn't fetch utxo")
+        )
         .then(utxo => {
-            console.log(utxo, fee)
-            return 0.00001
+            inputs = sortBy(utxo || [], '-amount').map(input => input.amount)
+            return calcFee({
+                amount: amount || sum(inputs),
+                fee_per_kb,
+                inputs,
+                outputs: outputs + 1 // extra output for changeAddress
+            })
         })
 }
+
+function fetchFee() {
+    const promises = BitcoinFee.SERVICES.map(service =>
+        BitcoinFee.fetchFee(service)
+    )
+    return resolveAll(promises).then(
+        fees => (fees.length > 0 ? median(fees) : Promise.reject(null))
+    )
+}
+
+function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
+    let amount_sum = 0
+    let index = 0
+    let inputs_total = 0
+    for (; index < inputs.length && amount_sum < amount; ++index) {
+        amount_sum += inputs[index]
+        inputs_total += 1
+    }
+
+    return decimalsMax(
+        bigNumber(10 + inputs_total * 148 + outputs * 34 + extra_bytes)
+            .times(fee_per_kb)
+            .div(satoshis)
+            .toString(),
+        coin_decimals
+    )
+}
+
 // export function fetchRecomendedFee() {
 //     // https://btc-bitcore1.trezor.io/api/utils/estimatefee
 //     // https://bitcoinfees.21.co/api/v1/fees/recommended
 //     // https://www.bitgo.com/api/v1/tx/fee
 //     return fetch(`https://insight.bitpay.com/api/utils/estimatefee`)
 //         .then(response => response.json())
-//         .then(fees => fees[2]) // In shatosis
+//         .then(fees => fees[2])
 // }
 
 export function fetchTxs(address, from = 0, to = from + 25) {
@@ -366,10 +407,10 @@ export function createSimpleTx({
     toAddress,
     amount,
     fee,
-    backAddress
+    changeAddress
 }) {
     const fromAddress = getAddressFromPrivateKey(private_key)
-    backAddress = isAddressCheck(backAddress) ? backAddress : fromAddress
+    changeAddress = isAddressCheck(changeAddress) ? changeAddress : fromAddress
     return fetch(`${api_url}/addr/${fromAddress}/utxo?noCache=1`)
         .then(response => response.json())
         .then(txs => {
@@ -399,7 +440,7 @@ export function createSimpleTx({
                 .minus(amount)
                 .minus(bigNumber(fee))
             if (amountBack.gt(0))
-                txb.addOutput(backAddress, Number(amountBack.times(satoshis)))
+                txb.addOutput(changeAddress, Number(amountBack.times(satoshis)))
 
             // signing inputs
             txb.inputs.forEach((input, index) => {

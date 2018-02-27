@@ -3,7 +3,14 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 import { Show } from '/router/components'
 
-import { MAINNET, OK, ERROR, ALERT, NORMAL } from '/const/'
+import {
+    MAINNET,
+    OK,
+    ERROR,
+    ALERT,
+    NORMAL,
+    TIMEOUT_BETWEEN_EACH_FAIL_FETCH_FEE
+} from '/const/'
 import styles from '/const/styles'
 import routes from '/router/routes'
 
@@ -61,6 +68,7 @@ export default class Send extends Component {
             amount2_input: 0, // FIAT
             fee_input: 0,
             fee_input_visible: false,
+            fee_fetching: true,
             password_input: '',
             password_input_invalid: false,
             error_when_create: false,
@@ -72,6 +80,7 @@ export default class Send extends Component {
         }
 
         // binding
+        this.fetchRecomendedFee = this.fetchRecomendedFee.bind(this)
         this.onChangeAddress = this.onChangeAddress.bind(this)
         this.onChangeAmount1 = this.onChangeAmount1.bind(this)
         this.onChangeAmount2 = this.onChangeAmount2.bind(this)
@@ -98,11 +107,20 @@ export default class Send extends Component {
     }
 
     fetchRecomendedFee() {
-        this.Coin.fetchRecomendedFee({ address: this.asset.address }).then(
-            fee => {
+        this.Coin.fetchRecomendedFee({ address: this.asset.address })
+            .then(fee => {
+                const collector = collect()
                 state.view.fee_input = this.fee_recomended = bigNumber(fee)
-            }
-        )
+                state.view.fee_fetching = false
+                collector.emit()
+            })
+            .catch(e => {
+                console.error(e)
+                setTimeout(
+                    this.fetchRecomendedFee,
+                    TIMEOUT_BETWEEN_EACH_FAIL_FETCH_FEE
+                )
+            })
     }
 
     onChangeAddress(e) {
@@ -308,6 +326,7 @@ export default class Send extends Component {
             symbol_crypto: symbol,
             symbol_crypto_fee: this.Coin.symbol_fee,
             symbol_currency: state.fiat,
+            fee_fetching: state.view.fee_fetching,
             fee_input: state.view.fee_input,
             fee_input_visible: state.view.fee_input_visible,
             fee_fiat: formatCurrency(
@@ -362,6 +381,7 @@ function SendTemplate({
     symbol_crypto,
     symbol_crypto_fee,
     symbol_currency,
+    fee_fetching,
     fee_fiat,
     fee_input,
     fee_input_visible,
@@ -472,18 +492,26 @@ function SendTemplate({
                     </Show>
 
                     <Div text-align="center" padding="10px 0">
-                        <TextFee href="#" onClick={onClickFee}>
-                            <span>Recommended Network Fee </span>
-                            <Span color={color} font-weight="bold">
-                                {fee_recomended}{' '}
-                            </Span>
-                            <Span color="#000" font-weight="bold">
-                                {fee_recomended_fiat}
-                            </Span>
-                            <Show if={symbol_crypto !== symbol_crypto_fee}>
-                                <span> ({symbol_crypto_fee})</span>
-                            </Show>
-                        </TextFee>
+                        <Show if={!fee_fetching}>
+                            <TextFee href="#" onClick={onClickFee}>
+                                <span>Recommended Network Fee </span>
+                                <Span color={color} font-weight="bold">
+                                    {fee_recomended}{' '}
+                                </Span>
+                                <Span color="#000" font-weight="bold">
+                                    {fee_recomended_fiat}
+                                </Span>
+                                <Show if={symbol_crypto !== symbol_crypto_fee}>
+                                    <span> ({symbol_crypto_fee})</span>
+                                </Show>
+                            </TextFee>
+                        </Show>
+
+                        <Show if={fee_fetching}>
+                            <TextFeeFetching>
+                                Fetching Recommended Network Fee ...{' '}
+                            </TextFeeFetching>
+                        </Show>
                     </Div>
 
                     <Div padding-top="10px">
@@ -661,6 +689,11 @@ const TextFee = styled.a`
     &:hover {
         color: #000;
     }
+`
+
+const TextFeeFetching = styled.span`
+    font-size: 12px;
+    color: ${styles.color.grey1};
 `
 
 const DivOverInput = styled.div`

@@ -259,13 +259,10 @@ export function createSimpleTx({
     toAddress,
     amount,
     fee,
-    backAddress,
     gas_limit = default_gas_limit,
     data
 }) {
     const fromAddress = getAddressFromPrivateKey(private_key)
-    backAddress = isAddressCheck(backAddress) ? backAddress : fromAddress
-
     // return JSONRpc(url_myetherapi, 'eth_getTransactionCount', [
     //     fromAddress,
     //     'pending'

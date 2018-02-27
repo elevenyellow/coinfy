@@ -12,11 +12,9 @@ export default class SendERC20 extends Send {
     fetchRecomendedFee() {
         ETH.fetchBalance(this.asset.address).then(balance => {
             this.balance_fee = balance
-            return this.Coin.fetchRecomendedFee(this.asset.address).then(
-                fee => {
-                    state.view.fee_input = this.fee_recomended = bigNumber(fee)
-                }
-            )
+            return this.Coin.fetchRecomendedFee().then(fee => {
+                state.view.fee_input = this.fee_recomended = bigNumber(fee)
+            })
         })
     }
 
