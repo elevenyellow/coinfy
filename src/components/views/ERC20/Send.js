@@ -5,9 +5,8 @@ import state from '/store/state'
 import { fetchBalance } from '/store/actions'
 
 export default class SendERC20 extends Send {
-    getMax() {
-        const max = bigNumber(this.balance)
-        return max.gt(0) ? max : 0
+    get isEnoughBalance() {
+        return this.amount.lte(this.balance_fee)
     }
 
     fetchBalance() {

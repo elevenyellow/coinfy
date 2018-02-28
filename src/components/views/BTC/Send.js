@@ -84,7 +84,8 @@ export default class Send extends Component {
         this.onChangeAddress = this.onChangeAddress.bind(this)
         this.onChangeAmount1 = this.onChangeAmount1.bind(this)
         this.onChangeAmount2 = this.onChangeAmount2.bind(this)
-        this.onChangeMax = this.onChangeMax.bind(this)
+        this.onClickMax = this.onClickMax.bind(this)
+        this.onChangeFee = this.onChangeFee.bind(this)
         this.onClickFee = this.onClickFee.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onNext = this.onNext.bind(this)
@@ -143,17 +144,23 @@ export default class Send extends Component {
         }
         this.amount = bigNumber(parseNumber(state.view.amount1_input))
     }
-
-    updateFee(fee) {
+    updateRecomendedFee(fee) {
         state.view.fee_recomended = fee
-        if (!state.view.fee_input_visible) this.fee = bigNumber(fee)
+    }
+    updateFee() {
+        this.fee = bigNumber(
+            state.view.fee_input_visible
+                ? state.view.fee_input
+                : state.view.fee_recomended
+        )
     }
 
     onChangeAmount(amount, type) {
         const collector = collect()
         this.updateAmounts({ [type]: amount })
         this.fetchFee({ amount: this.amount }).then(fee => {
-            this.updateFee(fee)
+            this.updateRecomendedFee(fee)
+            this.updateFee()
             collector.emit()
         })
     }
@@ -164,19 +171,28 @@ export default class Send extends Component {
         this.onChangeAmount(e.target.value, 'amount2')
     }
 
-    onChangeMax(e) {
-        this.updateAmounts({ amount1: this.getMax() })
+    onClickMax(e) {
+        let amount = state.view.fee_input_visible
+            ? bigNumber(this.balance_fee).minus(state.view.fee_input)
+            : this.balance_fee
+
+        this.fetchFee({ amount }).then(fee => {
+            const collector = collect()
+            this.updateRecomendedFee(fee)
+            this.updateFee()
+            amount = bigNumber(this.balance_fee).minus(this.fee)
+            this.updateAmounts({
+                amount1: amount.lt(0) ? '0' : amount.toString()
+            })
+            collector.emit()
+        })
     }
 
     onChangeAddress(e) {
         const collector = collect()
         const value = e.target.value.trim()
         state.view.address_input = value
-        if (this.Coin.isAddressCheck(value)) {
-            state.view.address_input_error = false
-        } else {
-            state.view.address_input_error = true
-        }
+        state.view.address_input_error = !this.Coin.isAddressCheck(value)
         collector.emit()
     }
 
@@ -185,12 +201,13 @@ export default class Send extends Component {
         const collector = collect()
         state.view.fee_input_visible = !state.view.fee_input_visible
         state.view.fee_input = state.view.fee_recomended.toString()
+        this.fee = bigNumber(state.view.fee_recomended)
         collector.emit()
     }
 
     onChangeFee(e) {
-        state.view.fee_input = e.target.value
         this.fee = bigNumber(parseNumber(e.target.value))
+        state.view.fee_input = e.target.value
     }
 
     onChangePassword(e) {
@@ -280,13 +297,15 @@ export default class Send extends Component {
             })
     }
 
-    getMax() {
-        const max = bigNumber(this.balance).minus(this.fee)
-        return max.gt(0) ? max : 0
-    }
+    // getMax() {
+    //     // console.log('getMax', this.amount.toString())
+    //     // console.log('getMax', this.fee.toString())
+    //     const max = bigNumber(this.balance).minus(this.fee)
+    //     return max.gt(0) ? max : 0
+    // }
 
     get isEnoughBalance() {
-        return this.amount.lte(this.getMax())
+        return this.amount.plus(this.fee).lte(this.balance)
     }
 
     get isEnoughBalanceForFee() {
@@ -360,7 +379,7 @@ export default class Send extends Component {
             onChangeAddress: this.onChangeAddress,
             onChangeAmount1: this.onChangeAmount1,
             onChangeAmount2: this.onChangeAmount2,
-            onChangeMax: this.onChangeMax,
+            onClickMax: this.onClickMax,
             onClickFee: this.onClickFee,
             onChangeFee: this.onChangeFee,
             onChangePassword: this.onChangePassword,
@@ -407,7 +426,7 @@ function SendTemplate({
     onChangeAddress,
     onChangeAmount1,
     onChangeAmount2,
-    onChangeMax,
+    onClickMax,
     onClickFee,
     onChangeFee,
     onChangePassword,
@@ -439,7 +458,7 @@ function SendTemplate({
                                 font-size="15px"
                                 border-radius="10px 0 0 10px"
                                 border-right="1px solid transparent"
-                                onClick={onChangeMax}
+                                onClick={onClickMax}
                             >
                                 Max
                             </Button>
