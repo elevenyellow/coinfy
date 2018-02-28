@@ -258,16 +258,16 @@ export function fetchBalance(address) {
     })
 }
 
-const fetchRecomendedFeeAddresses = {}
+const cacheRecomendedFeeAddresses = {}
 export function fetchRecomendedFee({
     address,
     amount,
     outputs = 1,
     force_fetch = false
 }) {
-    const first_time = fetchRecomendedFeeAddresses[address] === undefined
-    if (first_time) fetchRecomendedFeeAddresses[address] = {}
-    const address_data = fetchRecomendedFeeAddresses[address]
+    const first_time = cacheRecomendedFeeAddresses[address] === undefined
+    if (first_time) cacheRecomendedFeeAddresses[address] = {}
+    const address_data = cacheRecomendedFeeAddresses[address]
     const promise =
         first_time || force_fetch
             ? fetchFees()
@@ -296,19 +296,14 @@ export function fetchRecomendedFee({
 
     return promise.then(() => {
         const inputs = address_data.inputs
-        // console.log({
-        //     force_fetch: force_fetch,
-        //     amount: amount || sum(address_data.inputs),
-        //     fee_per_kb: address_data.fee_per_kb,
-        //     inputs: address_data.inputs,
-        //     outputs: outputs + 1 // extra output for changeAddress
-        // })
-        return calcFee({
-            amount: amount || inputs.length > 0 ? sum(address_data.inputs) : 0,
+        const data = {
+            amount: amount || sum(address_data.inputs),
             fee_per_kb: address_data.fee_per_kb,
             inputs: inputs,
             outputs: outputs + 1 // extra output for changeAddress
-        })
+        }
+        // console.log(data)
+        return calcFee(data)
     })
 }
 function fetchFees() {

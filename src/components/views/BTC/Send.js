@@ -58,9 +58,9 @@ export default class Send extends Component {
         // Initial state
         this.balance = this.asset.balance
         this.balance_fee = this.balance
-        this.amount = 0
-        this.fee = 0
-        this.fee_recomended = 0
+        this.amount = bigNumber(0)
+        this.fee = bigNumber(0)
+        this.fee_recomended = bigNumber(0)
         state.view = {
             address_input: '',
             address_input_error: false,
@@ -80,7 +80,7 @@ export default class Send extends Component {
         }
 
         // binding
-        this.fetchRecomendedFee = this.fetchRecomendedFee.bind(this)
+        this.fetchFee = this.fetchFee.bind(this)
         this.onChangeAddress = this.onChangeAddress.bind(this)
         this.onChangeAmount1 = this.onChangeAmount1.bind(this)
         this.onChangeAmount2 = this.onChangeAmount2.bind(this)
@@ -93,7 +93,7 @@ export default class Send extends Component {
         this.onSend = this.onSend.bind(this)
 
         this.fetchBalance()
-        this.fetchRecomendedFee()
+        this.fetchFee({ force_fetch: true })
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -106,10 +106,10 @@ export default class Send extends Component {
         fetchBalance(this.asset_id)
     }
 
-    fetchRecomendedFee() {
+    fetchFee({ force_fetch }) {
         this.Coin.fetchRecomendedFee({
-            address: this.asset.address,
-            force_fetch: true
+            force_fetch,
+            address: this.asset.address
         })
             .then(fee => {
                 const collector = collect()
@@ -120,10 +120,42 @@ export default class Send extends Component {
             .catch(e => {
                 console.error(e)
                 setTimeout(
-                    this.fetchRecomendedFee,
+                    () => this.fetchFee({ force_fetch }),
                     TIMEOUT_BETWEEN_EACH_FAIL_FETCH_FEE
                 )
             })
+    }
+
+    calcAmounts({ amount1, amount2 }) {
+        const collector = collect()
+        const symbol = this.asset.symbol
+        const price = getPrice(symbol)
+        if (amount1 !== undefined) {
+            state.view.amount1_input = amount1
+            state.view.amount2_input = decimalsMax(
+                bigNumber(price).times(parseNumber(amount1)),
+                2
+            )
+        } else {
+            state.view.amount2_input = amount2
+            state.view.amount1_input = decimalsMax(
+                bigNumber(parseNumber(amount2)).div(price),
+                10
+            )
+        }
+        this.amount = bigNumber(parseNumber(state.view.amount1_input))
+        this.fee = bigNumber(parseNumber(state.view.fee_input))
+        collector.emit()
+    }
+
+    onChangeAmount1(e) {
+        this.calcAmounts({ amount1: e.target.value })
+    }
+    onChangeAmount2(e) {
+        this.calcAmounts({ amount2: e.target.value })
+    }
+    onChangeMax(e) {
+        this.calcAmounts({ amount1: this.getMax() })
     }
 
     onChangeAddress(e) {
@@ -135,26 +167,6 @@ export default class Send extends Component {
         } else {
             state.view.address_input_error = true
         }
-        collector.emit()
-    }
-
-    onChangeAmount1(e) {
-        const collector = collect()
-        state.view.amount1_input = e.target.value
-        delete state.view.amount2_input
-        collector.emit()
-    }
-    onChangeAmount2(e) {
-        const collector = collect()
-        state.view.amount2_input = e.target.value
-        delete state.view.amount1_input
-        collector.emit()
-    }
-
-    onChangeMax(e) {
-        const collector = collect()
-        state.view.amount1_input = this.getMax()
-        delete state.view.amount2_input
         collector.emit()
     }
 
@@ -287,11 +299,11 @@ export default class Send extends Component {
     }
 
     render() {
-        let amount1, amount2
         const symbol = this.asset.symbol
-        const price = getPrice(symbol)
+        const isEnoughBalance = this.isEnoughBalance
+        const isEnoughBalanceForFee = this.isEnoughBalanceForFee
         const step_path = state.location.path[3]
-        let step = state.view.is_sent
+        const step = state.view.is_sent
             ? 2
             : step_path !== undefined && this.tx_raw !== undefined
               ? Number(step_path)
@@ -300,32 +312,13 @@ export default class Send extends Component {
         // Removing tx_raw in case user click back in browser
         if (step === 0) delete this.tx_raw
 
-        if (state.view.amount1_input !== undefined) {
-            amount1 = state.view.amount1_input
-            amount2 = decimalsMax(
-                bigNumber(getPrice(symbol)).times(parseNumber(amount1)),
-                2
-            )
-        } else {
-            amount2 = state.view.amount2_input
-            amount1 = decimalsMax(
-                bigNumber(parseNumber(amount2)).div(getPrice(symbol)),
-                10
-            )
-        }
-
-        this.amount = bigNumber(parseNumber(amount1))
-        this.fee = bigNumber(parseNumber(state.view.fee_input))
-        const isEnoughBalance = this.isEnoughBalance
-        const isEnoughBalanceForFee = this.isEnoughBalanceForFee
-
         return React.createElement(SendTemplate, {
             step: step,
             color: this.Coin.color,
             address_input: state.view.address_input,
             address_input_error: state.view.address_input_error,
-            amount1_input: amount1,
-            amount2_input: amount2,
+            amount1_input: state.view.amount1_input,
+            amount2_input: state.view.amount2_input,
             symbol_crypto: symbol,
             symbol_crypto_fee: this.Coin.symbol_fee,
             symbol_currency: state.fiat,

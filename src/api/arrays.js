@@ -8,7 +8,11 @@ export function median(array) {
     return array.reduce((sum, current) => sum + current) / array.length
 }
 export function sum(array) {
-    return array.reduce((x, y) => x + y)
+    return array.length > 0
+        ? array
+              .filter(n => typeof n == 'number' && !isNaN(n))
+              .reduce((x, y) => x + y)
+        : 0
 }
 
 export function shuffle(a) {
