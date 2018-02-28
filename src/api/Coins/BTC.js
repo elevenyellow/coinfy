@@ -297,7 +297,7 @@ export function fetchRecomendedFee({
     return promise.then(() => {
         const inputs = address_data.inputs
         const data = {
-            amount: amount || sum(address_data.inputs),
+            amount: amount || 0,
             fee_per_kb: address_data.fee_per_kb,
             inputs: inputs,
             outputs: outputs + 1 // extra output for changeAddress

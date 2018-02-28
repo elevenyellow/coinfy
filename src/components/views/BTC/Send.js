@@ -94,7 +94,12 @@ export default class Send extends Component {
         this.onSend = this.onSend.bind(this)
 
         this.fetchBalance()
-        this.fetchFee({ force_fetch: true })
+        this.fetchFee({ force_fetch: true }).then(fee => {
+            const collector = collect()
+            this.updateRecomendedFee(fee)
+            this.updateFee(fee)
+            collector.emit()
+        })
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -336,6 +341,9 @@ export default class Send extends Component {
 
         // Removing tx_raw in case user click back in browser
         if (step === 0) delete this.tx_raw
+
+        // console.log(this.fee.toString())
+        // console.log(state.view.fee_recomended.toString())
 
         return React.createElement(SendTemplate, {
             step: step,
