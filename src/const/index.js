@@ -15,7 +15,7 @@ export const MAINNET = 0
 export const TESTNET = 1
 
 // state
-export const KEYS_TO_REMOVE_WHEN_EXPORTING = ['state', 'summary']
+export const KEYS_TO_REMOVE_WHEN_EXPORTING = ['state', 'summary', 'balance']
 
 // timeouts
 export const TIMEOUT_FETCH_PRICES = 30000 // 30 seconds

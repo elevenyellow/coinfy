@@ -2,6 +2,7 @@ import { ETH } from '/api/Coins'
 import { bigNumber } from '/api/numbers'
 import Send from '/components/views/BTC/Send'
 import state from '/store/state'
+import { fetchBalance } from '/store/actions'
 
 export default class SendERC20 extends Send {
     getMax() {
@@ -9,12 +10,12 @@ export default class SendERC20 extends Send {
         return max.gt(0) ? max : 0
     }
 
-    fetchRecomendedFee() {
+    fetchBalance() {
+        fetchBalance(this.asset_id).then(balance => {
+            this.balance = bigNumber(balance)
+        })
         ETH.fetchBalance(this.asset.address).then(balance => {
-            this.balance_fee = balance
-            return this.Coin.fetchRecomendedFee().then(fee => {
-                state.view.fee_input = this.fee_recomended = bigNumber(fee)
-            })
+            this.balance_fee = bigNumber(balance)
         })
     }
 

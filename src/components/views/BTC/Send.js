@@ -55,20 +55,20 @@ export default class Send extends Component {
         this.observer.observe(state.view)
         this.observer.observe(state.location, 'pathname')
 
-        // Initial state
-        this.balance = this.asset.balance
-        this.balance_fee = this.balance
+        // Internal data
         this.amount = bigNumber(0)
         this.fee = bigNumber(0)
-        this.fee_recomended = bigNumber(0)
+        this.balance = bigNumber(this.asset.balance)
+        this.balance_fee = this.balance
+        // Initial state
         state.view = {
             address_input: '',
             address_input_error: false,
             amount1_input: 0, // BTC
             amount2_input: 0, // FIAT
+            fee_recomended: 0,
             fee_input: 0,
             fee_input_visible: false,
-            fee_fetching: true,
             password_input: '',
             password_input_invalid: false,
             error_when_create: false,
@@ -103,20 +103,19 @@ export default class Send extends Component {
     }
 
     fetchBalance() {
-        fetchBalance(this.asset_id)
+        fetchBalance(this.asset_id).then(balance => {
+            // balance_fee is used for erc20 tokens
+            this.balance = this.balance_fee = bigNumber(balance)
+        })
     }
 
-    fetchFee({ force_fetch }) {
-        this.Coin.fetchRecomendedFee({
+    fetchFee({ amount, force_fetch }) {
+        return this.Coin.fetchRecomendedFee({
             force_fetch,
+            amount,
             address: this.asset.address
         })
-            .then(fee => {
-                const collector = collect()
-                state.view.fee_input = this.fee_recomended = bigNumber(fee)
-                state.view.fee_fetching = false
-                collector.emit()
-            })
+            .then(fee => fee)
             .catch(e => {
                 console.error(e)
                 setTimeout(
@@ -126,8 +125,7 @@ export default class Send extends Component {
             })
     }
 
-    calcAmounts({ amount1, amount2 }) {
-        const collector = collect()
+    updateAmounts({ amount1, amount2 }) {
         const symbol = this.asset.symbol
         const price = getPrice(symbol)
         if (amount1 !== undefined) {
@@ -144,18 +142,30 @@ export default class Send extends Component {
             )
         }
         this.amount = bigNumber(parseNumber(state.view.amount1_input))
-        this.fee = bigNumber(parseNumber(state.view.fee_input))
-        collector.emit()
     }
 
+    updateFee(fee) {
+        state.view.fee_recomended = fee
+        if (!state.view.fee_input_visible) this.fee = bigNumber(fee)
+    }
+
+    onChangeAmount(amount, type) {
+        const collector = collect()
+        this.updateAmounts({ [type]: amount })
+        this.fetchFee({ amount: this.amount }).then(fee => {
+            this.updateFee(fee)
+            collector.emit()
+        })
+    }
     onChangeAmount1(e) {
-        this.calcAmounts({ amount1: e.target.value })
+        this.onChangeAmount(e.target.value, 'amount1')
     }
     onChangeAmount2(e) {
-        this.calcAmounts({ amount2: e.target.value })
+        this.onChangeAmount(e.target.value, 'amount2')
     }
+
     onChangeMax(e) {
-        this.calcAmounts({ amount1: this.getMax() })
+        this.updateAmounts({ amount1: this.getMax() })
     }
 
     onChangeAddress(e) {
@@ -172,19 +182,15 @@ export default class Send extends Component {
 
     onClickFee(e) {
         e.preventDefault()
-        if (!state.view.fee_input_visible) state.view.fee_input_visible = true
-        else state.view.fee_input = this.fee_recomended.toString()
+        const collector = collect()
+        state.view.fee_input_visible = !state.view.fee_input_visible
+        state.view.fee_input = state.view.fee_recomended.toString()
+        collector.emit()
     }
-
-    // createRefInputFee(e) {
-    //     // console.log(e.target, e.base)
-    //     // e.base.focus() // is a div not an input
-    //     // console.log(document.getElementsByClassName('fee_input')[0])
-    //     // document.getElementsByClassName('fee_input')[0].focus()
-    // }
 
     onChangeFee(e) {
         state.view.fee_input = e.target.value
+        this.fee = bigNumber(parseNumber(e.target.value))
     }
 
     onChangePassword(e) {
@@ -322,16 +328,15 @@ export default class Send extends Component {
             symbol_crypto: symbol,
             symbol_crypto_fee: this.Coin.symbol_fee,
             symbol_currency: state.fiat,
-            fee_fetching: state.view.fee_fetching,
             fee_input: state.view.fee_input,
             fee_input_visible: state.view.fee_input_visible,
-            fee_fiat: formatCurrency(
-                convertBalance(this.Coin.symbol_fee, this.fee),
+            fee_input_fiat: formatCurrency(
+                convertBalance(this.Coin.symbol_fee, state.view.fee_input),
                 2
             ),
-            fee_recomended: this.fee_recomended,
+            fee_recomended: state.view.fee_recomended,
             fee_recomended_fiat: formatCurrency(
-                convertBalance(this.Coin.symbol_fee, this.fee_recomended),
+                convertBalance(this.Coin.symbol_fee, state.view.fee_recomended),
                 2
             ),
             total: this.amount.plus(this.fee).toString(),
@@ -341,7 +346,7 @@ export default class Send extends Component {
             isEnoughBalanceForFee: isEnoughBalanceForFee,
             isValidForm:
                 this.isValidForm && isEnoughBalance && isEnoughBalanceForFee,
-            isFeeLowerThanRecomended: this.fee.lt(this.fee_recomended),
+            isFeeLowerThanRecomended: this.fee.lt(state.view.fee_recomended),
             error_when_create: state.view.error_when_create,
             send_provider_selected: state.view.send_provider_selected,
             send_providers: this.send_providers,
@@ -377,8 +382,7 @@ function SendTemplate({
     symbol_crypto,
     symbol_crypto_fee,
     symbol_currency,
-    fee_fetching,
-    fee_fiat,
+    fee_input_fiat,
     fee_input,
     fee_input_visible,
     fee_recomended,
@@ -463,7 +467,7 @@ function SendTemplate({
                             padding-top="10px"
                             position="relative"
                         >
-                            <DivOverInput>{fee_fiat}</DivOverInput>
+                            <DivOverInput>{fee_input_fiat}</DivOverInput>
                             <Input
                                 value={fee_input}
                                 error="Very low fee"
@@ -488,26 +492,20 @@ function SendTemplate({
                     </Show>
 
                     <Div text-align="center" padding="10px 0">
-                        <Show if={!fee_fetching}>
-                            <TextFee href="#" onClick={onClickFee}>
-                                <span>Recommended Network Fee </span>
-                                <Span color={color} font-weight="bold">
-                                    {fee_recomended}{' '}
-                                </Span>
-                                <Span color="#000" font-weight="bold">
-                                    {fee_recomended_fiat}
-                                </Span>
-                                <Show if={symbol_crypto !== symbol_crypto_fee}>
-                                    <span> ({symbol_crypto_fee})</span>
-                                </Show>
-                            </TextFee>
-                        </Show>
-
-                        <Show if={fee_fetching}>
-                            <TextFeeFetching>
-                                Fetching Recommended Network Fee ...{' '}
-                            </TextFeeFetching>
-                        </Show>
+                        {/* <Show if={!fee_fetching}> */}
+                        <TextFee href="#" onClick={onClickFee}>
+                            <span>Recommended Network Fee </span>
+                            <Span color={color} font-weight="bold">
+                                {fee_recomended}{' '}
+                            </Span>
+                            <Span color="#000" font-weight="bold">
+                                {fee_recomended_fiat}
+                            </Span>
+                            <Show if={symbol_crypto !== symbol_crypto_fee}>
+                                <span> ({symbol_crypto_fee})</span>
+                            </Show>
+                        </TextFee>
+                        {/* </Show> */}
                     </Div>
 
                     <Div padding-top="10px">
@@ -685,11 +683,6 @@ const TextFee = styled.a`
     &:hover {
         color: #000;
     }
-`
-
-const TextFeeFetching = styled.span`
-    font-size: 12px;
-    color: ${styles.color.grey1};
 `
 
 const DivOverInput = styled.div`

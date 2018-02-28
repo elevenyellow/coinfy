@@ -275,7 +275,7 @@ fetchAllBalances()
 export function fetchBalance(asset_id) {
     const asset = state.assets[asset_id]
     if (asset !== undefined) {
-        Coins[asset.symbol]
+        return Coins[asset.symbol]
             .fetchBalance(asset.address)
             .then(balance => {
                 showNotConnectionNotification(false)
