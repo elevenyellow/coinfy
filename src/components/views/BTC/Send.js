@@ -187,7 +187,7 @@ export default class Send extends Component {
             this.updateFee()
             amount = bigNumber(this.balance_fee).minus(this.fee)
             this.updateAmounts({
-                amount1: amount.lt(0) ? '0' : amount.toString()
+                amount1: amount.lt(0) ? '0' : amount.toFixed()
             })
             collector.emit()
         })
@@ -303,8 +303,8 @@ export default class Send extends Component {
     }
 
     // getMax() {
-    //     // console.log('getMax', this.amount.toString())
-    //     // console.log('getMax', this.fee.toString())
+    //     // console.log('getMax', this.amount.toFixed())
+    //     // console.log('getMax', this.fee.toFixed())
     //     const max = bigNumber(this.balance).minus(this.fee)
     //     return max.gt(0) ? max : 0
     // }
@@ -342,8 +342,8 @@ export default class Send extends Component {
         // Removing tx_raw in case user click back in browser
         if (step === 0) delete this.tx_raw
 
-        // console.log(this.fee.toString())
-        // console.log(state.view.fee_recomended.toString())
+        // console.log(this.fee.toFixed())
+        // console.log(state.view.fee_recomended.toFixed())
 
         return React.createElement(SendTemplate, {
             step: step,
@@ -366,7 +366,7 @@ export default class Send extends Component {
                 convertBalance(this.Coin.symbol_fee, state.view.fee_recomended),
                 2
             ),
-            total: this.amount.plus(this.fee).toString(),
+            total: this.amount.plus(this.fee).toFixed(),
             password_input: state.view.password_input,
             password_input_invalid: state.view.password_input_invalid,
             isEnoughBalance: isEnoughBalance,
