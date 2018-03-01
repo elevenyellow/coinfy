@@ -2,10 +2,12 @@ import BigNumber from 'bignumber.js'
 
 BigNumber.config({ ERRORS: false }) // https://github.com/MikeMcl/bignumber.js/issues/11
 
+// Always shows ${max} decimals
 export function decimals(value, max = 2) {
     return Number(value).toFixed(max)
 }
 
+// If have more than ${max} decimals wil cut it
 export function decimalsMax(value, max = 2) {
     const valueString = String(value)
     const index = valueString.indexOf('.')

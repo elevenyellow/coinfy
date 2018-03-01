@@ -32,7 +32,7 @@ export const symbol_fee = symbol
 export const name = 'Bitcoin'
 export const color = '#fdb033'
 export const ascii = 'Ƀ'
-export const coin_decimals = 10
+export const coin_decimals = 8
 export const price_decimals = 0
 export const satoshis = 100000000
 export const labels = 'btc coin'
@@ -44,6 +44,16 @@ export const derivation_path = {
 
 export function format(value, decimals = coin_decimals) {
     return formatCoin(value, decimals, symbol)
+}
+
+export function toSatoshis(value) {
+    return Math.round(Number(bigNumber(value).times(satoshis)))
+    // return
+    // Number(
+    //     bigNumber(amount.toFixed(8))
+    //         .times(satoshis)
+    //         .toString()
+    // )
 }
 
 export function getWalletFromSeed({
@@ -453,12 +463,12 @@ export function createSimpleTx({
 
             // Adding outputs
             // txb.addOutput(toAddress, 100000000)
-            txb.addOutput(toAddress, Number(amount.times(satoshis)))
+            txb.addOutput(toAddress, toSatoshis(amount))
             const amountBack = bigNumber(totalInput)
                 .minus(amount)
                 .minus(bigNumber(fee))
             if (amountBack.gt(0))
-                txb.addOutput(changeAddress, Number(amountBack.times(satoshis)))
+                txb.addOutput(changeAddress, toSatoshis(amountBack))
 
             // signing inputs
             txb.inputs.forEach((input, index) => {
