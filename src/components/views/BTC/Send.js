@@ -521,7 +521,11 @@ function SendTemplate({
                     <Div text-align="center" padding="10px 0">
                         {/* <Show if={!fee_fetching}> */}
                         <TextFee href="#" onClick={onClickFee}>
-                            <span>Recommended Network Fee </span>
+                            <span>
+                                {fee_input_visible
+                                    ? 'Recommended Network Fee '
+                                    : 'Fee '}
+                            </span>
                             <Span color={color} font-weight="bold">
                                 {fee_recomended}{' '}
                             </Span>

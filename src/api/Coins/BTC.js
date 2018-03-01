@@ -266,8 +266,7 @@ export function fetchRecomendedFee({
     force_fetch = false
 }) {
     const first_time = cacheRecomendedFeeAddresses[address] === undefined
-    if (first_time) cacheRecomendedFeeAddresses[address] = {}
-    const address_data = cacheRecomendedFeeAddresses[address]
+    let address_data
     const promise =
         first_time || force_fetch
             ? fetchFees()
@@ -277,6 +276,7 @@ export function fetchRecomendedFee({
                       )
                   )
                   .then(fee => {
+                      address_data = {}
                       address_data.fee_per_kb = fee
                       return fetch(`${api_url}/addr/${address}/utxo?noCache=1`)
                   })
@@ -295,7 +295,7 @@ export function fetchRecomendedFee({
             : Promise.resolve()
 
     return promise.then(() => {
-        const inputs = address_data.inputs
+        const inputs = address_data.inputs || []
         const data = {
             amount: amount || 0,
             fee_per_kb: address_data.fee_per_kb,
