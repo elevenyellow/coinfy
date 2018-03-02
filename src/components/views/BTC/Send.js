@@ -66,6 +66,7 @@ export default class Send extends Component {
             address_input_error: false,
             amount1_input: 0, // BTC
             amount2_input: 0, // FIAT
+            loading_max: false,
             fee_recomended: 0,
             fee_input: 0,
             fee_input_visible: false,
@@ -191,6 +192,7 @@ export default class Send extends Component {
             ? bigNumber(this.balance_fee).minus(state.view.fee_input)
             : this.balance_fee
 
+        state.view.loading_max = true
         this.fetchFee({ amount: amount_to_calc_fee, use_cache: true }).then(
             fee => {
                 const collector = collect()
@@ -198,6 +200,7 @@ export default class Send extends Component {
                 this.updateAmounts({
                     amount1: this.getMax.toFixed()
                 })
+                state.view.loading_max = false
                 collector.emit()
             }
         )
@@ -397,6 +400,7 @@ export default class Send extends Component {
             tx_id: this.tx_id,
             tx_info: this.Coin.urlInfoTx(this.tx_id),
             url_decode_tx: this.Coin.urlDecodeTx(this.tx_raw),
+            loading_max: state.view.loading_max,
             onChangeAddress: this.onChangeAddress,
             onChangeAmount1: this.onChangeAmount1,
             onChangeAmount2: this.onChangeAmount2,
@@ -446,6 +450,7 @@ function SendTemplate({
     tx_id,
     tx_info,
     url_decode_tx,
+    loading_max,
     onChangeAddress,
     onChangeAmount1,
     onChangeAmount2,
@@ -481,6 +486,8 @@ function SendTemplate({
                                 font-size="15px"
                                 border-radius="10px 0 0 10px"
                                 border-right="1px solid transparent"
+                                loadingIco="/static/image/loading.gif"
+                                loading={loading_max}
                                 onClick={onClickMax}
                             >
                                 Max
