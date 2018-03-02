@@ -16,7 +16,7 @@
         "bip38": "2.0.1",
         "bip39crypto": "2.5.0",
         "bitcoin-fee": "^1.0.0",
-        "bitcoinjs-lib": "3.3.1",
+        "bitcoinjs-lib": "^3.3.2",
         "crypto": "1.0.1",
         "dop": "^0.26.1",
         "dop-router": "^1.1.0",

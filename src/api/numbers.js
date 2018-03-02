@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-
+window.bigNumber = bigNumber
 BigNumber.config({ ERRORS: false }) // https://github.com/MikeMcl/bignumber.js/issues/11
 
 // Always shows ${max} decimals
@@ -25,14 +25,16 @@ export function numberWithSeparation(value, separation = ',') {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separation)
 }
 
-export function parseNumber(number) {
-    const tof = typeof number
-    if (tof == 'number' && !isNaN(number)) return number
-    if (tof == 'object' && number !== null) number = number.toString()
-    if (typeof number != 'string') return 0
-    number = number.trim().replace(/,/g, '')
-    number = Number(number)
-    return isNaN(number) ? 0 : number
+export function parseNumberAsString(number) {
+    number = bigNumber(number)
+    return number.isNaN() ? '0' : number.toFixed()
+    // const tof = typeof number
+    // if (tof == 'number' && !isNaN(number)) return number
+    // if (tof == 'object' && number !== null) number = number.toString()
+    // if (typeof number != 'string') return 0
+    // number = number.trim().replace(/,/g, '')
+    // number = Number(number)
+    // return isNaN(number) ? 0 : number
 }
 
 export function sanitizeHex(hex) {

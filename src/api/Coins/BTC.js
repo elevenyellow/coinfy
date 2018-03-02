@@ -334,14 +334,18 @@ function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
         inputs_total += 1
     }
 
-    return decimalsMax(
+    return cutDecimals(
         bigNumber(10 + inputs_total * 148 + outputs * 34 + extra_bytes)
             .times(fee_per_kb)
             .div(satoshis)
-            .toString(),
-        coin_decimals
+            .toString()
     )
 }
+
+export function cutDecimals(value) {
+    return decimalsMax(value, coin_decimals)
+}
+
 // export function fetchRecomendedFee() {
 //     // https://btc-bitcore1.trezor.io/api/utils/estimatefee
 //     // https://bitcoinfees.21.co/api/v1/fees/recommended

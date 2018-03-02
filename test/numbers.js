@@ -21,6 +21,8 @@ test('bigNumber.toString', t => {
         )
     }
 
+    // allTypes(t, bigNumber, '12345678901234567890', 12345678901234567890)
+
     allTypes(t, bigNumber, '0', 0)
     allTypes(t, bigNumber, '0', 0.0)
     allTypes(t, bigNumber, '1', 1.0)
@@ -41,17 +43,13 @@ test('bigNumber.toString', t => {
     t.end()
 })
 
-// test('bigNumber.toFixed', t => {
-//     t.equal(bigNumber(0).toFixed(), '0')
-//     t.equal(bigNumber(0).toFixed(1), '0.0')
-//     t.equal(bigNumber(0).toFixed(21), '0.000000000000000000000')
-//     t.equal(
-//         bigNumber(0).toFixed(84),
-//         '0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-//     )
+test('bigNumber.toFixed', t => {
+    t.equal(bigNumber(0).toFixed(), '0')
+    // t.equal(bigNumber(0).toFixed(1), '0.0')
+    // t.equal(bigNumber(0).toFixed(21), '0.000000000000000000000')
 
-//     t.end()
-// })
+    t.end()
+})
 
 test('decimals', t => {
     function allTypes(t, f, result, value, value2) {

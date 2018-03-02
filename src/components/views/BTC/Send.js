@@ -15,7 +15,7 @@ import styles from '/const/styles'
 import routes from '/router/routes'
 
 import { Coins } from '/api/Coins'
-import { parseNumber, decimalsMax, bigNumber } from '/api/numbers'
+import { parseNumberAsString, decimalsMax, bigNumber } from '/api/numbers'
 
 import state from '/store/state'
 import { fetchBalance, setHref, sendEventToAnalytics } from '/store/actions'
@@ -97,7 +97,7 @@ export default class Send extends Component {
         this.fetchFee({ force_fetch: true }).then(fee => {
             const collector = collect()
             this.updateRecomendedFee(fee)
-            this.updateFee(fee)
+            this.updateFeeBasedBySource()
             collector.emit()
         })
     }
@@ -121,7 +121,7 @@ export default class Send extends Component {
             amount,
             address: this.asset.address
         })
-            .then(fee => fee)
+            .then(fee => this.Coin.cutDecimals(fee))
             .catch(e => {
                 console.error(e)
                 setTimeout(
@@ -131,33 +131,45 @@ export default class Send extends Component {
             })
     }
 
+    updateAmount(amount_string) {
+        // console.log('updateAmount', typeof amount_string, amount_string)
+        this.amount = bigNumber(this.Coin.cutDecimals(amount_string))
+    }
+    updateFee(fee_string) {
+        // console.log('updateFee', typeof fee_string, fee_string)
+        this.fee = bigNumber(this.Coin.cutDecimals(fee_string))
+    }
+
     updateAmounts({ amount1, amount2 }) {
         const symbol = this.asset.symbol
         const price = getPrice(symbol)
         if (amount1 !== undefined) {
             state.view.amount1_input = amount1
             state.view.amount2_input = decimalsMax(
-                bigNumber(price).times(parseNumber(amount1)),
+                bigNumber(price)
+                    .times(parseNumberAsString(amount1))
+                    .toFixed(),
                 2
             )
         } else {
             state.view.amount2_input = amount2
-            state.view.amount1_input = decimalsMax(
-                bigNumber(parseNumber(amount2)).div(price),
-                10
+            state.view.amount1_input = this.Coin.cutDecimals(
+                bigNumber(parseNumberAsString(amount2)).div(price)
             )
         }
-        this.amount = bigNumber(parseNumber(state.view.amount1_input))
+
+        this.updateAmount(parseNumberAsString(state.view.amount1_input))
     }
-    updateRecomendedFee(fee) {
-        state.view.fee_recomended = fee
-    }
-    updateFee() {
-        this.fee = bigNumber(
+
+    updateFeeBasedBySource() {
+        this.updateFee(
             state.view.fee_input_visible
                 ? state.view.fee_input
                 : state.view.fee_recomended
         )
+    }
+    updateRecomendedFee(fee) {
+        state.view.fee_recomended = fee
     }
 
     onChangeAmount(amount, type) {
@@ -165,7 +177,7 @@ export default class Send extends Component {
         this.updateAmounts({ [type]: amount })
         this.fetchFee({ amount: this.amount }).then(fee => {
             this.updateRecomendedFee(fee)
-            this.updateFee()
+            this.updateFeeBasedBySource()
             collector.emit()
         })
     }
@@ -184,7 +196,7 @@ export default class Send extends Component {
         this.fetchFee({ amount }).then(fee => {
             const collector = collect()
             this.updateRecomendedFee(fee)
-            this.updateFee()
+            this.updateFeeBasedBySource()
             amount = bigNumber(this.balance_fee).minus(this.fee)
             this.updateAmounts({
                 amount1: amount.lt(0) ? '0' : amount.toFixed()
@@ -205,13 +217,13 @@ export default class Send extends Component {
         e.preventDefault()
         const collector = collect()
         state.view.fee_input_visible = !state.view.fee_input_visible
-        state.view.fee_input = state.view.fee_recomended.toString()
-        this.fee = bigNumber(state.view.fee_recomended)
+        state.view.fee_input = state.view.fee_recomended
+        this.updateFee(state.view.fee_recomended)
         collector.emit()
     }
 
     onChangeFee(e) {
-        this.fee = bigNumber(parseNumber(e.target.value))
+        this.updateFee(parseNumberAsString(e.target.value))
         state.view.fee_input = e.target.value
     }
 
@@ -336,25 +348,26 @@ export default class Send extends Component {
         const step = state.view.is_sent
             ? 2
             : step_path !== undefined && this.tx_raw !== undefined
-              ? Number(step_path)
-              : 0
+                ? Number(step_path)
+                : 0
 
         // Removing tx_raw in case user click back in browser
         if (step === 0) delete this.tx_raw
 
-        // console.log(this.fee.toFixed())
-        // console.log(state.view.fee_recomended.toFixed())
+        // console.log({ amount: this.amount.toFixed(), fee: this.fee.toFixed() })
 
         return React.createElement(SendTemplate, {
             step: step,
             color: this.Coin.color,
             address_input: state.view.address_input,
             address_input_error: state.view.address_input_error,
+            amount: this.amount.toFixed(),
             amount1_input: state.view.amount1_input,
             amount2_input: state.view.amount2_input,
             symbol_crypto: symbol,
             symbol_crypto_fee: this.Coin.symbol_fee,
             symbol_currency: state.fiat,
+            fee: this.fee.toFixed(),
             fee_input: state.view.fee_input,
             fee_input_visible: state.view.fee_input_visible,
             fee_input_fiat: formatCurrency(
@@ -404,11 +417,13 @@ function SendTemplate({
     color,
     address_input,
     address_input_error,
+    amount,
     amount1_input,
     amount2_input,
     symbol_crypto,
     symbol_crypto_fee,
     symbol_currency,
+    fee,
     fee_input_fiat,
     fee_input,
     fee_input_visible,
@@ -597,13 +612,13 @@ function SendTemplate({
                         <Resume>
                             <ResumeLabel>Amount</ResumeLabel>
                             <ResumeValue>
-                                {amount1_input} {symbol_crypto}
+                                {amount} {symbol_crypto}
                             </ResumeValue>
                         </Resume>
                         <Resume>
                             <ResumeLabel>Network Fee</ResumeLabel>
                             <ResumeValue>
-                                {fee_input} {symbol_crypto_fee}
+                                {fee} {symbol_crypto_fee}
                             </ResumeValue>
                         </Resume>
                         <Show if={symbol_crypto === symbol_crypto_fee}>

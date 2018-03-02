@@ -49,7 +49,7 @@ export default class ImportAddress extends Component {
         const collector = collect()
         let value = e.target.value.trim()
         state.view.address_input = value
-        value = value.toLowerCase()
+        // value = value.toLowerCase()
 
         if (this.Coin.isAddressCheck(value)) {
             state.view.address = this.Coin.formatAddress(value)
