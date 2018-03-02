@@ -3,7 +3,7 @@ import BitcoinFee from 'bitcoin-fee'
 import { sha3 } from 'ethereumjs-util'
 import { getBip32RootKey } from '/api/bip39'
 import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
-import { formatCoin, decimalsMax, bigNumber } from '/api/numbers'
+import { formatCoin, limitDecimals, bigNumber } from '/api/numbers'
 import {
     decryptBIP38 as _decryptBIP38,
     encryptBIP38 as _encryptBIP38
@@ -44,6 +44,10 @@ export const derivation_path = {
 
 export function format(value, decimals = coin_decimals) {
     return formatCoin(value, decimals, symbol)
+}
+
+export function cutDecimals(value) {
+    return limitDecimals(value, coin_decimals)
 }
 
 export function toSatoshis(value) {
@@ -340,10 +344,6 @@ function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
             .div(satoshis)
             .toString()
     )
-}
-
-export function cutDecimals(value) {
-    return decimalsMax(value, coin_decimals)
 }
 
 // export function fetchRecomendedFee() {

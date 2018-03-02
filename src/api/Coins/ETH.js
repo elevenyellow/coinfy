@@ -10,7 +10,7 @@ import EthereumTx from 'ethereumjs-tx'
 import { getBip32RootKey } from '/api/bip39'
 import {
     formatCoin,
-    decimalsMax,
+    limitDecimals,
     decToHex,
     hexToDec,
     sanitizeHex,

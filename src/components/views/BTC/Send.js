@@ -15,7 +15,7 @@ import styles from '/const/styles'
 import routes from '/router/routes'
 
 import { Coins } from '/api/Coins'
-import { parseNumberAsString, decimalsMax, bigNumber } from '/api/numbers'
+import { parseNumberAsString, limitDecimals, bigNumber } from '/api/numbers'
 
 import state from '/store/state'
 import { fetchBalance, setHref, sendEventToAnalytics } from '/store/actions'
@@ -97,7 +97,6 @@ export default class Send extends Component {
         this.fetchFee({ force_fetch: true }).then(fee => {
             const collector = collect()
             this.updateRecomendedFee(fee)
-            this.updateFeeBasedBySource()
             collector.emit()
         })
     }
@@ -109,9 +108,9 @@ export default class Send extends Component {
     }
 
     fetchBalance() {
-        fetchBalance(this.asset_id).then(balance => {
+        return fetchBalance(this.asset_id).then(balance => {
             // balance_fee is used for erc20 tokens
-            this.balance = this.balance_fee = bigNumber(balance)
+            return (this.balance = this.balance_fee = bigNumber(balance))
         })
     }
 
@@ -121,7 +120,13 @@ export default class Send extends Component {
             amount,
             address: this.asset.address
         })
-            .then(fee => this.Coin.cutDecimals(fee))
+            .then(fee => {
+                // console.log('fetchFee')
+                return this.Coin.cutDecimals(fee)
+                // return new Promise(r => {
+                //     setTimeout(e => r(this.Coin.cutDecimals(fee)), 5000)
+                // })
+            })
             .catch(e => {
                 console.error(e)
                 setTimeout(
@@ -145,7 +150,7 @@ export default class Send extends Component {
         const price = getPrice(symbol)
         if (amount1 !== undefined) {
             state.view.amount1_input = amount1
-            state.view.amount2_input = decimalsMax(
+            state.view.amount2_input = limitDecimals(
                 bigNumber(price)
                     .times(parseNumberAsString(amount1))
                     .toFixed(),
@@ -154,22 +159,22 @@ export default class Send extends Component {
         } else {
             state.view.amount2_input = amount2
             state.view.amount1_input = this.Coin.cutDecimals(
-                bigNumber(parseNumberAsString(amount2)).div(price)
+                bigNumber(parseNumberAsString(amount2))
+                    .div(price)
+                    .toFixed()
             )
         }
 
         this.updateAmount(parseNumberAsString(state.view.amount1_input))
     }
 
-    updateFeeBasedBySource() {
+    updateRecomendedFee(fee) {
+        state.view.fee_recomended = fee
         this.updateFee(
             state.view.fee_input_visible
                 ? state.view.fee_input
                 : state.view.fee_recomended
         )
-    }
-    updateRecomendedFee(fee) {
-        state.view.fee_recomended = fee
     }
 
     onChangeAmount(amount, type) {
@@ -177,7 +182,6 @@ export default class Send extends Component {
         this.updateAmounts({ [type]: amount })
         this.fetchFee({ amount: this.amount }).then(fee => {
             this.updateRecomendedFee(fee)
-            this.updateFeeBasedBySource()
             collector.emit()
         })
     }
@@ -196,7 +200,6 @@ export default class Send extends Component {
         this.fetchFee({ amount }).then(fee => {
             const collector = collect()
             this.updateRecomendedFee(fee)
-            this.updateFeeBasedBySource()
             amount = bigNumber(this.balance_fee).minus(this.fee)
             this.updateAmounts({
                 amount1: amount.lt(0) ? '0' : amount.toFixed()
