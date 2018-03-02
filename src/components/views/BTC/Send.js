@@ -59,7 +59,7 @@ export default class Send extends Component {
         this.amount = bigNumber(0)
         this.fee = bigNumber(0)
         this.balance = bigNumber(this.asset.balance)
-        this.balance_fee = this.balance
+        this.balance_fee = bigNumber(this.asset.balance)
         // Initial state
         state.view = {
             address_input: '',
@@ -187,19 +187,20 @@ export default class Send extends Component {
     }
 
     onClickMax(e) {
-        let amount = state.view.fee_input_visible
+        let amount_to_calc_fee = state.view.fee_input_visible
             ? bigNumber(this.balance_fee).minus(state.view.fee_input)
             : this.balance_fee
 
-        this.fetchFee({ amount, use_cache: true }).then(fee => {
-            const collector = collect()
-            this.updateRecomendedFee(fee)
-            amount = bigNumber(this.balance_fee).minus(this.fee)
-            this.updateAmounts({
-                amount1: amount.lt(0) ? '0' : amount.toFixed()
-            })
-            collector.emit()
-        })
+        this.fetchFee({ amount: amount_to_calc_fee, use_cache: true }).then(
+            fee => {
+                const collector = collect()
+                this.updateRecomendedFee(fee)
+                this.updateAmounts({
+                    amount1: this.getMax.toFixed()
+                })
+                collector.emit()
+            }
+        )
     }
 
     onChangeAddress(e) {
@@ -311,15 +312,17 @@ export default class Send extends Component {
             })
     }
 
-    // getMax() {
-    //     // console.log('getMax', this.amount.toFixed())
-    //     // console.log('getMax', this.fee.toFixed())
-    //     const max = bigNumber(this.balance).minus(this.fee)
-    //     return max.gt(0) ? max : 0
-    // }
+    get getMax() {
+        const max = bigNumber(this.balance).minus(this.fee)
+        return max.gt(0) ? max : 0
+    }
+
+    get getTotal() {
+        return this.amount.plus(this.fee)
+    }
 
     get isEnoughBalance() {
-        return this.amount.plus(this.fee).lte(this.balance)
+        return this.getTotal.lte(this.balance)
     }
 
     get isEnoughBalanceForFee() {
@@ -376,7 +379,7 @@ export default class Send extends Component {
                 convertBalance(this.Coin.symbol_fee, state.view.fee_recomended),
                 2
             ),
-            total: this.amount.plus(this.fee).toFixed(),
+            total: this.getTotal.toFixed(),
             password_input: state.view.password_input,
             password_input_invalid: state.view.password_input_invalid,
             isEnoughBalance: isEnoughBalance,

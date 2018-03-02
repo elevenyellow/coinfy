@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import styles from '/const/styles'
 
-
 export default function InputDouble(props) {
     const showerror =
         props.invalid && props.error ? (
@@ -12,11 +11,19 @@ export default function InputDouble(props) {
         <div>
             <InputDoubleStyled invalid={props.invalid}>
                 <div>
-                    <InputValue onChange={props.onChange1} color={props.color1} value={props.value1} />
+                    <InputValue
+                        onChange={props.onChange1}
+                        color={props.color1}
+                        value={props.value1}
+                    />
                     <InputLabel color={props.color1}>{props.label1}</InputLabel>
                 </div>
                 <div>
-                    <InputValue onChange={props.onChange2} color={props.color2} value={props.value2} />
+                    <InputValue
+                        onChange={props.onChange2}
+                        color={props.color2}
+                        value={props.value2}
+                    />
                     <InputLabel color={props.color2}>{props.label2}</InputLabel>
                 </div>
             </InputDoubleStyled>
@@ -31,9 +38,9 @@ const InputDoubleStyled = styled.div`
     }} 
     
     border: 1px solid ${props =>
-            props.invalid
-                ? `${styles.color.error} !important`
-                : styles.color.background4};
+        props.invalid
+            ? `${styles.color.error} !important`
+            : styles.color.background4};
     background: #fff;
     font-weight: 500;
     font-size: 14px;
@@ -51,14 +58,15 @@ const InputDoubleStyled = styled.div`
 `
 
 const InputValue = styled.input`
+    box-sizing: border-box;
     color: ${props => props.color || styles.color.front6};
     border: 0;
     margin: 0;
-    width: calc(100% - 20px);
+    width: 100%;
     line-height: 34px;
     font-weight: bold;
     font-size: 16px;
-    padding: 0 10px;
+    padding: 0 38px 0 10px;
     background: transparent;
 `
 

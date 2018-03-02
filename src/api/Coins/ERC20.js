@@ -45,10 +45,10 @@ export function urlInfoRaw(address, handler) {
     return `${url}/token/${handler}?a=${address}`
 }
 
-export function fetchRecomendedFee() {
-    return fetchRecomendedFeeRaw({
-        gas_limit: default_gas_limit
-    })
+export function fetchRecomendedFee(props) {
+    // return Promise.resolve('0.0001')
+    props.gas_limit = default_gas_limit
+    return fetchRecomendedFeeRaw(props)
 }
 
 export function createSimpleTxRaw(params, contract_address, coin_decimals) {
