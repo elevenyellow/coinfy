@@ -120,13 +120,7 @@ export default class Send extends Component {
             amount,
             address: this.asset.address
         })
-            .then(fee => {
-                // console.log('fetchFee')
-                return this.Coin.cutDecimals(fee)
-                // return new Promise(r => {
-                //     setTimeout(e => r(this.Coin.cutDecimals(fee)), 5000)
-                // })
-            })
+            .then(fee => this.Coin.cutDecimals(fee))
             .catch(e => {
                 console.error(e)
                 setTimeout(

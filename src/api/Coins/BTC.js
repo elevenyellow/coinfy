@@ -275,11 +275,16 @@ export function fetchBalance(address) {
 const cacheRecomendedFeeAddresses = {}
 export function fetchRecomendedFee({
     address,
-    amount,
+    amount = 0,
     outputs = 1,
     force_fetch = false
 }) {
-    const first_time = cacheRecomendedFeeAddresses[address] === undefined
+    const cache = cacheRecomendedFeeAddresses[address]
+    const first_time =
+        cache === undefined ||
+        cache.fee_per_kb === undefined ||
+        cache.inputs === undefined
+
     const promise =
         first_time || force_fetch
             ? fetchFees()
