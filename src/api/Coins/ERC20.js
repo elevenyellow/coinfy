@@ -33,7 +33,8 @@ export {
     getSendProviders,
     urlDecodeTx,
     getWalletFromSeed,
-    formatAddress
+    formatAddress,
+    cutDecimals
 } from './ETH' // '/api/Coins/ETH' not working
 
 export const type = TYPE_ERC20

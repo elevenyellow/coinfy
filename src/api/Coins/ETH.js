@@ -60,6 +60,10 @@ export function format(value, decimals = coin_decimals) {
     return formatCoin(value, decimals, symbol)
 }
 
+export function cutDecimals(value) {
+    return limitDecimals(value, coin_decimals)
+}
+
 export function isAddress(string) {
     return /^(0x)?[0-9a-fA-F]{40}$/.test(string)
 }
@@ -237,21 +241,27 @@ export function fetchSummary(address, contract_address, _satoshis = satoshis) {
 }
 
 // http://ipfs.b9lab.com:8080/ipfs/QmTHdYEYiJPmbkcth3mQvEQQgEamFypLhc9zapsBatQW7Y/throttled_faucet.html
-let last_gas_price
-export function fetchRecomendedFee({ gas_limit = default_gas_limit }) {
-    // return JSONRpc(url_myetherapi, 'eth_gasPrice')
-    return fetch(
-        `${api_url}?module=proxy&action=eth_gasPrice&apikey=${api_key}`
-    )
-        .then(response => response.json())
-        .then(e => {
-            // console.log(parseInt(e.result, 16), gas_limit)
-            last_gas_price = bigNumber(hexToDec(e.result))
-            return last_gas_price
-                .times(gas_limit)
-                .div(satoshis)
-                .toString()
-        })
+
+const cacheRecomendedFee = {}
+export function fetchRecomendedFee({
+    gas_limit = default_gas_limit,
+    use_cache = false
+}) {
+    const first_time = cacheRecomendedFee[default_gas_limit] === undefined
+    return first_time || !use_cache
+        ? // return JSONRpc(url_myetherapi, 'eth_gasPrice')
+          fetch(`${api_url}?module=proxy&action=eth_gasPrice&apikey=${api_key}`)
+              .then(response => response.json())
+              .then(
+                  e =>
+                      (cacheRecomendedFee[default_gas_limit] = cutDecimals(
+                          bigNumber(hexToDec(e.result))
+                              .times(gas_limit)
+                              .div(satoshis)
+                              .toFixed()
+                      ))
+              )
+        : Promise.resolve(cacheRecomendedFee[default_gas_limit])
 }
 
 export function createSimpleTx({

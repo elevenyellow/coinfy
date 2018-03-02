@@ -272,21 +272,21 @@ export function fetchBalance(address) {
     })
 }
 
-const cacheRecomendedFeeAddresses = {}
+const cacheRecomendedFee = {}
 export function fetchRecomendedFee({
     address,
     amount = 0,
     outputs = 1,
-    force_fetch = false
+    use_cache = false
 }) {
-    const cache = cacheRecomendedFeeAddresses[address]
+    const cache = cacheRecomendedFee[address]
     const first_time =
         cache === undefined ||
         cache.fee_per_kb === undefined ||
         cache.inputs === undefined
 
     const promise =
-        first_time || force_fetch
+        first_time || !use_cache
             ? fetchFees()
                   .catch(e =>
                       Promise.reject(
@@ -294,7 +294,7 @@ export function fetchRecomendedFee({
                       )
                   )
                   .then(fee => {
-                      cacheRecomendedFeeAddresses[address] = { fee_per_kb: fee }
+                      cacheRecomendedFee[address] = { fee_per_kb: fee }
                       return fetch(`${api_url}/addr/${address}/utxo?noCache=1`)
                   })
                   .then(response => response.json())
@@ -307,14 +307,12 @@ export function fetchRecomendedFee({
                       const inputs = sortBy(utxo || [], '-amount').map(
                           input => input.amount
                       )
-                      return (cacheRecomendedFeeAddresses[
-                          address
-                      ].inputs = inputs)
+                      return (cacheRecomendedFee[address].inputs = inputs)
                   })
             : Promise.resolve()
 
     return promise.then(() => {
-        const address_data = cacheRecomendedFeeAddresses[address]
+        const address_data = cacheRecomendedFee[address]
         const inputs = address_data.inputs || []
         const data = {
             amount: amount || 0,
@@ -347,7 +345,7 @@ function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
         bigNumber(10 + inputs_total * 148 + outputs * 34 + extra_bytes)
             .times(fee_per_kb)
             .div(satoshis)
-            .toString()
+            .toFixed()
     )
 }
 

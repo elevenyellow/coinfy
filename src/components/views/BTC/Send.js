@@ -94,7 +94,7 @@ export default class Send extends Component {
         this.onSend = this.onSend.bind(this)
 
         this.fetchBalance()
-        this.fetchFee({ force_fetch: true }).then(fee => {
+        this.fetchFee({}).then(fee => {
             const collector = collect()
             this.updateRecomendedFee(fee)
             collector.emit()
@@ -114,9 +114,9 @@ export default class Send extends Component {
         })
     }
 
-    fetchFee({ amount, force_fetch }) {
+    fetchFee({ amount, use_cache }) {
         return this.Coin.fetchRecomendedFee({
-            force_fetch,
+            use_cache,
             amount,
             address: this.asset.address
         })
@@ -124,7 +124,7 @@ export default class Send extends Component {
             .catch(e => {
                 console.error(e)
                 setTimeout(
-                    () => this.fetchFee({ force_fetch }),
+                    () => this.fetchFee({ use_cache }),
                     TIMEOUT_BETWEEN_EACH_FAIL_FETCH_FEE
                 )
             })
@@ -174,7 +174,7 @@ export default class Send extends Component {
     onChangeAmount(amount, type) {
         const collector = collect()
         this.updateAmounts({ [type]: amount })
-        this.fetchFee({ amount: this.amount }).then(fee => {
+        this.fetchFee({ amount: this.amount, use_cache: true }).then(fee => {
             this.updateRecomendedFee(fee)
             collector.emit()
         })
@@ -191,7 +191,7 @@ export default class Send extends Component {
             ? bigNumber(this.balance_fee).minus(state.view.fee_input)
             : this.balance_fee
 
-        this.fetchFee({ amount }).then(fee => {
+        this.fetchFee({ amount, use_cache: true }).then(fee => {
             const collector = collect()
             this.updateRecomendedFee(fee)
             amount = bigNumber(this.balance_fee).minus(this.fee)
