@@ -55,13 +55,12 @@ export default class Send extends Component {
         this.observer.observe(state.view)
         this.observer.observe(state.location, 'pathname')
 
-        // Internal data
-        this.amount = bigNumber(0)
-        this.fee = bigNumber(0)
-        this.balance = bigNumber(this.asset.balance)
-        this.balance_fee = bigNumber(this.asset.balance)
         // Initial state
         state.view = {
+            amount: bigNumber(0),
+            fee: bigNumber(0),
+            balance: bigNumber(this.asset.balance),
+            balance_fee: bigNumber(this.asset.balance),
             address_input: '',
             address_input_error: false,
             amount1_input: 0, // BTC
@@ -110,8 +109,11 @@ export default class Send extends Component {
 
     fetchBalance() {
         return fetchBalance(this.asset_id).then(balance => {
-            // balance_fee is used for erc20 tokens
-            return (this.balance = this.balance_fee = bigNumber(balance))
+            const collector = collect()
+            state.view.balance = bigNumber(balance)
+            state.view.balance_fee = bigNumber(balance) // balance_fee is used for erc20 tokens
+            collector.emit()
+            return balance
         })
     }
 
@@ -133,14 +135,15 @@ export default class Send extends Component {
 
     updateAmount(amount_string) {
         // console.log('updateAmount', typeof amount_string, amount_string)
-        this.amount = bigNumber(this.Coin.cutDecimals(amount_string))
+        state.view.amount = bigNumber(this.Coin.cutDecimals(amount_string))
     }
     updateFee(fee_string) {
         // console.log('updateFee', typeof fee_string, fee_string)
-        this.fee = bigNumber(this.Coin.cutDecimals(fee_string))
+        state.view.fee = bigNumber(this.Coin.cutDecimals(fee_string))
     }
 
     updateAmounts({ amount1, amount2 }) {
+        const collector = collect()
         const symbol = this.asset.symbol
         const price = getPrice(symbol)
         if (amount1 !== undefined) {
@@ -161,24 +164,29 @@ export default class Send extends Component {
         }
 
         this.updateAmount(parseNumberAsString(state.view.amount1_input))
+        collector.emit()
     }
 
     updateRecomendedFee(fee) {
+        const collector = collect()
         state.view.fee_recomended = fee
         this.updateFee(
             state.view.fee_input_visible
                 ? state.view.fee_input
                 : state.view.fee_recomended
         )
+        collector.emit()
     }
 
     onChangeAmount(amount, type) {
         const collector = collect()
         this.updateAmounts({ [type]: amount })
-        this.fetchFee({ amount: this.amount, use_cache: true }).then(fee => {
-            this.updateRecomendedFee(fee)
-            collector.emit()
-        })
+        this.fetchFee({ amount: state.view.amount, use_cache: true }).then(
+            fee => {
+                this.updateRecomendedFee(fee)
+                collector.emit()
+            }
+        )
     }
     onChangeAmount1(e) {
         this.onChangeAmount(e.target.value, 'amount1')
@@ -189,8 +197,8 @@ export default class Send extends Component {
 
     onClickMax(e) {
         let amount_to_calc_fee = state.view.fee_input_visible
-            ? bigNumber(this.balance_fee).minus(state.view.fee_input)
-            : this.balance_fee
+            ? bigNumber(state.view.balance_fee).minus(state.view.fee_input)
+            : state.view.balance_fee
 
         state.view.loading_max = true
         this.fetchFee({ amount: amount_to_calc_fee, use_cache: true }).then(
@@ -224,8 +232,10 @@ export default class Send extends Component {
     }
 
     onChangeFee(e) {
+        const collector = collect()
         this.updateFee(parseNumberAsString(e.target.value))
         state.view.fee_input = e.target.value
+        collector.emit()
     }
 
     onChangePassword(e) {
@@ -251,8 +261,8 @@ export default class Send extends Component {
             this.Coin.createSimpleTx({
                 private_key,
                 toAddress: state.view.address_input, // to/destiny
-                amount: this.amount, // amount to send
-                fee: this.fee
+                amount: state.view.amount, // amount to send
+                fee: state.view.fee
             })
                 .then(tx_raw => {
                     this.tx_raw = tx_raw
@@ -294,15 +304,19 @@ export default class Send extends Component {
         provider
             .send(this.tx_raw)
             .then(tx_id => {
-                sendEventToAnalytics('send', this.Coin.symbol, this.amount)
+                sendEventToAnalytics(
+                    'send',
+                    this.Coin.symbol,
+                    state.view.amount
+                )
                 this.tx_id = tx_id
                 const collector = collect()
                 state.view.loading = false
                 state.view.is_sent = true
-                this.balance = Number(
-                    bigNumber(this.balance)
-                        .minus(this.amount)
-                        .minus(this.fee)
+                state.view.balance = Number(
+                    bigNumber(state.view.balance)
+                        .minus(state.view.amount)
+                        .minus(state.view.fee)
                 )
                 collector.emit()
             })
@@ -316,20 +330,20 @@ export default class Send extends Component {
     }
 
     get getMax() {
-        const max = bigNumber(this.balance).minus(this.fee)
+        const max = bigNumber(state.view.balance).minus(state.view.fee)
         return max.gt(0) ? max : 0
     }
 
     get getTotal() {
-        return this.amount.plus(this.fee)
+        return state.view.amount.plus(state.view.fee)
     }
 
     get isEnoughBalance() {
-        return this.getTotal.lte(this.balance)
+        return this.getTotal.lte(state.view.balance)
     }
 
     get isEnoughBalanceForFee() {
-        return this.fee.lte(this.balance_fee)
+        return state.view.fee.lte(state.view.balance_fee)
     }
 
     get isValidForm() {
@@ -337,8 +351,8 @@ export default class Send extends Component {
             !state.view.address_input_error &&
             state.view.address_input.length > 0 &&
             state.view.password_input.length > 0 &&
-            this.amount.gt(0) &&
-            this.fee.gt(0) &&
+            state.view.amount.gt(0) &&
+            state.view.fee.gt(0) &&
             !state.view.password_input_invalid
         )
     }
@@ -356,25 +370,23 @@ export default class Send extends Component {
 
         // Removing tx_raw in case user click back in browser
         if (step === 0) delete this.tx_raw
-
-        // console.log({ amount: this.amount.toFixed(), fee: this.fee.toFixed() })
-
+        // console.log({ amount: state.view.amount.toFixed(), fee: state.view.fee.toFixed() })
         return React.createElement(SendTemplate, {
             step: step,
             color: this.Coin.color,
             address_input: state.view.address_input,
             address_input_error: state.view.address_input_error,
-            amount: this.amount.toFixed(),
+            amount: state.view.amount.toFixed(),
             amount1_input: state.view.amount1_input,
             amount2_input: state.view.amount2_input,
             symbol_crypto: symbol,
             symbol_crypto_fee: this.Coin.symbol_fee,
             symbol_currency: state.fiat,
-            fee: this.fee.toFixed(),
+            fee: state.view.fee.toFixed(),
             fee_input: state.view.fee_input,
             fee_input_visible: state.view.fee_input_visible,
             fee_input_fiat: formatCurrency(
-                convertBalance(this.Coin.symbol_fee, state.view.fee_input),
+                convertBalance(this.Coin.symbol_fee, state.view.fee.toFixed()),
                 2
             ),
             fee_recomended: state.view.fee_recomended,
@@ -389,7 +401,9 @@ export default class Send extends Component {
             isEnoughBalanceForFee: isEnoughBalanceForFee,
             isValidForm:
                 this.isValidForm && isEnoughBalance && isEnoughBalanceForFee,
-            isFeeLowerThanRecomended: this.fee.lt(state.view.fee_recomended),
+            isFeeLowerThanRecomended: state.view.fee.lt(
+                state.view.fee_recomended
+            ),
             error_when_create: state.view.error_when_create,
             send_provider_selected: state.view.send_provider_selected,
             send_providers: this.send_providers,

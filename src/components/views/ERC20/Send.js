@@ -7,18 +7,18 @@ import { fetchBalance } from '/store/actions'
 export default class SendERC20 extends Send {
     fetchBalance() {
         fetchBalance(this.asset_id).then(balance => {
-            this.balance = bigNumber(balance)
+            state.view.balance = bigNumber(balance)
         })
         ETH.fetchBalance(this.asset.address).then(balance => {
-            this.balance_fee = bigNumber(balance)
+            state.view.balance_fee = bigNumber(balance)
         })
     }
 
     get getTotal() {
-        return this.amount
+        return state.view.amount
     }
 
     get getMax() {
-        return this.balance
+        return state.view.balance
     }
 }
