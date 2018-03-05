@@ -16,6 +16,7 @@ import routes from '/router/routes'
 
 import { Coins } from '/api/Coins'
 import { parseNumberAsString, limitDecimals, bigNumber } from '/api/numbers'
+import { repeatUntilResolve } from '/api/promises'
 
 import state from '/store/state'
 import { fetchBalance, setHref, sendEventToAnalytics } from '/store/actions'
@@ -118,19 +119,31 @@ export default class Send extends Component {
     }
 
     fetchFee({ amount, use_cache }) {
-        return this.Coin.fetchRecomendedFee({
-            use_cache,
-            amount,
-            address: this.asset.address
-        })
-            .then(fee => this.Coin.cutDecimals(fee))
-            .catch(e => {
-                console.error(e)
-                setTimeout(
-                    () => this.fetchFee({ use_cache }),
-                    TIMEOUT_BETWEEN_EACH_FAIL_FETCH_FEE
-                )
-            })
+        return repeatUntilResolve(
+            this.Coin.fetchRecomendedFee,
+            [
+                {
+                    use_cache,
+                    amount,
+                    address: this.asset.address
+                }
+            ],
+            { timeout: TIMEOUT_BETWEEN_EACH_FAIL_FETCH_FEE }
+        ).then(fee => this.Coin.cutDecimals(fee))
+
+        // return this.Coin.fetchRecomendedFee({
+        //     use_cache,
+        //     amount,
+        //     address: this.asset.address
+        // })
+        //     .then(fee => this.Coin.cutDecimals(fee))
+        //     .catch(e => {
+        //         console.error(e)
+        //         setTimeout(
+        //             () => this.fetchFee({ use_cache }),
+        //             TIMEOUT_BETWEEN_EACH_FAIL_FETCH_FEE
+        //         )
+        //     })
     }
 
     updateAmount(amount_string) {
