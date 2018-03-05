@@ -8,7 +8,7 @@ import {
     decryptBIP38 as _decryptBIP38,
     encryptBIP38 as _encryptBIP38
 } from '/api/crypto'
-import { sortBy, median, sum } from '/api/arrays'
+import { sortBy, highest, sum } from '/api/arrays'
 import { localStorageGet } from '/api/browser'
 import { resolveAll } from '/api/promises'
 
@@ -329,7 +329,7 @@ function fetchFees() {
         BitcoinFee.fetchFee(service)
     )
     return resolveAll(promises).then(
-        fees => (fees.length > 0 ? median(fees) : Promise.reject(null))
+        fees => (fees.length > 0 ? highest(fees) : Promise.reject(null))
     )
 }
 function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {

@@ -15,3 +15,11 @@ export function resolveAll(promises) {
     )
     return new Promise(r => (resolve = r))
 }
+
+export function repeatUntilResolve(promise, { interval = 5000 }) {
+    return promise.catch(e => {
+        setTimeout(() => {
+            console.log(promise)
+        }, interval)
+    })
+}
