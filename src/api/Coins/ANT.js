@@ -1,4 +1,4 @@
-const { createERC20 } = require('./ERC20_2')
+const { createERC20 } = require('./ERC20')
 
 module.exports = createERC20({
     symbol: 'ANT',
