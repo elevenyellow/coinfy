@@ -63,7 +63,7 @@ export function createERC20({
             return fetchBalance(address, contract_address, satoshis)
                 .then(balance => {
                     totals.balance = balance
-                    return fetchTxs(
+                    return this.fetchTxs(
                         address,
                         undefined,
                         undefined,
@@ -111,7 +111,7 @@ export function createERC20({
                         fees: bigNumber(hexToDec(txRaw.gasUsed)),
                         time: hexToDec(txRaw.timeStamp),
                         value: bigNumber(hexToDec(removeHexPrefix(txRaw.data)))
-                            .div(_satoshis)
+                            .div(satoshis)
                             .toString()
                     }
                     if (txRaw.topics[1].toLowerCase() === address64)
@@ -149,33 +149,33 @@ export function createERC20({
             return fetchRecomendedFee(props)
         },
 
+        symbol,
+        name,
+        color,
+        labels,
         type: TYPE_ERC20,
         symbol_fee,
-        symbol,
         url,
         api_url,
         api_key,
         url_myetherapi,
         removeHexPrefix,
-        fetchBalance,
-        createSimpleTx,
         isAddress,
         isAddressCheck,
         isPrivateKey,
         isPrivateKeyCheck,
         getAddressFromPrivateKey,
         ascii,
-        format,
         encryptPrivateKey,
         decryptPrivateKey,
         encryptSeed,
         decryptSeed,
         decryptPrivateKeyFromSeed,
-        urlInfoTx,
         getSendProviders,
         urlDecodeTx,
         getWalletFromSeed,
         formatAddress,
-        cutDecimals
+        cutDecimals,
+        urlInfoTx
     }
 }
