@@ -1,7 +1,7 @@
 import { util } from 'dop'
 import state from '/store/state'
-import { Fiats } from '/api/Fiats'
-import { Coins } from '/api/Coins'
+import { Fiats } from '/api/fiats'
+import { Coins } from '/api/coins'
 
 export function getTotalAssets(assets) {
     return Object.keys(assets).length

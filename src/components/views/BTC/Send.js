@@ -14,7 +14,7 @@ import {
 import styles from '/const/styles'
 import routes from '/router/routes'
 
-import { Coins } from '/api/Coins'
+import { Coins } from '/api/coins'
 import { parseNumberAsString, limitDecimals, bigNumber } from '/api/numbers'
 import { repeatUntilResolve } from '/api/promises'
 

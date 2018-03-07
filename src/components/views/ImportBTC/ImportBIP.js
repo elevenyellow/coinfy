@@ -7,9 +7,9 @@ import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
 import { isAssetRegistered, getAssetId } from '/store/getters'
 
-import { isPrivateKeyBip, getAddressFromPrivateKey } from '/api/Coins/BTC'
+import { isPrivateKeyBip, getAddressFromPrivateKey } from '/api/coins/BTC'
 import { decryptBIP38 } from '/api/crypto'
-import { BTC } from '/api/Coins'
+import { BTC } from '/api/coins'
 
 import styles from '/const/styles'
 import routes from '/router/routes'

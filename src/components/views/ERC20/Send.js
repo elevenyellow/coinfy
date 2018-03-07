@@ -1,4 +1,4 @@
-import { ETH } from '/api/Coins'
+import { ETH } from '/api/coins'
 import { bigNumber } from '/api/numbers'
 import Send from '/components/views/BTC/Send'
 import state from '/store/state'

@@ -6,7 +6,7 @@ import { setHref, createAsset } from '/store/actions'
 import state from '/store/state'
 import { isAssetRegistered, getAssetId } from '/store/getters'
 
-import { Coins } from '/api/Coins'
+import { Coins } from '/api/coins'
 
 import styles from '/const/styles'
 import routes from '/router/routes'

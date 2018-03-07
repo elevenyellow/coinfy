@@ -4,11 +4,11 @@ import { createObserver } from 'dop'
 import CountUp from 'react-countup'
 
 import styles from '/const/styles'
-import { Fiats } from '/api/Fiats'
+import { Fiats } from '/api/fiats'
 import routes from '/router/routes'
 
 import { round, bigNumber } from '/api/numbers'
-import { Coins } from '/api/Coins'
+import { Coins } from '/api/coins'
 import { sortBy } from '/api/arrays'
 
 import state from '/store/state'

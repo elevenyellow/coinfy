@@ -8,7 +8,7 @@ import { TYPE_COIN, TYPE_ERC20 } from '/const/'
 import styles from '/const/styles'
 
 import { sortBy } from '/api/arrays'
-import { Coins } from '/api/Coins'
+import { Coins } from '/api/coins'
 import { searchInArray } from '/api/arrays'
 
 import state from '/store/state'

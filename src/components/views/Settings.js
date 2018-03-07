@@ -4,7 +4,7 @@ import { createObserver } from 'dop'
 import { Router, Route } from '/router/components'
 import styles from '/const/styles'
 import { MAINNET, TESTNET } from '/const/'
-import { Fiats } from '/api/Fiats'
+import { Fiats } from '/api/fiats'
 
 import state from '/store/state'
 import { changeFiat, changeNetwork, closeSession } from '/store/actions'

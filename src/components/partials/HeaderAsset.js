@@ -11,9 +11,9 @@ import {
     setAssetsExported
 } from '/store/actions'
 
-import Coins from '/api/Coins'
+import Coins from '/api/coins'
 
-import { Fiats } from '/api/Fiats'
+import { Fiats } from '/api/fiats'
 import routes from '/router/routes'
 import styles from '/const/styles'
 import state from '/store/state'

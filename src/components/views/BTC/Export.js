@@ -5,8 +5,8 @@ import { Show } from '/router/components'
 
 // import { createWorker } from '/api/workers'
 import { generateQRCode } from '/api/qr'
-import { BTC } from '/api/Coins'
-import { getAllFormats, encryptBIP38 } from '/api/Coins/BTC'
+import { BTC } from '/api/coins'
+import { getAllFormats, encryptBIP38 } from '/api/coins/BTC'
 import { printTemplate } from '/api/browser'
 
 import state from '/store/state'

@@ -12,7 +12,7 @@ import {
     fetchBalance,
     fetchRecomendedFee as fetchRecomendedFeeRaw,
     createSimpleTx
-} from '/api/Coins/ETH'
+} from '/api/coins/ETH'
 import { TYPE_ERC20 } from '/const/'
 
 export {
@@ -35,7 +35,7 @@ export {
     getWalletFromSeed,
     formatAddress,
     cutDecimals
-} from './ETH' // '/api/Coins/ETH' not working
+} from './ETH' // '/api/coins/ETH' not working
 
 export const type = TYPE_ERC20
 export const symbol_fee = symbol

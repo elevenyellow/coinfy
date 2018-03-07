@@ -7,7 +7,7 @@ import { setHref, createAsset, setSeed, addNotification } from '/store/actions'
 import state from '/store/state'
 import { isAssetRegistered, getAssetId } from '/store/getters'
 
-import { Coins } from '/api/Coins'
+import { Coins } from '/api/coins'
 import { validateSeed } from '/api/bip39'
 
 import styles from '/const/styles'

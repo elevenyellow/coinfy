@@ -6,7 +6,7 @@ import { Show } from '/router/components'
 import styles from '/const/styles'
 import routes from '/router/routes'
 
-import { Coins } from '/api/Coins'
+import { Coins } from '/api/coins'
 
 import state from '/store/state'
 import { getReusableSeeds, getLabelOrAddress, getAssetId } from '/store/getters'

@@ -4,10 +4,10 @@ import { createObserver } from 'dop'
 import { Show } from '/router/components'
 
 import styles from '/const/styles'
-import { Fiats } from '/api/Fiats'
+import { Fiats } from '/api/fiats'
 import { PrivateKey as template } from '/const/paperwallets'
 
-import { Coins } from '/api/Coins'
+import { Coins } from '/api/coins'
 import { round } from '/api/numbers'
 import { getDay, getMonthTextShort } from '/api/time'
 import { openUrl } from '/api/browser'

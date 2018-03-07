@@ -4,7 +4,7 @@ import { createObserver, collect } from 'dop'
 import { Router, Route, Show } from '/router/components'
 
 import { generateQRCode } from '/api/qr'
-import { isAddress } from '/api/Coins/BTC'
+import { isAddress } from '/api/coins/BTC'
 import routes from '/router/routes'
 import state from '/store/state'
 

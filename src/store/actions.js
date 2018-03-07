@@ -16,7 +16,7 @@ import {
 import routes from '/router/routes'
 import styles from '/const/styles'
 
-import { Coins } from '/api/Coins'
+import { Coins } from '/api/coins'
 import { now } from '/api/time'
 
 import state from '/store/state'

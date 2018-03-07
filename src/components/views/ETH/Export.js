@@ -5,8 +5,8 @@ import { Show } from '/router/components'
 
 // import { createWorker } from '/api/workers'
 import { generateQRCode } from '/api/qr'
-import { ETH } from '/api/Coins'
-import { getPublicFromPrivateKey } from '/api/Coins/ETH'
+import { ETH } from '/api/coins'
+import { getPublicFromPrivateKey } from '/api/coins/ETH'
 import { printTemplate, downloadFile } from '/api/browser'
 import { encryptAES128CTR } from '/api/crypto'
 

@@ -6,10 +6,10 @@ import IconMore from 'react-icons/lib/md/more-vert'
 
 import routes from '/router/routes'
 import styles from '/const/styles'
-import { Fiats } from '/api/Fiats'
+import { Fiats } from '/api/fiats'
 
 import { numberWithSeparation, round } from '/api/numbers'
-import { Coins } from '/api/Coins'
+import { Coins } from '/api/coins'
 
 import state from '/store/state'
 import {

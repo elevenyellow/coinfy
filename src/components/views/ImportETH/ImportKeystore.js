@@ -14,8 +14,8 @@ import {
     isAddress,
     formatAddress,
     getAddressFromPrivateKey
-} from '/api/Coins/ETH'
-import { Coins } from '/api/Coins'
+} from '/api/coins/ETH'
+import { Coins } from '/api/coins'
 
 import styles from '/const/styles'
 import routes from '/router/routes'

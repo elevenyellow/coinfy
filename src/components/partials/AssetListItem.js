@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
-import { Coins } from '/api/Coins'
+import { Coins } from '/api/coins'
 import { round } from '/api/numbers'
 import styles from '/const/styles'
 import routes from '/router/routes'
-import { Fiats } from '/api/Fiats'
+import { Fiats } from '/api/fiats'
 import state from '/store/state'
 import { setHref } from '/store/actions'
 import {

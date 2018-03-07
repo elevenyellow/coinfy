@@ -6,7 +6,7 @@ import routes from '/router/routes'
 import styles from '/const/styles'
 import { OK, ERROR, ALERT, NORMAL, minpassword } from '/const/'
 
-import { Coins } from '/api/Coins'
+import { Coins } from '/api/coins'
 
 import state from '/store/state'
 import {

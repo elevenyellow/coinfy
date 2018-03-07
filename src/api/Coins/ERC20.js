@@ -30,7 +30,7 @@ import {
     getWalletFromSeed,
     formatAddress,
     cutDecimals
-} from '/api/Coins/ETH'
+} from '/api/coins/ETH'
 
 export function createERC20({
     symbol,
