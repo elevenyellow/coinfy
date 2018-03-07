@@ -147,7 +147,7 @@ function AddAssetTemplate({
         <RightContainerPadding>
             <RightHeader>
                 <IconHeader>
-                    <img src={`/static/image/coins/${Coin.symbol}.svg`} />
+                    <img src={Coin.logo} />
                 </IconHeader>
                 <Div float="left">
                     <H1>{Coin.name}</H1>
@@ -181,9 +181,12 @@ function AddAssetTemplate({
                                                     {group.map(asset => (
                                                         <Asset>
                                                             <AssetItem
-                                                                logo={`/static/image/coins/${
-                                                                    asset.symbol
-                                                                }.svg`}
+                                                                logo={
+                                                                    Coins[
+                                                                        asset
+                                                                            .symbol
+                                                                    ].logo
+                                                                }
                                                                 label={getLabelOrAddress(
                                                                     asset
                                                                 )}
@@ -214,9 +217,13 @@ function AddAssetTemplate({
                                                             >
                                                                 <OptionIcon>
                                                                     <img
-                                                                        src={`/static/image/coins/${
-                                                                            asset.symbol
-                                                                        }.svg`}
+                                                                        src={
+                                                                            Coins[
+                                                                                asset
+                                                                                    .symbol
+                                                                            ]
+                                                                                .logo
+                                                                        }
                                                                     />
                                                                 </OptionIcon>
                                                                 <OptionLabel>

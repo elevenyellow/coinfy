@@ -101,7 +101,7 @@ function ImportTemplate({
         <RightContainerPadding>
             <RightHeader>
                 <IconHeader>
-                    <img src={`/static/image/coins/${Coin.symbol}.svg`} />
+                    <img src={Coin.logo} />
                 </IconHeader>
                 <Div float="left">
                     <H1>{Coin.name}</H1>

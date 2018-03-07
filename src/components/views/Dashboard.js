@@ -44,11 +44,12 @@ export default class Dashboard extends Component {
         const dataUnformated = {}
         for (let id in state.assets) {
             let asset = state.assets[id]
+            let Coin = Coins[asset.symbol]
             if (dataUnformated[asset.symbol] === undefined)
                 dataUnformated[asset.symbol] = {
                     symbol: asset.symbol,
-                    label: Coins[asset.symbol].name,
-                    color: Coins[asset.symbol].color,
+                    label: Coin.name,
+                    color: Coin.color,
                     balance_asset_big: bigNumber(0),
                     balance_asset_number: 0,
                     balance_currency_number: 0,
@@ -73,7 +74,7 @@ export default class Dashboard extends Component {
                 balance_currency_number: convertBalance(asset.symbol, balance),
                 percentage: 0,
                 id: id,
-                icon: `/static/image/coins/${asset.symbol}.svg`
+                logo: Coin.logo
             })
         }
 
@@ -179,9 +180,7 @@ function DashboardTemplate({
                         <Currency>
                             <CurrencyIco>
                                 <img
-                                    src={`/static/image/coins/${
-                                        coin.symbol
-                                    }.svg`}
+                                    src={Coins[coin.symbol].logo}
                                     width="25"
                                     height="25"
                                 />
@@ -202,20 +201,6 @@ function DashboardTemplate({
                             </CurrencyText>
                         </Currency>
                     ))}
-                    {/* <Currency>
-                        <CurrencyIco><img src={`/static/image/coins/BTC.svg`} width="25" /></CurrencyIco>
-                        <CurrencyText>
-                            <CurrencyLabel>Bitcoin</CurrencyLabel>
-                            <CurrencyValue>BTC ≈ <span>$5,235</span></CurrencyValue>
-                        </CurrencyText>
-                    </Currency> */}
-                    {/* <Currency>
-                        <CurrencyIco><img src={`/static/image/coins/ETH.svg`} width="25" /></CurrencyIco>
-                        <CurrencyText>
-                            <CurrencyLabel>Ethereum</CurrencyLabel>
-                            <CurrencyValue>ETH ≈ <span>$342</span></CurrencyValue>
-                        </CurrencyText>
-                    </Currency> */}
                 </CurrenciesStyled>
             </Left>
             <Right>
@@ -279,7 +264,7 @@ function DashboardTemplate({
                                         >
                                             <AssetIcon>
                                                 <img
-                                                    src={asset.icon}
+                                                    src={asset.logo}
                                                     width="20"
                                                     height="20"
                                                 />
@@ -321,47 +306,6 @@ function DashboardTemplate({
                             </Category>
                         )
                     })}
-
-                    {/* <Category>
-                    <HeaderAsset>
-                        <HeaderLeft>
-                            <HeaderLeftPercentage>
-                                <Circle size={50} strokeWidth="2.5" segments={[{percentage:10, color:'#7683c9'}]}>
-                                    <CircleText>
-                                        <text x="50%" y="50%" class="chart-number">10%</text>
-                                    </CircleText>
-                                </Circle>
-                            </HeaderLeftPercentage>
-                            <HeaderLeftText>
-                                <HeaderLeftTitle>Ethereum</HeaderLeftTitle>
-                                <HeaderLeftSubtitle>1 assets</HeaderLeftSubtitle>
-                            </HeaderLeftText>
-                        </HeaderLeft>
-                        <HeaderRight>
-                            <HeaderRightTitle>$30,131</HeaderRightTitle>
-                            <HeaderRightSubtitle>10.313 ETH</HeaderRightSubtitle>
-                        </HeaderRight>
-                    </HeaderAsset>
-                    <Assets>
-                        <Asset>
-                            <AssetIcon><img src="/static/image/coins/ETH.svg" width="20" height="20" /></AssetIcon>
-                            <AssetText>
-                                <AssetLeft>
-                                    <AssetTitle>My wallet 1</AssetTitle>
-                                    <AssetSubtitle>1FA4aEo21ZxTXs1YEFhKD5gpPzNSQ45hQg</AssetSubtitle>
-                                </AssetLeft>
-                                <AssetRight>
-                                    <AssetTitle>$20,312</AssetTitle>
-                                    <AssetSubtitle>5.013 BTC</AssetSubtitle>
-                                </AssetRight>
-                                <AssetPercentage>
-                                    <AssetPercentageLeft width="10%" color="#7683c9" />
-                                    <AssetPercentageRight color="#7683c9">10%</AssetPercentageRight>
-                                </AssetPercentage>
-                            </AssetText>
-                        </Asset>
-                    </Assets>
-                </Category> */}
                 </div>
             </Right>
         </RightContainerPadding>

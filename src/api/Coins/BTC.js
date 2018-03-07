@@ -12,7 +12,7 @@ import { sortBy, highest, sum } from '/api/arrays'
 import { localStorageGet } from '/api/browser'
 import { resolveAll } from '/api/promises'
 
-import { TYPE_COIN, MAINNET, TESTNET } from '/const/'
+import { TYPE_COIN, MAINNET, TESTNET, ASSET_LOGO } from '/const/'
 
 // private
 const network_int = Number(localStorageGet('network')) || MAINNET
@@ -36,6 +36,7 @@ export const coin_decimals = 8
 export const price_decimals = 0
 export const satoshis = 100000000
 export const labels = 'btc coin'
+export const logo = ASSET_LOGO(symbol)
 
 export const derivation_path = {
     mainnet: index => `m/44'/0'/0'/0/${index}`,

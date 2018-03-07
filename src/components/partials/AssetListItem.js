@@ -49,6 +49,7 @@ export default class Asset extends Component {
 
     render() {
         const asset = this.props.asset
+        const Coin = Coins[asset.symbol]
         // console.log( 'Render', convertBalance(asset.symbol, asset.balance) )
         return React.createElement(AssetTemplate, {
             asset: this.props.asset,
@@ -56,7 +57,8 @@ export default class Asset extends Component {
             balance_currency: formatCurrency(
                 convertBalance(asset.symbol, asset.balance)
             ),
-            balance_asset: Coins[asset.symbol].format(asset.balance, 5),
+            logo: Coin.logo,
+            balance_asset: Coin.format(asset.balance, 5),
             onClick: this.onClick
         })
     }
@@ -67,6 +69,7 @@ function AssetTemplate({
     location,
     balance_currency,
     balance_asset,
+    logo,
     onClick
 }) {
     return (
@@ -78,7 +81,7 @@ function AssetTemplate({
             }
         >
             <AssetItem
-                logo={`/static/image/coins/${asset.symbol}.svg`}
+                logo={logo}
                 label={getLabelOrAddress(asset)}
                 balance={
                     <span>

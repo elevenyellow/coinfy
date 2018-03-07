@@ -27,3 +27,7 @@ export const TIMEOUT_BETWEEN_EACH_FAIL_FETCH_FEE = 10000 // 10 seconds
 // others
 export const minpassword = 8
 export const recovery_phrase_words = 12
+
+export function ASSET_LOGO(symbol) {
+    return `/static/image/coins/${symbol}.svg`
+}

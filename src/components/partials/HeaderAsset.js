@@ -85,6 +85,7 @@ export default class HeaderAsset extends Component {
             address: this.asset.address,
             label: this.asset ? this.asset.label : '',
             symbol: this.asset.symbol,
+            logo: Coins[this.asset.symbol].logo,
             balance_asset: this.asset.balance,
             balance_currency: formatCurrency(
                 convertBalance(this.asset.symbol, this.asset.balance)
@@ -99,6 +100,7 @@ function HeaderAssetTemplate({
     address,
     label,
     symbol,
+    logo,
     balance_asset,
     balance_currency,
     onChangeLabel,
@@ -107,7 +109,7 @@ function HeaderAssetTemplate({
     return (
         <RightHeader>
             <Icon>
-                <img src={`/static/image/coins/${symbol}.svg`} />
+                <img src={logo} />
             </Icon>
             <Left>
                 <H1Input

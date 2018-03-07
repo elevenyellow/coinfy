@@ -1,7 +1,7 @@
 import { bigNumber, hexToDec, formatCoin } from '/api/numbers'
 import { padLeft } from '/api/strings'
 import { sortBy } from '/api/arrays'
-import { TYPE_ERC20 } from '/const/'
+import { TYPE_ERC20, ASSET_LOGO } from '/const/'
 import {
     symbol as symbol_fee,
     url,
@@ -149,6 +149,7 @@ export function createERC20({
             return fetchRecomendedFee(props)
         },
 
+        logo: ASSET_LOGO(symbol),
         symbol,
         name,
         color,

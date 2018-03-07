@@ -40,29 +40,29 @@ export default class AddAsset extends Component {
         Object.keys(Coins)
             .filter(symbol => symbol !== 'Coins')
             .forEach(symbol => {
-                const coin = Coins[symbol]
-                if (coin.type === TYPE_COIN) {
+                const Coin = Coins[symbol]
+                if (Coin.type === TYPE_COIN) {
                     this.assetList.push({
-                        name: coin.name,
+                        name: Coin.name,
                         symbol: symbol,
-                        type: coin.type,
+                        type: Coin.type,
                         url_create: routes.create({ symbol: symbol }),
                         url_import: routes.import({ symbol: symbol }),
-                        logo: `/static/image/coins/${symbol}.svg`,
-                        labels: coin.labels,
+                        logo: Coin.logo,
+                        labels: Coin.labels,
                         position: 0,
                         background_image: '/static/image/coin_background.png',
                         background_image_opacity: 0.2
                     })
-                } else if (coin.type === TYPE_ERC20) {
+                } else if (Coin.type === TYPE_ERC20) {
                     this.assetList.push({
-                        name: coin.name,
+                        name: Coin.name,
                         symbol: symbol,
-                        type: coin.type,
+                        type: Coin.type,
                         url_create: routes.create({ symbol: symbol }),
                         url_import: routes.import({ symbol: symbol }),
-                        logo: `/static/image/coins/${symbol}.svg`,
-                        labels: coin.labels,
+                        logo: Coin.logo,
+                        labels: Coin.labels,
                         position: 1,
                         background_image: '/static/image/erc20_background.svg',
                         background_image_opacity: 0.04

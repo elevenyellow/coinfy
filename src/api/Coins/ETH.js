@@ -18,7 +18,7 @@ import {
 } from '/api/numbers'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
 import { localStorageGet } from '/api/browser'
-import { TYPE_COIN, MAINNET, TESTNET } from '/const/'
+import { TYPE_COIN, MAINNET, TESTNET, ASSET_LOGO } from '/const/'
 
 // private
 export const network = Number(localStorageGet('network')) || MAINNET
@@ -48,6 +48,7 @@ export const price_decimals = 0
 export const satoshis = Math.pow(10, coin_decimals)
 export const default_gas_limit = 21000
 export const labels = 'eth coin etereum'
+export const logo = ASSET_LOGO(symbol)
 
 export { addHexPrefix } from 'ethereumjs-util'
 
