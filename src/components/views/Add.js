@@ -15,6 +15,7 @@ import state from '/store/state'
 import { setHref } from '/store/actions'
 
 import Div from '/components/styled/Div'
+import ButtonBig from '/components/styled/ButtonBig'
 import H1 from '/components/styled/H1'
 import H2 from '/components/styled/H2'
 import InputSearch from '/components/styled/InputSearch'
@@ -169,10 +170,31 @@ function AddAssetTemplate({
                         </Item>
                     ))}
                 </Items>
+                <Buttons>
+                    <ButtonBig
+                        onClick={e =>
+                            onClick(routes.custom({ type: TYPE_ERC20 }))
+                        }
+                    >
+                        Create custom ERC20 token
+                    </ButtonBig>
+                </Buttons>
             </RightContent>
         </RightContainerPadding>
     )
 }
+
+const Buttons = styled.div`
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    padding-top: 30px;
+    & > * {
+        max-width: 350px !important;
+        position: relative;
+        display: inline-block;
+    }
+`
 
 const Items = styled.div`
     display: flex;

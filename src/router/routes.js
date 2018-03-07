@@ -4,6 +4,7 @@ export default {
 
     // Add
     add: () => `/add`,
+    custom: ({ type }) => `/custom/${type}`,
     create: ({ symbol }) => `/create/${symbol}`,
     import: ({ symbol }) => `/import/${symbol}`,
 

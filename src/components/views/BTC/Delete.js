@@ -56,7 +56,7 @@ function DeleteTemplate({ confirmed, onConfirm, onDelete }) {
                     <Checkbox
                         checked={confirmed}
                         onChange={onConfirm}
-                        label="I understand that if I don't have a Paper Wallet or a Backup I won't be able to recover this asset."
+                        label="I understand that if I don't have a Recovery Phrase, my Paper Wallet or a Backup I won't be able to recover this asset."
                     />
                 </div>
                 <Div padding-top="10px">

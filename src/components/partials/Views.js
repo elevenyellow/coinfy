@@ -27,6 +27,7 @@ import ImportERC20 from '/components/views/ImportERC20'
 import ViewBTC from '/components/views/BTC/'
 import ViewETH from '/components/views/ETH/'
 import ViewERC20 from '/components/views/ERC20/'
+import CustomERC20 from '/components/views/Custom/ERC20'
 
 export default class Content extends Component {
     componentWillMount() {
@@ -81,6 +82,9 @@ function ContentTemplate({
                     </Route>
                     <Route pathname={routes.add()}>
                         <Add />
+                    </Route>
+                    <Route pathname={routes.custom({ type: TYPE_ERC20 })}>
+                        <CustomERC20 />
                     </Route>
                     <Route
                         pathname={
