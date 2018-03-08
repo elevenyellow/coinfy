@@ -33,6 +33,7 @@ export const FormFieldLeft = styled.div`
 export const FormFieldRight = styled.div`
     float: left;
     width: ${props => props.width || '60%'};
+    position: relative;
     ${styles.media.fourth} {
         float: none;
         width: 100%;

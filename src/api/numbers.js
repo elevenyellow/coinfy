@@ -52,6 +52,10 @@ export function bigNumber(number) {
     return new BigNumber(String(number))
 }
 
+export function getRandomArbitrary(min, max) {
+    return Math.round(Math.random() * (max - min) + min)
+}
+
 export function formatCoin(value, dec, symbol) {
     const tof = typeof value
     if (tof != 'number' && tof != 'string') value = '0'

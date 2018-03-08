@@ -2,6 +2,11 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
+import styles from '/const/styles'
+
+import { getRandomArbitrary } from '/api/numbers'
+import { isAddress } from '/api/coins/ETH'
+
 import state from '/store/state'
 
 import H1 from '/components/styled/H1'
@@ -14,6 +19,7 @@ import {
 import Div from '/components/styled/Div'
 import Input from '/components/styled/Input'
 import Help from '/components/styled/Help'
+import Button from '/components/styled/Button'
 import { Label, SubLabel } from '/components/styled/Label'
 import IconHeader from '/components/styled/IconHeader'
 import {
@@ -29,10 +35,27 @@ export default class ImportBitcoin extends Component {
         this.observer.observe(state.view)
 
         // Initial state
-        state.view = {}
+        state.view = {
+            contract_address: '',
+            symbol: '',
+            name: '',
+            coin_decimals: 18,
+            color: (
+                '#' +
+                getRandomArbitrary(30, 255).toString(16) +
+                getRandomArbitrary(30, 255).toString(16) +
+                getRandomArbitrary(30, 255).toString(16)
+            ).toUpperCase(),
+
+            contract_address_error: '',
+            symbol_error: '',
+            name_error: '',
+            coin_decimals_error: '',
+            color_error: ''
+        }
 
         // binding
-        // this.onChangeTypeImport = this.onChangeTypeImport.bind(this)
+        this.onChangeAddress = this.onChangeAddress.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -41,12 +64,52 @@ export default class ImportBitcoin extends Component {
         return false
     }
 
+    onChangeAddress(e) {
+        const collector = collect()
+        const value = e.target.value.trim()
+        state.view.contract_address = value
+        if (isAddress(value)) {
+            state.view.contract_address_error = ''
+        } else {
+            state.view.contract_address_error = 'Invalid address'
+        }
+        collector.emit()
+    }
+
     render() {
-        return React.createElement(ImportTemplate, {})
+        return React.createElement(ImportTemplate, {
+            contract_address: state.view.contract_address,
+            symbol: state.view.symbol,
+            name: state.view.name,
+            coin_decimals: state.view.coin_decimals,
+            color: state.view.color,
+
+            contract_address_error: state.view.contract_address_error,
+            symbol_error: state.view.symbol_error,
+            name_error: state.view.name_error,
+            coin_decimals_error: state.view.coin_decimals_error,
+            color_error: state.view.color_error,
+
+            onChangeAddress: this.onChangeAddress
+        })
     }
 }
 
-function ImportTemplate({}) {
+function ImportTemplate({
+    contract_address,
+    symbol,
+    name,
+    coin_decimals,
+    color,
+
+    contract_address_error,
+    symbol_error,
+    name_error,
+    coin_decimals_error,
+    color_error,
+
+    onChangeAddress
+}) {
     return (
         <RightContainerPadding>
             <RightHeader>
@@ -71,12 +134,15 @@ function ImportTemplate({}) {
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
+                                    value={contract_address}
                                     width="100%"
-                                    error={'address_input_error'}
-                                    invalid={false}
+                                    error={contract_address_error}
+                                    invalid={contract_address_error}
+                                    onChange={onChangeAddress}
                                 />
                             </FormFieldRight>
                         </FormField>
+
                         <FormField>
                             <FormFieldLeft>
                                 <Label>Symbol</Label>
@@ -88,23 +154,71 @@ function ImportTemplate({}) {
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
-                                    width="60px"
+                                    maxLength="5"
+                                    value={symbol}
+                                    width="100%"
                                     error={'address_input_error'}
                                     invalid={false}
                                 />
                             </FormFieldRight>
                         </FormField>
+
                         <FormField>
                             <FormFieldLeft>
                                 <Label>Name / Title</Label>
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
+                                    value={name}
                                     width="100%"
                                     error={'address_input_error'}
                                     invalid={false}
                                 />
                             </FormFieldRight>
+                        </FormField>
+
+                        <FormField>
+                            <FormFieldLeft>
+                                <Label>Decimals</Label>
+                            </FormFieldLeft>
+                            <FormFieldRight>
+                                <Input
+                                    min="1"
+                                    max="99"
+                                    value={coin_decimals}
+                                    type="number"
+                                    width="100%"
+                                    error={'address_input_error'}
+                                    invalid={false}
+                                />
+                            </FormFieldRight>
+                        </FormField>
+
+                        <FormField>
+                            <FormFieldLeft>
+                                <Label>Color</Label>
+                            </FormFieldLeft>
+                            <FormFieldRight>
+                                <Input
+                                    value={color}
+                                    width="100%"
+                                    error={'address_input_error'}
+                                    invalid={false}
+                                />
+                                <Color color={color} />
+                            </FormFieldRight>
+                        </FormField>
+
+                        <FormField>
+                            <FormFieldButtons>
+                                <Button
+                                    width="100px"
+                                    disabled={false}
+                                    onClick={e => {}}
+                                >
+                                    Create
+                                </Button>
+                            </FormFieldButtons>
                         </FormField>
                     </form>
                 </Div>
@@ -112,3 +226,13 @@ function ImportTemplate({}) {
         </RightContainerPadding>
     )
 }
+
+const Color = styled.div`
+    position: absolute;
+    right: 0;
+    width: 35px;
+    height: 35px;
+    background: ${props => props.color};
+    top: 0;
+    border: 2px solid ${styles.color.background5};
+`

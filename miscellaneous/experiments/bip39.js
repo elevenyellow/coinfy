@@ -27,9 +27,10 @@ var keyBTC = bip32RootKey.derivePath("m/44'/0'/0'/0/0")
 var keyETH = bip32RootKey.derivePath("m/44'/60'/0'/0/0")
 
 // .toWIF()
-console.log(seed.toString('hex'))
-console.log(bip32RootKey.toBase58())
+console.log('seed:', seed.toString('hex'))
+console.log('bip32RootKey:', bip32RootKey.toBase58())
 console.log(keyBTC.keyPair.getAddress())
 console.log(
-    ethereum.privateToAddress(keyETH.keyPair.d.toBuffer()).toString('hex')
+    '0x' +
+        ethereum.privateToAddress(keyETH.keyPair.d.toBuffer()).toString('hex')
 )

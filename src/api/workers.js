@@ -1,4 +1,5 @@
 // Experimental function (doesn't work as expected)
+// https://github.com/developit/workerize
 export function createWorker(f) {
     function run() {
         const that = this
