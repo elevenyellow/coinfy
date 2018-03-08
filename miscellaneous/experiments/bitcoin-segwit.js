@@ -34,3 +34,12 @@ console.log(
         'KzW5W7kriXPoaExfPxN4igxu9PVZQb1zGfSJeveP8G8ChRHgMzdp'
     )
 )
+
+function nodeToP2shSegwitAddress(hdNode, network) {
+    var pubkeyBuf = hdNode.keyPair.getPublicKeyBuffer()
+    var hash = Bitcoin.crypto.hash160(pubkeyBuf)
+    var redeemScript = Bitcoin.script.witnessPubKeyHash.output.encode(hash)
+    var hash2 = Bitcoin.crypto.hash160(redeemScript)
+    var scriptPubkey = Bitcoin.script.scriptHash.output.encode(hash2)
+    return { address: Bitcoin.address.fromOutputScript(scriptPubkey, network) }
+}

@@ -4,6 +4,7 @@
   "description": "",
   "main": "generate.js",
   "dependencies": {
+    "abi-decoder": "^1.0.9",
     "aes-js": "^3.1.0",
     "bigi": "^1.4.2",
     "bip39": "^2.4.0",
