@@ -185,26 +185,44 @@ export function ethCall(contract_address, data) {
         `${api_url}?module=proxy&action=eth_call&to=${contract_address}&data=${data}`
     )
         .then(response => response.json())
-        .then(json => (json.error || json.result === '0x' ? null : json.result))
+        .then(
+            json =>
+                json.error || json.result === '0x'
+                    ? null
+                    : removeHexPrefix(json.result)
+        )
 }
 
 export function getNameContract(contract_address) {
     const data = getDataContractMethodCall('name()')
     return ethCall(contract_address, data).then(result_hex => {
-        return result_hex ? hexToAscii(result_hex).trim() : null
+        return result_hex ? hexToAscii(decodeSolidityString(result_hex)) : null
     })
 }
 
 export function getSymbolContract(contract_address) {
     const data = getDataContractMethodCall('symbol()')
     return ethCall(contract_address, data).then(result_hex => {
-        return result_hex ? hexToAscii(result_hex).trim() : null
+        return result_hex ? hexToAscii(decodeSolidityString(result_hex)) : null
     })
 }
 
 export function getDecimalsContract(contract_address) {
     const data = getDataContractMethodCall('decimals()')
     return ethCall(contract_address, data).then(result_hex => {
-        return result_hex ? bigNumber(result_hex).toString() : null
+        return result_hex
+            ? bigNumber(decodeSolidityString(result_hex)).toString()
+            : null
     })
+}
+
+function decodeSolidityString(str) {
+    const bytes = 64
+    const args = str.length / bytes
+    for (let arg_index = 0; arg_index < args; arg_index++)
+        console.log(
+            str.substr(arg_index * bytes, bytes),
+            hexToAscii(str.substr(arg_index * bytes, bytes))
+        )
+    return str
 }

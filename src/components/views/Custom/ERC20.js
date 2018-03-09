@@ -76,13 +76,13 @@ export default class ImportBitcoin extends Component {
         if (isAddress(contract_address)) {
             state.view.contract_address_error = ''
             getNameContract(contract_address).then(result => {
-                console.log(result)
+                console.log(result, result.length)
             })
             getSymbolContract(contract_address).then(result => {
-                console.log(result)
+                console.log(result, result.length)
             })
             getDecimalsContract(contract_address).then(result => {
-                console.log(result)
+                console.log(result, result.length)
             })
         } else {
             state.view.contract_address_error = 'Invalid address'

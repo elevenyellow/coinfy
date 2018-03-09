@@ -43,7 +43,8 @@ function getDataContractMethodCall(method_name) {
 }
 
 const data = getDataContractMethodCall(
-    'decimals()'
+    'name()'
+    // 'decimals()'
     // 'balanceOf(address)',
     // '0xf9e4f0c2917d29753eca437f94b2997e597f3510'
 )
@@ -59,28 +60,40 @@ request(
 
         // console.log('hexToAscii:', hexToAscii(body.result))
         try {
-            console.log('web3.hexToAscii:', web3.utils.hexToAscii(body.result))
+            console.log(
+                'web3.hexToAscii:',
+                web3.utils.hexToAscii(body.result).length
+            )
+        } catch (e) {}
+        try {
+            console.log('web3.toAscii:', web3.utils.toAscii(body.result).length)
+        } catch (e) {}
+        try {
+            console.log('web3.toUtf8:', web3.utils.toUtf8(body.result).length)
         } catch (e) {}
         try {
             console.log(
                 'web3.hexToNumber:',
-                web3.utils.hexToNumber(body.result)
+                web3.utils.hexToNumber(body.result).length
             )
         } catch (e) {}
         try {
             console.log(
                 'web3.hexToNumberString:',
-                web3.utils.hexToNumberString(body.result)
+                web3.utils.hexToNumberString(body.result).length
             )
         } catch (e) {}
         try {
             console.log(
                 'web3.hexToString:',
-                web3.utils.hexToString(body.result)
+                web3.utils.hexToString(body.result).length
             )
         } catch (e) {}
         try {
-            console.log('web3.hexToUtf8:', web3.utils.hexToUtf8(body.result))
+            console.log(
+                'web3.hexToUtf8:',
+                web3.utils.hexToUtf8(body.result).length
+            )
         } catch (e) {}
     }
 )
