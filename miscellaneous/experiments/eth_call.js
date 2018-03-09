@@ -1,60 +1,23 @@
 const { sha3, addHexPrefix } = require('ethereumjs-util')
-const abiDecoder = require('abi-decoder')
+const request = require('request')
+const BigNumber = require('bignumber.js')
+const Web3 = require('web3')
+const web3 = new Web3()
 
-const testABI = [
-    {
-        inputs: [{ type: 'address', name: '' }],
-        constant: true,
-        name: 'isInstantiation',
-        payable: false,
-        outputs: [{ type: 'bool', name: '' }],
-        type: 'function'
-    },
-    {
-        inputs: [
-            { type: 'address[]', name: '_owners' },
-            { type: 'uint256', name: '_required' },
-            { type: 'uint256', name: '_dailyLimit' }
-        ],
-        constant: false,
-        name: 'create',
-        payable: false,
-        outputs: [{ type: 'address', name: 'wallet' }],
-        type: 'function'
-    },
-    {
-        inputs: [{ type: 'address', name: '' }, { type: 'uint256', name: '' }],
-        constant: true,
-        name: 'instantiations',
-        payable: false,
-        outputs: [{ type: 'address', name: '' }],
-        type: 'function'
-    },
-    {
-        inputs: [{ type: 'address', name: 'creator' }],
-        constant: true,
-        name: 'getInstantiationCount',
-        payable: false,
-        outputs: [{ type: 'uint256', name: '' }],
-        type: 'function'
-    },
-    {
-        inputs: [
-            { indexed: false, type: 'address', name: 'sender' },
-            { indexed: false, type: 'address', name: 'instantiation' }
-        ],
-        type: 'event',
-        name: 'ContractInstantiation',
-        anonymous: false
+function hexToAscii(hex) {
+    var str = ''
+    var i = 0,
+        l = hex.length
+    if (hex.substring(0, 2) === '0x') {
+        i = 2
     }
-]
-abiDecoder.addABI(testABI)
+    for (; i < l; i += 2) {
+        var code = parseInt(hex.substr(i, 2), 16)
+        str += String.fromCharCode(code)
+    }
 
-console.log(
-    abiDecoder.decodeMethod(
-        '0x53d9d9100000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000a6d9c5f7d4de3cef51ad3b7235d79ccc95114de5000000000000000000000000a6d9c5f7d4de3cef51ad3b7235d79ccc95114daa'
-    )
-)
+    return str
+}
 
 function padLeft(n, width, z) {
     z = z || '0'
@@ -78,11 +41,48 @@ function getDataContractMethodCall(method_name) {
     data = data + args.map(arg => padLeft(removeHexPrefix(arg), 64)).join('')
     return data
 }
-console.log(
-    getDataContractMethodCall(
-        'balanceOf(address)',
-        '0xf9e4f0c2917d29753eca437f94b2997e597f3510'
-    )
+
+const data = getDataContractMethodCall(
+    'totalSupplys()'
+    // 'balanceOf(address)',
+    // '0xf9e4f0c2917d29753eca437f94b2997e597f3510'
+)
+console.log('data:', data)
+
+const contract_address = '0x960b236a07cf122663c4303350609a66a7b288c0'
+// https://api.etherscan.io/api?module=contract&action=getabi&address=0x960b236a07cf122663c4303350609a66a7b288c0&apikey=YourApiKeyToken
+request(
+    `https://api.etherscan.io/api?module=proxy&action=eth_call&to=${contract_address}&data=${data}`,
+    (error, response, body) => {
+        body = JSON.parse(body)
+        console.log('body:', body)
+
+        // console.log('hexToAscii:', hexToAscii(body.result))
+        try {
+            console.log('web3.hexToAscii:', web3.utils.hexToAscii(body.result))
+        } catch (e) {}
+        try {
+            console.log(
+                'web3.hexToNumber:',
+                web3.utils.hexToNumber(body.result)
+            )
+        } catch (e) {}
+        try {
+            console.log(
+                'web3.hexToNumberString:',
+                web3.utils.hexToNumberString(body.result)
+            )
+        } catch (e) {}
+        try {
+            console.log(
+                'web3.hexToString:',
+                web3.utils.hexToString(body.result)
+            )
+        } catch (e) {}
+        try {
+            console.log('web3.hexToUtf8:', web3.utils.hexToUtf8(body.result))
+        } catch (e) {}
+    }
 )
 
 // function JSONRpc(url, method, params, id = Math.random()) {
