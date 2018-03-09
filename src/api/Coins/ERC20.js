@@ -1,7 +1,7 @@
 import { bigNumber, hexToDec, formatCoin } from '/api/numbers'
-import { padLeft } from '/api/strings'
 import { sortBy } from '/api/arrays'
 import { TYPE_ERC20, ASSET_LOGO } from '/const/'
+import { padLeft, hexToAscii } from '/api/strings'
 import {
     symbol as symbol_fee,
     url,
@@ -29,8 +29,10 @@ import {
     urlDecodeTx,
     getWalletFromSeed,
     formatAddress,
-    cutDecimals
+    cutDecimals,
+    getDataContractMethodCall
 } from '/api/coins/ETH'
+import { addHexPrefix } from './ETH'
 
 export function createERC20({
     symbol,
@@ -76,9 +78,9 @@ export function createERC20({
 
         fetchTxs: function(address, from = 0, to = from + 100) {
             const unique_index = contract_address + address
-            const address64 = `0x000000000000000000000000${removeHexPrefix(
-                address
-            )}`.toLowerCase()
+            const address64 = addHexPrefix(
+                padLeft(removeHexPrefix(address), 64)
+            )
             let raw_txs = []
             const resolver =
                 from > 0 && txs_cache[unique_index] !== undefined
@@ -127,16 +129,13 @@ export function createERC20({
         },
 
         createSimpleTx: function(params) {
-            const value = padLeft(
+            params.data = getDataContractMethodCall(
+                'transfer(address,uint256)',
+                params.toAddress,
                 params.amount
                     .times(bigNumber(10).pow(coin_decimals))
-                    .toString(16),
-                64
+                    .toString(16)
             )
-            params.data = `0xa9059cbb${padLeft(
-                removeHexPrefix(params.toAddress),
-                64
-            )}${value}`
             params.gas_limit = default_gas_limit
             params.toAddress = contract_address
             params.amount = bigNumber(0)
@@ -179,4 +178,33 @@ export function createERC20({
         cutDecimals,
         urlInfoTx
     }
+}
+
+export function ethCall(contract_address, data) {
+    return fetch(
+        `${api_url}?module=proxy&action=eth_call&to=${contract_address}&data=${data}`
+    )
+        .then(response => response.json())
+        .then(json => (json.error || json.result === '0x' ? null : json.result))
+}
+
+export function getNameContract(contract_address) {
+    const data = getDataContractMethodCall('name()')
+    return ethCall(contract_address, data).then(result_hex => {
+        return result_hex ? hexToAscii(result_hex).trim() : null
+    })
+}
+
+export function getSymbolContract(contract_address) {
+    const data = getDataContractMethodCall('symbol()')
+    return ethCall(contract_address, data).then(result_hex => {
+        return result_hex ? hexToAscii(result_hex).trim() : null
+    })
+}
+
+export function getDecimalsContract(contract_address) {
+    const data = getDataContractMethodCall('decimals()')
+    return ethCall(contract_address, data).then(result_hex => {
+        return result_hex ? bigNumber(result_hex).toString() : null
+    })
 }

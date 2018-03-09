@@ -16,6 +16,7 @@ import {
     sanitizeHex,
     bigNumber
 } from '/api/numbers'
+import { padLeft } from '/api/strings'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
 import { localStorageGet } from '/api/browser'
 import { TYPE_COIN, MAINNET, TESTNET, ASSET_LOGO } from '/const/'
@@ -263,6 +264,20 @@ export function fetchRecomendedFee({
                       ))
               )
         : Promise.resolve(cacheRecomendedFee[default_gas_limit])
+}
+
+// https://tokenstandard.codetract.io/
+// getDataContractMethodCall('balanceOf(address)', '0xf9e4f0c2917d29753eca437f94b2997e597f3510')
+export function getDataContractMethodCall(method_name) {
+    let args = Array.prototype.slice.call(arguments, 1)
+    let data = addHexPrefix(
+        sha3(method_name)
+            .toString('hex')
+            .slice(0, 8)
+    )
+
+    data = data + args.map(arg => padLeft(removeHexPrefix(arg), 64)).join('')
+    return data
 }
 
 export function createSimpleTx({

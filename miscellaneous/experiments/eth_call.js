@@ -43,7 +43,7 @@ function getDataContractMethodCall(method_name) {
 }
 
 const data = getDataContractMethodCall(
-    'totalSupplys()'
+    'decimals()'
     // 'balanceOf(address)',
     // '0xf9e4f0c2917d29753eca437f94b2997e597f3510'
 )
