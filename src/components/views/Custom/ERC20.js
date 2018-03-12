@@ -75,16 +75,26 @@ export default class ImportBitcoin extends Component {
             const collector = collect()
             state.view.contract_address = contract_address
             if (isAddress(contract_address)) {
+                let nulls = 0
                 state.view.contract_address_error = ''
-                getNameContract(contract_address).then(result => {
-                    console.log(result)
-                })
-                getSymbolContract(contract_address).then(result => {
-                    console.log(result)
-                })
-                getDecimalsContract(contract_address).then(result => {
-                    console.log(result)
-                })
+                getSymbolContract(contract_address)
+                    .then(result => {
+                        if (result !== null) state.view.symbol = result
+                        else nulls += 1
+                        return getNameContract(contract_address)
+                    })
+                    .then(result => {
+                        if (result !== null) state.view.name = result
+                        else nulls += 1
+                        return getDecimalsContract(contract_address)
+                    })
+                    .then(result => {
+                        if (result !== null) state.view.coin_decimals = result
+                        else if (nulls === 2) {
+                            state.view.contract_address_error =
+                                'Seems like this address is not an ERC20 contract.'
+                        }
+                    })
             } else {
                 state.view.contract_address_error = 'Invalid address'
             }
@@ -144,9 +154,7 @@ function ImportTemplate({
                         <FormField>
                             <FormFieldLeft>
                                 <Label>Contract Address</Label>
-                                {/* <SubLabel>
-                                    Select the option you prefer to import.
-                                </SubLabel> */}
+                                <SubLabel>An ERC20 contract address.</SubLabel>
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
@@ -196,6 +204,9 @@ function ImportTemplate({
                         <FormField>
                             <FormFieldLeft>
                                 <Label>Decimals</Label>
+                                <SubLabel>
+                                    Must be the number defined in the contract.
+                                </SubLabel>
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
