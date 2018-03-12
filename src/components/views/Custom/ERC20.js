@@ -70,24 +70,26 @@ export default class ImportBitcoin extends Component {
     }
 
     onChangeAddress(e) {
-        const collector = collect()
         const contract_address = e.target.value.trim()
-        state.view.contract_address = contract_address
-        if (isAddress(contract_address)) {
-            state.view.contract_address_error = ''
-            getNameContract(contract_address).then(result => {
-                console.log(result, result.length)
-            })
-            getSymbolContract(contract_address).then(result => {
-                console.log(result, result.length)
-            })
-            getDecimalsContract(contract_address).then(result => {
-                console.log(result, result.length)
-            })
-        } else {
-            state.view.contract_address_error = 'Invalid address'
+        if (state.view.contract_address !== contract_address) {
+            const collector = collect()
+            state.view.contract_address = contract_address
+            if (isAddress(contract_address)) {
+                state.view.contract_address_error = ''
+                getNameContract(contract_address).then(result => {
+                    console.log(result)
+                })
+                getSymbolContract(contract_address).then(result => {
+                    console.log(result)
+                })
+                getDecimalsContract(contract_address).then(result => {
+                    console.log(result)
+                })
+            } else {
+                state.view.contract_address_error = 'Invalid address'
+            }
+            collector.emit()
         }
-        collector.emit()
     }
 
     render() {

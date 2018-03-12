@@ -8,14 +8,8 @@ import {
 } from 'ethereumjs-util'
 import EthereumTx from 'ethereumjs-tx'
 import { getBip32RootKey } from '/api/bip39'
-import {
-    formatCoin,
-    limitDecimals,
-    decToHex,
-    hexToDec,
-    sanitizeHex,
-    bigNumber
-} from '/api/numbers'
+import { formatCoin, limitDecimals, bigNumber } from '/api/numbers'
+import { decToHex, hexToDec, sanitizeHex, removeHexPrefix } from '/api/hex'
 import { padLeft } from '/api/strings'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
 import { localStorageGet } from '/api/browser'
@@ -151,10 +145,6 @@ export function getWalletsFromSeed({
 //         private_key: private_key.toString('hex')
 //     }
 // }
-
-export function removeHexPrefix(hex) {
-    return hex.toLowerCase().replace('0x', '')
-}
 
 export function urlInfo(address) {
     return `${url}/address/${address}`

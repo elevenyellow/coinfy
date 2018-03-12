@@ -4,21 +4,6 @@ export function padLeft(n, width, z) {
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
 }
 
-export function hexToAscii(hex) {
-    let str = ''
-    let i = 0,
-        l = hex.length
-    if (hex.substring(0, 2) === '0x') {
-        i = 2
-    }
-    for (; i < l; i += 2) {
-        let code = parseInt(hex.substr(i, 2), 16)
-        str += String.fromCharCode(code)
-    }
-
-    return str
-}
-
 // // Usage: console.log( string.supplant("${v|Hola} mundo ${v2}", ${v:"Hola"}, ${v2:"cruel"}) );
 // export function supplant(str) {
 //     let args = arguments,

@@ -1,6 +1,8 @@
 const { sha3, addHexPrefix } = require('ethereumjs-util')
 const request = require('request')
 const BigNumber = require('bignumber.js')
+const abiDecoder = require('abi-decoder')
+var abi = require('ethereumjs-abi')
 const Web3 = require('web3')
 const web3 = new Web3()
 
@@ -93,6 +95,12 @@ request(
             console.log(
                 'web3.hexToUtf8:',
                 web3.utils.hexToUtf8(body.result).length
+            )
+        } catch (e) {}
+        try {
+            console.log(
+                'web3.abi.decodeParameter:',
+                web3.eth.abi.decodeParameter('string', body.result)
             )
         } catch (e) {}
     }

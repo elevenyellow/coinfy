@@ -1,14 +1,19 @@
-import { bigNumber, hexToDec, formatCoin } from '/api/numbers'
+import { bigNumber, formatCoin } from '/api/numbers'
 import { sortBy } from '/api/arrays'
 import { TYPE_ERC20, ASSET_LOGO } from '/const/'
-import { padLeft, hexToAscii } from '/api/strings'
+import { padLeft } from '/api/strings'
+import {
+    hexToDec,
+    hexToAscii,
+    decodeSolidityString,
+    removeHexPrefix
+} from '/api/hex'
 import {
     symbol as symbol_fee,
     url,
     api_url,
     api_key,
     url_myetherapi,
-    removeHexPrefix,
     fetchBalance,
     fetchRecomendedFee,
     createSimpleTx,
@@ -196,33 +201,20 @@ export function ethCall(contract_address, data) {
 export function getNameContract(contract_address) {
     const data = getDataContractMethodCall('name()')
     return ethCall(contract_address, data).then(result_hex => {
-        return result_hex ? hexToAscii(decodeSolidityString(result_hex)) : null
+        return result_hex ? decodeSolidityString(result_hex) : null
     })
 }
 
 export function getSymbolContract(contract_address) {
     const data = getDataContractMethodCall('symbol()')
     return ethCall(contract_address, data).then(result_hex => {
-        return result_hex ? hexToAscii(decodeSolidityString(result_hex)) : null
+        return result_hex ? decodeSolidityString(result_hex) : null
     })
 }
 
 export function getDecimalsContract(contract_address) {
     const data = getDataContractMethodCall('decimals()')
     return ethCall(contract_address, data).then(result_hex => {
-        return result_hex
-            ? bigNumber(decodeSolidityString(result_hex)).toString()
-            : null
+        return result_hex ? hexToDec(result_hex) : null
     })
-}
-
-function decodeSolidityString(str) {
-    const bytes = 64
-    const args = str.length / bytes
-    for (let arg_index = 0; arg_index < args; arg_index++)
-        console.log(
-            str.substr(arg_index * bytes, bytes),
-            hexToAscii(str.substr(arg_index * bytes, bytes))
-        )
-    return str
 }
