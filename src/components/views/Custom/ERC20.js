@@ -5,6 +5,8 @@ import { createObserver, collect } from 'dop'
 import styles from '/const/styles'
 
 import { getRandomArbitrary } from '/api/numbers'
+
+import { Coins } from '/api/coins'
 import { isAddress } from '/api/coins/ETH'
 import {
     getNameContract,
@@ -61,6 +63,10 @@ export default class ImportBitcoin extends Component {
 
         // binding
         this.onChangeAddress = this.onChangeAddress.bind(this)
+        this.onChangeSymbol = this.onChangeSymbol.bind(this)
+        this.onChangeName = this.onChangeName.bind(this)
+        this.onChangeDecimals = this.onChangeDecimals.bind(this)
+        this.onChangeColor = this.onChangeColor.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -69,8 +75,8 @@ export default class ImportBitcoin extends Component {
         return false
     }
 
-    onChangeAddress(e) {
-        const contract_address = e.target.value.trim()
+    onChangeAddress(value) {
+        const contract_address = value.trim()
         if (state.view.contract_address !== contract_address) {
             const collector = collect()
             state.view.contract_address = contract_address
@@ -79,17 +85,17 @@ export default class ImportBitcoin extends Component {
                 state.view.contract_address_error = ''
                 getSymbolContract(contract_address)
                     .then(result => {
-                        if (result !== null) state.view.symbol = result
+                        if (result !== null) this.onChangeSymbol(result)
                         else nulls += 1
                         return getNameContract(contract_address)
                     })
                     .then(result => {
-                        if (result !== null) state.view.name = result
+                        if (result !== null) this.onChangeName(result)
                         else nulls += 1
                         return getDecimalsContract(contract_address)
                     })
                     .then(result => {
-                        if (result !== null) state.view.coin_decimals = result
+                        if (result !== null) this.onChangeDecimals(result)
                         else if (nulls === 2) {
                             state.view.contract_address_error =
                                 'Seems like this address is not an ERC20 contract.'
@@ -100,6 +106,56 @@ export default class ImportBitcoin extends Component {
             }
             collector.emit()
         }
+    }
+
+    onChangeSymbol(value) {
+        const symbol = value.trim().toUpperCase()
+        const collector = collect()
+        state.view.symbol = symbol
+        state.view.symbol_error = Coins.hasOwnProperty(symbol)
+            ? 'Duplicated symbol.'
+            : ''
+        collector.emit()
+    }
+
+    onChangeName(value) {
+        state.view.name = value.trim()
+    }
+
+    onChangeDecimals(value) {
+        const coin_decimals = Number(value)
+        const collector = collect()
+        state.view.coin_decimals = value
+        state.view.coin_decimals_error = isNaN(coin_decimals)
+            ? 'Invalid number'
+            : ''
+        collector.emit()
+    }
+
+    onChangeColor(value) {
+        // state.view.color = value.trim()
+        const color = value.trim()
+        const collector = collect()
+        state.view.color = value
+        state.view.color_error = !/^#[0-9a-zA-Z]{3,6}$/.test(color)
+            ? 'Invalid color'
+            : ''
+        collector.emit()
+    }
+
+    get isValidForm() {
+        return (
+            state.view.contract_address.length > 0 &&
+            state.view.contract_address_error === '' &&
+            state.view.symbol.length > 0 &&
+            state.view.symbol_error === '' &&
+            state.view.name.length > 0 &&
+            state.view.name_error === '' &&
+            state.view.coin_decimals > 0 &&
+            state.view.coin_decimals_error === '' &&
+            state.view.color.length > 0 &&
+            state.view.color_error === ''
+        )
     }
 
     render() {
@@ -116,7 +172,13 @@ export default class ImportBitcoin extends Component {
             coin_decimals_error: state.view.coin_decimals_error,
             color_error: state.view.color_error,
 
-            onChangeAddress: this.onChangeAddress
+            isValidForm: this.isValidForm,
+
+            onChangeAddress: this.onChangeAddress,
+            onChangeSymbol: this.onChangeSymbol,
+            onChangeName: this.onChangeName,
+            onChangeDecimals: this.onChangeDecimals,
+            onChangeColor: this.onChangeColor
         })
     }
 }
@@ -134,13 +196,19 @@ function ImportTemplate({
     coin_decimals_error,
     color_error,
 
-    onChangeAddress
+    isValidForm,
+
+    onChangeAddress,
+    onChangeSymbol,
+    onChangeName,
+    onChangeDecimals,
+    onChangeColor
 }) {
     return (
         <RightContainerPadding>
             <RightHeader>
                 <IconHeader>
-                    <img />
+                    <img src="/static/image/coins/ERC20.svg" />
                 </IconHeader>
                 <Div float="left">
                     <H1>ERC20</H1>
@@ -162,7 +230,9 @@ function ImportTemplate({
                                     width="100%"
                                     error={contract_address_error}
                                     invalid={contract_address_error}
-                                    onChange={onChangeAddress}
+                                    onChange={e =>
+                                        onChangeAddress(e.target.value)
+                                    }
                                 />
                             </FormFieldRight>
                         </FormField>
@@ -181,8 +251,11 @@ function ImportTemplate({
                                     maxLength="5"
                                     value={symbol}
                                     width="100%"
-                                    error={'address_input_error'}
-                                    invalid={false}
+                                    error={symbol_error}
+                                    invalid={symbol_error}
+                                    onChange={e =>
+                                        onChangeSymbol(e.target.value)
+                                    }
                                 />
                             </FormFieldRight>
                         </FormField>
@@ -193,10 +266,12 @@ function ImportTemplate({
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
+                                    maxLength="30"
                                     value={name}
                                     width="100%"
-                                    error={'address_input_error'}
-                                    invalid={false}
+                                    error={name_error}
+                                    invalid={name_error}
+                                    onChange={e => onChangeName(e.target.value)}
                                 />
                             </FormFieldRight>
                         </FormField>
@@ -210,13 +285,14 @@ function ImportTemplate({
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
-                                    min="1"
-                                    max="99"
+                                    maxLength="2"
                                     value={coin_decimals}
-                                    type="number"
                                     width="100%"
-                                    error={'address_input_error'}
-                                    invalid={false}
+                                    error={coin_decimals_error}
+                                    invalid={coin_decimals_error}
+                                    onChange={e =>
+                                        onChangeDecimals(e.target.value)
+                                    }
                                 />
                             </FormFieldRight>
                         </FormField>
@@ -227,10 +303,14 @@ function ImportTemplate({
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
+                                    maxLength="7"
                                     value={color}
                                     width="100%"
-                                    error={'address_input_error'}
-                                    invalid={false}
+                                    error={color_error}
+                                    invalid={color_error}
+                                    onChange={e =>
+                                        onChangeColor(e.target.value)
+                                    }
                                 />
                                 <Color color={color} />
                             </FormFieldRight>
@@ -240,7 +320,7 @@ function ImportTemplate({
                             <FormFieldButtons>
                                 <Button
                                     width="100px"
-                                    disabled={false}
+                                    disabled={!isValidForm}
                                     onClick={e => {}}
                                 >
                                     Create
