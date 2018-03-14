@@ -23,16 +23,8 @@ import styles from '/const/styles'
 import { Coins } from '/api/coins'
 import { createERC20 } from '/api/coins/ERC20'
 import { now } from '/api/time'
-
-import state from '/store/state'
-import {
-    getTotalAssets,
-    getAssetsAsArray,
-    generateDefaultAsset,
-    getNextCoinId,
-    getAssetId
-} from '/store/getters'
-import { CryptoPriceManager } from '/api/prices'
+import { median } from '/api/arrays'
+import { getAllPrices } from '/api/prices'
 import { decimals } from '/api/numbers'
 import {
     localStorageSet,
@@ -42,6 +34,29 @@ import {
     readFile,
     downloadFile
 } from '/api/browser'
+
+import state from '/store/state'
+import {
+    getTotalAssets,
+    getAssetsAsArray,
+    generateDefaultAsset,
+    getNextCoinId,
+    getAssetId,
+    getSymbolsFromAssets
+} from '/store/getters'
+
+export function fetchWrapper(promise) {
+    return promise
+        .then(result => {
+            showNotConnectionNotification(false)
+            return result
+        })
+        .catch(e => {
+            showNotConnectionNotification(true)
+            console.error(e)
+            return Promise.reject(e)
+        })
+}
 
 export function setHref(href) {
     const collector = collect()
@@ -280,17 +295,10 @@ fetchAllBalances()
 export function fetchBalance(asset_id) {
     const asset = state.assets[asset_id]
     if (asset !== undefined) {
-        return Coins[asset.symbol]
-            .fetchBalance(asset.address)
-            .then(balance => {
-                showNotConnectionNotification(false)
-                updateBalance(asset_id, balance)
-                return balance
-            })
-            .catch(e => {
-                console.error(asset.symbol, 'fetchBalance', e)
-                showNotConnectionNotification(true)
-            })
+        return Coins[asset.symbol].fetchBalance(asset.address).then(balance => {
+            updateBalance(asset_id, balance)
+            return balance
+        })
     }
 }
 
@@ -339,34 +347,16 @@ export function fetchBalanceAsset(asset_id) {
 }
 
 export const fetchPrices = (function() {
-    let timeout
-    let manager = new CryptoPriceManager()
-    manager.onUpdate = function(crypto, value, source) {
-        showNotConnectionNotification(false)
-        // console.log( 'onUpdate', crypto, value, source );
-    }
-    manager.onFinish = (crypto, values) => {
-        // console.log( 'onFinish', crypto, values )
-        if (values.length > 0) {
-            const value =
-                values.reduce((sum, a) => {
-                    return sum + a
-                }, 0) / values.length
-            updatePrice(crypto, value)
-        }
-    }
-    manager.onFinishAll = () => {
-        // console.log('onFinishAll', manager.prices.BTC)
-        timeout = setTimeout(fetchPrices, TIMEOUT_FETCH_PRICES)
-    }
-    manager.onError = e => {
-        showNotConnectionNotification(true)
-        console.error('fetchPrices', e)
-    }
-
     return function() {
-        manager.fetch(Object.keys(Coins), state.fiat)
-        clearTimeout(timeout)
+        // TIMEOUT_FETCH_PRICES
+        const cryptos = getSymbolsFromAssets()
+        fetchWrapper(
+            getAllPrices(cryptos, state.fiat).then(prices => {
+                cryptos.forEach(crypto =>
+                    updatePrice(crypto, median(prices[crypto]))
+                )
+            })
+        )
     }
 })()
 fetchPrices()

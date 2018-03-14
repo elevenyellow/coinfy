@@ -45,6 +45,13 @@ export function getAssetsAsArray() {
     return assets
 }
 
+export function getSymbolsFromAssets() {
+    const symbols = Object.keys(state.assets).map(
+        asset_id => state.assets[asset_id].symbol
+    )
+    return symbols.filter((item, pos) => symbols.indexOf(item) == pos)
+}
+
 export function generateDefaultAsset(object = {}) {
     const asset = {
         // type: type,

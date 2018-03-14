@@ -1,102 +1,120 @@
-export function CryptoPriceManager() {
-    this.timeoutMiliseconds = 5000
-    this.prices = {}
-}
+import { resolveAll } from '/api/promises'
 
-CryptoPriceManager.prototype.fetch = function(arrayassets, currency) {
-    if (this.cancel) this.cancel()
-
-    let assetsFinished = 0
-    let finished = false
-    arrayassets.forEach(crypto => {
-        this.prices[crypto] = []
+// await getAllPrices(["BTC","ETH"], "USD") = {BTC:[2541,2500], ETH:[323,320]}
+export function getAllPrices(cryptos, fiat) {
+    return resolveAll([
+        getPriceFromCryptocompare(cryptos, fiat),
+        getPriceFromCoinmarketcap(cryptos, fiat)
+    ]).then(items => {
+        const prices = {}
+        cryptos.forEach(symbol => {
+            if (!prices[symbol]) prices[symbol] = []
+            items.forEach(item => prices[symbol].push(item[symbol]))
+        })
+        return prices
     })
-
-    const update = (crypto, value, source) => {
-        const pricesArray = this.prices[crypto]
-        pricesArray.push(value)
-        if (this.onUpdate) this.onUpdate(crypto, value, source)
-        if (pricesArray.length === this.totalServicesUsing) {
-            assetsFinished += 1
-            if (this.onFinish) this.onFinish(crypto, pricesArray)
-        }
-    }
-
-    this.totalServicesUsing = 2
-    getPriceFromCryptocompare(
-        arrayassets,
-        currency,
-        (crypto, value) => update(crypto, value, 'cryptocompare'),
-        this.onError
-    )
-    getPriceFromCoinmarketcap(
-        arrayassets,
-        currency,
-        (crypto, value) => update(crypto, value, 'coinmarketcap'),
-        this.onError
-    )
-
-    setTimeout(() => {
-        if (!finished) {
-            finished = true
-            arrayassets.forEach(crypto => {
-                const pricesArray = this.prices[crypto]
-                if (
-                    this.prices[crypto].length < this.totalServicesUsing &&
-                    this.onFinish
-                )
-                    this.onFinish(crypto, pricesArray)
-            })
-        }
-    }, this.timeoutMiliseconds)
-
-    this.cancel = function cancel() {
-        finished = true
-    }
 }
-// CryptoPriceManager.prototype.onUpdate = function(currency, value, source) {}
-// CryptoPriceManager.prototype.onFinish = function(currency, values) {}
-// CryptoPriceManager.prototype.onFinishAll = function() {}
 
-// getPriceFromCryptocompare(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
-function getPriceFromCryptocompare(assets, currency, update, error) {
+// await getPriceFromCryptocompare(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
+export function getPriceFromCryptocompare(assets, currency) {
     const url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${assets.join(
         ','
     )}&tsyms=${currency}`
-    fetch(url)
+    return fetch(url)
         .then(response => response.json())
         .then(json => {
             const prices = {}
             assets.forEach(crypto => {
                 if (json[crypto] && json[crypto][currency])
-                    update(crypto, json[crypto][currency])
+                    prices[crypto] = json[crypto][currency]
             })
+            return prices
         })
-        .catch(error)
 }
 
-// getPriceFromCoinmarketcap(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
-function getPriceFromCoinmarketcap(assets, currency, update, error) {
+// await getPriceFromCoinmarketcap(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
+export function getPriceFromCoinmarketcap(assets, currency) {
     const url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=1000`
-    fetch(url)
+    return fetch(url)
         .then(response => response.json())
         .then(json => {
             const prices = {}
             let count = 0
             let price
-            for (let index = 0, total = json.length; index < total; ++index) {
+            let index = 0
+            let total = json.length
+            for (; index < total; ++index) {
                 price = json[index]
                 if (assets.indexOf(price.symbol) > -1) {
-                    update(
-                        price.symbol,
-                        Number(price[`price_${currency.toLowerCase()}`])
+                    prices[price.symbol] = Number(
+                        price[`price_${currency.toLowerCase()}`]
                     )
                     if (++count >= assets.length) break
                 }
             }
+            return prices
         })
-        .catch(error)
 }
+
+// export function CryptoPriceManager() {
+//     this.timeoutMiliseconds = 5000
+//     this.prices = {}
+// }
+
+// CryptoPriceManager.prototype.fetch = function(arrayassets, currency) {
+//     if (this.cancel) this.cancel()
+
+//     let assetsFinished = 0
+//     let finished = false
+//     arrayassets.forEach(crypto => {
+//         this.prices[crypto] = []
+//     })
+
+//     const update = (crypto, value, source) => {
+//         const pricesArray = this.prices[crypto]
+//         pricesArray.push(value)
+//         if (this.onUpdate) this.onUpdate(crypto, value, source)
+//         if (pricesArray.length === this.totalServicesUsing) {
+//             assetsFinished += 1
+//             if (this.onFinish) this.onFinish(crypto, pricesArray)
+//         }
+//     }
+
+//     this.totalServicesUsing = 2
+//     getPriceFromCryptocompare(
+//         arrayassets,
+//         currency,
+//         (crypto, value) => update(crypto, value, 'cryptocompare'),
+//         this.onError
+//     )
+//     getPriceFromCoinmarketcap(
+//         arrayassets,
+//         currency,
+//         (crypto, value) => update(crypto, value, 'coinmarketcap'),
+//         this.onError
+//     )
+
+//     setTimeout(() => {
+//         if (!finished) {
+//             finished = true
+//             arrayassets.forEach(crypto => {
+//                 const pricesArray = this.prices[crypto]
+//                 if (
+//                     this.prices[crypto].length < this.totalServicesUsing &&
+//                     this.onFinish
+//                 )
+//                     this.onFinish(crypto, pricesArray)
+//             })
+//         }
+//     }, this.timeoutMiliseconds)
+
+//     this.cancel = function cancel() {
+//         finished = true
+//     }
+// }
+// CryptoPriceManager.prototype.onUpdate = function(currency, value, source) {}
+// CryptoPriceManager.prototype.onFinish = function(currency, values) {}
+// CryptoPriceManager.prototype.onFinishAll = function() {}
 
 // window.getCurrencyPrice = function() {
 //     let eurrate
