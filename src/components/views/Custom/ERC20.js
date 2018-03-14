@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
 import styles from '/const/styles'
+import { ASSET_LOGO } from '/const/'
+import routes from '/router/routes'
 
 import { getRandomArbitrary } from '/api/numbers'
-
 import { Coins } from '/api/coins'
 import { isAddress } from '/api/coins/ETH'
 import {
@@ -15,6 +16,7 @@ import {
 } from '/api/coins/ERC20'
 
 import state from '/store/state'
+import { createCustomERC20, setHref } from '/store/actions'
 
 import H1 from '/components/styled/H1'
 import H2 from '/components/styled/H2'
@@ -67,6 +69,7 @@ export default class ImportBitcoin extends Component {
         this.onChangeName = this.onChangeName.bind(this)
         this.onChangeDecimals = this.onChangeDecimals.bind(this)
         this.onChangeColor = this.onChangeColor.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -116,6 +119,15 @@ export default class ImportBitcoin extends Component {
             ? 'Duplicated symbol.'
             : ''
         collector.emit()
+        // // Loading possible icon
+        // if (symbol.length > 2) {
+        //     const img = new Image()
+        //     const url = `https://cryptocoincharts.info/img/coins/${symbol.toLowerCase()}.svg`
+        //     img.onload = () => {
+        //         console.log(arguments, img)
+        //     }
+        //     img.src = url
+        // }
     }
 
     onChangeName(value) {
@@ -141,6 +153,20 @@ export default class ImportBitcoin extends Component {
             ? 'Invalid color'
             : ''
         collector.emit()
+    }
+
+    onSubmit(e) {
+        e.preventDefault()
+        createCustomERC20({
+            symbol: state.view.symbol,
+            name: state.view.name,
+            color: state.view.color,
+            contract_address: state.view.contract_address,
+            coin_decimals: Number(state.view.coin_decimals),
+            labels: `${state.view.symbol.toLowerCase()} ethereum token erc20 ecr20`,
+            logo: ASSET_LOGO('ERC20')
+        })
+        setHref(routes.add())
     }
 
     get isValidForm() {
@@ -178,7 +204,8 @@ export default class ImportBitcoin extends Component {
             onChangeSymbol: this.onChangeSymbol,
             onChangeName: this.onChangeName,
             onChangeDecimals: this.onChangeDecimals,
-            onChangeColor: this.onChangeColor
+            onChangeColor: this.onChangeColor,
+            onSubmit: this.onSubmit
         })
     }
 }
@@ -202,7 +229,8 @@ function ImportTemplate({
     onChangeSymbol,
     onChangeName,
     onChangeDecimals,
-    onChangeColor
+    onChangeColor,
+    onSubmit
 }) {
     return (
         <RightContainerPadding>
@@ -321,7 +349,7 @@ function ImportTemplate({
                                 <Button
                                     width="100px"
                                     disabled={!isValidForm}
-                                    onClick={e => {}}
+                                    onClick={onSubmit}
                                 >
                                     Create
                                 </Button>

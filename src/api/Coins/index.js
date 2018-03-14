@@ -1,3 +1,4 @@
+const Coins = {}
 const list = [
     'BTC',
     'ETH',
@@ -20,16 +21,15 @@ const list = [
     'REQ',
     'KNC'
 ]
-const Coins = {}
 
 exports.Coins = Coins
 
 list.forEach(symbol => {
-    let coin = require('./' + symbol)
-    Coins[symbol] = require('./' + symbol)
+    const coin = require('./' + symbol)
+    Coins[symbol] = coin
     exports[symbol] = coin
 })
 
-const CoinsCopy = Object.assign({}, Coins)
-delete CoinsCopy.Coins
-Coins.Coins = CoinsCopy
+// const CoinsCopy = Object.assign({}, Coins)
+// delete CoinsCopy.Coins
+// Coins.Coins = CoinsCopy

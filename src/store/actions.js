@@ -17,6 +17,7 @@ import routes from '/router/routes'
 import styles from '/const/styles'
 
 import { Coins } from '/api/coins'
+import { createERC20 } from '/api/coins/ERC20'
 import { now } from '/api/time'
 
 import state from '/store/state'
@@ -334,7 +335,6 @@ export function fetchBalanceAsset(asset_id) {
 }
 
 export const fetchPrices = (function() {
-    let assetsArray = Object.keys(Coins)
     let timeout
     let manager = new CryptoPriceManager()
     manager.onUpdate = function(crypto, value, source) {
@@ -352,7 +352,7 @@ export const fetchPrices = (function() {
         }
     }
     manager.onFinishAll = () => {
-        // console.log( 'onFinishAll', manager.prices.BTC )
+        // console.log('onFinishAll', manager.prices.BTC)
         timeout = setTimeout(fetchPrices, TIMEOUT_FETCH_PRICES)
     }
     manager.onError = e => {
@@ -361,8 +361,8 @@ export const fetchPrices = (function() {
     }
 
     return function() {
+        manager.fetch(Object.keys(Coins), state.fiat)
         clearTimeout(timeout)
-        manager.fetch(assetsArray, state.fiat)
     }
 })()
 fetchPrices()
@@ -377,4 +377,10 @@ export function sendEventToAnalytics() {
         args.unshift('send', 'event')
         ga.apply(this, args)
     }
+}
+
+export function createCustomERC20(data) {
+    const { symbol } = data
+    Coins[symbol] = createERC20(data)
+    fetchPrices()
 }
