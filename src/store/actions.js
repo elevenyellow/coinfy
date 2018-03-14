@@ -11,7 +11,11 @@ import {
     TIMEOUT_FETCH_PRICES,
     TIMEOUT_FETCH_SUMMARY,
     TIMEOUT_UPDATE_ALL_BALANCES,
-    TIMEOUT_BETWEEN_EACH_GETBALANCE
+    TIMEOUT_BETWEEN_EACH_GETBALANCE,
+    LOCALSTORAGE_NETWORK,
+    LOCALSTORAGE_FIAT,
+    LOCALSTORAGE_ASSETS,
+    LOCALSTORAGE_ASSETSEXPORTED
 } from '/const/'
 import routes from '/router/routes'
 import styles from '/const/styles'
@@ -103,12 +107,12 @@ export function saveAssetsLocalStorage() {
         key = key.toLocaleLowerCase()
         return key === 'state' ? undefined : value
     })
-    localStorageSet('assets', assets, state.network)
+    localStorageSet(LOCALSTORAGE_ASSETS, assets, state.network)
 }
 
 export function setAssetsExported(value) {
     // state.assetsExported = value
-    localStorageSet('assetsExported', value, state.network)
+    localStorageSet(LOCALSTORAGE_ASSETSEXPORTED, value, state.network)
 }
 
 export function exportAssets(a) {
@@ -128,7 +132,7 @@ export function exportAssets(a) {
 
 export function importAssetsFromFile() {
     const assetsExported =
-        localStorageGet('assetsExported', state.network) === 'true'
+        localStorageGet(LOCALSTORAGE_ASSETSEXPORTED, state.network) === 'true'
     if (state.totalAssets > 0 && !assetsExported) {
         state.popups.closeSession.confirm = () => {
             state.popups.closeSession.open = false
@@ -176,7 +180,7 @@ export function importAssets(dataString) {
 
 export function closeSession() {
     const assetsExported =
-        localStorageGet('assetsExported', state.network) === 'true'
+        localStorageGet(LOCALSTORAGE_ASSETSEXPORTED, state.network) === 'true'
     if (state.totalAssets > 0) {
         if (!assetsExported) {
             state.popups.closeSession.confirm = forceLoseSession
@@ -189,13 +193,13 @@ export function closeSession() {
 }
 
 export function changeNetwork(network) {
-    localStorageSet('network', network)
+    localStorageSet(LOCALSTORAGE_NETWORK, network)
     location.href = '/'
 }
 
 export function forceLoseSession() {
     setAssetsExported(true)
-    localStorageRemove('assets', state.network)
+    localStorageRemove(LOCALSTORAGE_ASSETS, state.network)
     location.href = '/'
 }
 
@@ -217,7 +221,7 @@ export function deleteNotification(id) {
 export function changeFiat(symbol) {
     const collector = collect()
     state.fiat = symbol
-    localStorageSet('fiat', symbol)
+    localStorageSet(LOCALSTORAGE_FIAT, symbol)
     fetchPrices()
     collector.emit()
 }
@@ -381,6 +385,8 @@ export function sendEventToAnalytics() {
 
 export function createCustomERC20(data) {
     const { symbol } = data
+    const coins_localstorage = localStorageGet()
     Coins[symbol] = createERC20(data)
+
     fetchPrices()
 }

@@ -28,6 +28,12 @@ export const TIMEOUT_BETWEEN_EACH_FAIL_FETCH_FEE = 10000 // 10 seconds
 export const minpassword = 8
 export const recovery_phrase_words = 12
 
+// localStorage
+export const LOCALSTORAGE_NETWORK = 'network'
+export const LOCALSTORAGE_FIAT = 'FIAT'
+export const LOCALSTORAGE_ASSETS = 'assets'
+export const LOCALSTORAGE_ASSETSEXPORTED = 'assetsExported'
+
 export function ASSET_LOGO(symbol) {
     return `/static/image/coins/${symbol}.svg`
 }

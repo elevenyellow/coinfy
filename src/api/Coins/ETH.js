@@ -13,10 +13,16 @@ import { decToHex, hexToDec, sanitizeHex, removeHexPrefix } from '/api/hex'
 import { padLeft } from '/api/strings'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
 import { localStorageGet } from '/api/browser'
-import { TYPE_COIN, MAINNET, TESTNET, ASSET_LOGO } from '/const/'
+import {
+    TYPE_COIN,
+    MAINNET,
+    TESTNET,
+    ASSET_LOGO,
+    LOCALSTORAGE_NETWORK
+} from '/const/'
 
 // private
-export const network = Number(localStorageGet('network')) || MAINNET
+export const network = Number(localStorageGet(LOCALSTORAGE_NETWORK)) || MAINNET
 export const api_key = 'GY9KKYEJF1HDEPIAIRGA66R2RIQWQXV9UZ'
 export const api_url =
     network === MAINNET

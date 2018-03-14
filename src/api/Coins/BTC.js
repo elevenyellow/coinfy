@@ -12,10 +12,16 @@ import { sortBy, highest, sum } from '/api/arrays'
 import { localStorageGet } from '/api/browser'
 import { resolveAll } from '/api/promises'
 
-import { TYPE_COIN, MAINNET, TESTNET, ASSET_LOGO } from '/const/'
+import {
+    TYPE_COIN,
+    MAINNET,
+    TESTNET,
+    ASSET_LOGO,
+    LOCALSTORAGE_NETWORK
+} from '/const/'
 
 // private
-const network_int = Number(localStorageGet('network')) || MAINNET
+const network_int = Number(localStorageGet(LOCALSTORAGE_NETWORK)) || MAINNET
 const mainnet = Bitcoin.networks.bitcoin // 0x80
 const testnet = Bitcoin.networks.testnet // 0xef
 const network = network_int === MAINNET ? mainnet : testnet
