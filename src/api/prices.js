@@ -1,10 +1,10 @@
-import { resolveAll } from '/api/promises'
+import { resolveAll, fetchTimeout } from '/api/promises'
 
 // await getAllPrices(["BTC","ETH"], "USD") = {BTC:[2541,2500], ETH:[323,320]}
-export function getAllPrices(cryptos, fiat) {
+export function getAllPrices(cryptos, fiat, timeout) {
     return resolveAll([
-        getPriceFromCryptocompare(cryptos, fiat),
-        getPriceFromCoinmarketcap(cryptos, fiat)
+        getPriceFromCryptocompare(cryptos, fiat, timeout),
+        getPriceFromCoinmarketcap(cryptos, fiat, timeout)
     ]).then(items => {
         const prices = {}
         cryptos.forEach(symbol => {
@@ -16,11 +16,11 @@ export function getAllPrices(cryptos, fiat) {
 }
 
 // await getPriceFromCryptocompare(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
-export function getPriceFromCryptocompare(assets, currency) {
+export function getPriceFromCryptocompare(assets, currency, timeout) {
     const url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${assets.join(
         ','
     )}&tsyms=${currency}`
-    return fetch(url)
+    return fetchTimeout(url, { timeout: timeout })
         .then(response => response.json())
         .then(json => {
             const prices = {}
@@ -33,9 +33,9 @@ export function getPriceFromCryptocompare(assets, currency) {
 }
 
 // await getPriceFromCoinmarketcap(["BTC","ETH"], "USD") = {BTC:2541.3, ETH:323.3}
-export function getPriceFromCoinmarketcap(assets, currency) {
+export function getPriceFromCoinmarketcap(assets, currency, timeout) {
     const url = `https://api.coinmarketcap.com/v1/ticker/?convert=${currency}&limit=1000`
-    return fetch(url)
+    return fetchTimeout(url, { timeout: timeout })
         .then(response => response.json())
         .then(json => {
             const prices = {}

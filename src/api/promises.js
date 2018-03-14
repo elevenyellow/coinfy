@@ -1,3 +1,29 @@
+// advanced fetch with timeout
+export function fetchTimeout(url, options = {}) {
+    let resolve, reject, timeout
+
+    if (typeof options.timeout == 'number') {
+        timeout = setTimeout(() => {
+            reject('timeout')
+        }, options.timeout)
+    }
+
+    return new Promise((res, rej) => {
+        resolve = value => {
+            clearTimeout(timeout)
+            res(value)
+        }
+        reject = reason => {
+            clearTimeout(timeout)
+            rej(reason)
+        }
+
+        fetch(url, options)
+            .then(resolve)
+            .catch(reject)
+    })
+}
+
 export function resolveAll(promises) {
     const values = []
     let resolve
@@ -39,4 +65,14 @@ export function repeatUntilResolve(promise, args, props = { timeout: 5000 }) {
         .then(resolve)
         .catch(reject)
     return P
+}
+
+// fetch with delay for testing
+export function fetchDelay(url, delay) {
+    if (typeof delay !== 'number') delay = 1000
+    return new Promise(resolve => {
+        setTimeout(() => {
+            fetch(url).then(resolve)
+        }, delay)
+    })
 }

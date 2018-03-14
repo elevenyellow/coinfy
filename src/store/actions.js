@@ -74,6 +74,7 @@ export function createAsset(type, symbol, address) {
     setAssetsExported(false)
     fetchBalanceAsset(asset_id)
     sendEventToAnalytics('createAsset', symbol)
+    fetchPrices()
     collector.emit()
     return asset
 }
@@ -350,13 +351,15 @@ export const fetchPrices = (function() {
     return function() {
         // TIMEOUT_FETCH_PRICES
         const cryptos = getSymbolsFromAssets()
-        fetchWrapper(
-            getAllPrices(cryptos, state.fiat).then(prices => {
-                cryptos.forEach(crypto =>
+        // console.log(new Date().getTime() / 1000)
+        getAllPrices(cryptos, state.fiat, 0).then(prices => {
+            // console.log(new Date().getTime() / 1000)
+            // console.log(prices)
+            cryptos.forEach(crypto => {
+                if (prices[crypto].length > 0)
                     updatePrice(crypto, median(prices[crypto]))
-                )
             })
-        )
+        })
     }
 })()
 fetchPrices()
@@ -377,6 +380,4 @@ export function createCustomERC20(data) {
     const { symbol } = data
     const coins_localstorage = localStorageGet()
     Coins[symbol] = createERC20(data)
-
-    fetchPrices()
 }
