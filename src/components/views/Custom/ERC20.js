@@ -45,6 +45,7 @@ export default class ImportBitcoin extends Component {
 
         // Initial state
         state.view = {
+            fetching: false,
             contract_address: '',
             symbol: '',
             name: '',
@@ -86,6 +87,7 @@ export default class ImportBitcoin extends Component {
             if (isAddress(contract_address)) {
                 let nulls = 0
                 state.view.contract_address_error = ''
+                state.view.fetching = true
                 getSymbolContract(contract_address)
                     .then(result => {
                         if (result !== null) this.onChangeSymbol(result)
@@ -98,11 +100,14 @@ export default class ImportBitcoin extends Component {
                         return getDecimalsContract(contract_address)
                     })
                     .then(result => {
+                        const collector = collect()
+                        state.view.fetching = false
                         if (result !== null) this.onChangeDecimals(result)
                         else if (nulls === 2) {
                             state.view.contract_address_error =
                                 'Seems like this address is not an ERC20 contract.'
                         }
+                        collector.emit()
                     })
             } else {
                 state.view.contract_address_error = 'Invalid address'
@@ -148,8 +153,8 @@ export default class ImportBitcoin extends Component {
         // state.view.color = value.trim()
         const color = value.trim()
         const collector = collect()
-        state.view.color = value
-        state.view.color_error = !/^#[0-9a-zA-Z]{3,6}$/.test(color)
+        state.view.color = value.toUpperCase()
+        state.view.color_error = !/^#[0-9a-fA-F]{3,6}$/.test(color)
             ? 'Invalid color'
             : ''
         collector.emit()
@@ -171,6 +176,7 @@ export default class ImportBitcoin extends Component {
 
     get isValidForm() {
         return (
+            state.view.fetching === false &&
             state.view.contract_address.length > 0 &&
             state.view.contract_address_error === '' &&
             state.view.symbol.length > 0 &&
@@ -186,6 +192,7 @@ export default class ImportBitcoin extends Component {
 
     render() {
         return React.createElement(ImportTemplate, {
+            fetching: state.view.fetching,
             contract_address: state.view.contract_address,
             symbol: state.view.symbol,
             name: state.view.name,
@@ -211,6 +218,7 @@ export default class ImportBitcoin extends Component {
 }
 
 function ImportTemplate({
+    fetching,
     contract_address,
     symbol,
     name,
@@ -254,6 +262,11 @@ function ImportTemplate({
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
+                                    rightIco={
+                                        fetching
+                                            ? '/static/image/loading.gif'
+                                            : null
+                                    }
                                     value={contract_address}
                                     width="100%"
                                     error={contract_address_error}
@@ -332,6 +345,7 @@ function ImportTemplate({
                             <FormFieldRight>
                                 <Input
                                     maxLength="7"
+                                    color={color}
                                     value={color}
                                     width="100%"
                                     error={color_error}
@@ -363,11 +377,11 @@ function ImportTemplate({
 }
 
 const Color = styled.div`
+    border-radius: 50%;
     position: absolute;
-    right: 0;
-    width: 35px;
-    height: 35px;
+    right: 4.5px;
+    top: 4.5px;
+    width: 30px;
+    height: 30px;
     background: ${props => props.color};
-    top: 0;
-    border: 2px solid ${styles.color.background5};
 `

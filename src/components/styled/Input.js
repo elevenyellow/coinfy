@@ -23,10 +23,18 @@ const InputStyled = styled.input`
     ${props => {
         if (props.width) return 'width:' + props.width + ';'
     }} border: 1px solid ${props =>
-            props.invalid
-                ? `${styles.color.error} !important`
-                : styles.color.background4};
-    background: #fff;
+    props.invalid
+        ? `${styles.color.error} !important`
+        : styles.color.background4};
+
+    background: ${props => {
+        return typeof props.rightIco == 'string'
+            ? `url('${props.rightIco}') no-repeat center right 15px / 18px #fff`
+            : `#fff`
+    }};
+
+
+
     padding: 10px;
     outline: none;
     font-family: monospace;
