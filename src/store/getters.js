@@ -45,10 +45,8 @@ export function getAssetsAsArray() {
     return assets
 }
 
-export function getSymbolsFromAssets() {
-    const symbols = Object.keys(state.assets).map(
-        asset_id => state.assets[asset_id].symbol
-    )
+export function getSymbolsFromAssets(assets = state.assets) {
+    const symbols = Object.keys(assets).map(asset_id => assets[asset_id].symbol)
     return symbols.filter((item, pos) => symbols.indexOf(item) == pos)
 }
 

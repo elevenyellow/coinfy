@@ -9,13 +9,15 @@ import {
     ALERT,
     NORMAL,
     TIMEOUT_FETCH_PRICES,
+    TIMEOUT_FETCH_PRICES_TIMEOUT,
     TIMEOUT_FETCH_SUMMARY,
     TIMEOUT_UPDATE_ALL_BALANCES,
     TIMEOUT_BETWEEN_EACH_GETBALANCE,
     LOCALSTORAGE_NETWORK,
     LOCALSTORAGE_FIAT,
     LOCALSTORAGE_ASSETS,
-    LOCALSTORAGE_ASSETSEXPORTED
+    LOCALSTORAGE_ASSETSEXPORTED,
+    LOCALSTORAGE_CUSTOMS
 } from '/const/'
 import routes from '/router/routes'
 import styles from '/const/styles'
@@ -26,6 +28,7 @@ import { now } from '/api/time'
 import { median } from '/api/arrays'
 import { getAllPrices } from '/api/prices'
 import { decimals } from '/api/numbers'
+import { jsonParse } from '/api/objects'
 import {
     localStorageSet,
     localStorageRemove,
@@ -53,7 +56,6 @@ export function fetchWrapper(promise) {
         })
         .catch(e => {
             showNotConnectionNotification(true)
-            console.error(e)
             return Promise.reject(e)
         })
 }
@@ -170,7 +172,7 @@ export function openImportAssetsFromFile() {
 
 export function importAssets(dataString) {
     try {
-        const assets = JSON.parse(atob(dataString)) //atob
+        const assets = jsonParse(atob(dataString)) //atob
         for (let asset_id in assets)
             assets[asset_id] = generateDefaultAsset(assets[asset_id])
         const totalAssets = getTotalAssets(assets)
@@ -348,18 +350,24 @@ export function fetchBalanceAsset(asset_id) {
 }
 
 export const fetchPrices = (function() {
+    let timeout
     return function() {
         // TIMEOUT_FETCH_PRICES
+        clearTimeout(timeout)
         const cryptos = getSymbolsFromAssets()
-        // console.log(new Date().getTime() / 1000)
-        getAllPrices(cryptos, state.fiat, 0).then(prices => {
-            // console.log(new Date().getTime() / 1000)
-            // console.log(prices)
-            cryptos.forEach(crypto => {
-                if (prices[crypto].length > 0)
-                    updatePrice(crypto, median(prices[crypto]))
+        if (cryptos.length > 0)
+            getAllPrices(
+                cryptos,
+                state.fiat,
+                TIMEOUT_FETCH_PRICES_TIMEOUT
+            ).then(prices => {
+                // console.log('fetchPrices', prices)
+                cryptos.forEach(crypto => {
+                    if (prices[crypto].length > 0)
+                        updatePrice(crypto, median(prices[crypto]))
+                })
+                timeout = setTimeout(fetchPrices, TIMEOUT_FETCH_PRICES)
             })
-        })
     }
 })()
 fetchPrices()
@@ -378,6 +386,14 @@ export function sendEventToAnalytics() {
 
 export function createCustomERC20(data) {
     const { symbol } = data
-    const coins_localstorage = localStorageGet()
+    const coins_localstorage = jsonParse(
+        localStorageGet(LOCALSTORAGE_CUSTOMS, state.network)
+    )
+    coins_localstorage[symbol] = data
     Coins[symbol] = createERC20(data)
+    localStorageSet(
+        LOCALSTORAGE_CUSTOMS,
+        JSON.stringify(coins_localstorage),
+        state.network
+    )
 }

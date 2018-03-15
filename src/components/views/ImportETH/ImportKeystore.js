@@ -4,7 +4,7 @@ import { createObserver, collect } from 'dop'
 
 import { readFile } from '/api/browser'
 import { decryptAES128CTR } from '/api/crypto'
-import { parse } from '/api/objects'
+import { keysToLowerCase } from '/api/objects'
 
 import { setPrivateKey, setHref, createAsset } from '/store/actions'
 import state from '/store/state'
@@ -68,7 +68,7 @@ export default class ImportKeystore extends Component {
                 state.view.keystore_password_error = ''
                 state.view.keystore_selected = true
                 try {
-                    const keystore = parse(dataString)
+                    const keystore = keysToLowerCase(dataString)
                     const address = formatAddress(keystore.address)
                     if (
                         keystore.version === 3 &&

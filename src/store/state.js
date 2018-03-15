@@ -1,8 +1,14 @@
 import { computed, register, createObserver } from 'dop'
 import { create } from 'dop-router/location'
 import { Coins } from '/api/coins'
+import { createERC20 } from '/api/coins/ERC20'
 import { Fiats, USD } from '/api/fiats'
-import { getTotalAssets, generateDefaultAsset } from '/store/getters'
+import {
+    getTotalAssets,
+    generateDefaultAsset,
+    getSymbolsFromAssets
+} from '/store/getters'
+import { jsonParse } from '/api/objects'
 import { localStorageGet } from '/api/browser'
 import {
     MAINNET,
@@ -10,7 +16,8 @@ import {
     LOCALSTORAGE_NETWORK,
     LOCALSTORAGE_FIAT,
     LOCALSTORAGE_ASSETS,
-    LOCALSTORAGE_ASSETSEXPORTED
+    LOCALSTORAGE_ASSETSEXPORTED,
+    LOCALSTORAGE_CUSTOMS
 } from '/const/'
 
 // initial state
@@ -48,24 +55,29 @@ const initialState = {
     }
 }
 
-// restoring price from storage
-const assetsArray = Object.keys(Coins)
+// restoring assets from localstorage
+try {
+    const assets = jsonParse(localStorageGet(LOCALSTORAGE_ASSETS, network))
+    initialState.assets = assets
+    for (let asset_id in assets)
+        assets[asset_id] = generateDefaultAsset(assets[asset_id])
+} catch (e) {
+    console.error('restoring assets from localstorage', e)
+}
+
+// restoring price from localstoragestorage
+const assetsArray = getSymbolsFromAssets(initialState.assets)
 assetsArray.forEach(symbol => {
     if (localStorageGet(symbol) !== null)
         initialState.prices[symbol] = Number(localStorageGet(symbol))
 })
 
-// restoring assets from storage
+// restoring custom coins/tokens created by user from localstorage
 try {
-    let assets = localStorageGet(LOCALSTORAGE_ASSETS, network)
-    assets = JSON.parse(assets)
-    if (assets && typeof assets == 'object') {
-        initialState.assets = assets
-        for (let asset_id in assets)
-            assets[asset_id] = generateDefaultAsset(assets[asset_id])
-    }
+    const cryptos = jsonParse(localStorageGet(LOCALSTORAGE_CUSTOMS, network))
+    for (let symbol in cryptos) Coins[symbol] = createERC20(cryptos[symbol])
 } catch (e) {
-    console.error('restoring assets from storage', e)
+    console.error('restoring custom tokens from localstorage', e)
 }
 
 // registering

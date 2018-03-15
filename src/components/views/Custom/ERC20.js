@@ -168,7 +168,7 @@ export default class ImportBitcoin extends Component {
             color: state.view.color,
             contract_address: state.view.contract_address,
             coin_decimals: Number(state.view.coin_decimals),
-            labels: `${state.view.symbol.toLowerCase()} ethereum token erc20 ecr20`,
+            labels: `${state.view.symbol.toLowerCase()} ethereum token erc20 ecr20 custom`,
             logo: ASSET_LOGO('ERC20')
         })
         setHref(routes.add())
