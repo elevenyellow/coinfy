@@ -76,3 +76,23 @@ export function fetchDelay(url, delay) {
         }, delay)
     })
 }
+
+export function fetchAny(urls) {
+    const errors = []
+    let response, reject
+    let index = 0
+    const fetchLoop = url => {
+        fetch(url)
+            .then(r => response(r))
+            .catch(e => {
+                errors.push(e)
+                if (index < urls.length - 1) fetchLoop(urls[++index])
+                else reject(e)
+            })
+    }
+    fetchLoop(urls[index])
+    return new Promise((res, rej) => {
+        response = res
+        reject = rej
+    })
+}
