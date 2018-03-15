@@ -29,7 +29,10 @@ const initialState = {
     // assetsExported: loccdalStorageGet('assetsExported', network) !== 'false',
     assets: {},
     prices: {},
-    totalAssets: 0,
+    totalAssets: computed(function() {
+        // console.log('recalculating totalAssets...')
+        return getTotalAssets(this.assets)
+    }),
     balance: computed(function() {
         let total = 0
         let asset
@@ -39,7 +42,7 @@ const initialState = {
             if (asset)
                 total += (this.prices[asset.symbol] || 0) * (asset.balance || 0)
         })
-        // console.log( 'recalculating balance...', totalAssets, total )
+        // console.log('recalculating balance...', totalAssets, total)
         return total
     }),
 
@@ -55,12 +58,21 @@ const initialState = {
     }
 }
 
+// restoring custom coins/tokens created by user from localstorage
+try {
+    const cryptos = jsonParse(localStorageGet(LOCALSTORAGE_CUSTOMS, network))
+    for (let symbol in cryptos) Coins[symbol] = createERC20(cryptos[symbol])
+} catch (e) {
+    console.error('restoring custom tokens from localstorage', e)
+}
+
 // restoring assets from localstorage
 try {
     const assets = jsonParse(localStorageGet(LOCALSTORAGE_ASSETS, network))
-    initialState.assets = assets
+    const assets_state = initialState.assets
     for (let asset_id in assets)
-        assets[asset_id] = generateDefaultAsset(assets[asset_id])
+        if (Coins[assets[asset_id].symbol])
+            assets_state[asset_id] = generateDefaultAsset(assets[asset_id])
 } catch (e) {
     console.error('restoring assets from localstorage', e)
 }
@@ -72,24 +84,8 @@ assetsArray.forEach(symbol => {
         initialState.prices[symbol] = Number(localStorageGet(symbol))
 })
 
-// restoring custom coins/tokens created by user from localstorage
-try {
-    const cryptos = jsonParse(localStorageGet(LOCALSTORAGE_CUSTOMS, network))
-    for (let symbol in cryptos) Coins[symbol] = createERC20(cryptos[symbol])
-} catch (e) {
-    console.error('restoring custom tokens from localstorage', e)
-}
-
 // registering
 const state = register(initialState)
-
-// totalAssets autoupdate
-const updateTotalAssets = m =>
-    (state.totalAssets = getTotalAssets(state.assets))
-updateTotalAssets()
-const observer = createObserver(updateTotalAssets)
-observer.observe(state, 'assets')
-observer.observe(state.assets)
 
 // implementing location router (special object)
 create(window.location.href, state, 'location')

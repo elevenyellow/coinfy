@@ -9,7 +9,11 @@ export function getAllPrices(cryptos, fiat, timeout) {
         const prices = {}
         cryptos.forEach(symbol => {
             if (!prices[symbol]) prices[symbol] = []
-            items.forEach(item => prices[symbol].push(item[symbol] || 0))
+            items.forEach(item => {
+                const n = item[symbol]
+                if (n && typeof n == 'number' && !isNaN(n))
+                    prices[symbol].push(n)
+            })
         })
         return prices
     })
