@@ -14,7 +14,7 @@ import { Fiats } from '/api/fiats'
 import { Coins } from '/api/coins'
 import {
     setHref,
-    exportAssets,
+    exportBackup,
     importAssetsFromFile,
     closeSession,
     changeNetwork
@@ -97,7 +97,7 @@ export default class Header extends Component {
     }
 
     onExport(e) {
-        exportAssets(e.target)
+        exportBackup(e.target)
     }
     onImport() {
         importAssetsFromFile()

@@ -5,7 +5,7 @@ import { Router, Route } from '/router/components'
 
 import styles from '/const/styles'
 import routes from '/router/routes'
-import { TYPE_COIN, TYPE_ERC20 } from '/const/'
+import { TYPE_ERC20 } from '/const/'
 
 import { Coins } from '/api/coins'
 

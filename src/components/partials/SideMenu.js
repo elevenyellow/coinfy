@@ -14,7 +14,7 @@ import { Coins } from '/api/coins'
 import state from '/store/state'
 import {
     setHref,
-    exportAssets,
+    exportBackup,
     importAssetsFromFile,
     closeSession
 } from '/store/actions'

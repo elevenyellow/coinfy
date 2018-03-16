@@ -377,7 +377,7 @@ function ImportTemplate({
 }
 
 const Color = styled.div`
-    border-radius: 50%;
+    border-radius: 1px;
     position: absolute;
     right: 4.5px;
     top: 4.5px;

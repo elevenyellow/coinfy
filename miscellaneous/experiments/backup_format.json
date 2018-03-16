@@ -1,54 +1,57 @@
 {
-    "BTC-17tqiAnH6Y4ixHaSkWB3yKJ9yQmBv2hYjw": { // unique id
-        "type": "wallet",
-        "symbol": "BTC",
-        "address": "17tqiAnH6Y4ixHaSkWB3yKJ9yQmBv2hYjw",
-        "private_key":{},
-        "label": "",
-        "state": {
-            "last_update": 0,
-            "updating": 0,
-            "balance": 0,
-            "txs": []
+    "v": "1",
+    "network": 0,
+    "customs": {
+        "DATA": {
+            "type": "erc20",
+            "symbol": "DATA",
+            "name": "Streamr DATAcoin",
+            "color": "#31AA22",
+            "contract_address": "0x0cf0ee63788a0849fe5297f3407f701e122cc023",
+            "coin_decimals": 18,
+            "labels": "data ethereum token erc20 ecr20 custom",
+            "logo": "/static/image/coins/ERC20.svg"
         }
     },
-    "ETH-0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3": {
-        "type": "wallet",
-        "symbol": "ETH",
-        "address": "0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3",
-        "private_key":{},
-        "label": "",
-        "state": {
-            "last_update": 0,
-            "updating": 0,
-            "balance": 0,
-            "txs": []
-        }
-    },
-    "ANT-0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3": {
-        "type": "token",
-        "symbol": "ANT",
-        "address": "0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3",
-        "private_key":{},
-        "label": "",
-        "state": {
-            "last_update": 0,
-            "updating": 0,
-            "balance": 0,
-            "txs": []
-        }
-    },
-    "COINBASE-BTC-josema.enzo@gmail.com": {
-        "type": "coinbase",
-        "symbol": "BTC",
-        "address": "josema.enzo@gmail.com",
-        "token":{},
-        "label": "",
-        "state": {
-            "last_update": 0,
-            "updating": 0,
-            "balance": 0,
-            "txs": []
+    "assets": {
+        "BTC-17tqiAnH6Y4ixHaSkWB3yKJ9yQmBv2hYjw": {
+            "type": "coin",
+            "symbol": "BTC",
+            "address": "17tqiAnH6Y4ixHaSkWB3yKJ9yQmBv2hYjw",
+            "private_key": {},
+            "label": "",
+            "state": {
+                "last_update": 0,
+                "updating": 0,
+                "balance": 0,
+                "txs": []
+            }
+        },
+        "ETH-0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3": {
+            "type": "coin",
+            "symbol": "ETH",
+            "address": "0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3",
+            "private_key": {},
+            "label": "",
+            "state": {
+                "last_update": 0,
+                "updating": 0,
+                "balance": 0,
+                "txs": []
+            }
+        },
+        "ANT-0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3": {
+            "type": "erc20",
+            "symbol": "ANT",
+            "address": "0xb56d622DDF60ec532B5f43B4Ff9B0e7b1FF92dB3",
+            "private_key": {},
+            "label": "",
+            "state": {
+                "last_update": 0,
+                "updating": 0,
+                "balance": 0,
+                "txs": []
+            }
         }
     }
 }

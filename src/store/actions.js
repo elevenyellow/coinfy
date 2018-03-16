@@ -17,7 +17,8 @@ import {
     LOCALSTORAGE_FIAT,
     LOCALSTORAGE_ASSETS,
     LOCALSTORAGE_ASSETSEXPORTED,
-    LOCALSTORAGE_CUSTOMS
+    LOCALSTORAGE_CUSTOMS,
+    TYPE_ERC20
 } from '/const/'
 import routes from '/router/routes'
 import styles from '/const/styles'
@@ -47,6 +48,8 @@ import {
     getAssetId,
     getSymbolsFromAssets
 } from '/store/getters'
+
+import { version } from './../../package.json'
 
 export function fetchWrapper(promise) {
     return promise
@@ -133,19 +136,35 @@ export function setAssetsExported(value) {
     localStorageSet(LOCALSTORAGE_ASSETSEXPORTED, value, state.network)
 }
 
-export function exportAssets(a) {
-    if (state.totalAssets > 0) {
-        const data = btoa(
-            JSON.stringify(state.assets, (key, value) => {
-                key = key.toLocaleLowerCase()
-                return KEYS_TO_REMOVE_WHEN_EXPORTING.indexOf(key) > -1
-                    ? undefined
-                    : value
-            })
-        ) // btoa
-        downloadFile({ data, a, name: 'YOU_MUST_RENAME_THIS_FOR_SECURITY' })
-        setAssetsExported(true)
+export function exportBackup(a_element) {
+    const data = {
+        date: now(),
+        network: state.network,
+        v: version
+            .split('.')
+            .slice(0, 2)
+            .join('.')
     }
+    // assets
+    data.assets = JSON.parse(
+        JSON.stringify(state.assets, (key, value) => {
+            key = key.toLocaleLowerCase()
+            return KEYS_TO_REMOVE_WHEN_EXPORTING.indexOf(key) > -1
+                ? undefined
+                : value
+        })
+    )
+    // custom tokens/coins
+    data.customs = jsonParse(
+        localStorageGet(LOCALSTORAGE_CUSTOMS, state.network)
+    )
+    // console.log('exportBackup', data)
+    downloadFile({
+        data: btoa(JSON.stringify(data)),
+        a: a_element,
+        name: 'YOU_MUST_RENAME_THIS_FOR_SECURITY'
+    })
+    setAssetsExported(true)
 }
 
 export function importAssetsFromFile() {
@@ -389,6 +408,7 @@ export function createCustomERC20(data) {
     const coins_localstorage = jsonParse(
         localStorageGet(LOCALSTORAGE_CUSTOMS, state.network)
     )
+    data.type = TYPE_ERC20
     coins_localstorage[symbol] = data
     Coins[symbol] = createERC20(data)
     localStorageSet(
