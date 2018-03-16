@@ -3,13 +3,16 @@
     "version": "1.3.0",
     "repository": "https://github.com/elevenyellow/coinfy",
     "scripts": {
-        "stats": "webpack --config=./webpack/production.js --profile --json > webpack-stats.json | open https://chrisbateman.github.io/webpack-visualizer/",
-        "build": "webpack --config=./webpack/production.js --progress --colors --display-error-details",
+        "stats":
+            "webpack --config=./webpack/production.js --profile --json > webpack-stats.json | open https://chrisbateman.github.io/webpack-visualizer/",
+        "build":
+            "webpack --config=./webpack/production.js --progress --colors --display-error-details",
         "dev": "NODE_ENV=development node src/server",
         "prod": "NODE_ENV=production node src/server",
         "forever": "NODE_ENV=production forever start src/server.js",
         "forever-stop": "forever stop src/server.js",
-        "test": "babel-node --presets=react,es2015 test/numbers.js | faucet"
+        "test": "babel-node --presets=react,es2015 test/numbers.js | faucet",
+        "scrapper_logos": "node scripts/scrapper_logos"
     },
     "dependencies": {
         "bignumber.js": "5.0.0",
@@ -49,7 +52,7 @@
         "lodash.merge": "^4.6.0",
         "path": "^0.12.7",
         "recursive-readdir": "^2.2.1",
-        "request": "^2.83.0",
+        "request": "^2.85.0",
         "sha1": "^1.1.1",
         "sha1-file": "^1.0.0",
         "tape": "^4.8.0",
