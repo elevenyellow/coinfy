@@ -1,23 +1,14 @@
 import { computed, register, createObserver } from 'dop'
 import { create } from 'dop-router/location'
-import { Coins } from '/api/coins'
-import { createERC20 } from '/api/coins/ERC20'
-import { Fiats, USD } from '/api/fiats'
-import {
-    getTotalAssets,
-    generateDefaultAsset,
-    getSymbolsFromAssets
-} from '/store/getters'
-import { jsonParse } from '/api/objects'
+import { USD } from '/api/fiats'
+import { getTotalAssets } from '/store/getters'
+import restoreFromLocalStorage from '/store/restore'
 import { localStorageGet } from '/api/browser'
 import {
     MAINNET,
     TESTNET,
     LOCALSTORAGE_NETWORK,
-    LOCALSTORAGE_FIAT,
-    LOCALSTORAGE_ASSETS,
-    LOCALSTORAGE_ASSETSEXPORTED,
-    LOCALSTORAGE_CUSTOMS
+    LOCALSTORAGE_FIAT
 } from '/const/'
 
 // initial state
@@ -58,31 +49,8 @@ const initialState = {
     }
 }
 
-// restoring custom coins/tokens created by user from localstorage
-try {
-    const cryptos = jsonParse(localStorageGet(LOCALSTORAGE_CUSTOMS, network))
-    for (let symbol in cryptos) Coins[symbol] = createERC20(cryptos[symbol])
-} catch (e) {
-    console.error('restoring custom tokens from localstorage', e)
-}
-
-// restoring assets from localstorage
-try {
-    const assets = jsonParse(localStorageGet(LOCALSTORAGE_ASSETS, network))
-    const assets_state = initialState.assets
-    for (let asset_id in assets)
-        if (Coins[assets[asset_id].symbol])
-            assets_state[asset_id] = generateDefaultAsset(assets[asset_id])
-} catch (e) {
-    console.error('restoring assets from localstorage', e)
-}
-
-// restoring price from localstoragestorage
-const assetsArray = getSymbolsFromAssets(initialState.assets)
-assetsArray.forEach(symbol => {
-    if (localStorageGet(symbol) !== null)
-        initialState.prices[symbol] = Number(localStorageGet(symbol))
-})
+// restoring data and config from localstorage
+restoreFromLocalStorage(initialState)
 
 // registering
 const state = register(initialState)
