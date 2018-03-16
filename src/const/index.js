@@ -39,3 +39,6 @@ export const LOCALSTORAGE_CUSTOMS = 'customs'
 export function ASSET_LOGO(symbol) {
     return `/static/image/coins/${symbol}.svg`
 }
+export function ASSET_LOGO_LIBRARY(symbol) {
+    return `/static/image/coinslogos/${symbol}.svg`
+}

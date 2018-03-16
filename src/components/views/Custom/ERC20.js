@@ -3,12 +3,13 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
 import styles from '/const/styles'
-import { ASSET_LOGO } from '/const/'
+import { ASSET_LOGO, ASSET_LOGO_LIBRARY } from '/const/'
 import routes from '/router/routes'
 
-import { getRandomArbitrary } from '/api/numbers'
+import { generateRandomColor, getAverageColor, rgbToHex } from '/api/colors'
 import { Coins } from '/api/coins'
 import { isAddress } from '/api/coins/ETH'
+import {} from '/api/browser'
 import {
     getNameContract,
     getSymbolContract,
@@ -52,13 +53,8 @@ export default class ImportBitcoin extends Component {
             symbol: '',
             name: '',
             coin_decimals: 18,
-            logo: this.logo_default,
-            color: (
-                '#' +
-                getRandomArbitrary(30, 255).toString(16) +
-                getRandomArbitrary(30, 255).toString(16) +
-                getRandomArbitrary(30, 255).toString(16)
-            ).toUpperCase(),
+            logo: '',
+            color: generateRandomColor(30, 230),
 
             contract_address_error: '',
             symbol_error: '',
@@ -136,10 +132,10 @@ export default class ImportBitcoin extends Component {
         state.view.symbol_error = Coins.hasOwnProperty(symbol)
             ? 'Duplicated symbol.'
             : ''
+        // Loading possible icon
+        if (symbol.length > 2 && !Coins.hasOwnProperty(symbol))
+            this.onChangeLogo(ASSET_LOGO_LIBRARY(symbol), false)
         collector.emit()
-        // // Loading possible icon
-        // if (symbol.length > 2) {
-        // }
     }
 
     onChangeName(value) {
@@ -156,24 +152,33 @@ export default class ImportBitcoin extends Component {
         collector.emit()
     }
 
-    onChangeLogo(url) {
+    onChangeLogo(url, update = true) {
         url = url.trim()
         if (url !== state.view.logo) {
             // loading logo
             const img = new Image()
             img.src = url
-            img.onload = () => (state.view.logo_visible = url)
-            img.onerror = () => (state.view.logo_visible = this.logo_default)
+            img.onload = () => {
+                const collector = collect()
+                state.view.logo = url
+                state.view.logo_visible = url
+                this.onChangeColor(rgbToHex(getAverageColor(img)))
+                collector.emit()
+            }
+            img.onerror = () => {
+                if (update) state.view.logo_visible = this.logo_default
+            }
             // updating view
-            const collector = collect()
-            state.view.logo = url
-            state.view.logo_visible = '/static/image/loading.gif'
-            collector.emit()
+            if (update) {
+                const collector = collect()
+                state.view.logo = url
+                state.view.logo_visible = '/static/image/loading.gif'
+                collector.emit()
+            }
         }
     }
 
     onChangeColor(value) {
-        // state.view.color = value.trim()
         const color = value.trim()
         const collector = collect()
         state.view.color = value.toUpperCase()

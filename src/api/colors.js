@@ -1,3 +1,22 @@
+import { getRandomArbitrary } from '/api/numbers'
+
+export function generateRandomColor(min = 0, max = 255) {
+    return rgbToHex({
+        r: getRandomArbitrary(min, max),
+        g: getRandomArbitrary(min, max),
+        b: getRandomArbitrary(min, max)
+    })
+}
+
+export function rgbToHex({ r, g, b }) {
+    return (
+        '#' +
+        r.toString(16) +
+        g.toString(16) +
+        b.toString(16)
+    ).toUpperCase()
+}
+
 // https://github.com/matkl/average-color
 export function getAverageColor(img) {
     const canvas = document.createElement('canvas')

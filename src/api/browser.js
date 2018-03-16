@@ -88,3 +88,8 @@ export function downloadFile({ data, name, a, filetype = 'charset=UTF-8' }) {
     a_created.download = name
     if (is_a_undefined) a_created.click()
 }
+
+export function addOriginUrl(path) {
+    if (path[0] !== '/') path = '/' + path
+    return location.origin + path
+}
