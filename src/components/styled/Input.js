@@ -35,7 +35,7 @@ const InputStyled = styled.input`
 
 
 
-    padding: 10px;
+    padding: ${props => props.padding || '10px'};
     outline: none;
     font-family: monospace;
     box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05) inset;

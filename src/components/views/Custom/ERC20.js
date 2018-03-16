@@ -45,12 +45,14 @@ export default class ImportBitcoin extends Component {
         this.observer.observe(state.view)
 
         // Initial state
+        this.logo_default = ASSET_LOGO('ERC20')
         state.view = {
             fetching: false,
             contract_address: '',
             symbol: '',
             name: '',
             coin_decimals: 18,
+            logo: this.logo_default,
             color: (
                 '#' +
                 getRandomArbitrary(30, 255).toString(16) +
@@ -62,6 +64,7 @@ export default class ImportBitcoin extends Component {
             symbol_error: '',
             name_error: '',
             coin_decimals_error: '',
+            logo_visible: this.logo_default,
             color_error: ''
         }
 
@@ -70,6 +73,7 @@ export default class ImportBitcoin extends Component {
         this.onChangeSymbol = this.onChangeSymbol.bind(this)
         this.onChangeName = this.onChangeName.bind(this)
         this.onChangeDecimals = this.onChangeDecimals.bind(this)
+        this.onChangeLogo = this.onChangeLogo.bind(this)
         this.onChangeColor = this.onChangeColor.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
@@ -135,12 +139,6 @@ export default class ImportBitcoin extends Component {
         collector.emit()
         // // Loading possible icon
         // if (symbol.length > 2) {
-        //     const img = new Image()
-        //     const url = `https://cryptocoincharts.info/img/coins/${symbol.toLowerCase()}.svg`
-        //     img.onload = () => {
-        //         console.log(arguments, img)
-        //     }
-        //     img.src = url
         // }
     }
 
@@ -156,6 +154,22 @@ export default class ImportBitcoin extends Component {
             ? 'Invalid number'
             : ''
         collector.emit()
+    }
+
+    onChangeLogo(url) {
+        url = url.trim()
+        if (url !== state.view.logo) {
+            // loading logo
+            const img = new Image()
+            img.src = url
+            img.onload = () => (state.view.logo_visible = url)
+            img.onerror = () => (state.view.logo_visible = this.logo_default)
+            // updating view
+            const collector = collect()
+            state.view.logo = url
+            state.view.logo_visible = '/static/image/loading.gif'
+            collector.emit()
+        }
     }
 
     onChangeColor(value) {
@@ -178,7 +192,7 @@ export default class ImportBitcoin extends Component {
             contract_address: state.view.contract_address,
             coin_decimals: Number(state.view.coin_decimals),
             labels: `${state.view.symbol.toLowerCase()} ethereum token erc20 ecr20 custom`,
-            logo: ASSET_LOGO('ERC20')
+            logo: state.view.logo_visible
         })
         setHref(routes.add())
     }
@@ -206,6 +220,8 @@ export default class ImportBitcoin extends Component {
             symbol: state.view.symbol,
             name: state.view.name,
             coin_decimals: state.view.coin_decimals,
+            logo: state.view.logo,
+            logo_visible: state.view.logo_visible,
             color: state.view.color,
 
             contract_address_error: state.view.contract_address_error,
@@ -220,6 +236,7 @@ export default class ImportBitcoin extends Component {
             onChangeSymbol: this.onChangeSymbol,
             onChangeName: this.onChangeName,
             onChangeDecimals: this.onChangeDecimals,
+            onChangeLogo: this.onChangeLogo,
             onChangeColor: this.onChangeColor,
             onSubmit: this.onSubmit
         })
@@ -232,6 +249,8 @@ function ImportTemplate({
     symbol,
     name,
     coin_decimals,
+    logo,
+    logo_visible,
     color,
 
     contract_address_error,
@@ -246,6 +265,7 @@ function ImportTemplate({
     onChangeSymbol,
     onChangeName,
     onChangeDecimals,
+    onChangeLogo,
     onChangeColor,
     onSubmit
 }) {
@@ -349,6 +369,21 @@ function ImportTemplate({
 
                         <FormField>
                             <FormFieldLeft>
+                                <Label>Logo</Label>
+                            </FormFieldLeft>
+                            <FormFieldRight>
+                                <Input
+                                    value={logo}
+                                    width="100%"
+                                    padding="10px 40px 10px 10px"
+                                    onChange={e => onChangeLogo(e.target.value)}
+                                />
+                                <Logo url={logo_visible} />
+                            </FormFieldRight>
+                        </FormField>
+
+                        <FormField>
+                            <FormFieldLeft>
                                 <Label>Color</Label>
                             </FormFieldLeft>
                             <FormFieldRight>
@@ -357,6 +392,7 @@ function ImportTemplate({
                                     color={color}
                                     value={color}
                                     width="100%"
+                                    padding="10px 40px 10px 10px"
                                     error={color_error}
                                     invalid={color_error}
                                     onChange={e =>
@@ -384,6 +420,16 @@ function ImportTemplate({
         </RightContainerPadding>
     )
 }
+
+const Logo = styled.div`
+    position: absolute;
+    right: 4.5px;
+    top: 4.5px;
+    width: 30px;
+    height: 30px;
+    background: url(${props => props.url}) no-repeat;
+    background-size: auto 100%;
+`
 
 const Color = styled.div`
     border-radius: 1px;
