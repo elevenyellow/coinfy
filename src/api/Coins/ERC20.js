@@ -220,3 +220,10 @@ export function getDecimalsContract(contract_address) {
         return result_hex ? hexToDec(result_hex) : null
     })
 }
+
+export function getSupplyContract(contract_address) {
+    const data = getDataContractMethodCall('totalSupply()')
+    return ethCall(contract_address, data).then(result_hex => {
+        return result_hex ? hexToDec(result_hex) : null
+    })
+}
