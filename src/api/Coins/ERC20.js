@@ -186,6 +186,7 @@ export function createERC20({
     }
 }
 
+// https://tokenstandard.codetract.io/
 export function ethCall(contract_address, data) {
     return fetch(
         `${api_url}?module=proxy&action=eth_call&to=${contract_address}&data=${data}`

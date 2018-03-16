@@ -15,7 +15,7 @@ import state from '/store/state'
 import {
     setHref,
     exportBackup,
-    importAssetsFromFile,
+    importBackupFromFile,
     closeSession
 } from '/store/actions'
 

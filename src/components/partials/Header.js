@@ -15,7 +15,7 @@ import { Coins } from '/api/coins'
 import {
     setHref,
     exportBackup,
-    importAssetsFromFile,
+    importBackupFromFile,
     closeSession,
     changeNetwork
 } from '/store/actions'
@@ -100,7 +100,7 @@ export default class Header extends Component {
         exportBackup(e.target)
     }
     onImport() {
-        importAssetsFromFile()
+        importBackupFromFile()
     }
 
     onHome() {

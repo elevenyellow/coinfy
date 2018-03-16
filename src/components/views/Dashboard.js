@@ -26,6 +26,7 @@ export default class Dashboard extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state, 'balance')
+        this.observer.observe(state.prices)
         this.balance_start = state.balance
     }
     componentWillUnmount() {

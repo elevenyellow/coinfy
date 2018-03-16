@@ -1,7 +1,9 @@
 import { util } from 'dop'
-import state from '/store/state'
 import { Fiats } from '/api/fiats'
 import { Coins } from '/api/coins'
+import { now } from '/api/time'
+import state from '/store/state'
+import { version } from './../../package.json'
 
 export function getTotalAssets(assets) {
     return Object.keys(assets).length
@@ -50,6 +52,17 @@ export function getSymbolsFromAssets(assets = state.assets) {
     return symbols.filter((item, pos) => symbols.indexOf(item) == pos)
 }
 
+export function isValidAsset(asset) {
+    try {
+        const symbol = asset.symbol
+        const addr = asset.address
+        const address = typeof addr == 'string' ? addr : addr[addr.length - 1]
+        return Coins[symbol].isAddressCheck(address)
+    } catch (e) {
+        return false
+    }
+}
+
 export function generateDefaultAsset(object = {}) {
     const asset = {
         // type: type,
@@ -69,6 +82,20 @@ export function generateDefaultAsset(object = {}) {
     }
 
     return util.merge(asset, object)
+}
+
+export function generateDefaultBackup(object = {}) {
+    const backup = {
+        date: now(),
+        network: state.network,
+        v: version
+            .split('.')
+            .slice(0, 2)
+            .join('.'),
+        assets: {},
+        customs: {}
+    }
+    return util.merge(backup, object)
 }
 
 export function formatCurrency(value, n = 0, currencySymbol = state.fiat) {

@@ -25,7 +25,6 @@ import styles from '/const/styles'
 
 import { Coins } from '/api/coins'
 import { createERC20 } from '/api/coins/ERC20'
-import { now } from '/api/time'
 import { median } from '/api/arrays'
 import { getAllPrices } from '/api/prices'
 import { decimals } from '/api/numbers'
@@ -44,12 +43,12 @@ import {
     getTotalAssets,
     getAssetsAsArray,
     generateDefaultAsset,
+    generateDefaultBackup,
     getNextCoinId,
     getAssetId,
-    getSymbolsFromAssets
+    getSymbolsFromAssets,
+    isValidAsset
 } from '/store/getters'
-
-import { version } from './../../package.json'
 
 export function fetchWrapper(promise) {
     return promise
@@ -75,7 +74,7 @@ export function createAsset(type, symbol, address) {
     const asset = generateDefaultAsset({ type, symbol, address })
     const asset_id = getNextCoinId({ symbol, address })
     state.assets[asset_id] = asset
-    saveAssetsLocalStorage()
+    saveAssetsLocalstorage()
     setAssetsExported(false)
     fetchBalanceAsset(asset_id)
     sendEventToAnalytics('createAsset', symbol)
@@ -103,7 +102,7 @@ export function setPrivateKeyOrSeed(asset_id, key, password, is_seed) {
         ),
         { deep: false }
     )
-    saveAssetsLocalStorage()
+    saveAssetsLocalstorage()
     setAssetsExported(false)
 }
 
@@ -111,19 +110,19 @@ export function setPrivateKeyOrSeed(asset_id, key, password, is_seed) {
 //     const from = state.assets[asset_id_from]
 //     const to = state.assets[asset_id_to]
 //     set(to, 'private_key', from.private_key, { deep: false })
-//     saveAssetsLocalStorage()
+//     saveAssetsLocalstorage()
 //     setAssetsExported(false)
 // }
 
 export function deleteAsset(asset_id) {
     const collector = collect()
     delete state.assets[asset_id]
-    saveAssetsLocalStorage()
+    saveAssetsLocalstorage()
     setAssetsExported(false)
     collector.emit()
 }
 
-export function saveAssetsLocalStorage() {
+export function saveAssetsLocalstorage() {
     const assets = JSON.stringify(state.assets, (key, value) => {
         key = key.toLocaleLowerCase()
         return key === 'state' ? undefined : value
@@ -137,14 +136,7 @@ export function setAssetsExported(value) {
 }
 
 export function exportBackup(a_element) {
-    const data = {
-        date: now(),
-        network: state.network,
-        v: version
-            .split('.')
-            .slice(0, 2)
-            .join('.')
-    }
+    const data = generateDefaultBackup()
     // assets
     data.assets = JSON.parse(
         JSON.stringify(state.assets, (key, value) => {
@@ -167,7 +159,7 @@ export function exportBackup(a_element) {
     setAssetsExported(true)
 }
 
-export function importAssetsFromFile() {
+export function importBackupFromFile() {
     const assetsExported =
         localStorageGet(LOCALSTORAGE_ASSETSEXPORTED, state.network) === 'true'
     if (state.totalAssets > 0 && !assetsExported) {
@@ -185,30 +177,60 @@ export function importAssetsFromFile() {
 
 export function openImportAssetsFromFile() {
     openFile(file => {
-        readFile(file, dataString => importAssets(dataString))
+        readFile(file, dataString => importBackup(dataString))
     })
 }
 
-export function importAssets(dataString) {
+export function importBackup(dataString) {
     try {
-        const assets = jsonParse(atob(dataString)) //atob
+        let data = JSON.parse(atob(dataString))
+
+        // cheking if the file imported is an old version
+        if (data.v === undefined || data.network === undefined)
+            data = generateDefaultBackup({ assets: data })
+        // console.log('importBackup', data)
+
+        // cheking if we are in the right mode
+        if (data.network !== state.network) {
+            const first = state.network === MAINNET ? 'mainnet' : 'testnet'
+            const second = data.network === MAINNET ? 'mainnet' : 'testnet'
+            return addNotification(
+                `You are in ${first} mode and this backup is from ${second}.`,
+                ERROR
+            )
+        }
+
+        // importing customs
+        const customs = data.customs
+        for (let symbol in customs) {
+            if (Coins[symbol] === undefined) {
+                if (customs[symbol].type === TYPE_ERC20)
+                    createCustomERC20(customs[symbol])
+            }
+        }
+
+        // importing assets
+        const assets = data.assets
         for (let asset_id in assets)
-            assets[asset_id] = generateDefaultAsset(assets[asset_id])
-        const totalAssets = getTotalAssets(assets)
-        if (totalAssets > 0) {
+            if (isValidAsset(assets[asset_id]))
+                assets[asset_id] = generateDefaultAsset(assets[asset_id])
+        const total_assets = getTotalAssets(assets)
+        if (total_assets > 0) {
             const collector = collect()
             state.assets = assets
             setHref(routes.home())
-            addNotification(`You have imported ${totalAssets} Assets`, OK)
-            saveAssetsLocalStorage()
+            addNotification(`You have imported ${total_assets} Assets`, OK)
+            saveAssetsLocalstorage()
             setAssetsExported(true)
             fetchAllBalances()
+            fetchPrices()
             collector.emit()
-        } else
+        } else {
             addNotification(
                 "We couldn't find any Asset to Import on this JSON file",
                 ERROR
             )
+        }
     } catch (e) {
         console.error(e)
         addNotification("We couldn't parse the JSON file", ERROR)
@@ -297,7 +319,7 @@ export function updateBalance(asset_id, balance) {
         asset.state.shall_we_fetch_summary = true
         asset.balance = balance
         collector.emit()
-        saveAssetsLocalStorage()
+        saveAssetsLocalstorage()
     }
 }
 
@@ -371,6 +393,7 @@ export function fetchBalanceAsset(asset_id) {
 export const fetchPrices = (function() {
     let timeout
     return function() {
+        // console.log('fetchPrices')
         // TIMEOUT_FETCH_PRICES
         clearTimeout(timeout)
         const cryptos = getSymbolsFromAssets()
@@ -405,12 +428,16 @@ export function sendEventToAnalytics() {
 
 export function createCustomERC20(data) {
     const { symbol } = data
+    data.type = TYPE_ERC20
+    Coins[symbol] = createERC20(data)
+    saveCustomLocalstorage(data)
+}
+
+export function saveCustomLocalstorage(data) {
     const coins_localstorage = jsonParse(
         localStorageGet(LOCALSTORAGE_CUSTOMS, state.network)
     )
-    data.type = TYPE_ERC20
-    coins_localstorage[symbol] = data
-    Coins[symbol] = createERC20(data)
+    coins_localstorage[data.symbol] = data
     localStorageSet(
         LOCALSTORAGE_CUSTOMS,
         JSON.stringify(coins_localstorage),

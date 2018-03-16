@@ -6,7 +6,7 @@ import { Router, Route, Show } from '/router/components'
 import { getAsset, convertBalance, formatCurrency } from '/store/getters'
 import {
     setHref,
-    saveAssetsLocalStorage,
+    saveAssetsLocalstorage,
     setAssetLabel,
     setAssetsExported
 } from '/store/actions'
@@ -74,7 +74,7 @@ export default class HeaderAsset extends Component {
     onBlur(e) {
         if (this.changedLabel) {
             this.changedLabel = false
-            saveAssetsLocalStorage()
+            saveAssetsLocalstorage()
             setAssetsExported(false)
         }
     }
