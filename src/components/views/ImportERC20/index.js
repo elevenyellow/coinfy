@@ -48,7 +48,12 @@ export default class ImportERC20 extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
 
-        this.Coin = Coins[state.location.path[state.location.path.length - 1]]
+        this.Coin =
+            Coins[
+                decodeURIComponent(
+                    state.location.path[state.location.path.length - 1]
+                )
+            ]
 
         // Initial state
         state.view = {

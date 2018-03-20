@@ -51,7 +51,9 @@ export default class Content extends Component {
             totalAssets: state.totalAssets,
             isRegistered: isAssetRegistered(location_path[1]),
             symbol: symbol,
-            symbol_add: location_path[location_path.length - 1]
+            symbol_add: decodeURIComponent(
+                location_path[location_path.length - 1]
+            )
         })
     }
 }
@@ -63,6 +65,9 @@ function ContentTemplate({
     symbol,
     symbol_add
 }) {
+    // console.log(new RegExp(routes.import({ symbol: symbol_add })))
+    // console.log(Coins.hasOwnProperty(symbol_add))
+    // console.log(Coins[symbol_add].type)
     return (
         <Container>
             <RightContainer>

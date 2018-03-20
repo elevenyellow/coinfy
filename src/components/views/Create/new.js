@@ -51,7 +51,7 @@ export default class NewAsset extends Component {
 
         this.words = getRandomMnemonic().split(' ')
         this.words_shuffle = []
-        this.Coin = Coins[state.location.path[state.location.path.length - 1]]
+        this.Coin = Coins[decodeURIComponent(state.location.path[state.location.path.length - 1])]
 
         // binding
         this.onChangePassword = this.onChangePassword.bind(this)

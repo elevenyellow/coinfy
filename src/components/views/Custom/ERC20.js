@@ -157,6 +157,7 @@ export default class ImportBitcoin extends Component {
         if (url !== state.view.logo) {
             // loading logo
             const img = new Image()
+            img.crossOrigin = 'Anonymous'
             img.src = url
             img.onload = () => {
                 const collector = collect()
@@ -167,6 +168,7 @@ export default class ImportBitcoin extends Component {
             }
             img.onerror = () => {
                 if (update) state.view.logo_visible = this.logo_default
+                // else state.view.logo = 'url'
             }
             // updating view
             if (update) {
@@ -432,7 +434,7 @@ const Logo = styled.div`
     top: 4.5px;
     width: 30px;
     height: 30px;
-    background: url(${props => props.url}) no-repeat;
+    background: url(${props => props.url}) no-repeat center;
     background-size: auto 100%;
 `
 

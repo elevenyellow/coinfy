@@ -40,7 +40,12 @@ export default class AddAsset extends Component {
             password_error: false
         }
 
-        this.Coin = Coins[state.location.path[state.location.path.length - 1]]
+        this.Coin =
+            Coins[
+                decodeURIComponent(
+                    state.location.path[state.location.path.length - 1]
+                )
+            ]
         this.reusable_seeds = getReusableSeeds(this.Coin.symbol)
         this.step = state.location.path[2]
 
