@@ -323,6 +323,25 @@ export function updateBalance(asset_id, balance) {
     }
 }
 
+export function createCustomERC20(data) {
+    const { symbol } = data
+    data.type = TYPE_ERC20
+    Coins[symbol] = createERC20(data)
+    saveCustomLocalstorage(data)
+}
+
+export function saveCustomLocalstorage(data) {
+    const coins_localstorage = jsonParse(
+        localStorageGet(LOCALSTORAGE_CUSTOMS, state.network)
+    )
+    coins_localstorage[data.symbol] = data
+    localStorageSet(
+        LOCALSTORAGE_CUSTOMS,
+        JSON.stringify(coins_localstorage),
+        state.network
+    )
+}
+
 // Fetchers
 
 export function fetchAllBalances() {
@@ -424,23 +443,4 @@ export function sendEventToAnalytics() {
         args.unshift('send', 'event')
         ga.apply(this, args)
     }
-}
-
-export function createCustomERC20(data) {
-    const { symbol } = data
-    data.type = TYPE_ERC20
-    Coins[symbol] = createERC20(data)
-    saveCustomLocalstorage(data)
-}
-
-export function saveCustomLocalstorage(data) {
-    const coins_localstorage = jsonParse(
-        localStorageGet(LOCALSTORAGE_CUSTOMS, state.network)
-    )
-    coins_localstorage[data.symbol] = data
-    localStorageSet(
-        LOCALSTORAGE_CUSTOMS,
-        JSON.stringify(coins_localstorage),
-        state.network
-    )
 }

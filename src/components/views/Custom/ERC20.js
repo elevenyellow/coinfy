@@ -213,7 +213,7 @@ export default class ImportBitcoin extends Component {
             state.view.symbol_error === '' &&
             state.view.name.length > 0 &&
             state.view.name_error === '' &&
-            state.view.coin_decimals > 0 &&
+            state.view.coin_decimals > -1 &&
             state.view.coin_decimals_error === '' &&
             state.view.color.length > 0 &&
             state.view.color_error === ''
