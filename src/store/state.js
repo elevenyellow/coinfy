@@ -1,5 +1,5 @@
 import { computed, register, createObserver } from 'dop'
-import { create } from 'dop-router/location'
+import { createLocation } from 'dop-router/location'
 import { USD } from '/api/fiats'
 import { getTotalAssets } from '/store/getters'
 import restoreFromLocalStorage from '/store/restore'
@@ -56,6 +56,6 @@ restoreFromLocalStorage(initialState)
 const state = register(initialState)
 
 // implementing location router (special object)
-create(window.location.href, state, 'location')
+createLocation(window.location.href, state, 'location')
 
 export default state

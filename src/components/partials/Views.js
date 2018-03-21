@@ -65,7 +65,7 @@ function ContentTemplate({
     symbol,
     symbol_add
 }) {
-    // console.log(new RegExp(routes.import({ symbol: symbol_add })))
+    const token_exists = Coins.hasOwnProperty(symbol_add)
     // console.log(Coins.hasOwnProperty(symbol_add))
     // console.log(Coins[symbol_add].type)
     return (
@@ -92,6 +92,7 @@ function ContentTemplate({
                         <CustomERC20 />
                     </Route>
                     <Route
+                        if={token_exists}
                         pathname={
                             new RegExp(routes.create({ symbol: symbol_add }))
                         }
@@ -109,7 +110,7 @@ function ContentTemplate({
                             new RegExp(routes.import({ symbol: symbol_add }))
                         }
                         if={
-                            Coins.hasOwnProperty(symbol_add) &&
+                            token_exists &&
                             Coins[symbol_add].type === TYPE_ERC20
                         }
                     >

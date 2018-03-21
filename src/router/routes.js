@@ -1,18 +1,20 @@
+import { createRoute } from 'dop-router/routes'
+
 export default {
-    home: () => `/`,
-    settings: () => `/settings`,
+    home: createRoute(`/`),
+    settings: createRoute(`/settings`),
 
     // Add
-    add: () => `/add`,
-    custom: ({ type }) => `/custom/${type}`,
-    create: ({ symbol }) => `/create/${symbol}`,
-    import: ({ symbol }) => `/import/${symbol}`,
+    add: createRoute(`/add`),
+    custom: createRoute(`/custom/:type`),
+    create: createRoute(`/create/:symbol`),
+    import: createRoute(`/import/:symbol`),
 
     // Assets
-    asset: ({ asset_id }) => `/asset/${asset_id}/summary`, // default
-    summaryAsset: ({ asset_id }) => `/asset/${asset_id}/summary`,
-    sendAsset: ({ asset_id }) => `/asset/${asset_id}/send`,
-    exportAsset: ({ asset_id }) => `/asset/${asset_id}/export`,
-    changePasswordAsset: ({ asset_id }) => `/asset/${asset_id}/changepassword`,
-    deleteAsset: ({ asset_id }) => `/asset/${asset_id}/delete`
+    asset: createRoute(`/asset/:asset_id/summary`), // default
+    summaryAsset: createRoute(`/asset/:asset_id/summary`),
+    sendAsset: createRoute(`/asset/:asset_id/send`),
+    exportAsset: createRoute(`/asset/:asset_id/export`),
+    changePasswordAsset: createRoute(`/asset/:asset_id/changepassword`),
+    deleteAsset: createRoute(`/asset/:asset_id/delete`)
 }
