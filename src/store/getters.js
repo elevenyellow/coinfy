@@ -3,6 +3,7 @@ import { Fiats } from '/api/fiats'
 import { Coins } from '/api/coins'
 import { now } from '/api/time'
 import state from '/store/state'
+import { group } from '/router'
 import { version } from './../../package.json'
 
 export function getTotalAssets(assets) {
@@ -179,4 +180,11 @@ export function getReusableSeeds(symbol) {
     }
 
     return reusables
+}
+
+export function getRouteFromLocation() {
+    return group.getRoute(state.location)
+}
+export function getParamsFromLocation() {
+    return group.getParams(state.location)
 }

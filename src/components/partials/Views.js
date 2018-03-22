@@ -9,7 +9,11 @@ import { TYPE_ERC20 } from '/const/'
 import { Coins } from '/api/coins'
 
 import state from '/store/state'
-import { getAsset, isAssetRegistered } from '/store/getters'
+import {
+    getAsset,
+    isAssetRegistered,
+    getParamsFromLocation
+} from '/store/getters'
 
 // Styled
 import { RightContainer, RightContainerMiddle } from '/components/styled/Right'
@@ -43,73 +47,52 @@ export default class Content extends Component {
 
     render() {
         const location_path = state.location.path
-        const asset = getAsset(location_path[1])
-        const symbol = asset !== undefined ? asset.symbol : false
+        const { symbol, asset_id } = getParamsFromLocation()
         return React.createElement(ContentTemplate, {
-            location: state.location,
             totalAssets: state.totalAssets,
-            isRegistered: isAssetRegistered(location_path[1]),
-            symbol: symbol,
-            symbol_add: decodeURIComponent(
-                location_path[location_path.length - 1]
-            )
+            isRegistered: isAssetRegistered(asset_id),
+            symbol: symbol
         })
     }
 }
 
-function ContentTemplate({
-    location,
-    totalAssets,
-    isRegistered,
-    symbol,
-    symbol_add
-}) {
-    const token_exists = Coins.hasOwnProperty(symbol_add)
+function ContentTemplate({ totalAssets, isRegistered, symbol }) {
+    const token_exists = Coins.hasOwnProperty(symbol)
     return (
         <Container>
             <RightContainer>
-                <Router location={location}>
-                    <Route pathname="/" if={totalAssets === 0}>
+                <Router>
+                    <Route is={routes.home} if={totalAssets === 0}>
                         <RightContainerMiddle>
                             <Message>
                                 Add or Import assets to start working
                             </Message>
                         </RightContainerMiddle>
                     </Route>
-                    <Route pathname="/">
+                    <Route is={routes.home}>
                         <Dashboard />
                     </Route>
-                    <Route pathname={routes.settings()}>
+                    <Route is={routes.settings}>
                         <Settings />
                     </Route>
-                    <Route pathname={routes.add()}>
+                    <Route is={routes.add}>
                         <Add />
                     </Route>
-                    <Route pathname={routes.custom({ type: TYPE_ERC20 })}>
+                    <Route is={routes.custom}>
                         <CustomERC20 />
                     </Route>
-                    <Route
-                        if={token_exists}
-                        pathname={
-                            new RegExp(routes.create({ symbol: symbol_add }))
-                        }
-                    >
+                    <Route is={routes.create} if={token_exists}>
                         <Create />
                     </Route>
-                    <Route pathname={routes.import({ symbol: 'BTC' })}>
+                    <Route is={routes.import} if={symbol === 'BTC'}>
                         <ImportBTC />
                     </Route>
-                    <Route pathname={routes.import({ symbol: 'ETH' })}>
+                    <Route is={routes.import} if={symbol === 'ETH'}>
                         <ImportETH />
                     </Route>
                     <Route
-                        pathname={
-                            new RegExp(routes.import({ symbol: symbol_add }))
-                        }
-                        if={
-                            token_exists &&
-                            Coins[symbol_add].type === TYPE_ERC20
-                        }
+                        is={routes.import}
+                        if={token_exists && Coins[symbol].type === TYPE_ERC20}
                     >
                         <ImportERC20 />
                     </Route>

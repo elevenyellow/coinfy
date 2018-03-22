@@ -2,8 +2,7 @@ import { createGroup, createRoute } from 'dop-router/routes'
 import * as components from 'dop-router/react'
 import state from '/store/state'
 
-const group = createGroup(state.location)
-
+export const group = createGroup()
 export const routes = {
     home: group.add(createRoute(`/`)),
     settings: group.add(createRoute(`/settings`)),
@@ -25,8 +24,10 @@ export const routes = {
     deleteAsset: group.add(createRoute(`/asset/:asset_id/delete`))
 }
 
-export const Router = components.Router
+export const Router = props => {
+    if (props.location === undefined) props.location = state.location
+    if (props.group === undefined) props.group = group
+    return components.Router(props)
+}
 export const Route = components.Route
 export const Show = components.Show
-export const getRoute = group.getRoute
-export const getParams = group.getParams
