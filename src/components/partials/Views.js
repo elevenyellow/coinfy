@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { createObserver } from 'dop'
 
 import styles from '/const/styles'
-import { routes, Router, Route } from '/router'
+import { routes, Router, Route } from '/store/router'
 import { TYPE_ERC20 } from '/const/'
 
 import { Coins } from '/api/coins'

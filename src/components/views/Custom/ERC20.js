@@ -4,7 +4,7 @@ import { createObserver, collect } from 'dop'
 
 import styles from '/const/styles'
 import { ASSET_LOGO, ASSET_LOGO_LIBRARY } from '/const/'
-import { routes } from '/router'
+import { routes } from '/store/router'
 
 import { generateRandomColor, getAverageColor, rgbToHex } from '/api/colors'
 import { Coins } from '/api/coins'

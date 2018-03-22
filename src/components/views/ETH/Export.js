@@ -12,7 +12,7 @@ import { encryptAES128CTR } from '/api/crypto'
 import state from '/store/state'
 import { getAsset, isAssetWithSeed, decrypt } from '/store/getters'
 
-import { routes, Show } from '/router'
+import { routes, Show } from '/store/router'
 import styles from '/const/styles'
 
 import Div from '/components/styled/Div'

@@ -12,7 +12,7 @@ import {
 
 import { Coins } from '/api/coins'
 import { Fiats } from '/api/fiats'
-import { routes, Router, Route, Show } from '/router'
+import { routes, Router, Route, Show } from '/store/router'
 import styles from '/const/styles'
 import state from '/store/state'
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
-import { routes } from '/router'
+import { routes } from '/store/router'
 import styles from '/const/styles'
 import { OK, ERROR, ALERT, NORMAL, minpassword } from '/const/'
 

@@ -10,7 +10,7 @@ import { Coins } from '/api/coins'
 import { validateSeed } from '/api/bip39'
 
 import styles from '/const/styles'
-import { routes, Show } from '/router'
+import { routes, Show } from '/store/router'
 import { minpassword, recovery_phrase_words } from '/const/'
 
 import Input from '/components/styled/Input'

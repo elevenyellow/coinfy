@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
 import styles from '/const/styles'
-import { routes, Router, Route, Show } from '/router'
+import { routes, Router, Route, Show } from '/store/router'
 import { minpassword } from '/const/'
 import { Words as template } from '/const/paperwallets'
 

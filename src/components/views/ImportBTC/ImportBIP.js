@@ -11,7 +11,7 @@ import { decryptBIP38 } from '/api/crypto'
 import { BTC } from '/api/coins'
 
 import styles from '/const/styles'
-import { routes, Show } from '/router'
+import { routes, Show } from '/store/router'
 
 import Div from '/components/styled/Div'
 import Input from '/components/styled/Input'

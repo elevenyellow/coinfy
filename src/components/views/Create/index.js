@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
 import styles from '/const/styles'
-import { routes, Show } from '/router'
+import { routes, Show } from '/store/router'
 
 import { Coins } from '/api/coins'
 

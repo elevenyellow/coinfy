@@ -6,7 +6,7 @@ import { setHref } from '/store/actions'
 import styles from '/const/styles'
 
 import { ETH } from '/api/coins'
-import { routes, Router, Route, Show } from '/router'
+import { routes, Router, Route, Show } from '/store/router'
 import state from '/store/state'
 import { isAssetWithPrivateKeyOrSeed } from '/store/getters'
 

@@ -11,7 +11,7 @@ import {
     TIMEOUT_BETWEEN_EACH_FAIL_FETCH_FEE
 } from '/const/'
 import styles from '/const/styles'
-import { routes, Show } from '/router'
+import { routes, Show } from '/store/router'
 
 import { Coins } from '/api/coins'
 import { parseNumberAsString, limitDecimals, bigNumber } from '/api/numbers'

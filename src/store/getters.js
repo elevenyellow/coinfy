@@ -3,7 +3,7 @@ import { Fiats } from '/api/fiats'
 import { Coins } from '/api/coins'
 import { now } from '/api/time'
 import state from '/store/state'
-import { group } from '/router'
+import { group } from '/store/router'
 import { version } from './../../package.json'
 
 export function getTotalAssets(assets) {

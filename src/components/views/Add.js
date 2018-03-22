@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
 
-import { routes, Router, Route } from '/router'
+import { routes, Router, Route } from '/store/router'
 import { TYPE_COIN, TYPE_ERC20 } from '/const/'
 import styles from '/const/styles'
 
