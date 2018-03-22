@@ -192,16 +192,17 @@ export default class ImportBitcoin extends Component {
 
     onSubmit(e) {
         e.preventDefault()
+        const symbol = state.view.symbol
         createCustomERC20({
-            symbol: state.view.symbol,
+            symbol: symbol,
             name: state.view.name,
             color: state.view.color,
             contract_address: state.view.contract_address,
             coin_decimals: Number(state.view.coin_decimals),
-            labels: `${state.view.symbol.toLowerCase()} ethereum token erc20 ecr20 custom`,
+            labels: `${symbol.toLowerCase()} ethereum token erc20 ecr20 custom`,
             logo: state.view.logo_visible
         })
-        setHref(routes.add())
+        setHref(routes.add({ filter: symbol }))
     }
 
     get isValidForm() {

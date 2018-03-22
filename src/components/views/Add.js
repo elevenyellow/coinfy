@@ -27,14 +27,7 @@ import {
 export default class AddAsset extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
-        this.observer.observe(state.location.path, 'length')
-        this.observer.observe(state.location.path, '1')
-        this.observer.observe(state.view, 'filter')
-
-        // Initial state
-        state.view = {
-            filter: ''
-        }
+        this.observer.observe(state.location.query)
 
         this.assetList = []
         Object.keys(Coins)
@@ -82,7 +75,8 @@ export default class AddAsset extends Component {
     }
 
     onChangeFilter(e) {
-        state.view.filter = e.target.value
+        state.location.query.filter = e.target.value
+        // state.view.filter = e.target.value
     }
 
     onClick(route) {
@@ -90,14 +84,15 @@ export default class AddAsset extends Component {
     }
 
     render() {
+        const filter = state.location.query.filter || ''
         return React.createElement(AddAssetTemplate, {
             location: state.location,
-            assetList: searchInArray(this.assetList, state.view.filter, [
+            assetList: searchInArray(this.assetList, filter, [
                 'name',
                 'symbol',
                 'labels'
             ]),
-            filter: state.view.filter,
+            filter: filter,
             onChangeFilter: this.onChangeFilter,
             onClick: this.onClick
         })

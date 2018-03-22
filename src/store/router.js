@@ -9,7 +9,7 @@ export const routes = {
     settings: group.add(createRoute(`/settings`)),
 
     // Add
-    add: group.add(createRoute(`/add`)),
+    add: group.add(createRoute(`/add(?filter=:filter)`)),
     custom: group.add(createRoute(`/custom/:type`)),
     create: group.add(createRoute(`/create/:symbol`)),
     import: group.add(createRoute(`/import/:symbol`)),
