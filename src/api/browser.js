@@ -93,3 +93,8 @@ export function addOriginUrl(path) {
     if (path[0] !== '/') path = '/' + path
     return location.origin + path
 }
+
+export function locationHref(path) {
+    if (typeof path == 'string') window.location.href = path
+    return window.location
+}

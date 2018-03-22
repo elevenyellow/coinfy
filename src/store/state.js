@@ -3,7 +3,7 @@ import { createLocation } from 'dop-router/location'
 import { USD } from '/api/fiats'
 import { getTotalAssets } from '/store/getters'
 import restoreFromLocalStorage from '/store/restore'
-import { localStorageGet } from '/api/browser'
+import { localStorageGet, locationHref } from '/api/browser'
 import {
     MAINNET,
     TESTNET,
@@ -13,7 +13,7 @@ import {
 
 // initial state
 const network = Number(localStorageGet(LOCALSTORAGE_NETWORK)) || MAINNET
-const initialState = {
+const state = register({
     // Data
     network: network,
     fiat: localStorageGet(LOCALSTORAGE_FIAT) || USD.symbol,
@@ -47,15 +47,12 @@ const initialState = {
             open: false
         }
     }
-}
+})
 
 // restoring data and config from localstorage
-restoreFromLocalStorage(initialState)
-
-// registering
-const state = register(initialState)
+restoreFromLocalStorage(state)
 
 // implementing location router (special object)
-createLocation(window.location.href, state, 'location')
+createLocation(locationHref(), state, 'location')
 
 export default state

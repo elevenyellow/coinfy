@@ -66,8 +66,6 @@ function ContentTemplate({
     symbol_add
 }) {
     const token_exists = Coins.hasOwnProperty(symbol_add)
-    // console.log(Coins.hasOwnProperty(symbol_add))
-    // console.log(Coins[symbol_add].type)
     return (
         <Container>
             <RightContainer>

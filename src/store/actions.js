@@ -35,7 +35,8 @@ import {
     localStorageGet,
     openFile,
     readFile,
-    downloadFile
+    downloadFile,
+    locationHref
 } from '/api/browser'
 
 import state from '/store/state'
@@ -253,13 +254,13 @@ export function closeSession() {
 
 export function changeNetwork(network) {
     localStorageSet(LOCALSTORAGE_NETWORK, network)
-    location.href = '/'
+    locationHref('/')
 }
 
 export function forceLoseSession() {
     setAssetsExported(true)
     localStorageRemove(LOCALSTORAGE_ASSETS, state.network)
-    location.href = '/'
+    locationHref('/')
 }
 
 let idNotification = 0
@@ -437,7 +438,7 @@ export function sendEventToAnalytics() {
     if (
         state.network === MAINNET &&
         typeof ga == 'function' &&
-        location.href.indexOf('coinfy.com') === 8
+        locationHref().indexOf('coinfy.com') === 8
     ) {
         const args = Array.prototype.slice.call(arguments, 0)
         args.unshift('send', 'event')
