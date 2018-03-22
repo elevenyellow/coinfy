@@ -8,7 +8,11 @@ import styles from '/const/styles'
 import { ETH } from '/api/coins'
 import { routes, Router, Route, Show } from '/store/router'
 import state from '/store/state'
-import { isAssetWithPrivateKeyOrSeed } from '/store/getters'
+import {
+    isAssetWithPrivateKeyOrSeed,
+    getParamsFromLocation,
+    getRouteFromLocation
+} from '/store/getters'
 
 import Help from '/components/styled/Help'
 import Select from '/components/styled/Select'
@@ -46,38 +50,22 @@ export default class ViewETH extends Component {
     }
 
     onClick(route) {
-        setHref(route)
+        setHref(route(getParamsFromLocation()))
     }
 
     render() {
-        const asset_id = state.location.path[1]
+        const { asset_id } = getParamsFromLocation()
         const hasPrivateKey = isAssetWithPrivateKeyOrSeed(asset_id)
         return React.createElement(ViewETHTemplate, {
             location: state.location,
+            route: getRouteFromLocation(),
             hasPrivateKey: hasPrivateKey,
-            routes_summaryAsset: routes.asset({ asset_id: asset_id }),
-            routes_sendAsset: routes.assetSend({ asset_id: asset_id }),
-            routes_assetExport: routes.assetExport({ asset_id: asset_id }),
-            routes_assetChangepassword: routes.assetChangepassword({
-                asset_id: asset_id
-            }),
-            routes_assetDelete: routes.assetDelete({ asset_id: asset_id }),
             onClick: this.onClick
         })
     }
 }
 
-function ViewETHTemplate({
-    location,
-    isRegistered,
-    hasPrivateKey,
-    onClick,
-    routes_summaryAsset,
-    routes_sendAsset,
-    routes_assetExport,
-    routes_assetChangepassword,
-    routes_assetDelete
-}) {
+function ViewETHTemplate({ location, route, hasPrivateKey, onClick }) {
     const tooltipPrivatekey = hasPrivateKey ? null : (
         <HideMobile>
             <Help position="center" width={175}>
@@ -92,24 +80,17 @@ function ViewETHTemplate({
                 <Div margin-bottom={styles.paddingContent}>
                     <Menu>
                         <MenuContentItem
-                            selected={
-                                location.pathname === routes_summaryAsset ||
-                                location.path.length === 2
-                            }
-                            onClick={e => onClick(routes_summaryAsset)}
+                            selected={route === routes.asset}
+                            onClick={e => onClick(routes.asset)}
                         >
                             <MenuContentItemText>Summary</MenuContentItemText>
                         </MenuContentItem>
 
                         <MenuContentItem
                             disabled={!hasPrivateKey}
-                            selected={
-                                new RegExp(routes_sendAsset).test(
-                                    location.pathname
-                                ) || location.path.length === 2
-                            }
+                            selected={route === routes.assetSend}
                             onClick={e => {
-                                if (hasPrivateKey) onClick(routes_sendAsset)
+                                if (hasPrivateKey) onClick(routes.assetSend)
                             }}
                         >
                             <MenuContentItemText>
@@ -119,12 +100,9 @@ function ViewETHTemplate({
 
                         <MenuContentItem
                             disabled={!hasPrivateKey}
-                            selected={
-                                location.pathname === routes_assetExport ||
-                                location.path.length === 2
-                            }
+                            selected={route === routes.assetExport}
                             onClick={e => {
-                                if (hasPrivateKey) onClick(routes_assetExport)
+                                if (hasPrivateKey) onClick(routes.assetExport)
                             }}
                         >
                             <MenuContentItemText>
@@ -134,12 +112,10 @@ function ViewETHTemplate({
 
                         <MenuContentItem
                             disabled={!hasPrivateKey}
-                            selected={
-                                location.pathname === routes_assetChangepassword
-                            }
+                            selected={route === routes.assetChangepassword}
                             onClick={e => {
                                 if (hasPrivateKey)
-                                    onClick(routes_assetChangepassword)
+                                    onClick(routes.assetChangepassword)
                             }}
                         >
                             <MenuContentItemText>
@@ -148,8 +124,8 @@ function ViewETHTemplate({
                         </MenuContentItem>
 
                         <MenuContentItem
-                            selected={location.pathname === routes_assetDelete}
-                            onClick={e => onClick(routes_assetDelete)}
+                            selected={route === routes.assetDelete}
+                            onClick={e => onClick(routes.assetDelete)}
                         >
                             <MenuContentItemText>Delete</MenuContentItemText>
                         </MenuContentItem>
@@ -157,26 +133,23 @@ function ViewETHTemplate({
                 </Div>
 
                 <Router location={location}>
-                    <Route pathname={routes_summaryAsset}>
+                    <Route is={routes.asset}>
                         <Summary />
                     </Route>
 
-                    <Route pathname={new RegExp(routes_sendAsset)}>
+                    <Route is={routes.assetSend}>
                         <Send />
                     </Route>
 
-                    <Route if={hasPrivateKey} pathname={routes_assetExport}>
+                    <Route if={hasPrivateKey} is={routes.assetExport}>
                         <ExportETH />
                     </Route>
 
-                    <Route
-                        if={hasPrivateKey}
-                        pathname={routes_assetChangepassword}
-                    >
+                    <Route if={hasPrivateKey} is={routes.assetChangepassword}>
                         <ChangePassword />
                     </Route>
 
-                    <Route pathname={routes_assetDelete}>
+                    <Route is={routes.assetDelete}>
                         <Delete />
                     </Route>
 
