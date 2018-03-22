@@ -20,7 +20,7 @@ import {
     LOCALSTORAGE_CUSTOMS,
     TYPE_ERC20
 } from '/const/'
-import routes from '/router/routes'
+import { routes } from '/router'
 import styles from '/const/styles'
 
 import { Coins } from '/api/coins'

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
-import { Show } from '/router/components'
 
 import {
     MAINNET,
@@ -12,7 +11,7 @@ import {
     TIMEOUT_BETWEEN_EACH_FAIL_FETCH_FEE
 } from '/const/'
 import styles from '/const/styles'
-import routes from '/router/routes'
+import { routes, Show } from '/router'
 
 import { Coins } from '/api/coins'
 import { parseNumberAsString, limitDecimals, bigNumber } from '/api/numbers'

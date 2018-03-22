@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
-import { Router, Route } from '/router/components'
+import { Router, Route } from '/router/'
 import styles from '/const/styles'
 import { MAINNET, TESTNET } from '/const/'
 import { Fiats } from '/api/fiats'

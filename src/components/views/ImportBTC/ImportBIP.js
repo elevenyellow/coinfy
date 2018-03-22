@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
-import { Show } from '/router/components'
 
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
@@ -12,7 +11,7 @@ import { decryptBIP38 } from '/api/crypto'
 import { BTC } from '/api/coins'
 
 import styles from '/const/styles'
-import routes from '/router/routes'
+import { routes, Show } from '/router'
 
 import Div from '/components/styled/Div'
 import Input from '/components/styled/Input'

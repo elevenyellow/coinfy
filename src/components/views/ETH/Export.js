@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { createObserver, collect } from 'dop'
 import styled from 'styled-components'
-import { Show } from '/router/components'
 
 // import { createWorker } from '/api/workers'
 import { generateQRCode } from '/api/qr'
@@ -13,7 +12,7 @@ import { encryptAES128CTR } from '/api/crypto'
 import state from '/store/state'
 import { getAsset, isAssetWithSeed, decrypt } from '/store/getters'
 
-import routes from '/router/routes'
+import { routes, Show } from '/router'
 import styles from '/const/styles'
 
 import Div from '/components/styled/Div'

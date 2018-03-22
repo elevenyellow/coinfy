@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
-import { Show } from '/router/components'
 
 import styles from '/const/styles'
-import routes from '/router/routes'
+import { routes, Show } from '/router'
 
 import { Coins } from '/api/coins'
 

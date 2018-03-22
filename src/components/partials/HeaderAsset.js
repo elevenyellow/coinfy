@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
-import { Router, Route, Show } from '/router/components'
 
 import { getAsset, convertBalance, formatCurrency } from '/store/getters'
 import {
@@ -13,7 +12,7 @@ import {
 
 import { Coins } from '/api/coins'
 import { Fiats } from '/api/fiats'
-import routes from '/router/routes'
+import { routes, Router, Route, Show } from '/router'
 import styles from '/const/styles'
 import state from '/store/state'
 

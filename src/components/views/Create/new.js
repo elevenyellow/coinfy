@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
-import { Router, Route, Show } from '/router/components'
 
 import styles from '/const/styles'
-import routes from '/router/routes'
+import { routes, Router, Route, Show } from '/router'
 import { minpassword } from '/const/'
 import { Words as template } from '/const/paperwallets'
 
@@ -51,7 +50,12 @@ export default class NewAsset extends Component {
 
         this.words = getRandomMnemonic().split(' ')
         this.words_shuffle = []
-        this.Coin = Coins[decodeURIComponent(state.location.path[state.location.path.length - 1])]
+        this.Coin =
+            Coins[
+                decodeURIComponent(
+                    state.location.path[state.location.path.length - 1]
+                )
+            ]
 
         // binding
         this.onChangePassword = this.onChangePassword.bind(this)

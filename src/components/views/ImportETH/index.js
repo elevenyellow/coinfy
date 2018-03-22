@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
-import { Router, Route, Show } from '/router/components'
 
 import { generateQRCode } from '/api/qr'
 import { isAddress, logo } from '/api/coins/ETH'
-import routes from '/router/routes'
+import { routes, Router, Route, Show } from '/router'
 import state from '/store/state'
 
 import styles from '/const/styles'

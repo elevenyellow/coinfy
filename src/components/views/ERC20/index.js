@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
 import { createObserver } from 'dop'
-import { Router, Route, Show } from '/router/components'
 import styled from 'styled-components'
 
 import { setHref } from '/store/actions'
 import styles from '/const/styles'
 
 import { ETH } from '/api/coins'
-import routes from '/router/routes'
+import { routes, Router, Route, Show } from '/router'
 import state from '/store/state'
 import { isAssetWithPrivateKeyOrSeed } from '/store/getters'
 
@@ -157,7 +156,7 @@ function ViewERC20Template({
                     </Menu>
                 </Div>
 
-                <Router source={location}>
+                <Router location={location}>
                     <Route pathname={routes_summaryAsset}>
                         <Summary />
                     </Route>

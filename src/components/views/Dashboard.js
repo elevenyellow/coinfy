@@ -5,7 +5,7 @@ import CountUp from 'react-countup'
 
 import styles from '/const/styles'
 import { Fiats } from '/api/fiats'
-import routes from '/router/routes'
+import { routes } from '/router'
 
 import { round, bigNumber } from '/api/numbers'
 import { Coins } from '/api/coins'

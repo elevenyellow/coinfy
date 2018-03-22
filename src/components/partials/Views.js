@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
-import { Router, Route } from '/router/components'
 
 import styles from '/const/styles'
-import routes from '/router/routes'
+import { routes, Router, Route } from '/router'
 import { TYPE_ERC20 } from '/const/'
 
 import { Coins } from '/api/coins'
@@ -69,7 +68,7 @@ function ContentTemplate({
     return (
         <Container>
             <RightContainer>
-                <Router source={location}>
+                <Router location={location}>
                     <Route pathname="/" if={totalAssets === 0}>
                         <RightContainerMiddle>
                             <Message>
