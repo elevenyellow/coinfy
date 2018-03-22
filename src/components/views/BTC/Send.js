@@ -281,7 +281,7 @@ export default class Send extends Component {
                     const collector = collect()
                     state.view.loading = false
                     setHref(
-                        routes.sendAsset({ asset_id: this.asset_id }) + '/1'
+                        routes.assetSend({ asset_id: this.asset_id }) + '/1'
                     )
                     collector.emit()
                 })

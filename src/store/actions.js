@@ -115,7 +115,7 @@ export function setPrivateKeyOrSeed(asset_id, key, password, is_seed) {
 //     setAssetsExported(false)
 // }
 
-export function deleteAsset(asset_id) {
+export function assetDelete(asset_id) {
     const collector = collect()
     delete state.assets[asset_id]
     saveAssetsLocalstorage()

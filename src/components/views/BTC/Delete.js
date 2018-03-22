@@ -6,7 +6,7 @@ import { routes } from '/store/router'
 import styles from '/const/styles'
 
 import state from '/store/state'
-import { deleteAsset, addNotification, setHref } from '/store/actions'
+import { assetDelete, addNotification, setHref } from '/store/actions'
 
 import Div from '/components/styled/Div'
 import ButtonBig from '/components/styled/ButtonBig'
@@ -34,7 +34,7 @@ export default class Delete extends Component {
         const asset_id = state.location.path[1]
         const name =
             state.assets[asset_id].label || state.assets[asset_id].address
-        deleteAsset(asset_id)
+        assetDelete(asset_id)
         setHref(routes.home())
         addNotification(`"${name}" asset has been deleted`)
         collector.emit()

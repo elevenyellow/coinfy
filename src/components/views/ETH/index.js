@@ -55,13 +55,13 @@ export default class ViewETH extends Component {
         return React.createElement(ViewETHTemplate, {
             location: state.location,
             hasPrivateKey: hasPrivateKey,
-            routes_summaryAsset: routes.summaryAsset({ asset_id: asset_id }),
-            routes_sendAsset: routes.sendAsset({ asset_id: asset_id }),
-            routes_exportAsset: routes.exportAsset({ asset_id: asset_id }),
-            routes_changePasswordAsset: routes.changePasswordAsset({
+            routes_summaryAsset: routes.asset({ asset_id: asset_id }),
+            routes_sendAsset: routes.assetSend({ asset_id: asset_id }),
+            routes_assetExport: routes.assetExport({ asset_id: asset_id }),
+            routes_assetChangepassword: routes.assetChangepassword({
                 asset_id: asset_id
             }),
-            routes_deleteAsset: routes.deleteAsset({ asset_id: asset_id }),
+            routes_assetDelete: routes.assetDelete({ asset_id: asset_id }),
             onClick: this.onClick
         })
     }
@@ -74,9 +74,9 @@ function ViewETHTemplate({
     onClick,
     routes_summaryAsset,
     routes_sendAsset,
-    routes_exportAsset,
-    routes_changePasswordAsset,
-    routes_deleteAsset
+    routes_assetExport,
+    routes_assetChangepassword,
+    routes_assetDelete
 }) {
     const tooltipPrivatekey = hasPrivateKey ? null : (
         <HideMobile>
@@ -120,11 +120,11 @@ function ViewETHTemplate({
                         <MenuContentItem
                             disabled={!hasPrivateKey}
                             selected={
-                                location.pathname === routes_exportAsset ||
+                                location.pathname === routes_assetExport ||
                                 location.path.length === 2
                             }
                             onClick={e => {
-                                if (hasPrivateKey) onClick(routes_exportAsset)
+                                if (hasPrivateKey) onClick(routes_assetExport)
                             }}
                         >
                             <MenuContentItemText>
@@ -135,11 +135,11 @@ function ViewETHTemplate({
                         <MenuContentItem
                             disabled={!hasPrivateKey}
                             selected={
-                                location.pathname === routes_changePasswordAsset
+                                location.pathname === routes_assetChangepassword
                             }
                             onClick={e => {
                                 if (hasPrivateKey)
-                                    onClick(routes_changePasswordAsset)
+                                    onClick(routes_assetChangepassword)
                             }}
                         >
                             <MenuContentItemText>
@@ -148,8 +148,8 @@ function ViewETHTemplate({
                         </MenuContentItem>
 
                         <MenuContentItem
-                            selected={location.pathname === routes_deleteAsset}
-                            onClick={e => onClick(routes_deleteAsset)}
+                            selected={location.pathname === routes_assetDelete}
+                            onClick={e => onClick(routes_assetDelete)}
                         >
                             <MenuContentItemText>Delete</MenuContentItemText>
                         </MenuContentItem>
@@ -165,18 +165,18 @@ function ViewETHTemplate({
                         <Send />
                     </Route>
 
-                    <Route if={hasPrivateKey} pathname={routes_exportAsset}>
+                    <Route if={hasPrivateKey} pathname={routes_assetExport}>
                         <ExportETH />
                     </Route>
 
                     <Route
                         if={hasPrivateKey}
-                        pathname={routes_changePasswordAsset}
+                        pathname={routes_assetChangepassword}
                     >
                         <ChangePassword />
                     </Route>
 
-                    <Route pathname={routes_deleteAsset}>
+                    <Route pathname={routes_assetDelete}>
                         <Delete />
                     </Route>
 

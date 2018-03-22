@@ -4,6 +4,7 @@ import state from '/store/state'
 
 export const group = createGroup()
 export const routes = {
+    // Main
     home: group.add(createRoute(`/`)),
     settings: group.add(createRoute(`/settings`)),
 
@@ -14,14 +15,13 @@ export const routes = {
     import: group.add(createRoute(`/import/:symbol`)),
 
     // Assets
-    asset: group.add(createRoute(`/asset/:asset_id/summary`)),
-    summaryAsset: group.add(createRoute(`/asset/:asset_id/summary`)),
-    sendAsset: group.add(createRoute(`/asset/:asset_id/send`)),
-    exportAsset: group.add(createRoute(`/asset/:asset_id/export`)),
-    changePasswordAsset: group.add(
+    asset: group.add(createRoute(`/asset/:asset_id`)),
+    assetSend: group.add(createRoute(`/asset/:asset_id/send`)),
+    assetExport: group.add(createRoute(`/asset/:asset_id/export`)),
+    assetChangepassword: group.add(
         createRoute(`/asset/:asset_id/changepassword`)
     ),
-    deleteAsset: group.add(createRoute(`/asset/:asset_id/delete`))
+    assetDelete: group.add(createRoute(`/asset/:asset_id/delete`))
 }
 
 export const Router = props => {

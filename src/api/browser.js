@@ -96,5 +96,5 @@ export function addOriginUrl(path) {
 
 export function locationHref(path) {
     if (typeof path == 'string') window.location.href = path
-    return window.location
+    return window.location.href
 }

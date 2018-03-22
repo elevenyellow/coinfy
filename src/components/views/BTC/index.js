@@ -8,7 +8,11 @@ import styles from '/const/styles'
 import { BTC } from '/api/coins'
 import { routes, Router, Route, Show } from '/store/router'
 import state from '/store/state'
-import { isAssetWithPrivateKeyOrSeed } from '/store/getters'
+import {
+    isAssetWithPrivateKeyOrSeed,
+    getParamsFromLocation,
+    getRouteFromLocation
+} from '/store/getters'
 
 import Help from '/components/styled/Help'
 import Select from '/components/styled/Select'
@@ -46,38 +50,22 @@ export default class ViewBTC extends Component {
     }
 
     onClick(route) {
-        setHref(route)
+        setHref(route(getParamsFromLocation()))
     }
 
     render() {
-        const asset_id = state.location.path[1]
+        const { asset_id } = getParamsFromLocation()
         const hasPrivateKey = isAssetWithPrivateKeyOrSeed(asset_id)
         return React.createElement(ViewBTCTemplate, {
             location: state.location,
+            route: getRouteFromLocation(),
             hasPrivateKey: hasPrivateKey,
-            routes_summaryAsset: routes.summaryAsset({ asset_id: asset_id }),
-            routes_sendAsset: routes.sendAsset({ asset_id: asset_id }),
-            routes_exportAsset: routes.exportAsset({ asset_id: asset_id }),
-            routes_changePasswordAsset: routes.changePasswordAsset({
-                asset_id: asset_id
-            }),
-            routes_deleteAsset: routes.deleteAsset({ asset_id: asset_id }),
             onClick: this.onClick
         })
     }
 }
 
-function ViewBTCTemplate({
-    location,
-    isRegistered,
-    hasPrivateKey,
-    onClick,
-    routes_summaryAsset,
-    routes_sendAsset,
-    routes_exportAsset,
-    routes_changePasswordAsset,
-    routes_deleteAsset
-}) {
+function ViewBTCTemplate({ location, route, hasPrivateKey, onClick }) {
     const tooltipPrivatekey = hasPrivateKey ? null : (
         <HideMobile>
             <Help position="center" width={175}>
@@ -92,24 +80,17 @@ function ViewBTCTemplate({
                 <Div margin-bottom={styles.paddingContent}>
                     <Menu>
                         <MenuContentItem
-                            selected={
-                                location.pathname === routes_summaryAsset ||
-                                location.path.length === 2
-                            }
-                            onClick={e => onClick(routes_summaryAsset)}
+                            selected={route === routes.asset}
+                            onClick={e => onClick(routes.asset)}
                         >
                             <MenuContentItemText>Summary</MenuContentItemText>
                         </MenuContentItem>
 
                         <MenuContentItem
                             disabled={!hasPrivateKey}
-                            selected={
-                                new RegExp(routes_sendAsset).test(
-                                    location.pathname
-                                ) || location.path.length === 2
-                            }
+                            selected={route === routes.assetSend}
                             onClick={e => {
-                                if (hasPrivateKey) onClick(routes_sendAsset)
+                                if (hasPrivateKey) onClick(routes.assetSend)
                             }}
                         >
                             <MenuContentItemText>
@@ -119,12 +100,9 @@ function ViewBTCTemplate({
 
                         <MenuContentItem
                             disabled={!hasPrivateKey}
-                            selected={
-                                location.pathname === routes_exportAsset ||
-                                location.path.length === 2
-                            }
+                            selected={route === routes.assetExport}
                             onClick={e => {
-                                if (hasPrivateKey) onClick(routes_exportAsset)
+                                if (hasPrivateKey) onClick(routes.assetExport)
                             }}
                         >
                             <MenuContentItemText>
@@ -134,12 +112,10 @@ function ViewBTCTemplate({
 
                         <MenuContentItem
                             disabled={!hasPrivateKey}
-                            selected={
-                                location.pathname === routes_changePasswordAsset
-                            }
+                            selected={route === routes.assetChangepassword}
                             onClick={e => {
                                 if (hasPrivateKey)
-                                    onClick(routes_changePasswordAsset)
+                                    onClick(routes.assetChangepassword)
                             }}
                         >
                             <MenuContentItemText>
@@ -148,35 +124,32 @@ function ViewBTCTemplate({
                         </MenuContentItem>
 
                         <MenuContentItem
-                            selected={location.pathname === routes_deleteAsset}
-                            onClick={e => onClick(routes_deleteAsset)}
+                            selected={route === routes.assetDelete}
+                            onClick={e => onClick(routes.assetDelete)}
                         >
                             <MenuContentItemText>Delete</MenuContentItemText>
                         </MenuContentItem>
                     </Menu>
                 </Div>
 
-                <Router location={location}>
-                    <Route pathname={routes_summaryAsset}>
+                <Router>
+                    <Route is={routes.asset}>
                         <Summary />
                     </Route>
 
-                    <Route pathname={new RegExp(routes_sendAsset)}>
+                    <Route is={routes.assetSend}>
                         <Send />
                     </Route>
 
-                    <Route
-                        if={hasPrivateKey}
-                        pathname={routes_changePasswordAsset}
-                    >
+                    <Route is={routes.assetChangepassword} if={hasPrivateKey}>
                         <ChangePassword />
                     </Route>
 
-                    <Route if={hasPrivateKey} pathname={routes_exportAsset}>
+                    <Route is={routes.assetExport} if={hasPrivateKey}>
                         <ExportBTC />
                     </Route>
 
-                    <Route pathname={routes_deleteAsset}>
+                    <Route is={routes.assetDelete}>
                         <Delete />
                     </Route>
 
