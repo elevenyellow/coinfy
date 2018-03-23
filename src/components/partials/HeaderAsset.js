@@ -2,7 +2,12 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
 
-import { getAsset, convertBalance, formatCurrency } from '/store/getters'
+import {
+    getAsset,
+    convertBalance,
+    formatCurrency,
+    getParamsFromLocation
+} from '/store/getters'
 import {
     setHref,
     saveAssetsLocalstorage,
@@ -27,13 +32,15 @@ export default class HeaderAsset extends Component {
     componentWillMount() {
         let unobserveLabel
         let unobserveBalance
+        const { asset_id } = getParamsFromLocation()
+        this.asset_id = asset_id
         this.changedLabel = false
-        this.asset_id = state.location.path[1]
         this.asset = getAsset(this.asset_id)
         // this.qr = generateQRCode(this.address, 140, styles.color.front3)
         this.observer = createObserver(mutations => {
             if (mutations[0].prop === 'pathname') {
-                this.asset_id = state.location.path[1]
+                const { asset_id } = getParamsFromLocation()
+                this.asset_id = asset_id
                 this.asset = getAsset(this.asset_id)
                 // this.qr = generateQRCode(this.address, 140, styles.color.front3)
                 if (unobserveLabel) {

@@ -10,7 +10,12 @@ import { printTemplate, downloadFile } from '/api/browser'
 import { encryptAES128CTR } from '/api/crypto'
 
 import state from '/store/state'
-import { getAsset, isAssetWithSeed, decrypt } from '/store/getters'
+import {
+    getAsset,
+    isAssetWithSeed,
+    decrypt,
+    getParamsFromLocation
+} from '/store/getters'
 
 import { routes, Show } from '/store/router'
 import styles from '/const/styles'
@@ -41,7 +46,8 @@ export default class ExportETH extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
 
-        this.asset_id = state.location.path[1]
+        const { asset_id } = getParamsFromLocation()
+        this.asset_id = asset_id
         this.is_asset_with_seed = isAssetWithSeed(this.asset_id)
 
         // Initial state
@@ -78,8 +84,7 @@ export default class ExportETH extends Component {
     onExport(e) {
         e.preventDefault()
         const type_export = state.view.type_export
-        const asset_id = state.location.path[1]
-        const asset = getAsset(asset_id)
+        const asset = getAsset(this.asset_id)
         const address = asset.address
         const password = state.view.password
         let private_key_encrypted
@@ -87,7 +92,7 @@ export default class ExportETH extends Component {
         // Keystore
         if (type_export === TYPES_EXPORTS.keystore) {
             if (this.is_asset_with_seed) {
-                const { private_key } = decrypt(asset_id, password)
+                const { private_key } = decrypt(this.asset_id, password)
                 if (private_key) {
                     private_key_encrypted = encryptAES128CTR(
                         private_key,

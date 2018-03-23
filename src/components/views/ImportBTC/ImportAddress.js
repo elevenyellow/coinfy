@@ -4,7 +4,11 @@ import { createObserver, collect } from 'dop'
 
 import { setHref, createAsset } from '/store/actions'
 import state from '/store/state'
-import { isAssetRegistered, getAssetId } from '/store/getters'
+import {
+    isAssetRegistered,
+    getAssetId,
+    getParamsFromLocation
+} from '/store/getters'
 
 import { Coins } from '/api/coins'
 
@@ -32,7 +36,7 @@ export default class ImportAddress extends Component {
         state.view.address_input_error = ''
         collector.destroy()
 
-        const symbol = state.location.path[state.location.path.length - 1]
+        const { symbol } = getParamsFromLocation()
         this.Coin = Coins[symbol]
 
         this.onChangeInput = this.onChangeInput.bind(this)

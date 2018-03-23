@@ -25,7 +25,8 @@ import {
     formatCurrency,
     convertBalance,
     isAssetWithSeed,
-    getPrivateKey
+    getPrivateKey,
+    getParamsFromLocation
 } from '/store/getters'
 
 import Div from '/components/styled/Div'
@@ -46,7 +47,8 @@ import IconSend from 'react-icons/lib/md/send'
 
 export default class Send extends Component {
     componentWillMount() {
-        this.asset_id = state.location.path[1]
+        const { asset_id } = getParamsFromLocation()
+        this.asset_id = asset_id
         this.asset = getAsset(this.asset_id)
         this.Coin = Coins[this.asset.symbol] // Storing Asset api (Asset.BTC, Asset.ETH, ...)
         this.send_providers = this.Coin.getSendProviders()
@@ -373,7 +375,7 @@ export default class Send extends Component {
         const symbol = this.asset.symbol
         const isEnoughBalance = this.isEnoughBalance
         const isEnoughBalanceForFee = this.isEnoughBalanceForFee
-        const step_path = state.location.path[3]
+        const step_path = getParamsFromLocation().step
         const step = state.view.is_sent
             ? 2
             : step_path !== undefined && this.tx_raw !== undefined

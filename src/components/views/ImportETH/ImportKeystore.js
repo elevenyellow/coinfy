@@ -8,7 +8,11 @@ import { keysToLowerCase } from '/api/objects'
 
 import { setPrivateKey, setHref, createAsset } from '/store/actions'
 import state from '/store/state'
-import { isAssetRegistered, getAssetId } from '/store/getters'
+import {
+    isAssetRegistered,
+    getAssetId,
+    getParamsFromLocation
+} from '/store/getters'
 
 import {
     isAddress,
@@ -44,7 +48,7 @@ export default class ImportKeystore extends Component {
         state.view.keystore_invalid_error = ''
         collector.destroy()
 
-        const symbol = state.location.path[state.location.path.length - 1]
+        const { symbol } = getParamsFromLocation()
         this.Coin = Coins.hasOwnProperty(symbol) ? Coins[symbol] : Coins.ETH
 
         this.onChangeFile = this.onChangeFile.bind(this)

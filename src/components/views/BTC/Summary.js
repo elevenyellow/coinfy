@@ -17,7 +17,12 @@ import { selectContentElement, copyContentSelected } from '/api/browser'
 
 import state from '/store/state'
 import { fetchSummaryAsset, fetchSummaryAssetIfReady } from '/store/actions'
-import { convertBalance, getAsset, formatCurrency } from '/store/getters'
+import {
+    convertBalance,
+    getAsset,
+    formatCurrency,
+    getParamsFromLocation
+} from '/store/getters'
 
 import IconCopy from 'react-icons/lib/md/content-copy'
 import IconPrint from 'react-icons/lib/fa/print'
@@ -72,14 +77,15 @@ export default class Summary extends Component {
 
     observeAll() {
         state.view = { fetchingTxs: false }
-        const asset_id = state.location.path[1]
-        const asset = getAsset(asset_id)
-        this.Coin = Coins[asset.symbol] // Storing Coin api (Coin.BTC, Coin.ETH, ...)
+        const { asset_id } = getParamsFromLocation()
+        this.asset_id = asset_id
+        this.asset = getAsset(this.asset_id)
+        this.Coin = Coins[this.asset.symbol] // Storing Coin api (Coin.BTC, Coin.ETH, ...)
         this.observer = createObserver(mutations => this.forceUpdate())
-        this.observer.observe(asset, 'summary')
-        this.observer.observe(asset.state, 'fetching_summary')
+        this.observer.observe(this.asset, 'summary')
+        this.observer.observe(this.asset.state, 'fetching_summary')
         this.observer.observe(state, 'currency')
-        this.observer.observe(state.prices, asset.symbol)
+        this.observer.observe(state.prices, this.asset.symbol)
         this.observer.observe(state.view, 'fetchingTxs')
     }
 
@@ -93,9 +99,7 @@ export default class Summary extends Component {
     }
 
     onPrint(e) {
-        const asset_id = state.location.path[1]
-        const asset = getAsset(asset_id)
-        const address = asset.address
+        const address = this.asset.address
         printTemplate(
             template([
                 {
@@ -109,51 +113,45 @@ export default class Summary extends Component {
     }
 
     fetchData() {
-        const asset_id = state.location.path[1]
-        fetchSummaryAssetIfReady(asset_id)
+        fetchSummaryAssetIfReady(this.asset_id)
     }
 
     forceFetch() {
-        const asset_id = state.location.path[1]
-        fetchSummaryAsset(asset_id)
+        fetchSummaryAsset(this.asset_id)
     }
 
     rescanOrLoad() {
-        const asset_id = state.location.path[1]
-        const asset = getAsset(asset_id)
-
-        const totalTransactions = asset.summary.totalTxs || 0
-        const txs = asset.summary.txs || []
+        const totalTransactions = this.asset.summary.totalTxs || 0
+        const txs = this.asset.summary.txs || []
 
         if (totalTransactions === txs.length) {
             this.forceFetch()
         } else {
             state.view.fetchingTxs = true
-            this.Coin.fetchTxs(asset.address, asset.summary.txs.length).then(
-                txs => {
-                    asset.summary.totalTransactions = txs.totalTxs
-                    asset.summary.txs = asset.summary.txs.concat(txs.txs)
-                    state.view.fetchingTxs = false
-                }
-            )
+            this.Coin.fetchTxs(
+                this.asset.address,
+                this.asset.summary.txs.length
+            ).then(txs => {
+                this.asset.summary.totalTransactions = txs.totalTxs
+                this.asset.summary.txs = this.asset.summary.txs.concat(txs.txs)
+                state.view.fetchingTxs = false
+            })
         }
     }
 
     render() {
-        const asset_id = state.location.path[1]
-        const asset = getAsset(asset_id)
-        const address = asset.address
+        const address = this.asset.address
         return React.createElement(SummaryTemplate, {
-            balance_asset: asset.balance,
+            balance_asset: this.asset.balance,
             balance_currency: formatCurrency(
-                convertBalance(asset.symbol, asset.balance)
+                convertBalance(this.asset.symbol, this.asset.balance)
             ),
-            symbol: asset.symbol,
-            totalTransactions: asset.summary.totalTxs || 0,
-            totalReceived: round(asset.summary.totalReceived || 0, 2),
-            totalSent: round(asset.summary.totalSent || 0, 2),
-            txs: asset.summary.txs || [],
-            fetchingSummary: asset.state.fetching_summary,
+            symbol: this.asset.symbol,
+            totalTransactions: this.asset.summary.totalTxs || 0,
+            totalReceived: round(this.asset.summary.totalReceived || 0, 2),
+            totalSent: round(this.asset.summary.totalSent || 0, 2),
+            txs: this.asset.summary.txs || [],
+            fetchingSummary: this.asset.state.fetching_summary,
             fetchingTxs: state.view.fetchingTxs,
             rescanOrLoad: this.rescanOrLoad,
             address: address,

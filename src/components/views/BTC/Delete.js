@@ -7,6 +7,7 @@ import styles from '/const/styles'
 
 import state from '/store/state'
 import { assetDelete, addNotification, setHref } from '/store/actions'
+import { getParamsFromLocation } from '/store/getters'
 
 import Div from '/components/styled/Div'
 import ButtonBig from '/components/styled/ButtonBig'
@@ -31,7 +32,7 @@ export default class Delete extends Component {
     }
     onDelete() {
         const collector = collect()
-        const asset_id = state.location.path[1]
+        const { asset_id } = getParamsFromLocation()
         const name =
             state.assets[asset_id].label || state.assets[asset_id].address
         assetDelete(asset_id)

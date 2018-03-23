@@ -16,7 +16,7 @@ export const routes = {
 
     // Assets
     asset: group.add(createRoute(`/asset/:asset_id`)),
-    assetSend: group.add(createRoute(`/asset/:asset_id/send`)),
+    assetSend: group.add(createRoute(`/asset/:asset_id/send(/:step)`)),
     assetExport: group.add(createRoute(`/asset/:asset_id/export`)),
     assetChangepassword: group.add(
         createRoute(`/asset/:asset_id/changepassword`)

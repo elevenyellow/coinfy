@@ -16,7 +16,7 @@ import { printTemplate } from '/api/browser'
 
 import state from '/store/state'
 import { createAsset, setSeed, setHref, addNotification } from '/store/actions'
-import { getAssetId } from '/store/getters'
+import { getAssetId, getParamsFromLocation } from '/store/getters'
 
 import IconPrint from 'react-icons/lib/fa/print'
 
@@ -48,14 +48,10 @@ export default class NewAsset extends Component {
         this.observer.observe(state.view)
         this.observer.observe(state.view.words_shuffle_clicked, 'length')
 
+        const { symbol } = getParamsFromLocation()
         this.words = getRandomMnemonic().split(' ')
         this.words_shuffle = []
-        this.Coin =
-            Coins[
-                decodeURIComponent(
-                    state.location.path[state.location.path.length - 1]
-                )
-            ]
+        this.Coin = Coins[symbol]
 
         // binding
         this.onChangePassword = this.onChangePassword.bind(this)

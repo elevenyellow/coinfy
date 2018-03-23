@@ -15,7 +15,11 @@ import {
     setSeed,
     addNotification
 } from '/store/actions'
-import { getAsset, isAssetWithSeed } from '/store/getters'
+import {
+    getAsset,
+    isAssetWithSeed,
+    getParamsFromLocation
+} from '/store/getters'
 
 import Div from '/components/styled/Div'
 import Button from '/components/styled/Button'
@@ -73,7 +77,7 @@ export default class ChangePassword extends Component {
     onSubmit(e) {
         e.preventDefault()
         const collector = collect()
-        const asset_id = state.location.path[1]
+        const { asset_id } = getParamsFromLocation()
         const asset = getAsset(asset_id)
         const address = asset.address
         const oldpassword = state.view.oldpassword

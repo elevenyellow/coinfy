@@ -9,7 +9,12 @@ import { getAllFormats, encryptBIP38 } from '/api/coins/BTC'
 import { printTemplate } from '/api/browser'
 
 import state from '/store/state'
-import { getAsset, isAssetWithSeed, decrypt } from '/store/getters'
+import {
+    getAsset,
+    isAssetWithSeed,
+    decrypt,
+    getParamsFromLocation
+} from '/store/getters'
 
 import { routes, Show } from '/store/router'
 import styles from '/const/styles'
@@ -40,7 +45,8 @@ export default class ExportBTC extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
 
-        this.asset_id = state.location.path[1]
+        const { asset_id } = getParamsFromLocation()
+        this.asset_id = asset_id
         this.is_asset_with_seed = isAssetWithSeed(this.asset_id)
 
         // Initial state

@@ -7,6 +7,7 @@ import { Coins } from '/api/coins'
 import { isAddress } from '/api/coins/ETH'
 import { routes, Router, Route, Show } from '/store/router'
 import state from '/store/state'
+import { getParamsFromLocation } from '/store/getters'
 
 import styles from '/const/styles'
 
@@ -47,12 +48,8 @@ export default class ImportERC20 extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
 
-        this.Coin =
-            Coins[
-                decodeURIComponent(
-                    state.location.path[state.location.path.length - 1]
-                )
-            ]
+        const { symbol } = getParamsFromLocation()
+        this.Coin = Coins[symbol]
 
         // Initial state
         state.view = {

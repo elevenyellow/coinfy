@@ -12,7 +12,8 @@ import {
     convertBalance,
     formatCurrency,
     getAssetId,
-    getLabelOrAddress
+    getLabelOrAddress,
+    getParamsFromLocation
 } from '/store/getters'
 import AssetItem from '/components/styled/AssetItem'
 
@@ -49,10 +50,12 @@ export default class Asset extends Component {
 
     render() {
         const asset = this.props.asset
+        const { asset_id } = getParamsFromLocation()
         const Coin = Coins[asset.symbol]
         // console.log( 'Render', convertBalance(asset.symbol, asset.balance) )
         return React.createElement(AssetTemplate, {
             asset: this.props.asset,
+            asset_id: asset_id,
             location: state.location,
             balance_currency: formatCurrency(
                 convertBalance(asset.symbol, asset.balance)
@@ -66,6 +69,7 @@ export default class Asset extends Component {
 
 function AssetTemplate({
     asset,
+    asset_id,
     location,
     balance_currency,
     balance_asset,
@@ -76,7 +80,7 @@ function AssetTemplate({
         <AssetStyled
             onClick={onClick}
             selected={
-                state.location.path[1] ===
+                asset_id ===
                 getAssetId({ symbol: asset.symbol, address: asset.address })
             }
         >
