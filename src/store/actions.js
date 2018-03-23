@@ -52,12 +52,15 @@ import {
 } from '/store/getters'
 
 export function fetchWrapper(promise) {
+    // console.log('fetchWrapper')
     return promise
         .then(result => {
+            // console.log('then', result)
             showNotConnectionNotification(false)
             return result
         })
         .catch(e => {
+            // console.log('catch')
             showNotConnectionNotification(true)
             return Promise.reject(e)
         })
@@ -359,7 +362,9 @@ fetchAllBalances()
 export function fetchBalance(asset_id) {
     const asset = state.assets[asset_id]
     if (asset !== undefined) {
-        return Coins[asset.symbol].fetchBalance(asset.address).then(balance => {
+        return fetchWrapper(
+            Coins[asset.symbol].fetchBalance(asset.address)
+        ).then(balance => {
             updateBalance(asset_id, balance)
             return balance
         })
@@ -380,8 +385,7 @@ export function fetchSummaryAsset(asset_id) {
     asset.summary = {}
     collector.emit()
 
-    return Coins[asset.symbol]
-        .fetchSummary(asset.address)
+    return fetchWrapper(Coins[asset.symbol].fetchSummary(asset.address))
         .then(summary => {
             const collector = collect()
             asset.state.fetching_summary = false
@@ -400,8 +404,7 @@ export function fetchSummaryAsset(asset_id) {
 export function fetchBalanceAsset(asset_id) {
     // console.log( 'fetchSummaryAsset', asset_id );
     const asset = state.assets[asset_id]
-    return Coins[asset.symbol]
-        .fetchBalance(asset.address)
+    return fetchWrapper(Coins[asset.symbol].fetchBalance(asset.address))
         .then(balance => {
             asset.balance = balance
         })
@@ -417,7 +420,7 @@ export const fetchPrices = (function() {
         // TIMEOUT_FETCH_PRICES
         clearTimeout(timeout)
         const cryptos = getSymbolsFromAssets()
-        if (cryptos.length > 0)
+        if (cryptos.length > 0) {
             getAllPrices(
                 cryptos,
                 state.fiat,
@@ -430,6 +433,7 @@ export const fetchPrices = (function() {
                 })
                 timeout = setTimeout(fetchPrices, TIMEOUT_FETCH_PRICES)
             })
+        }
     }
 })()
 fetchPrices()
