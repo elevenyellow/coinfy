@@ -8,7 +8,12 @@ import { routes, Show } from '/store/router'
 import { Coins } from '/api/coins'
 
 import state from '/store/state'
-import { getReusableSeeds, getLabelOrAddress, getAssetId } from '/store/getters'
+import {
+    getReusableSeeds,
+    getLabelOrAddress,
+    getAssetId,
+    getParamsFromLocation
+} from '/store/getters'
 import { setHref, createAsset, setSeed, addNotification } from '/store/actions'
 
 import {
@@ -31,36 +36,34 @@ export default class AddAsset extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
+        this.observer.observe(state.location.path)
+
+        // state
         state.view = {
-            force_new: false,
             group_selected: -1,
             asset_selected: 0,
             password: '',
             password_error: false
         }
 
-        this.Coin =
-            Coins[
-                decodeURIComponent(
-                    state.location.path[state.location.path.length - 1]
-                )
-            ]
-        this.reusable_seeds = getReusableSeeds(this.Coin.symbol)
-        this.step = state.location.path[2]
+        const { symbol } = getParamsFromLocation()
+        this.symbol = symbol
+        this.Coin = Coins[symbol]
+        this.reusable_seeds = getReusableSeeds(this.symbol)
 
         this.onNew = this.onNew.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
     componentWillUnmount() {
-        // this.observer.destroy()
+        this.observer.destroy()
     }
     shouldComponentUpdate() {
         return false
     }
 
     onNew() {
-        state.view.force_new = true
+        setHref(routes.create({ symbol: this.symbol, step: 'new' }))
         this.observer.destroy()
     }
 
@@ -113,12 +116,10 @@ export default class AddAsset extends Component {
     }
 
     render() {
+        const { step } = getParamsFromLocation()
         return React.createElement(AddAssetTemplate, {
             Coin: this.Coin,
-            is_reuse_view:
-                !state.view.force_new &&
-                this.reusable_seeds.length > 0 &&
-                isNaN(Number(this.step)),
+            is_reuse_view: this.reusable_seeds.length > 0 && step === undefined,
             reusable_seeds: this.reusable_seeds,
             group_selected: state.view.group_selected,
             asset_selected: state.view.asset_selected,

@@ -182,9 +182,10 @@ export function getReusableSeeds(symbol) {
     return reusables
 }
 
-export function getRouteFromLocation() {
-    return group.getRoute(state.location)
-}
 export function getParamsFromLocation() {
     return group.getParams(state.location)
+}
+
+export function getRouteFromLocation() {
+    return group.getRoute(state.location)
 }

@@ -67,9 +67,6 @@ export default class NewAsset extends Component {
         this.onClear = this.onClear.bind(this)
         this.onCreate = this.onCreate.bind(this)
     }
-    componentWillUnmount() {
-        this.observer.destroy()
-    }
     shouldComponentUpdate() {
         return false
     }

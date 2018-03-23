@@ -11,7 +11,7 @@ export const routes = {
     // Add
     add: group.add(createRoute(`/add(?filter=:filter)`)),
     custom: group.add(createRoute(`/custom/:type`)),
-    create: group.add(createRoute(`/create/:symbol`)),
+    create: group.add(createRoute(`/create/:symbol(/:step)`)),
     import: group.add(createRoute(`/import/:symbol`)),
 
     // Assets
