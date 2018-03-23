@@ -143,10 +143,10 @@ export const Words = words => {
             <img src="/static/image/logo2.svg" height="40" />
         </div>
         <div id="info">
-            <strong>Do not share it with anyone.</strong>
-            These words allow you to recover this asset in case of loss or damage
-            <strong>Without it you will not be able to recover your money if something goes wrong.</strong> Make two copies and store
-            them in separates physical locations. This phrase is case sensitive and the order is very important.
+            Your recovery phrase allows you to recover your asset in case of loss or damage.
+            <strong>Without it, you will not be able to access your cryptocurrency if something goes wrong.</strong>
+            Make two copies of your recovery phrase and store them in separate physical locations.
+            Please note, your recovery phrase is case sensitive and each word must be written in the correct order.
         </div>
         <div id="words">${words}</div>
         <div id="claim">COINFY.COM</div>

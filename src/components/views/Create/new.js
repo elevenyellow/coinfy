@@ -205,11 +205,11 @@ function NewAssetTemplate({
                     <ContainerView>
                         <Title>Create Your Password</Title>
                         <Description>
-                            Coinfy will protect this asset with a password. You
-                            must remember your password as there is no way it
-                            can be recovered! Think of this password as a key.
-                            It protects your money if someone else tries to
-                            access your computer or phone.
+                            Coinfy will protect your asset with a password. You
+                            need to remember your password as there is no way it
+                            can be recovered. This password protects your
+                            cryptocurrency if someone else tries to access your
+                            computer or mobile device.
                         </Description>
 
                         <Content>
@@ -256,23 +256,24 @@ function NewAssetTemplate({
                     <ContainerView>
                         <Title>Write Down or Print Your Recovery Phrase</Title>
                         <Description>
-                            Write or print this and store it in a safe or locked
-                            valult.{' '}
+                            Write or print your recovery phrase and store it
+                            securely offline.{' '}
                             <strong>
                                 <span>Do not share it with anyone.</span>
-                            </strong>
-                            <br />
-                            These words allow you to recover this asset in case
-                            of loss or damage.{' '}
+                            </strong>{' '}
+                            Your recovery phrase allows you to recover your
+                            asset in case of loss or damage.
                             <strong>
+                                {' '}
                                 <span>
-                                    Without it you will not be able to recover
-                                    your money if something goes wrong.
+                                    Without it, you will not be able to access
+                                    your cryptocurrency if something goes wrong.
                                 </span>
                             </strong>{' '}
-                            Make two copies and store them in separates physical
-                            locations. This phrase is case sensitive and the
-                            order is very important.
+                            Make two copies of your recovery phrase and store
+                            them in separate physical locations. Please note,
+                            your recovery phrase is case sensitive and each word
+                            must be written in the correct order.
                         </Description>
 
                         <Content>
