@@ -33,7 +33,7 @@ import Password from '/components/styled/Password'
 import ButtonBig from '/components/styled/ButtonBig'
 import Button from '/components/styled/Button'
 import SwitchView from '/components/styled/SwitchView'
-
+window.dap = require('dop')
 export default class NewAsset extends Component {
     componentWillMount() {
         state.view = {

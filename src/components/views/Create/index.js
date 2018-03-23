@@ -64,7 +64,6 @@ export default class AddAsset extends Component {
 
     onNew() {
         setHref(routes.create({ symbol: this.symbol, step: 'new' }))
-        this.observer.destroy()
     }
 
     onSelectGroup(index) {
