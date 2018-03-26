@@ -51,21 +51,6 @@ import {
     isValidAsset
 } from '/store/getters'
 
-export function fetchWrapper(promise) {
-    // console.log('fetchWrapper')
-    return promise
-        .then(result => {
-            // console.log('then', result)
-            showNotConnectionNotification(false)
-            return result
-        })
-        .catch(e => {
-            // console.log('catch')
-            showNotConnectionNotification(true)
-            return Promise.reject(e)
-        })
-}
-
 export function setHref(href) {
     const collector = collect()
     state.location.href = href
@@ -347,6 +332,21 @@ export function saveCustomLocalstorage(data) {
 }
 
 // Fetchers
+
+export function fetchWrapper(promise) {
+    // console.log('fetchWrapper')
+    return promise
+        .then(result => {
+            // console.log('then', result)
+            showNotConnectionNotification(false)
+            return result
+        })
+        .catch(e => {
+            // console.log('catch')
+            showNotConnectionNotification(true)
+            return Promise.reject(e)
+        })
+}
 
 export function fetchAllBalances() {
     getAssetsAsArray().forEach((asset, index) => {
