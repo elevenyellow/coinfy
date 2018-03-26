@@ -244,11 +244,22 @@ export function encryptPrivateKey(private_key, password) {
     return encryptAES128CTR(private_key, password)
 }
 
+function isSegwitAddress(address) {
+    const { version } = Bitcoin.address.fromBase58Check(address)
+    return (
+        version === Bitcoin.networks.bitcoin.scriptHash ||
+        version === Bitcoin.networks.testnet.scriptHash
+    )
+}
+
 export function decryptPrivateKey(address, private_key_encrypted, password) {
     const private_key = decryptAES128CTR(private_key_encrypted, password)
-    if (isPrivateKey(private_key))
-        if (getAddressFromPrivateKey(private_key) === address)
-            return private_key
+    if (isPrivateKey(private_key)) {
+        const address_frompk = isSegwitAddress(address)
+            ? getSegwitAddressFromPrivateKey(private_key)
+            : getAddressFromPrivateKey(private_key)
+        if (address_frompk === address) return private_key
+    }
 }
 
 export function encryptSeed(seed, password) {
