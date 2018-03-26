@@ -27,8 +27,8 @@ const testnet = Bitcoin.networks.testnet // 0xef
 const network = network_int === MAINNET ? mainnet : testnet
 const url =
     network === mainnet
-        ? 'https://insight.bitpay.com'
-        : 'https://test-insight.bitpay.com'
+        ? 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io/api/"
+        : 'https://test-insight.bitpay.com' // "https://testnet-bitcore1.trezor.io/api/"
 const api_url = `${url}/api` // https://github.com/bitpay/insight-api
 
 // exports
@@ -120,7 +120,7 @@ export function getWalletsFromSeed({
 export function isAddress(address) {
     return network === mainnet
         ? /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
-        : /^[mn][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
+        : /^[mn2][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
 }
 
 export function isAddressCheck(address) {
@@ -182,6 +182,26 @@ export function formatAddress(address) {
 export function getAddressFromPrivateKey(private_key) {
     const wallet = Bitcoin.ECPair.fromWIF(private_key, network)
     return wallet.getAddress().toString()
+}
+
+export function getSegwitAddressFromPrivateKey(private_key) {
+    const wallet = Bitcoin.ECPair.fromWIF(private_key, network)
+    // wallet.compressed = false
+    const nkeyp = new Bitcoin.ECPair(wallet.d)
+    return getSegwitAddressFromECPair(nkeyp)
+}
+
+export function getSegwitAddressFromECPair(nkeyp) {
+    const pubKey = nkeyp.getPublicKeyBuffer()
+    const pubKeyHash = Bitcoin.crypto.hash160(pubKey)
+    const redeemScript = Bitcoin.script.witnessPubKeyHash.output.encode(
+        pubKeyHash
+    )
+    const redeemScriptHash = Bitcoin.crypto.hash160(redeemScript)
+    const scriptPubKey = Bitcoin.script.scriptHash.output.encode(
+        redeemScriptHash
+    )
+    return Bitcoin.address.fromOutputScript(scriptPubKey, network)
 }
 
 // export function getAddressFromPublicKey(public_key) {

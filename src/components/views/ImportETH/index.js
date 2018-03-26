@@ -31,7 +31,7 @@ import {
 } from '/components/styled/Form'
 import ImportSeed from '/components/views/ImportBTC/ImportSeed'
 import ImportAddress from '/components/views/ImportBTC/ImportAddress'
-import ImportPrivate from '/components/views/ImportBTC/ImportPrivate'
+import ImportPrivate from '/components/views/ImportETH/ImportPrivate'
 import ImportKeystore from '/components/views/ImportETH/ImportKeystore'
 
 const TYPES_IMPORT = {

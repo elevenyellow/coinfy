@@ -4,11 +4,7 @@ import { createObserver, collect } from 'dop'
 
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
-import {
-    isAssetRegistered,
-    getAssetId,
-    getParamsFromLocation
-} from '/store/getters'
+import { isAssetRegistered, getAssetId, getParamsFromLocation } from '/store/getters'
 
 import { Coins } from '/api/coins'
 
@@ -17,7 +13,6 @@ import { routes } from '/store/router'
 import { minpassword } from '/const/'
 
 import Input from '/components/styled/Input'
-import Select from '/components/styled/Select'
 import Password from '/components/styled/Password'
 import Button from '/components/styled/Button'
 import Help from '/components/styled/Help'
@@ -35,7 +30,6 @@ export default class ImportPrivate extends Component {
         this.observer.observe(state.view)
 
         const collector = collect()
-        state.view.type_segwit = false
         state.view.is_valid_input = false
         state.view.private_input = ''
         state.view.private_input_error = ''
@@ -46,7 +40,6 @@ export default class ImportPrivate extends Component {
         const { symbol } = getParamsFromLocation()
         this.Coin = Coins[symbol]
 
-        this.onChangeType = this.onChangeType.bind(this)
         this.onChangeInput = this.onChangeInput.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onChangeRepassword = this.onChangeRepassword.bind(this)
@@ -59,13 +52,13 @@ export default class ImportPrivate extends Component {
         return false
     }
 
-    calculateAddress() {
-        const private_key = state.view.private_input
-        if (private_key.length > 0 && this.Coin.isPrivateKey(private_key)) {
+    onChangeInput(e) {
+        const collector = collect()
+        const value = e.target.value.trim()
+        state.view.private_input = value
+        if (this.Coin.isPrivateKey(value)) {
             try {
-                const address = state.view.type_segwit
-                    ? this.Coin.getSegwitAddressFromPrivateKey(private_key)
-                    : this.Coin.getAddressFromPrivateKey(private_key)
+                const address = this.Coin.getAddressFromPrivateKey(value)
                 state.view.address = address
 
                 if (
@@ -94,16 +87,8 @@ export default class ImportPrivate extends Component {
             state.view.private_input_error = 'Invalid private key'
             state.view.is_valid_input = false
         }
-    }
 
-    onChangeType(e) {
-        state.view.type_segwit = e.target.value === 'true'
-        this.calculateAddress()
-    }
-
-    onChangeInput(e) {
-        state.view.private_input = e.target.value.trim()
-        this.calculateAddress()
+        collector.emit()
     }
 
     onChangePassword(e) {
@@ -148,14 +133,12 @@ export default class ImportPrivate extends Component {
 
     render() {
         return React.createElement(ImportPrivateTemplate, {
-            type_segwit: state.view.type_segwit,
             private_input: state.view.private_input,
             private_input_error: state.view.private_input_error,
             private_password: state.view.private_password,
             private_repassword: state.view.private_repassword,
             isValidForm: this.isValidForm,
             isInvalidRepassword: this.isInvalidRepassword,
-            onChangeType: this.onChangeType,
             onChangeInput: this.onChangeInput,
             onChangePassword: this.onChangePassword,
             onChangeRepassword: this.onChangeRepassword,
@@ -165,14 +148,12 @@ export default class ImportPrivate extends Component {
 }
 
 function ImportPrivateTemplate({
-    type_segwit,
     private_input,
     private_input_error,
     private_password,
     private_repassword,
     isValidForm,
     isInvalidRepassword,
-    onChangeType,
     onChangeInput,
     onChangePassword,
     onChangeRepassword,
@@ -180,23 +161,6 @@ function ImportPrivateTemplate({
 }) {
     return (
         <div>
-            <FormField>
-                <FormFieldLeft>
-                    <Label>Type</Label>
-                    <SubLabel>Regular or segwit.</SubLabel>
-                </FormFieldLeft>
-                <FormFieldRight>
-                    <Select width="100%" onChange={onChangeType}>
-                        <option value="false" selected={!type_segwit}>
-                            Regular
-                        </option>
-                        <option value="true" selected={type_segwit}>
-                            Segwit
-                        </option>
-                    </Select>
-                </FormFieldRight>
-            </FormField>
-
             <FormField>
                 <FormFieldLeft>
                     <Label>Private key</Label>
