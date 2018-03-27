@@ -183,7 +183,7 @@ function ImportPrivateTemplate({
             <FormField>
                 <FormFieldLeft>
                     <Label>Type</Label>
-                    <SubLabel>Regular or segwit.</SubLabel>
+                    <SubLabel>Regular or Segwit.</SubLabel>
                 </FormFieldLeft>
                 <FormFieldRight>
                     <Select width="100%" onChange={onChangeType}>

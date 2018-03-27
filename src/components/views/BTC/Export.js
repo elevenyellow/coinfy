@@ -5,7 +5,7 @@ import styled from 'styled-components'
 // import { createWorker } from '/api/workers'
 import { generateQRCode } from '/api/qr'
 import { BTC } from '/api/coins'
-import { getAllFormats, encryptBIP38 } from '/api/coins/BTC'
+import { encryptBIP38 } from '/api/coins/BTC'
 import { printTemplate } from '/api/browser'
 
 import state from '/store/state'
@@ -97,14 +97,14 @@ export default class ExportBTC extends Component {
                 setTimeout(() => {
                     // We need to do this trick in order to show the loading-button icon
                     const isEncrypted = type_export === TYPES_EXPORTS.bip
-                    const formats = getAllFormats(private_key)
+                    // const formats = getAllFormats(private_key, true)
                     let private_key1 = private_key
-                    let private_key2 = formats.compressed
-                        ? formats.private_key
-                        : formats.private_key_comp
+                    // let private_key2 = formats.compressed
+                    //     ? formats.private_key
+                    //     : formats.private_key_comp
                     if (isEncrypted) {
                         private_key1 = encryptBIP38(private_key1, password)
-                        private_key2 = encryptBIP38(private_key2, password)
+                        // private_key2 = encryptBIP38(private_key2, password)
                     }
                     const qrs = [
                         {
@@ -128,7 +128,7 @@ export default class ExportBTC extends Component {
                                 (isEncrypted
                                     ? 'Encrypted (BIP38)'
                                     : 'Unencrypted (WIF)')
-                        },
+                        } /*,
                         {
                             title: `Address ${
                                 formats.compressed
@@ -159,7 +159,7 @@ export default class ExportBTC extends Component {
                         {
                             title: `Public Key compressed`,
                             hash: formats.public_key_comp
-                        }
+                        }*/
                     ]
                     // data.address_qr = generateQRCode(data.address)
                     // data.address_comp_qr = generateQRCode(data.address_comp)

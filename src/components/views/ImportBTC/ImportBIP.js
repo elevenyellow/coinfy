@@ -6,7 +6,11 @@ import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
 import { isAssetRegistered, getAssetId } from '/store/getters'
 
-import { isPrivateKeyBip, getAddressFromPrivateKey } from '/api/coins/BTC'
+import {
+    isPrivateKeyBip,
+    getAddressFromPrivateKey,
+    getSegwitAddressFromPrivateKey
+} from '/api/coins/BTC'
 import { decryptBIP38 } from '/api/crypto'
 import { BTC } from '/api/coins'
 
@@ -15,6 +19,7 @@ import { routes, Show } from '/store/router'
 
 import Div from '/components/styled/Div'
 import Input from '/components/styled/Input'
+import Select from '/components/styled/Select'
 import Button from '/components/styled/Button'
 import { Label, SubLabel } from '/components/styled/Label'
 import {
@@ -29,6 +34,7 @@ export default class ImportBIP extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
         const collector = collect()
+        state.view.type_segwit = false
         state.view.is_valid_input = false
         state.view.bip_input = ''
         state.view.bip_input_error = ''
@@ -36,6 +42,8 @@ export default class ImportBIP extends Component {
         state.view.bip_password_error = ''
         state.view.bip_loading = false
         collector.destroy()
+
+        this.onChangeType = this.onChangeType.bind(this)
         this.onChangeInput = this.onChangeInput.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
@@ -45,6 +53,10 @@ export default class ImportBIP extends Component {
     }
     shouldComponentUpdate() {
         return false
+    }
+
+    onChangeType(e) {
+        state.view.type_segwit = e.target.value === 'true'
     }
 
     onChangeInput(e) {
@@ -81,7 +93,9 @@ export default class ImportBIP extends Component {
                     state.view.bip_input,
                     password
                 )
-                const address = getAddressFromPrivateKey(private_key)
+                const address = state.view.type_segwit
+                    ? getSegwitAddressFromPrivateKey(private_key)
+                    : getAddressFromPrivateKey(private_key)
                 const asset_id = getAssetId({
                     symbol: BTC.symbol,
                     address: address
@@ -115,12 +129,14 @@ export default class ImportBIP extends Component {
 
     render() {
         return React.createElement(ImportBIPTemplate, {
+            type_segwit: state.view.type_segwit,
             bip_input: state.view.bip_input,
             bip_input_error: state.view.bip_input_error,
             bip_password: state.view.bip_password,
             bip_password_error: state.view.bip_password_error,
             bip_loading: state.view.bip_loading,
             isValidForm: this.isValidForm,
+            onChangeType: this.onChangeType,
             onChangeInput: this.onChangeInput,
             onChangePassword: this.onChangePassword,
             onSubmit: this.onSubmit
@@ -129,18 +145,37 @@ export default class ImportBIP extends Component {
 }
 
 function ImportBIPTemplate({
+    type_segwit,
     bip_input,
     bip_input_error,
     bip_password,
     bip_password_error,
     bip_loading,
     isValidForm,
+    onChangeType,
     onChangeInput,
     onChangePassword,
     onSubmit
 }) {
     return (
         <div>
+            <FormField>
+                <FormFieldLeft>
+                    <Label>Type</Label>
+                    <SubLabel>Regular or Segwit.</SubLabel>
+                </FormFieldLeft>
+                <FormFieldRight>
+                    <Select width="100%" onChange={onChangeType}>
+                        <option value="false" selected={!type_segwit}>
+                            Regular
+                        </option>
+                        <option value="true" selected={type_segwit}>
+                            Segwit
+                        </option>
+                    </Select>
+                </FormFieldRight>
+            </FormField>
+
             <FormField>
                 <FormFieldLeft>
                     <Label>Private key BIP38</Label>

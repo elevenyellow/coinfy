@@ -29,10 +29,8 @@ function getAddressFromPrivateKey(private_key) {
     )
 }
 
-console.log(
-    getAddressFromPrivateKey(
-        'KzW5W7kriXPoaExfPxN4igxu9PVZQb1zGfSJeveP8G8ChRHgMzdp'
-    )
+const addr = getAddressFromPrivateKey(
+    'KzW5W7kriXPoaExfPxN4igxu9PVZQb1zGfSJeveP8G8ChRHgMzdp'
 )
 
 function nodeToP2shSegwitAddress(hdNode, network) {
@@ -51,6 +49,8 @@ function isSegwit(address) {
         version === bitcoin.networks.testnet.scriptHash
     )
 }
+
+console.log(addr, isSegwit(addr))
 
 console.log(
     '1XLbTJp5cLPjtv1HXK5Va7uYb5NgUyLgr',

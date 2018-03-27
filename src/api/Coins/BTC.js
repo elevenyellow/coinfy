@@ -212,21 +212,21 @@ export function getSegwitAddressFromECPair(nkeyp) {
 //     // console.log(new Bitcoin.ECPair(null, wallet.Q, { compressed: false }).getAddress())
 // }
 
-export function getAllFormats(wallet) {
-    const formats = {}
-    if (typeof wallet == 'string')
-        wallet = Bitcoin.ECPair.fromWIF(wallet, network)
-    formats.compressed = wallet.compressed
-    wallet.compressed = false
-    formats.address = wallet.getAddress()
-    formats.public_key = wallet.getPublicKeyBuffer().toString('hex')
-    formats.private_key = wallet.toWIF()
-    wallet.compressed = true
-    formats.address_comp = wallet.getAddress()
-    formats.public_key_comp = wallet.getPublicKeyBuffer().toString('hex')
-    formats.private_key_comp = wallet.toWIF()
-    return formats
-}
+// export function getAllFormats(wallet) {
+//     const formats = {}
+//     if (typeof wallet == 'string')
+//         wallet = Bitcoin.ECPair.fromWIF(wallet, network)
+//     formats.compressed = wallet.compressed
+//     wallet.compressed = false
+//     formats.address = wallet.getAddress()
+//     formats.public_key = wallet.getPublicKeyBuffer().toString('hex')
+//     formats.private_key = wallet.toWIF()
+//     wallet.compressed = true
+//     formats.address_comp = wallet.getAddress()
+//     formats.public_key_comp = wallet.getPublicKeyBuffer().toString('hex')
+//     formats.private_key_comp = wallet.toWIF()
+//     return formats
+// }
 
 export function urlInfo(address) {
     return `${url}/address/${address}`
