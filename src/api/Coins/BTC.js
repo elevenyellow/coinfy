@@ -28,7 +28,7 @@ const network = network_int === MAINNET ? mainnet : testnet
 const url =
     network === mainnet
         ? 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io/api/"
-        : 'https://test-insight.bitpay.com' // "https://testnet-bitcore1.trezor.io/api/"
+        : 'https://testnet-bitcore1.trezor.io' // "https://testnet-bitcore1.trezor.io/api/"
 const api_url = `${url}/api` // https://github.com/bitpay/insight-api
 
 // exports
@@ -187,21 +187,23 @@ export function getAddressFromPrivateKey(private_key) {
 export function getSegwitAddressFromPrivateKey(private_key) {
     const wallet = Bitcoin.ECPair.fromWIF(private_key, network)
     // wallet.compressed = false
-    const nkeyp = new Bitcoin.ECPair(wallet.d)
-    return getSegwitAddressFromECPair(nkeyp)
+    const ecpair = new Bitcoin.ECPair(wallet.d)
+    return getSegwitAddressFromECPair(ecpair)
 }
 
-export function getSegwitAddressFromECPair(nkeyp) {
-    const pubKey = nkeyp.getPublicKeyBuffer()
-    const pubKeyHash = Bitcoin.crypto.hash160(pubKey)
-    const redeemScript = Bitcoin.script.witnessPubKeyHash.output.encode(
-        pubKeyHash
-    )
+export function getSegwitAddressFromECPair(ecpair) {
+    const redeemScript = getRedeemScript(ecpair)
     const redeemScriptHash = Bitcoin.crypto.hash160(redeemScript)
     const scriptPubKey = Bitcoin.script.scriptHash.output.encode(
         redeemScriptHash
     )
     return Bitcoin.address.fromOutputScript(scriptPubKey, network)
+}
+
+export function getRedeemScript(ecpair) {
+    const pubKey = ecpair.getPublicKeyBuffer()
+    const pubKeyHash = Bitcoin.crypto.hash160(pubKey)
+    return Bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash)
 }
 
 // export function getAddressFromPublicKey(public_key) {
@@ -476,13 +478,14 @@ export function fetchTotals(address) {
 }
 
 export function createSimpleTx({
-    private_key,
+    fromAddress,
     toAddress,
+    private_key,
     amount,
     fee,
     changeAddress
 }) {
-    const fromAddress = getAddressFromPrivateKey(private_key)
+    // const fromAddress = getAddressFromPrivateKey(private_key)
     changeAddress = isAddressCheck(changeAddress) ? changeAddress : fromAddress
     return fetch(`${api_url}/addr/${fromAddress}/utxo?noCache=1`)
         .then(response => response.json())
@@ -492,7 +495,7 @@ export function createSimpleTx({
             let totalInput = bigNumber(0)
             const totalOutput = bigNumber(amount).plus(fee)
             const txb = new Bitcoin.TransactionBuilder(network)
-            const private_key_ecpar = Bitcoin.ECPair.fromWIF(
+            const private_key_ecpair = Bitcoin.ECPair.fromWIF(
                 private_key,
                 network
             )
@@ -516,9 +519,19 @@ export function createSimpleTx({
                 txb.addOutput(changeAddress, toSatoshis(amountBack))
 
             // signing inputs
+            const is_segwit = isSegwitAddress(fromAddress)
+            const redeem_script = getRedeemScript(private_key_ecpair)
             txb.inputs.forEach((input, index) => {
                 try {
-                    txb.sign(index, private_key_ecpar)
+                    is_segwit
+                        ? txb.sign(
+                              index,
+                              private_key_ecpair,
+                              redeem_script,
+                              null,
+                              toSatoshis(amount)
+                          )
+                        : txb.sign(index, private_key_ecpair)
                 } catch (e) {
                     console.error(e)
                 }
@@ -542,20 +555,20 @@ const sendProviders = {
         {
             name: 'Bitpay.com',
             url: 'https://insight.bitpay.com/tx/send',
-            send: sendRawTxBitpay
+            send: sendRawTxInsight
         }
     ],
     testnet: [
         {
             name: 'Bitpay.com',
-            url: 'https://test-insight.bitpay.com/tx/send',
-            send: sendRawTxBitpay
+            url: 'https://testnet-bitcore1.trezor.io/tx/send', //'https://test-insight.bitpay.com/tx/send',
+            send: sendRawTxInsight
         }
     ]
 }
 
 // https://en.bitcoin.it/wiki/Transaction_broadcasting
-function sendRawTxBitpay(rawTx) {
+function sendRawTxInsight(rawTx) {
     const fetchOptions = {
         method: 'POST',
         headers: {

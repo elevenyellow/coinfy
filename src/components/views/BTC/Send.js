@@ -273,8 +273,9 @@ export default class Send extends Component {
         if (private_key) {
             state.view.loading = true
             this.Coin.createSimpleTx({
-                private_key,
+                fromAddress: address,
                 toAddress: state.view.address_input, // to/destiny
+                private_key: private_key,
                 amount: state.view.amount, // amount to send
                 fee: state.view.fee
             })
