@@ -50,7 +50,7 @@ request(
                             private_key_ecpair,
                             getRedeemScript(private_key_ecpair),
                             null,
-                            balanceToSend
+                            balance
                         )
 
                         const transaction = tx.build()
