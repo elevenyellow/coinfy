@@ -4,7 +4,11 @@ import { createObserver, collect } from 'dop'
 
 import { setHref, createAsset, setSeed, addNotification } from '/store/actions'
 import state from '/store/state'
-import { isAssetRegistered, getAssetId, getParamsFromLocation } from '/store/getters'
+import {
+    isAssetRegisteredBySeed,
+    getAssetId,
+    getParamsFromLocation
+} from '/store/getters'
 
 import { Coins } from '/api/coins'
 import { validateSeed } from '/api/bip39'
@@ -70,14 +74,7 @@ export default class ImportPrivate extends Component {
                 validateSeed(seed) &&
                 seed.trim().split(/\s+/g).length === recovery_phrase_words
 
-            if (
-                isAssetRegistered(
-                    getAssetId({
-                        symbol: this.Coin.symbol,
-                        address: address
-                    })
-                )
-            ) {
+            if (isAssetRegisteredBySeed(this.Coin.symbol, seed)) {
                 state.view.seed_input_error = 'You already have this asset'
                 state.view.is_valid_input = false
             } else {

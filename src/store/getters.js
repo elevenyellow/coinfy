@@ -5,6 +5,7 @@ import { now } from '/api/time'
 import state from '/store/state'
 import { group } from '/store/router'
 import { version } from './../../package.json'
+import { sha3 } from 'ethereumjs-util'
 
 export function getTotalAssets(assets) {
     return Object.keys(assets).length
@@ -20,6 +21,17 @@ export function getAsset(asset_id) {
 
 export function isAssetRegistered(asset_id) {
     return state.assets.hasOwnProperty(asset_id)
+}
+
+export function isAssetRegisteredBySeed(symbol, seed) {
+    const hash = sha3(seed).toString('hex')
+    const founds = getAssetsAsArray().filter(
+        asset =>
+            asset.symbol === symbol &&
+            asset.hasOwnProperty('seed') &&
+            asset.seed.hash === hash
+    )
+    return founds.length > 0
 }
 
 export function isAssetWithPrivateKeyOrSeed(asset_id) {

@@ -349,7 +349,7 @@ export function decryptPrivateKey(address, private_key_encrypted, password) {
 
 export function encryptSeed(seed, password) {
     const seed_encrypted = encryptAES128CTR(seed, password)
-    seed_encrypted.hash = sha3(seed).toString('hex')
+    // seed_encrypted.hash = sha3(seed).toString('hex')
     return seed_encrypted
 }
 

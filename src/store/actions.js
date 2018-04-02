@@ -1,5 +1,6 @@
 import React from 'react'
 import { set, collect } from 'dop'
+import { sha3 } from 'ethereumjs-util'
 
 import {
     MAINNET,
@@ -82,15 +83,17 @@ export function setSeed(asset_id, seed, password) {
 
 export function setPrivateKeyOrSeed(asset_id, key, password, is_seed) {
     const asset = state.assets[asset_id]
-    set(
+    const method =
+        Coins[asset.symbol][is_seed ? 'encryptSeed' : 'encryptPrivateKey']
+    const seed_encrypted = set(
         asset,
         is_seed ? 'seed' : 'private_key',
-        Coins[asset.symbol][is_seed ? 'encryptSeed' : 'encryptPrivateKey'](
-            key,
-            password
-        ),
-        { deep: false }
+        method(key, password),
+        {
+            deep: false
+        }
     )
+    if (is_seed) seed_encrypted.hash = sha3(key).toString('hex')
     saveAssetsLocalstorage()
     setAssetsExported(false)
 }
