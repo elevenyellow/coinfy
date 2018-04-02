@@ -495,16 +495,14 @@ export function createSimpleTx({
             let totalInput = bigNumber(0)
             const totalOutput = bigNumber(amount).plus(fee)
             const txb = new Bitcoin.TransactionBuilder(network)
-            const private_key_ecpair = Bitcoin.ECPair.fromWIF(
-                private_key,
-                network
-            )
+            const ecpair = Bitcoin.ECPair.fromWIF(private_key, network)
 
             // Adding inputs
             // console.log(txs)
-            sortBy(txs || [], '-amount').forEach(tx => {
+            sortBy(txs || [], '-amount').forEach((tx, index) => {
                 if (totalInput.lt(totalOutput)) {
                     txb.addInput(tx.txid, tx.vout)
+                    txb.inputs[index].satoshis = tx.satoshis
                     totalInput = totalInput.plus(tx.amount)
                 }
             })
@@ -520,18 +518,18 @@ export function createSimpleTx({
 
             // signing inputs
             const is_segwit = isSegwitAddress(fromAddress)
-            const redeem_script = getRedeemScript(private_key_ecpair)
+            const redeem_script = getRedeemScript(ecpair)
             txb.inputs.forEach((input, index) => {
                 try {
                     is_segwit
                         ? txb.sign(
                               index,
-                              private_key_ecpair,
+                              ecpair,
                               redeem_script,
                               null,
-                              toSatoshis(amount)
+                              input.satoshis
                           )
-                        : txb.sign(index, private_key_ecpair)
+                        : txb.sign(index, ecpair)
                 } catch (e) {
                     console.error(e)
                 }

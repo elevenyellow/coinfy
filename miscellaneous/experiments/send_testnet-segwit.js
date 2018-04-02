@@ -7,10 +7,20 @@ const fee = 100000
 const alice = 'cQA29xw1do9iux5ZHRbRNVP81EPExK3N2Z6sgMKZsqd7NbH3uTec' // 2N9Cki8ABz6oXuoF24rd5eAFPwwVpEWYctt
 const bob = 'cRhAysbHYkydyzyA2fo9TDELwFiDmRjA1eXv7itSHiQPvUG3iBQi' // 2NDcpwiwbrXxy3JEow32TfixJEuWFLvDzLw
 const connor = '93KjsqW9w3efffxS4jb9AefrRoXwFx62UZumWwnkgX6mLYMPZgx' // mwANXKvZEnDyRRY4dWwuvCkrhMCfcxruQg
+const john = 'cTkq25b18kC2WLMkx7pYMFfT6A8yXEMSxt3GShqTCq8Twx1FCpS5' // msHdTrYq2UzALffqea4YjCudZd4AZ7nk2V
+const second = 'cRkNqWAK64qSooKnadaFLa9uhSK1QtgkD5ezJQcsn1Fz5LQSnHT5'
+const third = '93KjsqW9w3efffxS4jb9AefrRoXwFx62UZumWwnkgX6mLYMPZgx'
+const stolen = 'cUVmNSF3ApwnZLZeRGBD8VaXUFEZo1AbKtDe2pgiALrYJHCX9Cax'
+const seed = 'cRBRCS3pZ4Y3LCTrv8AYcff7Yk56u5LsQcGhiGKmATN9ZkTb13MB'
 const keys = {
     [getSegwitAddressFromPrivateKey(alice)]: alice,
     [getSegwitAddressFromPrivateKey(bob)]: bob,
-    [getAddressFromPrivateKey(connor)]: connor
+    [getAddressFromPrivateKey(connor)]: connor,
+    [getAddressFromPrivateKey(john)]: john,
+    [getAddressFromPrivateKey(second)]: second,
+    [getAddressFromPrivateKey(third)]: third,
+    [getAddressFromPrivateKey(stolen)]: stolen,
+    [getAddressFromPrivateKey(seed)]: seed
 }
 const addrs = Object.keys(keys)
 
