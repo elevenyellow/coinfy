@@ -45,7 +45,9 @@ export const logo = ASSET_LOGO(symbol)
 
 export const derivation_path = {
     mainnet: index => `m/44'/0'/0'/0/${index}`,
-    testnet: index => `m/44'/1'/0'/0/${index}`
+    mainnetsegwit: index => `m/49'/0'/0'/0/${index}`,
+    testnet: index => `m/44'/1'/0'/0/${index}`,
+    testnetsegwit: index => `m/49'/1'/0'/0/${index}`
 }
 
 export function format(value, decimals = coin_decimals) {
@@ -70,13 +72,15 @@ export function getWalletFromSeed({
     seed,
     index = 0,
     derived_path_function,
-    passphase = ''
+    passphase = '',
+    segwit = true
 }) {
     return getWalletsFromSeed({
         seed,
         index,
         derived_path_function,
-        passphase
+        passphase,
+        segwit
     })[0]
 }
 
@@ -85,35 +89,55 @@ export function getWalletsFromSeed({
     index = 0,
     count = 1,
     derived_path_function,
-    passphase = ''
+    passphase = '',
+    segwit = true
 }) {
     if (derived_path_function === undefined)
         derived_path_function =
             network_int === MAINNET
-                ? derivation_path.mainnet
-                : derivation_path.testnet
+                ? segwit
+                    ? derivation_path.mainnetsegwit
+                    : derivation_path.mainnet
+                : segwit
+                    ? derivation_path.testnetsegwit
+                    : derivation_path.testnet
 
     const wallets = []
     const bip32RootKey = getBip32RootKey({ seed, passphase, network })
     while (count-- > 0) {
         // console.log(index, count)
-        let path = derived_path_function(index++)
-        let key = bip32RootKey.derivePath(path)
-        let wallet = key.keyPair
-        wallets.push({
-            address: wallet.getAddress(),
-            private_key: wallet.toWIF()
-        })
+        const path = derived_path_function(index++)
+        const key = bip32RootKey.derivePath(path)
+        const keypair = key.keyPair
+        wallets.push(
+            segwit
+                ? getSegwitWalletFromKeyPair(key.keyPair)
+                : getWalletFromKeyPair(keypair)
+        )
     }
 
     return wallets
 }
 
-// export function generateRandomWallet() {
-//     const wallet = Bitcoin.ECPair.makeRandom({ network: network })
-//     wallet.compressed = false
-//     return { address: wallet.getAddress(), private_key: wallet.toWIF() }
-// }
+export function getWalletFromKeyPair(keypair) {
+    return { address: keypair.getAddress(), private_key: keypair.toWIF() }
+}
+
+function getSegwitWalletFromKeyPair(keypair) {
+    const pubKey = keypair.getPublicKeyBuffer()
+    const pubKeyHash = Bitcoin.crypto.hash160(pubKey)
+    const redeemScript = Bitcoin.script.witnessPubKeyHash.output.encode(
+        pubKeyHash
+    )
+    const redeemScriptHash = Bitcoin.crypto.hash160(redeemScript)
+    const scriptPubKey = Bitcoin.script.scriptHash.output.encode(
+        redeemScriptHash
+    )
+    return {
+        address: Bitcoin.address.fromOutputScript(scriptPubKey, network),
+        private_key: keypair.toWIF()
+    }
+}
 
 // https://en.bitcoin.it/wiki/List_of_address_prefixes
 export function isAddress(address) {
@@ -295,6 +319,39 @@ export function decryptBIP38(encryptedKey, password, progressCallback) {
 }
 
 // fetchs
+export function discoverWallet(seed) {
+    return new Promise(resolve => {
+        let index = 0
+        let segwit = false
+        const addresses = []
+        const onFetch = () => {
+            const wallet = getWalletFromSeed({
+                seed: seed,
+                index: index,
+                segwit: segwit
+            })
+            const address = wallet.address
+            fetchTotals(address).then(totals => {
+                // console.log(seed, index, totals)
+                if (totals.totalReceived > 0) {
+                    index += 1
+                    addresses.push(address)
+                    onFetch()
+                } else if (!segwit) {
+                    index = 0
+                    segwit = true
+                    onFetch()
+                } else {
+                    if (addresses.length === 0) addresses.push(address)
+                    // console.log(seed, 'finish', addresses)
+                    resolve(addresses)
+                }
+            })
+        }
+        onFetch()
+    })
+}
+
 export function fetchBalance(address) {
     // return fetch(`${api_url}/addr/${address}/balance`)
     //     .then(response => response.text())
