@@ -89,7 +89,7 @@ export default class ExportBTC extends Component {
         const password = state.view.password
         const { private_key, seed } = decrypt(asset_id, password)
 
-        if (private_key || seed) {
+        if (private_key) {
             if (type_export === TYPES_EXPORTS.seed) {
                 printTemplate(template2(seed))
             } else {

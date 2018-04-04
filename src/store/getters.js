@@ -77,11 +77,11 @@ export function isValidAsset(asset) {
 }
 
 export function generateDefaultAsset(object = {}) {
-    const asset = {
+    let asset = {
         // type: type,
         // symbol: symbol,
         // address: address,
-        addresses: [],
+        addresses: [object.address],
         label: '',
         balance: 0,
         printed: false, // wallet printed?
@@ -95,7 +95,9 @@ export function generateDefaultAsset(object = {}) {
         }
     }
 
-    return util.merge(asset, object)
+    asset = util.merge(asset, object)
+    // console.log(asset)
+    return asset
 }
 
 export function generateDefaultBackup(object = {}) {
@@ -152,7 +154,7 @@ export function decrypt(asset_id, password) {
 
     if (isAssetWithSeed(asset_id)) {
         return Coin.decryptPrivateKeyFromSeed(
-            asset.address,
+            asset.addresses,
             asset.seed,
             password
         )

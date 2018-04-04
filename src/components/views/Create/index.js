@@ -102,6 +102,7 @@ export default class AddAsset extends Component {
         )
         if (seed) {
             this.Coin.discoverWallet(seed).then(wallet => {
+                const collector = collect()
                 const address = wallet.address
                 const symbol = this.Coin.symbol
                 const asset = createAsset(
@@ -114,6 +115,7 @@ export default class AddAsset extends Component {
                 setSeed(asset_id, seed, password)
                 setHref(routes.asset({ asset_id: asset_id }))
                 addNotification(`New "${symbol}" asset has been created`)
+                collector.emit()
             })
         } else {
             state.view.password_error = true

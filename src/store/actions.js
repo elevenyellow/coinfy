@@ -133,11 +133,17 @@ export function exportBackup(a_element) {
     data.assets = JSON.parse(
         JSON.stringify(state.assets, (key, value) => {
             key = key.toLocaleLowerCase()
+            if (key === 'addresses') {
+                return Array.isArray(value) && value.length > 1
+                    ? value
+                    : undefined
+            }
             return KEYS_TO_REMOVE_WHEN_EXPORTING.indexOf(key) > -1
                 ? undefined
                 : value
         })
     )
+
     // custom tokens/coins
     data.customs = jsonParse(
         localStorageGet(LOCALSTORAGE_CUSTOMS, state.network)
