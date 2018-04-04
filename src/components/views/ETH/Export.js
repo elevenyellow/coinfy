@@ -125,7 +125,7 @@ export default class ExportETH extends Component {
         } else {
             const { private_key, seed } = decrypt(this.asset_id, password)
 
-            if (private_key) {
+            if (private_key || seed) {
                 if (type_export === TYPES_EXPORTS.seed) {
                     printTemplate(template2(seed))
                 } else {

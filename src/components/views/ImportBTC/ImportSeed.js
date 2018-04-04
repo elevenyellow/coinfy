@@ -111,16 +111,21 @@ export default class ImportPrivate extends Component {
         e.preventDefault()
         // const address = state.view.address
         const seed = state.view.seed_input
-        const symbol = this.Coin.symbol
-        const asset = createAsset(this.Coin.type, symbol, address)
-        const asset_id = getAssetId({ symbol, address })
         this.Coin.discoverWallet(seed).then(wallet => {
-            console.log(wallet)
-            const address = wallet.address
+            // console.log(wallet)
+            const symbol = this.Coin.symbol
             const collector = collect()
-            // setSeed(asset_id, seed, state.view.seed_password)
-            // setHref(routes.asset({ asset_id: asset_id }))
-            // addNotification(`New "${symbol}" asset has been imported`)
+            const address = wallet.address
+            const asset = createAsset(
+                this.Coin.type,
+                symbol,
+                address,
+                wallet.addresses
+            )
+            const asset_id = getAssetId({ symbol, address })
+            setSeed(asset_id, seed, state.view.seed_password)
+            setHref(routes.asset({ asset_id: asset_id }))
+            addNotification(`New "${symbol}" asset has been imported`)
             collector.emit()
         })
     }

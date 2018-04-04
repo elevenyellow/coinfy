@@ -59,9 +59,9 @@ export function setHref(href) {
     collector.emit()
 }
 
-export function createAsset(type, symbol, address) {
+export function createAsset(type, symbol, address, addresses) {
     const collector = collect()
-    const asset = generateDefaultAsset({ type, symbol, address })
+    const asset = generateDefaultAsset({ type, symbol, address, addresses })
     const asset_id = getNextCoinId({ symbol, address })
     state.assets[asset_id] = asset
     saveAssetsLocalstorage()

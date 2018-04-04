@@ -173,7 +173,7 @@ export function discoverWallet(seed) {
         })
         const addresses = wallets.map(wallet => wallet.address)
         resolve({
-            address: addresses[addresses.length - 1],
+            address: addresses[0],
             addresses: addresses
         })
     })
@@ -382,7 +382,7 @@ export function decryptPrivateKeyFromSeed(address, seed_encrypted, password) {
     const wallet = getWalletFromSeed({ seed })
     return wallet.address === address
         ? { private_key: wallet.private_key, seed }
-        : {}
+        : { seed }
 }
 
 export function getSendProviders() {

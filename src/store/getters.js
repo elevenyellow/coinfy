@@ -81,6 +81,7 @@ export function generateDefaultAsset(object = {}) {
         // type: type,
         // symbol: symbol,
         // address: address,
+        addresses: [],
         label: '',
         balance: 0,
         printed: false, // wallet printed?

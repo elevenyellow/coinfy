@@ -35,7 +35,8 @@ import {
     getWalletFromSeed,
     formatAddress,
     cutDecimals,
-    getDataContractMethodCall
+    getDataContractMethodCall,
+    discoverWallet
 } from '/api/coins/ETH'
 import { addHexPrefix } from './ETH'
 
@@ -182,7 +183,8 @@ export function createERC20({
         getWalletFromSeed,
         formatAddress,
         cutDecimals,
-        urlInfoTx
+        urlInfoTx,
+        discoverWallet
     }
 }
 

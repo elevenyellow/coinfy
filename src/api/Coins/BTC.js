@@ -307,7 +307,7 @@ export function decryptPrivateKeyFromSeed(address, seed_encrypted, password) {
     const wallet = getWalletFromSeed({ seed })
     return wallet.address === address
         ? { private_key: wallet.private_key, seed }
-        : {}
+        : { seed }
 }
 
 export function encryptBIP38(privateKey, password, progressCallback) {
