@@ -497,6 +497,7 @@ function SendTemplate({
                 <Div>
                     <Div>
                         <Input
+                            type="text"
                             value={address_input}
                             error="Invalid address"
                             invalid={address_input_error}
@@ -546,6 +547,7 @@ function SendTemplate({
                         >
                             <DivOverInput>{fee_input_fiat}</DivOverInput>
                             <Input
+                                type="text"
                                 value={fee_input}
                                 error="Very low fee"
                                 color={color}

@@ -150,6 +150,7 @@ function ImportBIPTemplate({
                 </FormFieldLeft>
                 <FormFieldRight>
                     <Input
+                        type="text"
                         width="100%"
                         value={bip_input}
                         onChange={onChangeInput}

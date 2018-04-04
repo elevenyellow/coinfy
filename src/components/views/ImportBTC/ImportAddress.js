@@ -115,6 +115,7 @@ function ImportAddressTemplate({
                 </FormFieldLeft>
                 <FormFieldRight>
                     <Input
+                        type="text"
                         width="100%"
                         value={address_input}
                         onChange={onChangeInput}

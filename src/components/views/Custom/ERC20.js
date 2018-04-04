@@ -299,6 +299,7 @@ function ImportTemplate({
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
+                                    type="text"
                                     rightIco={
                                         fetching
                                             ? '/static/image/loading.gif'
@@ -326,6 +327,7 @@ function ImportTemplate({
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
+                                    type="text"
                                     maxLength="5"
                                     value={symbol}
                                     width="100%"
@@ -344,6 +346,7 @@ function ImportTemplate({
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
+                                    type="text"
                                     maxLength="30"
                                     value={name}
                                     width="100%"
@@ -363,6 +366,7 @@ function ImportTemplate({
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
+                                    type="text"
                                     maxLength="2"
                                     value={coin_decimals}
                                     width="100%"
@@ -381,6 +385,7 @@ function ImportTemplate({
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
+                                    type="text"
                                     value={logo}
                                     width="100%"
                                     padding="10px 40px 10px 10px"
@@ -396,6 +401,7 @@ function ImportTemplate({
                             </FormFieldLeft>
                             <FormFieldRight>
                                 <Input
+                                    type="text"
                                     maxLength="7"
                                     color={color}
                                     value={color}

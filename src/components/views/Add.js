@@ -126,6 +126,7 @@ function AddAssetTemplate({
                         //                 .focus()
                         //         }, 10)
                         // }}
+                        type="text"
                         value={filter}
                         onChange={onChangeFilter}
                         onClear={e => onChangeFilter({ target: { value: '' } })}
