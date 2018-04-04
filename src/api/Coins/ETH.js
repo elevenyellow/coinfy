@@ -164,6 +164,21 @@ export function urlDecodeTx() {
     return ''
 }
 
+export function discoverWallet(seed) {
+    return new Promise(resolve => {
+        const wallets = getWalletsFromSeed({
+            seed: seed,
+            index: 0,
+            count: 10
+        })
+        const addresses = wallets.map(wallet => wallet.address)
+        resolve({
+            address: addresses[addresses.length - 1],
+            addresses: addresses
+        })
+    })
+}
+
 export function fetchBalance(address, contract_address, _satoshis = satoshis) {
     return fetch(
         contract_address === undefined

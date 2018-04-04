@@ -344,7 +344,10 @@ export function discoverWallet(seed) {
                 } else {
                     if (addresses.length === 0) addresses.push(address)
                     // console.log(seed, 'finish', addresses)
-                    resolve(addresses)
+                    resolve({
+                        address: addresses[addresses.length - 1],
+                        addresses: addresses
+                    })
                 }
             })
         }

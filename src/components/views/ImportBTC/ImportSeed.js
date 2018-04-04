@@ -66,10 +66,10 @@ export default class ImportPrivate extends Component {
         const seed = state.view.seed_input
         if (seed.length > 0) {
             const collector = collect()
-            const { address } = this.Coin.getWalletFromSeed({
-                seed: seed
-            })
-            state.view.address = address
+            // const { address } = this.Coin.getWalletFromSeed({
+            //     seed: seed
+            // })
+            // state.view.address = address
             state.view.is_valid_seed =
                 validateSeed(seed) &&
                 seed.trim().split(/\s+/g).length === recovery_phrase_words
@@ -109,15 +109,20 @@ export default class ImportPrivate extends Component {
 
     onSubmit(e) {
         e.preventDefault()
-        const collector = collect()
-        const address = state.view.address
+        // const address = state.view.address
+        const seed = state.view.seed_input
         const symbol = this.Coin.symbol
         const asset = createAsset(this.Coin.type, symbol, address)
         const asset_id = getAssetId({ symbol, address })
-        setSeed(asset_id, state.view.seed_input, state.view.seed_password)
-        setHref(routes.asset({ asset_id: asset_id }))
-        addNotification(`New "${symbol}" asset has been imported`)
-        collector.emit()
+        this.Coin.discoverWallet(seed).then(wallet => {
+            console.log(wallet)
+            const address = wallet.address
+            const collector = collect()
+            // setSeed(asset_id, seed, state.view.seed_password)
+            // setHref(routes.asset({ asset_id: asset_id }))
+            // addNotification(`New "${symbol}" asset has been imported`)
+            collector.emit()
+        })
     }
 
     get isInvalidRepassword() {
