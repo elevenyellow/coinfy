@@ -96,7 +96,7 @@ export default class AddAsset extends Component {
             state.view.asset_selected
         ]
         const seed = Coins[asset_from.symbol].decryptSeed(
-            asset_from.address,
+            asset_from.addresses,
             asset_from.seed,
             password
         )

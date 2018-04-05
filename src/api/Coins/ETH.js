@@ -368,21 +368,21 @@ export function encryptSeed(seed, password) {
     return seed_encrypted
 }
 
-export function decryptSeed(address, seed_encrypted, password) {
+export function decryptSeed(addresses, seed_encrypted, password) {
     const { seed } = decryptPrivateKeyFromSeed(
-        address,
+        addresses,
         seed_encrypted,
         password
     )
     return seed
 }
 
-export function decryptPrivateKeyFromSeed(address, seed_encrypted, password) {
+export function decryptPrivateKeyFromSeed(addresses, seed_encrypted, password) {
     const seed = decryptAES128CTR(seed_encrypted, password)
     const wallet = getWalletFromSeed({ seed })
-    return wallet.address === address
+    return addresses.includes(wallet.address)
         ? { private_key: wallet.private_key, seed }
-        : { seed }
+        : {}
 }
 
 export function getSendProviders() {

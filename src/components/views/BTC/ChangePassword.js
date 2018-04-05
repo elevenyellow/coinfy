@@ -80,12 +80,13 @@ export default class ChangePassword extends Component {
         const { asset_id } = getParamsFromLocation()
         const asset = getAsset(asset_id)
         const address = asset.address
+        const addresses = asset.addresses
         const oldpassword = state.view.oldpassword
         const password = state.view.password
         const Coin = Coins[asset.symbol]
         const is_seed = isAssetWithSeed(asset_id)
         const privatekey_or_seed = is_seed
-            ? Coin.decryptSeed(address, asset.seed, oldpassword)
+            ? Coin.decryptSeed(addresses, asset.seed, oldpassword)
             : Coin.decryptPrivateKey(address, asset.private_key, oldpassword)
 
         if (privatekey_or_seed) {
