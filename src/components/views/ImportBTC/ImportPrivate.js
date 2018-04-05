@@ -68,14 +68,7 @@ export default class ImportPrivate extends Component {
                     : this.Coin.getAddressFromPrivateKey(private_key)
                 state.view.address = address
 
-                if (
-                    isAssetRegistered(
-                        getAssetId({
-                            symbol: this.Coin.symbol,
-                            address: address
-                        })
-                    )
-                ) {
+                if (isAssetRegistered(this.Coin.symbol, address)) {
                     state.view.private_input_error =
                         'You already have this asset'
                     state.view.is_valid_input = false
@@ -118,13 +111,13 @@ export default class ImportPrivate extends Component {
         const collector = collect()
         const address = state.view.address
         const asset = createAsset(this.Coin.type, this.Coin.symbol, address)
-        const asset_id = getAssetId({ symbol: this.Coin.symbol, address })
+        const asset_id = getAssetId(asset)
         setPrivateKey(
             asset_id,
             state.view.private_input,
             state.view.private_password
         )
-        setHref(routes.asset({ asset_id: asset_id }))
+        setHref(routes.asset({ asset_id }))
         collector.emit()
     }
 

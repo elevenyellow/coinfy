@@ -96,17 +96,15 @@ export default class ImportBIP extends Component {
                 const address = state.view.type_segwit
                     ? getSegwitAddressFromPrivateKey(private_key)
                     : getAddressFromPrivateKey(private_key)
-                const asset_id = getAssetId({
-                    symbol: BTC.symbol,
-                    address: address
-                })
+
                 state.view.address = address
                 // console.log( address );
-                if (isAssetRegistered(asset_id)) {
+                if (isAssetRegistered(BTC.symbol, address)) {
                     state.view.bip_input_error = 'You already have this asset'
                     state.view.is_valid_input = false
                 } else {
                     const asset = createAsset(BTC.type, BTC.symbol, address)
+                    const asset_id = getAssetId(asset)
                     setPrivateKey(asset_id, private_key, password)
                     setHref(routes.asset({ asset_id: getAssetId(asset) }))
                 }

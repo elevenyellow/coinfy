@@ -79,14 +79,7 @@ export default class ImportKeystore extends Component {
                         isAddress(address) &&
                         typeof keystore.crypto == 'object'
                     ) {
-                        if (
-                            isAssetRegistered(
-                                getAssetId({
-                                    symbol: this.Coin.symbol,
-                                    address: address
-                                })
-                            )
-                        ) {
+                        if (isAssetRegistered(this.Coin.symbol, address)) {
                             state.view.keystore_invalid_error =
                                 'You already have this asset'
                         } else {
@@ -134,12 +127,9 @@ export default class ImportKeystore extends Component {
                         this.Coin.symbol,
                         address
                     )
-                    setPrivateKey(
-                        getAssetId({ symbol: this.Coin.symbol, address }),
-                        private_key,
-                        password
-                    )
-                    setHref(routes.asset({ asset_id: getAssetId(asset) }))
+                    const asset_id = getAssetId(asset)
+                    setPrivateKey(asset_id, private_key, password)
+                    setHref(routes.asset({ asset_id }))
                 } else {
                     state.view.keystore_password_error = 'Invalid password'
                 }

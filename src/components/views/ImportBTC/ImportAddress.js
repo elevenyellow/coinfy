@@ -51,18 +51,14 @@ export default class ImportAddress extends Component {
 
     onChangeInput(e) {
         const collector = collect()
-        let value = e.target.value.trim()
-        state.view.address_input = value
-        // value = value.toLowerCase()
+        const address = e.target.value.trim()
+        state.view.address_input = address
+        // address = address.toLowerCase()
 
-        if (this.Coin.isAddressCheck(value)) {
-            state.view.address = this.Coin.formatAddress(value)
+        if (this.Coin.isAddressCheck(address)) {
+            state.view.address = this.Coin.formatAddress(address)
 
-            if (
-                isAssetRegistered(
-                    getAssetId({ symbol: this.Coin.symbol, address: value })
-                )
-            ) {
+            if (isAssetRegistered(this.Coin.symbol, address)) {
                 state.view.address_input_error = 'You already have this asset'
                 state.view.is_valid_input = false
             } else {

@@ -11,7 +11,7 @@ import { Coins } from '/api/coins'
 import state from '/store/state'
 import {
     getAsset,
-    isAssetRegistered,
+    isAssetRegisteredById,
     getParamsFromLocation
 } from '/store/getters'
 
@@ -50,7 +50,7 @@ export default class Content extends Component {
         if (asset_id && !symbol) symbol = getAsset(asset_id).symbol
         return React.createElement(ContentTemplate, {
             totalAssets: state.totalAssets,
-            isRegistered: isAssetRegistered(asset_id),
+            isRegistered: isAssetRegisteredById(asset_id),
             symbol: symbol
         })
     }

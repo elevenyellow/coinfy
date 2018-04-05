@@ -110,7 +110,7 @@ export default class NewAsset extends Component {
         const wallet = this.Coin.getWalletFromSeed({ seed: words })
         const address = wallet.address
         const asset = createAsset(this.Coin.type, symbol, address)
-        const asset_id = getAssetId({ symbol, address })
+        const asset_id = getAssetId(asset)
         setSeed(asset_id, words, state.view.password)
         setHref(routes.asset({ asset_id: asset_id }))
         addNotification(`New "${symbol}" asset has been created`)

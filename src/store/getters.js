@@ -15,41 +15,15 @@ export function convertBalance(symbol, value) {
     return getPrice(symbol) * (value || 0)
 }
 
+export function getAssetId(asset) {
+    for (let asset_id in state.assets)
+        if (state.assets[asset_id] === asset) {
+            return asset_id
+        }
+}
+
 export function getAsset(asset_id) {
     return state.assets[asset_id]
-}
-
-export function isAssetRegistered(asset_id) {
-    return state.assets.hasOwnProperty(asset_id)
-}
-
-export function isAssetRegisteredBySeed(symbol, seed) {
-    const hash = sha3(seed).toString('hex')
-    const founds = getAssetsAsArray().filter(
-        asset =>
-            asset.symbol === symbol &&
-            asset.hasOwnProperty('seed') &&
-            asset.seed.hash === hash
-    )
-    return founds.length > 0
-}
-
-export function isAssetWithPrivateKeyOrSeed(asset_id) {
-    return isAssetWithPrivateKey(asset_id) || isAssetWithSeed(asset_id)
-}
-
-export function isAssetWithPrivateKey(asset_id) {
-    return (
-        isAssetRegistered(asset_id) &&
-        state.assets[asset_id].hasOwnProperty('private_key')
-    )
-}
-
-export function isAssetWithSeed(asset_id) {
-    return (
-        isAssetRegistered(asset_id) &&
-        state.assets[asset_id].hasOwnProperty('seed')
-    )
 }
 
 export function getAssetsAsArray() {
@@ -58,6 +32,44 @@ export function getAssetsAsArray() {
         assets.push(state.assets[asset_id])
     })
     return assets
+}
+
+export function isAssetRegisteredById(asset_id) {
+    return state.assets.hasOwnProperty(asset_id)
+}
+
+export function isAssetRegistered(symbol, address) {
+    return getAssetsAsArray().some(
+        asset => asset.symbol === symbol && asset.addresses.includes(address)
+    )
+}
+
+export function isAssetRegisteredBySeed(symbol, seed) {
+    const hash = sha3(seed).toString('hex')
+    return getAssetsAsArray().some(
+        asset =>
+            asset.symbol === symbol &&
+            asset.hasOwnProperty('seed') &&
+            asset.seed.hash === hash
+    )
+}
+
+export function isAssetWithPrivateKeyOrSeed(asset_id) {
+    return isAssetWithPrivateKey(asset_id) || isAssetWithSeed(asset_id)
+}
+
+export function isAssetWithPrivateKey(asset_id) {
+    return (
+        isAssetRegisteredById(asset_id) &&
+        state.assets[asset_id].hasOwnProperty('private_key')
+    )
+}
+
+export function isAssetWithSeed(asset_id) {
+    return (
+        isAssetRegisteredById(asset_id) &&
+        state.assets[asset_id].hasOwnProperty('seed')
+    )
 }
 
 export function getSymbolsFromAssets(assets = state.assets) {
@@ -82,6 +94,7 @@ export function generateDefaultAsset(object = {}) {
         // symbol: symbol,
         // address: address,
         // addresses: [object.address],
+        // id: getNextAssetId(object),
         label: '',
         balance: 0,
         printed: false, // wallet printed?
@@ -96,7 +109,8 @@ export function generateDefaultAsset(object = {}) {
     }
 
     asset = util.merge(asset, object)
-    if (!Array.isArray(asset.addresses)) asset.addresses = [object.address]
+    if (!Array.isArray(asset.addresses) || asset.addresses.length < 1)
+        asset.addresses = [object.address]
     // console.log(asset)
     return asset
 }
@@ -129,16 +143,6 @@ export function getNextAssetId(asset) {
         id = `${init_id}-${index++}`
     }
     return id
-}
-
-export function getAssetId({ symbol, address }) {
-    // return `${symbol}-${address}`
-    for (let asset_id in state.assets)
-        if (
-            state.assets[asset_id].symbol === symbol &&
-            state.assets[asset_id].addresses.includes(address)
-        )
-            return asset_id
 }
 
 export function getPrice(symbol) {

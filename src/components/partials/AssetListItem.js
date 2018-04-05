@@ -79,10 +79,7 @@ function AssetTemplate({
     return (
         <AssetStyled
             onClick={onClick}
-            selected={
-                asset_id ===
-                getAssetId({ symbol: asset.symbol, address: asset.address })
-            }
+            selected={asset_id === getAssetId(asset)}
         >
             <AssetItem
                 logo={logo}
