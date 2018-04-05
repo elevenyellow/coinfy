@@ -46,7 +46,7 @@ import {
     getAssetsAsArray,
     generateDefaultAsset,
     generateDefaultBackup,
-    getNextCoinId,
+    getNextAssetId,
     getAssetId,
     getSymbolsFromAssets,
     isValidAsset
@@ -62,7 +62,7 @@ export function setHref(href) {
 export function createAsset(type, symbol, address, addresses) {
     const collector = collect()
     const asset = generateDefaultAsset({ type, symbol, address, addresses })
-    const asset_id = getNextCoinId({ symbol, address })
+    const asset_id = getNextAssetId(asset)
     state.assets[asset_id] = asset
     saveAssetsLocalstorage()
     setAssetsExported(false)

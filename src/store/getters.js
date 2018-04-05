@@ -81,7 +81,7 @@ export function generateDefaultAsset(object = {}) {
         // type: type,
         // symbol: symbol,
         // address: address,
-        addresses: [object.address],
+        // addresses: [object.address],
         label: '',
         balance: 0,
         printed: false, // wallet printed?
@@ -96,6 +96,7 @@ export function generateDefaultAsset(object = {}) {
     }
 
     asset = util.merge(asset, object)
+    if (!Array.isArray(asset.addresses)) asset.addresses = [object.address]
     // console.log(asset)
     return asset
 }
@@ -118,23 +119,26 @@ export function formatCurrency(value, n = 0, currencySymbol = state.fiat) {
     return Fiats[currencySymbol].format(value, n)
 }
 
-export function getNextCoinId(asset_data) {
-    return getAssetId(asset_data)
-    // let id = 0
-    // for (let asset_id in state.assets)
-    //     if (Number(asset_id) > id) id = Number(asset_id)
-
-    // return id + 1
+export function getNextAssetId(asset) {
+    const symbol = asset.symbol
+    const address = asset.addresses[0]
+    const init_id = `${symbol}-${address}`
+    let index = 1
+    let id = init_id
+    while (state.assets.hasOwnProperty(id)) {
+        id = `${init_id}-${index++}`
+    }
+    return id
 }
 
 export function getAssetId({ symbol, address }) {
-    return `${symbol}-${address}`
-    // for (let asset_id in state.assets)
-    //     if (
-    //         state.assets[asset_id].symbol === symbol &&
-    //         state.assets[asset_id].address === address
-    //     )
-    //         return asset_id
+    // return `${symbol}-${address}`
+    for (let asset_id in state.assets)
+        if (
+            state.assets[asset_id].symbol === symbol &&
+            state.assets[asset_id].addresses.includes(address)
+        )
+            return asset_id
 }
 
 export function getPrice(symbol) {
