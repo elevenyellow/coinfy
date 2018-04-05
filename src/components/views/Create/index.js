@@ -43,7 +43,8 @@ export default class AddAsset extends Component {
             group_selected: -1,
             asset_selected: 0,
             password: '',
-            password_error: false
+            password_error: false,
+            discovering: false
         }
 
         const { symbol } = getParamsFromLocation()
@@ -101,6 +102,7 @@ export default class AddAsset extends Component {
             password
         )
         if (seed) {
+            state.view.discovering = true
             this.Coin.discoverWallet(seed).then(wallet => {
                 const collector = collect()
                 const address = wallet.address
@@ -133,6 +135,7 @@ export default class AddAsset extends Component {
             asset_selected: state.view.asset_selected,
             password: state.view.password,
             password_error: state.view.password_error,
+            discovering: state.view.discovering,
             onNew: this.onNew,
             onSelectGroup: this.onSelectGroup,
             onChangeAsset: this.onChangeAsset,
@@ -150,6 +153,7 @@ function AddAssetTemplate({
     asset_selected,
     password,
     password_error,
+    discovering,
     onNew,
     onSelectGroup,
     onChangeAsset,
@@ -265,6 +269,8 @@ function AddAssetTemplate({
                                                 <Div padding-top="10px">
                                                     <ButtonBig
                                                         onClick={onSubmit}
+                                                        loading={discovering}
+                                                        loadingIco="/static/image/loading.gif"
                                                         disabled={
                                                             password.length ===
                                                                 0 ||

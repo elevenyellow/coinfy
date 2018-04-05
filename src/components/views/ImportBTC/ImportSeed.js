@@ -43,6 +43,7 @@ export default class ImportPrivate extends Component {
         state.view.seed_input_error = ''
         state.view.seed_password = ''
         state.view.seed_repassword = ''
+        state.view.discovering = false
         collector.destroy()
 
         const { symbol } = getParamsFromLocation()
@@ -111,10 +112,11 @@ export default class ImportPrivate extends Component {
         e.preventDefault()
         // const address = state.view.address
         const seed = state.view.seed_input
+        state.view.discovering = true
         this.Coin.discoverWallet(seed).then(wallet => {
             // console.log(wallet)
-            const symbol = this.Coin.symbol
             const collector = collect()
+            const symbol = this.Coin.symbol
             const address = wallet.address
             const asset = createAsset(
                 this.Coin.type,
@@ -155,6 +157,7 @@ export default class ImportPrivate extends Component {
             seed_input_error: state.view.seed_input_error,
             seed_password: state.view.seed_password,
             seed_repassword: state.view.seed_repassword,
+            discovering: state.view.discovering,
             is_valid_seed: state.view.is_valid_seed,
             isValidForm: this.isValidForm,
             isInvalidRepassword: this.isInvalidRepassword,
@@ -172,6 +175,7 @@ function ImportPrivateTemplate({
     seed_input_error,
     seed_password,
     seed_repassword,
+    discovering,
     is_valid_seed,
     isValidForm,
     isInvalidRepassword,
@@ -251,6 +255,8 @@ function ImportPrivateTemplate({
                 <FormFieldButtons>
                     <Button
                         width="100px"
+                        loading={discovering}
+                        loadingIco="/static/image/loading.gif"
                         disabled={!isValidForm}
                         onClick={onSubmit}
                     >
