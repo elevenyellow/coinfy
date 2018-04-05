@@ -9,7 +9,7 @@ export default function Input(props) {
         ) : null
     return (
         <InputContainerStyled {...props}>
-            <InputStyled {...props} />
+            <InputStyled type="text" {...props} />
             {showerror}
         </InputContainerStyled>
     )

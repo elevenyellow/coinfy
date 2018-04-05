@@ -19,7 +19,7 @@ export default function(props) {
                 />
             </div>
             <div className="input">
-                <Input {...props} />
+                <Input type="text" {...props} />
             </div>
             <div className="delete" onClick={props.onClear}>
                 <IconClose size={24} color="black" />
