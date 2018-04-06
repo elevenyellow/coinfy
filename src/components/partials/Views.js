@@ -47,7 +47,10 @@ export default class Content extends Component {
 
     render() {
         let { asset_id, symbol } = getParamsFromLocation()
-        if (asset_id && !symbol) symbol = getAsset(asset_id).symbol
+        if (asset_id && !symbol) {
+            const asset = getAsset(asset_id)
+            if (asset) symbol = asset.symbol
+        }
         return React.createElement(ContentTemplate, {
             totalAssets: state.totalAssets,
             isRegistered: isAssetRegistered(asset_id),
