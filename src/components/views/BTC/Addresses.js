@@ -37,14 +37,14 @@ function AddressesTemplate({}) {
             <Transactions>
                 {[1, 2, 3].map(tx => {
                     return (
-                        <Transaction selected={true}>
+                        <Transaction selected={tx === 2}>
                             <TransactionInner onClick={e => {}}>
-                                <TransactionItemButton>
-                                    <RadioButton />
-                                </TransactionItemButton>
-                                <TransactionItem>
+                                <TransactionItemRadio>
+                                    <RadioButton checked={tx === 2} />
+                                </TransactionItemRadio>
+                                <TransactionItemLeft>
                                     1EnzoCZwyi9c4FNZAupF5ea9wC8uQUf75T
-                                </TransactionItem>
+                                </TransactionItemLeft>
                                 <TransactionItemRight>
                                     5.131131 BTC
                                 </TransactionItemRight>
@@ -53,6 +53,7 @@ function AddressesTemplate({}) {
                     )
                 })}
             </Transactions>
+            <Total>10.231 BTC</Total>
         </Div>
     )
 }
@@ -63,7 +64,8 @@ export const Transactions = styled.div`
 
 export const Transaction = styled.div`
     clear: both;
-    color: ${styles.color.front3};
+    cursor: pointer;
+    color: ${props => (props.selected ? 'black' : styles.color.front3)};
     border-radius: 5px;
     margin-bottom: 10px;
     background-color: ${props =>
@@ -78,17 +80,26 @@ export const TransactionInner = styled.div`
     padding: 12px 12px 0 12px;
 `
 
-export const TransactionItemButton = styled.div`
+export const TransactionItemRadio = styled.div`
     float: left;
     margin-right: 10px;
     padding-left: 5px;
     padding-top: 1px;
 `
-export const TransactionItem = styled.div`
+export const TransactionItemLeft = styled.div`
     float: left;
     font-weight: bold;
 `
 export const TransactionItemRight = styled.div`
     float: right;
     font-weight: bold;
+`
+
+export const Total = styled.div`
+    border-top: 2px solid #f3f6f8;
+    color: #007196;
+    font-weight: 900;
+    text-align: right;
+    padding: 12px;
+    font-size: 16px;
 `

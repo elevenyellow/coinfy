@@ -10,6 +10,7 @@ import { routes, Router, Route, Show } from '/store/router'
 import state from '/store/state'
 import {
     isAssetWithPrivateKeyOrSeed,
+    isAssetWithSeed,
     getParamsFromLocation,
     getRouteFromLocation
 } from '/store/getters'
@@ -31,11 +32,12 @@ import {
 } from '/components/styled/Menu'
 
 import HeaderAsset from '/components/partials/HeaderAsset'
-import Summary from '/components/views/ETH/Summary'
-import Send from '/components/views/ETH/Send'
+import Summary from '/components/views/BTC/Summary'
+import Send from '/components/views/BTC/Send'
+import Addresses from '/components/views/BTC/Addresses'
 import ExportETH from '/components/views/ETH/Export'
-import ChangePassword from '/components/views/ETH/ChangePassword'
-import Delete from '/components/views/ETH/Delete'
+import ChangePassword from '/components/views/BTC/ChangePassword'
+import Delete from '/components/views/BTC/Delete'
 
 export default class ViewETH extends Component {
     componentWillMount() {
@@ -55,21 +57,28 @@ export default class ViewETH extends Component {
 
     render() {
         const { asset_id } = getParamsFromLocation()
-        const hasPrivateKey = isAssetWithPrivateKeyOrSeed(asset_id)
         return React.createElement(ViewETHTemplate, {
             location: state.location,
             route: getRouteFromLocation(),
-            hasPrivateKey: hasPrivateKey,
+            hasPrivateKey: isAssetWithPrivateKeyOrSeed(asset_id),
+            hasSeed: isAssetWithSeed(asset_id),
             onClick: this.onClick
         })
     }
 }
 
-function ViewETHTemplate({ location, route, hasPrivateKey, onClick }) {
+function ViewETHTemplate({ location, route, hasPrivateKey, hasSeed, onClick }) {
     const tooltipPrivatekey = hasPrivateKey ? null : (
         <HideMobile>
             <Help position="center" width={175}>
                 This wallet does not have private key
+            </Help>
+        </HideMobile>
+    )
+    const tooltipSeed = hasSeed ? null : (
+        <HideMobile>
+            <Help position="center" width={175}>
+                Only for assets created with Recovery Phrase
             </Help>
         </HideMobile>
     )
@@ -95,6 +104,18 @@ function ViewETHTemplate({ location, route, hasPrivateKey, onClick }) {
                         >
                             <MenuContentItemText>
                                 Send{tooltipPrivatekey}
+                            </MenuContentItemText>
+                        </MenuContentItem>
+
+                        <MenuContentItem
+                            disabled={!hasSeed}
+                            selected={route === routes.assetAddresses}
+                            onClick={e => {
+                                if (hasSeed) onClick(routes.assetAddresses)
+                            }}
+                        >
+                            <MenuContentItemText>
+                                Addresses{tooltipSeed}
                             </MenuContentItemText>
                         </MenuContentItem>
 
@@ -139,6 +160,10 @@ function ViewETHTemplate({ location, route, hasPrivateKey, onClick }) {
 
                     <Route is={routes.assetSend}>
                         <Send />
+                    </Route>
+
+                    <Route is={routes.assetAddresses} if={hasSeed}>
+                        <Addresses />
                     </Route>
 
                     <Route if={hasPrivateKey} is={routes.assetExport}>

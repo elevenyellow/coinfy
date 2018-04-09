@@ -10,6 +10,7 @@ import { routes, Router, Route, Show } from '/store/router'
 import state from '/store/state'
 import {
     isAssetWithPrivateKeyOrSeed,
+    isAssetWithSeed,
     getParamsFromLocation,
     getRouteFromLocation
 } from '/store/getters'
@@ -56,21 +57,28 @@ export default class ViewBTC extends Component {
 
     render() {
         const { asset_id } = getParamsFromLocation()
-        const hasPrivateKey = isAssetWithPrivateKeyOrSeed(asset_id)
         return React.createElement(ViewBTCTemplate, {
             location: state.location,
             route: getRouteFromLocation(),
-            hasPrivateKey: hasPrivateKey,
+            hasPrivateKey: isAssetWithPrivateKeyOrSeed(asset_id),
+            hasSeed: isAssetWithSeed(asset_id),
             onClick: this.onClick
         })
     }
 }
 
-function ViewBTCTemplate({ location, route, hasPrivateKey, onClick }) {
+function ViewBTCTemplate({ location, route, hasPrivateKey, hasSeed, onClick }) {
     const tooltipPrivatekey = hasPrivateKey ? null : (
         <HideMobile>
             <Help position="center" width={175}>
-                This wallet does not have private key
+                No Private Key or Recovery Phrase
+            </Help>
+        </HideMobile>
+    )
+    const tooltipSeed = hasSeed ? null : (
+        <HideMobile>
+            <Help position="center" width={175}>
+                Only for assets created with Recovery Phrase
             </Help>
         </HideMobile>
     )
@@ -96,6 +104,18 @@ function ViewBTCTemplate({ location, route, hasPrivateKey, onClick }) {
                         >
                             <MenuContentItemText>
                                 Send{tooltipPrivatekey}
+                            </MenuContentItemText>
+                        </MenuContentItem>
+
+                        <MenuContentItem
+                            disabled={!hasSeed}
+                            selected={route === routes.assetAddresses}
+                            onClick={e => {
+                                if (hasSeed) onClick(routes.assetAddresses)
+                            }}
+                        >
+                            <MenuContentItemText>
+                                Addresses{tooltipSeed}
                             </MenuContentItemText>
                         </MenuContentItem>
 
@@ -142,7 +162,7 @@ function ViewBTCTemplate({ location, route, hasPrivateKey, onClick }) {
                         <Send />
                     </Route>
 
-                    <Route is={routes.assetAddresses}>
+                    <Route is={routes.assetAddresses} if={hasSeed}>
                         <Addresses />
                     </Route>
 

@@ -70,7 +70,7 @@ export function createAsset(type, symbol, address, addresses) {
     sendEventToAnalytics('createAsset', symbol)
     fetchPrices()
     collector.emit()
-    return asset
+    return state.assets[asset_id]
 }
 
 export function setPrivateKey(asset_id, private_key, password) {
