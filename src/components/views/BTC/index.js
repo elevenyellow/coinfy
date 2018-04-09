@@ -33,6 +33,7 @@ import {
 import HeaderAsset from '/components/partials/HeaderAsset'
 import Summary from '/components/views/BTC/Summary'
 import Send from '/components/views/BTC/Send'
+import Addresses from '/components/views/BTC/Addresses'
 import ChangePassword from '/components/views/BTC/ChangePassword'
 import ExportBTC from '/components/views/BTC/Export'
 import Delete from '/components/views/BTC/Delete'
@@ -139,6 +140,10 @@ function ViewBTCTemplate({ location, route, hasPrivateKey, onClick }) {
 
                     <Route is={routes.assetSend}>
                         <Send />
+                    </Route>
+
+                    <Route is={routes.assetAddresses}>
+                        <Addresses />
                     </Route>
 
                     <Route is={routes.assetChangepassword} if={hasPrivateKey}>
