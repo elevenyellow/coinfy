@@ -6,8 +6,8 @@ import { routes } from '/store/router'
 import styles from '/const/styles'
 
 import state from '/store/state'
+import { getParamsFromLocation, getAsset } from '/store/getters'
 // import { assetDelete, addNotification, setHref } from '/store/actions'
-// import { getParamsFromLocation } from '/store/getters'
 
 import Div from '/components/styled/Div'
 import ButtonBig from '/components/styled/ButtonBig'
@@ -19,34 +19,62 @@ export default class Addresses extends Component {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
 
+        const { asset_id } = getParamsFromLocation()
+        this.asset = getAsset(asset_id)
+
         // Initial state
-        state.view = {}
+        state.view = {
+            addresses: this.asset.addresses.map(addr => ({
+                address: addr,
+                balance: 0,
+                loading: false
+            }))
+        }
 
         // binding
         // this.onChangeEncryption = this.onChangeEncryption.bind(this)
     }
 
+    fetchBalances() {
+        resolveAll
+    }
+
     render() {
-        return React.createElement(AddressesTemplate, {})
+        return React.createElement(AddressesTemplate, {
+            address_current: this.asset.address,
+            addresses: state.view.addresses,
+            symbol: this.asset.symbol
+        })
     }
 }
 
-function AddressesTemplate({}) {
+function AddressesTemplate({ address_current, addresses, symbol }) {
+    const loading_ico = (
+        <img src="/static/image/loading.gif" width="22" height="22" />
+    )
     return (
         <Div>
             <Transactions>
-                {[1, 2, 3].map(tx => {
+                {addresses.map(addr => {
                     return (
-                        <Transaction selected={tx === 2}>
+                        <Transaction
+                            selected={address_current === addr.address}
+                        >
                             <TransactionInner onClick={e => {}}>
                                 <TransactionItemRadio>
-                                    <RadioButton checked={tx === 2} />
+                                    <RadioButton
+                                        checked={
+                                            address_current === addr.address
+                                        }
+                                    />
                                 </TransactionItemRadio>
                                 <TransactionItemLeft>
-                                    1EnzoCZwyi9c4FNZAupF5ea9wC8uQUf75T
+                                    {addr.address}
                                 </TransactionItemLeft>
                                 <TransactionItemRight>
-                                    5.131131 BTC
+                                    {addr.loading
+                                        ? loading_ico
+                                        : `${addr.balance} ${symbol}`}
                                 </TransactionItemRight>
                             </TransactionInner>
                         </Transaction>
@@ -89,10 +117,20 @@ export const TransactionItemRadio = styled.div`
 export const TransactionItemLeft = styled.div`
     float: left;
     font-weight: bold;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 85%;
 `
 export const TransactionItemRight = styled.div`
     float: right;
     font-weight: bold;
+
+    ${styles.media.fourth} {
+        float: left;
+        font-size: 12px;
+        margin-left: 35px;
+    }
 `
 
 export const Total = styled.div`
