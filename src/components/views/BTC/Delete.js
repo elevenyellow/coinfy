@@ -27,6 +27,13 @@ export default class Delete extends Component {
         // binding
         // this.onChangeEncryption = this.onChangeEncryption.bind(this)
     }
+    componentWillUnmount() {
+        this.observer.destroy()
+    }
+    shouldComponentUpdate() {
+        return false
+    }
+
     onConfirm() {
         state.view.confirmed = !state.view.confirmed
     }

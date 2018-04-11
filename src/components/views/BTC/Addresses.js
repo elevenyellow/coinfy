@@ -6,8 +6,8 @@ import { routes } from '/store/router'
 import styles from '/const/styles'
 
 import state from '/store/state'
-import { getParamsFromLocation, getAsset } from '/store/getters'
-// import { assetDelete, addNotification, setHref } from '/store/actions'
+import { getParamsFromLocation, getAsset, getAssetId } from '/store/getters'
+import { changeAddress } from '/store/actions'
 
 import Div from '/components/styled/Div'
 import ButtonBig from '/components/styled/ButtonBig'
@@ -16,11 +16,12 @@ import RadioButton from '/components/styled/RadioButton'
 
 export default class Addresses extends Component {
     componentWillMount() {
-        this.observer = createObserver(m => this.forceUpdate())
-        this.observer.observe(state.view)
-
         const { asset_id } = getParamsFromLocation()
         this.asset = getAsset(asset_id)
+
+        this.observer = createObserver(m => this.forceUpdate())
+        this.observer.observe(state.view)
+        this.observer.observe(this.asset, 'address')
 
         // Initial state
         state.view = {
@@ -32,23 +33,41 @@ export default class Addresses extends Component {
         }
 
         // binding
-        // this.onChangeEncryption = this.onChangeEncryption.bind(this)
+        this.onChangeAddress = this.onChangeAddress.bind(this)
+    }
+    componentWillUnmount() {
+        this.observer.destroy()
+    }
+    shouldComponentUpdate() {
+        return false
     }
 
     fetchBalances() {
-        resolveAll
+        // resolveAll
+    }
+
+    onChangeAddress(address) {
+        if (this.asset.address !== address) {
+            changeAddress(getAssetId(this.asset), address)
+        }
     }
 
     render() {
         return React.createElement(AddressesTemplate, {
             address_current: this.asset.address,
             addresses: state.view.addresses,
-            symbol: this.asset.symbol
+            symbol: this.asset.symbol,
+            onChangeAddress: this.onChangeAddress
         })
     }
 }
 
-function AddressesTemplate({ address_current, addresses, symbol }) {
+function AddressesTemplate({
+    address_current,
+    addresses,
+    symbol,
+    onChangeAddress
+}) {
     const loading_ico = (
         <img src="/static/image/loading.gif" width="22" height="22" />
     )
@@ -60,9 +79,12 @@ function AddressesTemplate({ address_current, addresses, symbol }) {
                         <Transaction
                             selected={address_current === addr.address}
                         >
-                            <TransactionInner onClick={e => {}}>
+                            <TransactionInner>
                                 <TransactionItemRadio>
                                     <RadioButton
+                                        onClick={e =>
+                                            onChangeAddress(addr.address)
+                                        }
                                         checked={
                                             address_current === addr.address
                                         }
@@ -92,27 +114,23 @@ export const Transactions = styled.div`
 
 export const Transaction = styled.div`
     clear: both;
-    cursor: pointer;
     color: ${props => (props.selected ? 'black' : styles.color.front3)};
     border-radius: 5px;
     margin-bottom: 10px;
     background-color: ${props =>
         props.selected ? styles.color.background1 : 'transparent'};
-    &:hover {
-        background-color: ${styles.color.background1};
-    }
 `
 
 export const TransactionInner = styled.div`
-    height: 32px;
-    padding: 12px 12px 0 12px;
+    min-height: 46px;
+    padding: 0 12px 0 12px;
 `
 
 export const TransactionItemRadio = styled.div`
     float: left;
     margin-right: 10px;
     padding-left: 5px;
-    padding-top: 1px;
+    padding-top: 13px;
 `
 export const TransactionItemLeft = styled.div`
     float: left;
@@ -121,13 +139,23 @@ export const TransactionItemLeft = styled.div`
     overflow: hidden;
     white-space: nowrap;
     max-width: 85%;
+    padding-top: 12px;
+    cursor: text;
+    user-select: text;
+    ${styles.media.fourth} {
+        float: none;
+        padding-top: 4px;
+        font-size: 14px;
+    }
 `
 export const TransactionItemRight = styled.div`
     float: right;
     font-weight: bold;
+    padding-top: 12px;
 
     ${styles.media.fourth} {
-        float: left;
+        float: none;
+        padding-top: 0;
         font-size: 12px;
         margin-left: 35px;
     }

@@ -47,6 +47,7 @@ import {
     generateDefaultAsset,
     generateDefaultBackup,
     getNextAssetId,
+    getAsset,
     getAssetId,
     getSymbolsFromAssets,
     isValidAsset
@@ -73,6 +74,13 @@ export function createAsset(type, symbol, address, addresses) {
     return state.assets[asset_id]
 }
 
+export function changeAddress(asset_id, address) {
+    const asset = getAsset(asset_id)
+    asset.address = address
+    saveAssetsLocalstorage()
+    fetchBalance(asset_id)
+}
+
 export function setPrivateKey(asset_id, private_key, password) {
     return setPrivateKeyOrSeed(asset_id, private_key, password, false)
 }
@@ -82,7 +90,7 @@ export function setSeed(asset_id, seed, password) {
 }
 
 export function setPrivateKeyOrSeed(asset_id, key, password, is_seed) {
-    const asset = state.assets[asset_id]
+    const asset = getAsset(asset_id)
     const method =
         Coins[asset.symbol][is_seed ? 'encryptSeed' : 'encryptPrivateKey']
     const seed_encrypted = set(
@@ -311,7 +319,7 @@ export function setAssetLabel(asset_id, label) {
 }
 
 export function updateBalance(asset_id, balance) {
-    const asset = state.assets[asset_id]
+    const asset = getAsset(asset_id)
     if (asset.balance !== balance) {
         const collector = collect()
         asset.state.shall_we_fetch_summary = true
@@ -369,7 +377,7 @@ export function fetchAllBalances() {
 fetchAllBalances()
 
 export function fetchBalance(asset_id) {
-    const asset = state.assets[asset_id]
+    const asset = getAsset(asset_id)
     if (asset !== undefined) {
         return fetchWrapper(
             Coins[asset.symbol].fetchBalance(asset.address)
@@ -381,14 +389,14 @@ export function fetchBalance(asset_id) {
 }
 
 export function fetchSummaryAssetIfReady(asset_id) {
-    const asset = state.assets[asset_id]
+    const asset = getAsset(asset_id)
     if (asset.state.shall_we_fetch_summary && !asset.state.fetching_summary)
         return fetchSummaryAsset(asset_id)
 }
 
 export function fetchSummaryAsset(asset_id) {
     // console.log( 'fetchSummaryAsset', asset_id );
-    const asset = state.assets[asset_id]
+    const asset = getAsset(asset_id)
     const collector = collect()
     asset.state.fetching_summary = true
     asset.summary = {}
@@ -412,7 +420,7 @@ export function fetchSummaryAsset(asset_id) {
 
 export function fetchBalanceAsset(asset_id) {
     // console.log( 'fetchSummaryAsset', asset_id );
-    const asset = state.assets[asset_id]
+    const asset = getAsset(asset_id)
     return fetchWrapper(Coins[asset.symbol].fetchBalance(asset.address))
         .then(balance => {
             asset.balance = balance

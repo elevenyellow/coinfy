@@ -30,8 +30,6 @@ import { RightHeader } from '/components/styled/Right'
 
 export default class HeaderAsset extends Component {
     componentWillMount() {
-        let unobserveLabel
-        let unobserveBalance
         const { asset_id } = getParamsFromLocation()
         this.asset_id = asset_id
         this.changedLabel = false
@@ -43,12 +41,10 @@ export default class HeaderAsset extends Component {
                 this.asset_id = asset_id
                 this.asset = getAsset(this.asset_id)
                 // this.qr = generateQRCode(this.address, 140, styles.color.front3)
-                if (unobserveLabel) {
-                    unobserveLabel()
-                    unobserveBalance()
+                if (this.unobserveLabel) {
+                    this.unobserve()
                 }
-                unobserveLabel = this.observer.observe(this.asset, 'label')
-                unobserveBalance = this.observer.observe(this.asset, 'balance')
+                this.observe()
             }
             this.forceUpdate()
         })
@@ -56,8 +52,7 @@ export default class HeaderAsset extends Component {
         this.observer.observe(state.prices, this.asset.symbol)
 
         if (this.asset !== undefined) {
-            unobserveLabel = this.observer.observe(this.asset, 'label')
-            unobserveBalance = this.observer.observe(this.asset, 'balance')
+            this.observe()
         }
 
         this.onChangeLabel = this.onChangeLabel.bind(this)
@@ -68,6 +63,17 @@ export default class HeaderAsset extends Component {
     }
     shouldComponentUpdate() {
         return false
+    }
+
+    observe() {
+        this.unobserveLabel = this.observer.observe(this.asset, 'label')
+        this.unobserveBalance = this.observer.observe(this.asset, 'balance')
+        this.unobserveAddress = this.observer.observe(this.asset, 'address')
+    }
+    unobserve() {
+        this.unobserveLabel()
+        this.unobserveBalance()
+        this.unobserveAddress()
     }
 
     onChangeLabel(e) {
