@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
+import { Coins } from '/api/coins'
+import { bigNumber } from '/api/numbers'
+
 import { routes } from '/store/router'
 import styles from '/const/styles'
 
@@ -18,19 +21,25 @@ export default class Addresses extends Component {
     componentWillMount() {
         const { asset_id } = getParamsFromLocation()
         this.asset = getAsset(asset_id)
-
-        this.observer = createObserver(m => this.forceUpdate())
-        this.observer.observe(state.view)
-        this.observer.observe(this.asset, 'address')
+        this.Coin = Coins[this.asset.symbol]
 
         // Initial state
+        const addresses = this.asset.addresses
         state.view = {
-            addresses: this.asset.addresses.map(addr => ({
+            addresses: addresses.map(addr => ({
                 address: addr,
                 balance: 0,
-                loading: false
+                loading: true
             }))
         }
+
+        this.observer = createObserver(m => this.forceUpdate())
+        addresses.forEach((e, index) => {
+            this.observer.observe(state.view.addresses[index])
+        })
+        this.observer.observe(state.view.addresses)
+        this.observer.observe(this.asset, 'address')
+        this.fetchBalances()
 
         // binding
         this.onChangeAddress = this.onChangeAddress.bind(this)
@@ -42,8 +51,21 @@ export default class Addresses extends Component {
         return false
     }
 
-    fetchBalances() {
-        // resolveAll
+    fetchBalances(index = 0) {
+        const addresses = state.view.addresses
+        const address = addresses[index]
+        address.loading = true
+        this.Coin.fetchBalance(address.address).then(balance => {
+            // setTimeout(e => {
+            const collector = collect()
+            address.loading = false
+            address.balance = balance
+            collector.emit()
+            if (index + 1 < addresses.length) {
+                this.fetchBalances(index + 1)
+            }
+            // }, 2000)
+        })
     }
 
     onChangeAddress(address) {
@@ -53,10 +75,16 @@ export default class Addresses extends Component {
     }
 
     render() {
+        const addresses = state.view.addresses
+        const total = addresses.reduce(
+            (t, addr) => t.add(addr.balance),
+            bigNumber(0)
+        )
         return React.createElement(AddressesTemplate, {
             address_current: this.asset.address,
-            addresses: state.view.addresses,
+            addresses: addresses,
             symbol: this.asset.symbol,
+            total: total,
             onChangeAddress: this.onChangeAddress
         })
     }
@@ -66,6 +94,7 @@ function AddressesTemplate({
     address_current,
     addresses,
     symbol,
+    total,
     onChangeAddress
 }) {
     const loading_ico = (
@@ -103,7 +132,9 @@ function AddressesTemplate({
                     )
                 })}
             </Transactions>
-            <Total>10.231 BTC</Total>
+            <Total>
+                {total} {symbol}
+            </Total>
         </Div>
     )
 }
