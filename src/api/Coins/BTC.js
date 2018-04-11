@@ -265,16 +265,22 @@ export function urlDecodeTx() {
     return 'https://live.blockcypher.com/btc/decodetx/'
 }
 
-export function encryptPrivateKey(private_key, password) {
-    return encryptAES128CTR(private_key, password)
-}
-
 function isSegwitAddress(address) {
     const { version } = Bitcoin.address.fromBase58Check(address)
     return (
         version === Bitcoin.networks.bitcoin.scriptHash ||
         version === Bitcoin.networks.testnet.scriptHash
     )
+}
+
+export function encryptSeed(seed, password) {
+    const seed_encrypted = encryptAES128CTR(seed, password)
+    // seed_encrypted.hash = sha3(seed).toString('hex')
+    return seed_encrypted
+}
+
+export function encryptPrivateKey(private_key, password) {
+    return encryptAES128CTR(private_key, password)
 }
 
 export function decryptPrivateKey(address, private_key_encrypted, password) {
@@ -287,29 +293,29 @@ export function decryptPrivateKey(address, private_key_encrypted, password) {
     }
 }
 
-export function encryptSeed(seed, password) {
-    const seed_encrypted = encryptAES128CTR(seed, password)
-    // seed_encrypted.hash = sha3(seed).toString('hex')
-    return seed_encrypted
+export function decryptPrivateKeyFromSeed(
+    address,
+    addresses,
+    seed_encrypted,
+    password
+) {
+    const seed = decryptAES128CTR(seed_encrypted, password)
+    for (let index = addresses.length - 1, wallet; index >= 0; index--) {
+        wallet = getWalletFromSeed({ seed, index })
+        if (wallet.address === address) return wallet.private_key
+        wallet = getWalletFromSeed({ seed, index, segwit: false })
+        if (wallet.address === address) return wallet.private_key
+    }
 }
 
 export function decryptSeed(addresses, seed_encrypted, password) {
-    const { seed } = decryptPrivateKeyFromSeed(
-        addresses,
-        seed_encrypted,
-        password
-    )
-    return seed
-}
-
-export function decryptPrivateKeyFromSeed(addresses, seed_encrypted, password) {
     const seed = decryptAES128CTR(seed_encrypted, password)
     const wallet = getWalletFromSeed({ seed })
     const wallet2 = getWalletFromSeed({ seed, segwit: false })
     return addresses.includes(wallet.address) ||
         addresses.includes(wallet2.address)
-        ? { private_key: wallet.private_key, seed }
-        : {}
+        ? seed
+        : null
 }
 
 export function encryptBIP38(privateKey, password, progressCallback) {

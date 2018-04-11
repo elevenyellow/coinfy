@@ -12,7 +12,8 @@ import state from '/store/state'
 import {
     getAsset,
     isAssetWithSeed,
-    decrypt,
+    getPrivateKey,
+    getSeed,
     getParamsFromLocation
 } from '/store/getters'
 
@@ -87,12 +88,16 @@ export default class ExportBTC extends Component {
         const asset = getAsset(asset_id)
         const address = asset.address
         const password = state.view.password
-        const { private_key, seed } = decrypt(asset_id, password)
 
-        if (private_key) {
-            if (type_export === TYPES_EXPORTS.seed) {
-                printTemplate(template2(seed))
-            } else {
+        // Seed
+        if (type_export === TYPES_EXPORTS.seed) {
+            const seed = getSeed(asset_id, password)
+            if (seed) printTemplate(template2(seed))
+            else state.view.invalid_password = true
+        } else {
+            // Private Key
+            const private_key = getPrivateKey(asset_id, password)
+            if (private_key) {
                 state.view.loading = true
                 setTimeout(() => {
                     // We need to do this trick in order to show the loading-button icon
@@ -168,9 +173,9 @@ export default class ExportBTC extends Component {
                     printTemplate(template(qrs))
                     state.view.loading = false
                 }, 0)
+            } else {
+                state.view.invalid_password = true
             }
-        } else {
-            state.view.invalid_password = true
         }
     }
     render() {

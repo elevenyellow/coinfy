@@ -152,30 +152,22 @@ export function getPrice(symbol) {
 }
 
 export function getPrivateKey(asset_id, password) {
-    const { private_key } = decrypt(asset_id, password)
-    return private_key
-}
-
-export function decrypt(asset_id, password) {
     const asset = getAsset(asset_id)
     const Coin = Coins[asset.symbol]
+    return isAssetWithSeed(asset_id)
+        ? Coin.decryptPrivateKeyFromSeed(
+              asset.address,
+              asset.addresses,
+              asset.seed,
+              password
+          )
+        : Coin.decryptPrivateKey(asset.address, asset.private_key, password)
+}
 
-    if (isAssetWithSeed(asset_id)) {
-        return Coin.decryptPrivateKeyFromSeed(
-            asset.addresses,
-            asset.seed,
-            password
-        )
-    } else {
-        const private_key = Coin.decryptPrivateKey(
-            asset.address,
-            asset.private_key,
-            password
-        )
-        return { private_key }
-    }
-
-    return private_key
+export function getSeed(asset_id, password) {
+    const asset = getAsset(asset_id)
+    const Coin = Coins[asset.symbol]
+    return Coin.decryptSeed(asset.addresses, asset.seed, password)
 }
 
 export function getLabelOrAddress(asset) {

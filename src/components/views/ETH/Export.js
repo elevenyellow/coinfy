@@ -13,7 +13,8 @@ import state from '/store/state'
 import {
     getAsset,
     isAssetWithSeed,
-    decrypt,
+    getPrivateKey,
+    getSeed,
     getParamsFromLocation
 } from '/store/getters'
 
@@ -89,10 +90,49 @@ export default class ExportETH extends Component {
         const password = state.view.password
         let private_key_encrypted
 
-        // Keystore
-        if (type_export === TYPES_EXPORTS.keystore) {
+        // Seed
+        if (type_export === TYPES_EXPORTS.seed) {
+            const seed = getSeed(asset_id, password)
+            if (seed) printTemplate(template2(seed))
+            else state.view.invalid_password = true
+        } else if (type_export === TYPES_EXPORTS.privatekey) {
+            // Private Key
+            const private_key = getPrivateKey(asset_id, password)
+            if (private_key) {
+                const public_key = getPublicFromPrivateKey(private_key)
+                const qrs = [
+                    {
+                        img: generateQRCode(address),
+                        hash: address,
+                        title: 'Address',
+                        description:
+                            'You can share this address to receive funds.'
+                    },
+                    {
+                        img: generateQRCode(
+                            private_key,
+                            undefined,
+                            styles.color.red3
+                        ),
+                        hash: private_key,
+                        red: true,
+                        title: 'Private Key',
+                        description:
+                            'This CAN NOT BE SHARED. If you share this you will lose your funds.'
+                    },
+                    {
+                        title: `Public Key`,
+                        hash: public_key
+                    }
+                ]
+                printTemplate(template(qrs))
+            } else {
+                state.view.invalid_password = true
+            }
+        } else {
+            // Keystore
             if (this.is_asset_with_seed) {
-                const { private_key } = decrypt(this.asset_id, password)
+                const private_key = getPrivateKey(this.asset_id, password)
                 if (private_key) {
                     private_key_encrypted = encryptAES128CTR(
                         private_key,
@@ -120,46 +160,6 @@ export default class ExportETH extends Component {
                 '--' +
                 address
             downloadFile({ data: fileString, name })
-
-            // Seed & Privatekey
-        } else {
-            const { private_key, seed } = decrypt(this.asset_id, password)
-
-            if (private_key) {
-                if (type_export === TYPES_EXPORTS.seed) {
-                    printTemplate(template2(seed))
-                } else {
-                    const public_key = getPublicFromPrivateKey(private_key)
-                    const qrs = [
-                        {
-                            img: generateQRCode(address),
-                            hash: address,
-                            title: 'Address',
-                            description:
-                                'You can share this address to receive funds.'
-                        },
-                        {
-                            img: generateQRCode(
-                                private_key,
-                                undefined,
-                                styles.color.red3
-                            ),
-                            hash: private_key,
-                            red: true,
-                            title: 'Private Key',
-                            description:
-                                'This CAN NOT BE SHARED. If you share this you will lose your funds.'
-                        },
-                        {
-                            title: `Public Key`,
-                            hash: public_key
-                        }
-                    ]
-                    printTemplate(template(qrs))
-                }
-            } else {
-                state.view.invalid_password = true
-            }
         }
     }
     render() {
