@@ -312,10 +312,11 @@ export function decryptSeed(addresses, seed_encrypted, password) {
     const seed = decryptAES128CTR(seed_encrypted, password)
     const wallet = getWalletFromSeed({ seed })
     const wallet2 = getWalletFromSeed({ seed, segwit: false })
-    return addresses.includes(wallet.address) ||
+    if (
+        addresses.includes(wallet.address) ||
         addresses.includes(wallet2.address)
-        ? seed
-        : null
+    )
+        return seed
 }
 
 export function encryptBIP38(privateKey, password, progressCallback) {

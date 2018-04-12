@@ -86,6 +86,7 @@ export default class ExportETH extends Component {
         e.preventDefault()
         const type_export = state.view.type_export
         const asset = getAsset(this.asset_id)
+        const asset_id = this.asset_id
         const address = asset.address
         const password = state.view.password
         let private_key_encrypted

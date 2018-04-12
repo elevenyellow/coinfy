@@ -127,7 +127,7 @@ function ViewBTCTemplate({ location, route, hasPrivateKey, hasSeed, onClick }) {
                             }}
                         >
                             <MenuContentItemText>
-                                Paper Wallet{tooltipPrivatekey}
+                                Export{tooltipPrivatekey}
                             </MenuContentItemText>
                         </MenuContentItem>
 

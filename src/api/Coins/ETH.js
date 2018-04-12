@@ -169,7 +169,7 @@ export function discoverWallet(seed) {
         const wallets = getWalletsFromSeed({
             seed: seed,
             index: 0,
-            count: 10
+            count: 5
         })
         const addresses = wallets.map(wallet => wallet.address)
         resolve({
@@ -369,20 +369,22 @@ export function encryptSeed(seed, password) {
 }
 
 export function decryptSeed(addresses, seed_encrypted, password) {
-    const { seed } = decryptPrivateKeyFromSeed(
-        addresses,
-        seed_encrypted,
-        password
-    )
-    return seed
-}
-
-export function decryptPrivateKeyFromSeed(addresses, seed_encrypted, password) {
     const seed = decryptAES128CTR(seed_encrypted, password)
     const wallet = getWalletFromSeed({ seed })
-    return addresses.includes(wallet.address)
-        ? { private_key: wallet.private_key, seed }
-        : {}
+    if (addresses.includes(wallet.address)) return seed
+}
+
+export function decryptPrivateKeyFromSeed(
+    address,
+    addresses,
+    seed_encrypted,
+    password
+) {
+    const seed = decryptAES128CTR(seed_encrypted, password)
+    for (let index = 0, wallet; index < addresses.length; index++) {
+        wallet = getWalletFromSeed({ seed, index })
+        if (wallet.address === address) return wallet.private_key
+    }
 }
 
 export function getSendProviders() {
