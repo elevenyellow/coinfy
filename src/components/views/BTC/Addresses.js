@@ -15,6 +15,7 @@ import { changeAddress } from '/store/actions'
 import Div from '/components/styled/Div'
 import ButtonBig from '/components/styled/ButtonBig'
 import RadioButton from '/components/styled/RadioButton'
+import Input from '/components/styled/Input'
 // import CenterElement from '/components/styled/CenterElement'
 
 export default class Addresses extends Component {
@@ -135,6 +136,28 @@ function AddressesTemplate({
             <Total>
                 {total} {symbol}
             </Total>
+            <Div padding-top="30px">
+                <Input
+                    type="password"
+                    placeholder="Password of this asset"
+                    value={''}
+                    invalid={false}
+                    error="Invalid password"
+                    width="100%"
+                    text-align="center"
+                    onChange={e => {}}
+                />
+            </Div>
+            <Div padding-top="10px">
+                <ButtonBig
+                    onClick={e => {}}
+                    loading={false}
+                    loadingIco="/static/image/loading.gif"
+                    disabled={true}
+                >
+                    Add Another Address
+                </ButtonBig>
+            </Div>
         </Div>
     )
 }
