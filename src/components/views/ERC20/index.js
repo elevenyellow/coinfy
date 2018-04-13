@@ -33,7 +33,7 @@ import {
 
 import HeaderAsset from '/components/partials/HeaderAsset'
 import Summary from '/components/views/BTC/Summary'
-import Send from '/components/views/BTC/Send'
+import Send from '/components/views/ERC20/Send'
 import Addresses from '/components/views/BTC/Addresses'
 import Export from '/components/views/ETH/Export'
 import ChangePassword from '/components/views/BTC/ChangePassword'
