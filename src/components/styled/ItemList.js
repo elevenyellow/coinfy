@@ -53,12 +53,3 @@ export const ItemListItemRight = styled.div`
         margin-left: 35px;
     }
 `
-
-export const ItemListTotal = styled.div`
-    border-top: 2px solid #f3f6f8;
-    color: #007196;
-    font-weight: 900;
-    text-align: right;
-    padding: 12px;
-    font-size: 16px;
-`

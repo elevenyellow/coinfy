@@ -179,6 +179,38 @@ export function getWallet(seed) {
     })
 }
 
+export function discoverWallet(seed, onDiscoverAddress) {
+    return new Promise(resolve => {
+        let index = 0
+        const addresses = []
+        const onPush = (address, balance) => {
+            if (onDiscoverAddress) onDiscoverAddress({ address, balance })
+            addresses.push(address)
+        }
+        const onFetch = () => {
+            const wallet = getWalletFromSeed({
+                seed: seed,
+                index: index
+            })
+            const address = wallet.address
+            fetchBalance(address).then(balance => {
+                if (balance > 0) {
+                    index += 1
+                    onPush(address, balance)
+                    onFetch()
+                } else {
+                    if (addresses.length === 0) onPush(address, '0')
+                    resolve({
+                        address: addresses[addresses.length - 1],
+                        addresses: addresses
+                    })
+                }
+            })
+        }
+        onFetch()
+    })
+}
+
 export function fetchBalance(address, contract_address, _satoshis = satoshis) {
     return fetch(
         contract_address === undefined

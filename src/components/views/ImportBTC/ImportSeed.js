@@ -39,8 +39,7 @@ import {
     ItemListInner,
     ItemListItemRadio,
     ItemListItemLeft,
-    ItemListItemRight,
-    ItemListTotal
+    ItemListItemRight
 } from '/components/styled/ItemList'
 
 const STEP = {
@@ -134,9 +133,15 @@ export default class ImportPrivate extends Component {
         e.preventDefault()
         const seed = state.view.seed_input
         const collector = collect()
+        state.view.step = STEP.addresses
+        this.discoverWallet(seed)
+        collector.emit()
+    }
+
+    discoverWallet(seed) {
+        const collector = collect()
         const addresses = state.view.addresses
         state.view.discovering = true
-        state.view.step = STEP.addresses
         this.Coin.discoverWallet(seed, wallet => {
             // console.log(addresses === state.view.addresses)
             if (addresses === state.view.addresses)
@@ -361,10 +366,13 @@ function ImportPrivateTemplate({
                             )
                         })}
                     </ItemsList>
-                    <ItemListTotal>
-                        {total} {Coin.symbol}
-                    </ItemListTotal>
-                    <Div margin-top="20px">
+                    <ResultAddress>
+                        <LoadMore>Load more Addresses</LoadMore>
+                        <Total>
+                            {total} {Coin.symbol}
+                        </Total>
+                    </ResultAddress>
+                    <Div margin-top="35px">
                         <FormField>
                             <FormFieldButtons>
                                 <Button
@@ -388,3 +396,26 @@ function ImportPrivateTemplate({
         </div>
     )
 }
+
+export const ResultAddress = styled.div`
+    border-top: 2px solid ${styles.color.background1};
+    padding: 12px;
+    font-size: 16px;
+`
+export const LoadMore = styled.a`
+    font-size: 13px;
+    color: ${styles.color.background2};
+    text-decoration: underline;
+    cursor: pointer;
+    display: block;
+    float: left;
+    &:hover {
+        color: ${styles.color.background3};
+    }
+`
+export const Total = styled.div`
+    color: ${styles.color.background2};
+    font-weight: 900;
+    float: right;
+    font-size: 16px;
+`
