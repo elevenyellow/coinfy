@@ -48,8 +48,7 @@ export default class ImportBitcoin extends Component {
 
         // Initial state
         state.view = {
-            type_import: TYPES_IMPORT.seed,
-            address: ''
+            type_import: TYPES_IMPORT.seed
         }
 
         // binding
@@ -65,32 +64,19 @@ export default class ImportBitcoin extends Component {
     // Actions
     onChangeTypeImport(e) {
         const collector = collect()
-        state.view.address = ''
         state.view.type_import = e.target.value
         collector.emit()
     }
 
     render() {
-        const isValidAddress = isAddress(state.view.address)
         return React.createElement(ImportTemplate, {
             type_import: state.view.type_import,
-            address: state.view.address,
-            isValidAddress: isValidAddress,
-            qrcodebase64: isValidAddress
-                ? generateQRCode(state.view.address)
-                : '',
             onChangeTypeImport: this.onChangeTypeImport
         })
     }
 }
 
-function ImportTemplate({
-    type_import,
-    address,
-    isValidAddress,
-    qrcodebase64,
-    onChangeTypeImport
-}) {
+function ImportTemplate({ type_import, onChangeTypeImport }) {
     return (
         <RightContainerPadding>
             <RightHeader>
@@ -104,20 +90,6 @@ function ImportTemplate({
                 <Div clear="both" />
             </RightHeader>
             <RightContent>
-                <FormField>
-                    <Div>
-                        <QRCode>
-                            <Show if={isValidAddress}>
-                                <img width="150" src={qrcodebase64} />
-                            </Show>
-                        </QRCode>
-                    </Div>
-                    <Div>
-                        <CenterElement>
-                            <Address>{address}</Address>
-                        </CenterElement>
-                    </Div>
-                </FormField>
                 <Div>
                     <form>
                         <FormField>

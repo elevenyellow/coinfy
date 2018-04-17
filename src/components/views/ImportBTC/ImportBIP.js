@@ -68,7 +68,6 @@ export default class ImportBIP extends Component {
             state.view.bip_input_error = ''
             state.view.is_valid_input = true
         } else {
-            state.view.address = ''
             state.view.bip_input_error = 'Invalid private key'
             state.view.is_valid_input = false
         }
@@ -97,7 +96,6 @@ export default class ImportBIP extends Component {
                     ? getSegwitAddressFromPrivateKey(private_key)
                     : getAddressFromPrivateKey(private_key)
 
-                state.view.address = address
                 // console.log( address );
                 if (isAssetRegistered(BTC.symbol, address)) {
                     state.view.bip_input_error = 'You already have this asset'
@@ -165,7 +163,7 @@ function ImportBIPTemplate({
                 <FormFieldRight>
                     <Select width="100%" onChange={onChangeType}>
                         <option value="false" selected={!type_segwit}>
-                            Regular
+                            Regular (Legacy)
                         </option>
                         <option value="true" selected={type_segwit}>
                             Segwit

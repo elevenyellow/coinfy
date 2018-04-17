@@ -56,8 +56,6 @@ export default class ImportAddress extends Component {
         // address = address.toLowerCase()
 
         if (this.Coin.isAddressCheck(address)) {
-            state.view.address = this.Coin.formatAddress(address)
-
             if (isAssetRegistered(this.Coin.symbol, address)) {
                 state.view.address_input_error = 'You already have this asset'
                 state.view.is_valid_input = false
@@ -66,7 +64,6 @@ export default class ImportAddress extends Component {
                 state.view.is_valid_input = true
             }
         } else {
-            state.view.address = ''
             state.view.address_input_error = 'Invalid address'
             state.view.is_valid_input = false
         }
@@ -77,7 +74,7 @@ export default class ImportAddress extends Component {
     onSubmit(e) {
         e.preventDefault()
         const collector = collect()
-        const address = state.view.address
+        const address = state.view.address_input
         const asset = createAsset(this.Coin.type, this.Coin.symbol, address)
         setHref(routes.asset({ asset_id: getAssetId(asset) }))
         // setHref(routes.home())

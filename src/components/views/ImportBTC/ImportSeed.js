@@ -70,7 +70,7 @@ export default class ImportPrivate extends Component {
             // const { address } = this.Coin.getWalletFromSeed({
             //     seed: seed
             // })
-            // state.view.address = address
+
             state.view.is_valid_seed =
                 validateSeed(seed) &&
                 seed.trim().split(/\s+/g).length === recovery_phrase_words

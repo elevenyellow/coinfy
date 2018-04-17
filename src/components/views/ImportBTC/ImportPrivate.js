@@ -60,33 +60,33 @@ export default class ImportPrivate extends Component {
     }
 
     calculateAddress() {
+        const collector = collect()
         const private_key = state.view.private_input
         if (private_key.length > 0 && this.Coin.isPrivateKey(private_key)) {
             try {
                 const address = state.view.type_segwit
                     ? this.Coin.getSegwitAddressFromPrivateKey(private_key)
                     : this.Coin.getAddressFromPrivateKey(private_key)
-                state.view.address = address
 
                 if (isAssetRegistered(this.Coin.symbol, address)) {
                     state.view.private_input_error =
                         'You already have this asset'
                     state.view.is_valid_input = false
                 } else {
+                    state.view.address = address
                     state.view.private_input_error = ''
                     state.view.is_valid_input = true
                 }
             } catch (e) {
-                state.view.address = ''
                 state.view.is_valid_input = false
                 state.view.private_input_error = 'Invalid private key'
                 console.error(e)
             }
         } else {
-            state.view.address = ''
             state.view.private_input_error = 'Invalid private key'
             state.view.is_valid_input = false
         }
+        collector.emit()
     }
 
     onChangeType(e) {
@@ -181,7 +181,7 @@ function ImportPrivateTemplate({
                 <FormFieldRight>
                     <Select width="100%" onChange={onChangeType}>
                         <option value="false" selected={!type_segwit}>
-                            Regular
+                            Regular (Legacy)
                         </option>
                         <option value="true" selected={type_segwit}>
                             Segwit
