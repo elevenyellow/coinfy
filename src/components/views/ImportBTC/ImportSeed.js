@@ -2,6 +2,13 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
+import styles from '/const/styles'
+import { minpassword, recovery_phrase_words } from '/const/'
+
+import { bigNumber } from '/api/numbers'
+import { Coins } from '/api/coins'
+import { validateSeed } from '/api/bip39'
+
 import { setHref, createAsset, setSeed, addNotification } from '/store/actions'
 import state from '/store/state'
 import {
@@ -9,13 +16,7 @@ import {
     getAssetId,
     getParamsFromLocation
 } from '/store/getters'
-
-import { Coins } from '/api/coins'
-import { validateSeed } from '/api/bip39'
-
-import styles from '/const/styles'
 import { routes, Show } from '/store/router'
-import { minpassword, recovery_phrase_words } from '/const/'
 
 import Input from '/components/styled/Input'
 import Div from '/components/styled/Div'
@@ -49,9 +50,6 @@ const STEP = {
 
 export default class ImportPrivate extends Component {
     componentWillMount() {
-        this.observer = createObserver(m => this.forceUpdate())
-        this.observer.observe(state.view)
-
         const collector = collect()
         state.view.step = STEP.typing
         state.view.is_valid_input = false
@@ -61,7 +59,12 @@ export default class ImportPrivate extends Component {
         state.view.seed_password = ''
         state.view.seed_repassword = ''
         state.view.discovering = false
+        state.view.addresses = []
         collector.destroy()
+
+        this.observer = createObserver(m => this.forceUpdate())
+        this.observer.observe(state.view)
+        this.observer.observe(state.view.addresses, 'length')
 
         const { symbol } = getParamsFromLocation()
         this.Coin = Coins.hasOwnProperty(symbol) ? Coins[symbol] : Coins.ETH
@@ -131,39 +134,48 @@ export default class ImportPrivate extends Component {
         e.preventDefault()
         const seed = state.view.seed_input
         const collector = collect()
+        const addresses = state.view.addresses
         state.view.discovering = true
         state.view.step = STEP.addresses
-        this.Coin.discoverWallet(seed, ({ address, balance }) => {
-            console.log(address, balance)
+        this.Coin.discoverWallet(seed, wallet => {
+            // console.log(addresses === state.view.addresses)
+            if (addresses === state.view.addresses)
+                state.view.addresses.push(wallet)
         }).then(wallet => {
-            console.log(wallet)
-            state.view.discovering = false
+            // console.log(wallet)
+            if (addresses === state.view.addresses) {
+                this.wallet = wallet
+                state.view.discovering = false
+            }
         })
         collector.emit()
     }
 
     onBack(e) {
         e.preventDefault()
+        const collector = collect()
+        state.view.addresses = []
         state.view.step = STEP.typing
+        collector.emit()
     }
 
     onSubmit(e) {
         e.preventDefault()
-        // const seed = state.view.seed_input
-        // const collector = collect()
-        // const symbol = this.Coin.symbol
-        // const address = wallet.address
-        // const asset = createAsset(
-        //     this.Coin.type,
-        //     symbol,
-        //     address,
-        //     wallet.addresses
-        // )
-        // const asset_id = getAssetId(asset)
-        // setSeed(asset_id, seed, state.view.seed_password)
-        // setHref(routes.asset({ asset_id: asset_id }))
-        // addNotification(`New "${symbol}" asset has been imported`)
-        // collector.emit()
+        const collector = collect()
+        const seed = state.view.seed_input
+        const symbol = this.Coin.symbol
+        const address = this.wallet.address
+        const asset = createAsset(
+            this.Coin.type,
+            symbol,
+            address,
+            this.wallet.addresses
+        )
+        const asset_id = getAssetId(asset)
+        setSeed(asset_id, seed, state.view.seed_password)
+        setHref(routes.asset({ asset_id: asset_id }))
+        addNotification(`New "${symbol}" asset has been imported`)
+        collector.emit()
     }
 
     get isInvalidRepassword() {
@@ -186,13 +198,21 @@ export default class ImportPrivate extends Component {
     }
 
     render() {
+        const addresses = state.view.addresses
+        const total = addresses.reduce(
+            (t, addr) => t.add(addr.balance),
+            bigNumber(0)
+        )
         return React.createElement(ImportPrivateTemplate, {
+            Coin: this.Coin,
             step: state.view.step,
             seed_input: state.view.seed_input,
             seed_input_error: state.view.seed_input_error,
             seed_password: state.view.seed_password,
             seed_repassword: state.view.seed_repassword,
             discovering: state.view.discovering,
+            addresses: state.view.addresses,
+            total: total,
             is_valid_seed: state.view.is_valid_seed,
             isValidForm: this.isValidForm,
             isInvalidRepassword: this.isInvalidRepassword,
@@ -208,12 +228,15 @@ export default class ImportPrivate extends Component {
 }
 
 function ImportPrivateTemplate({
+    Coin,
     step,
     seed_input,
     seed_input_error,
     seed_password,
     seed_repassword,
     discovering,
+    addresses,
+    total,
     is_valid_seed,
     isValidForm,
     isInvalidRepassword,
@@ -317,31 +340,30 @@ function ImportPrivateTemplate({
             <Show if={step === STEP.addresses}>
                 <div>
                     <ItemsList>
-                        {[
-                            { address: 'addresses', balance: '0.13' },
-                            { address: 'addresses2', balance: '0.21332' }
-                        ].map(addr => {
+                        {addresses.map(addr => {
                             return (
                                 <ItemList selected={true}>
                                     <ItemListInner>
-                                        <ItemListItemRadio>
+                                        {/* <ItemListItemRadio>
                                             <CheckboxButton
                                                 onClick={e => {}}
                                                 checked={true}
                                             />
-                                        </ItemListItemRadio>
+                                        </ItemListItemRadio> */}
                                         <ItemListItemLeft>
                                             {addr.address}
                                         </ItemListItemLeft>
                                         <ItemListItemRight>
-                                            {`${addr.balance} BTC`}
+                                            {`${addr.balance} ${Coin.symbol}`}
                                         </ItemListItemRight>
                                     </ItemListInner>
                                 </ItemList>
                             )
                         })}
                     </ItemsList>
-                    <ItemListTotal>0.12341 BTC</ItemListTotal>
+                    <ItemListTotal>
+                        {total} {Coin.symbol}
+                    </ItemListTotal>
                     <Div margin-top="20px">
                         <FormField>
                             <FormFieldButtons>
