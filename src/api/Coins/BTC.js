@@ -328,11 +328,19 @@ export function decryptBIP38(encryptedKey, password, progressCallback) {
 }
 
 // fetchs
-export function discoverWallet(seed) {
+export function getWallet(seed) {
+    return discoverWallet(seed)
+}
+
+export function discoverWallet(seed, onDiscoverAddress) {
     return new Promise(resolve => {
         let index = 0
         let segwit = false
         const addresses = []
+        const onPush = (address, balance) => {
+            if (onDiscoverAddress) onDiscoverAddress({ address, balance })
+            addresses.push(address)
+        }
         const onFetch = () => {
             const wallet = getWalletFromSeed({
                 seed: seed,
@@ -344,15 +352,14 @@ export function discoverWallet(seed) {
                 // console.log(seed, index, totals)
                 if (totals.totalReceived > 0) {
                     index += 1
-                    addresses.push(address)
+                    onPush(address, totals.balance)
                     onFetch()
                 } else if (!segwit) {
                     index = 0
                     segwit = true
                     onFetch()
                 } else {
-                    if (addresses.length === 0) addresses.push(address)
-                    // console.log(seed, 'finish', addresses)
+                    if (addresses.length === 0) onPush(address, '0')
                     resolve({
                         address: addresses[addresses.length - 1],
                         addresses: addresses

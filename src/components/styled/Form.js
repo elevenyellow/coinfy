@@ -41,6 +41,7 @@ export const FormFieldRight = styled.div`
 `
 
 export const FormFieldButtons = styled.div`
+    margin-left: 10px;
     float: right;
     width: ${props => props.width || 'auto'};
 `

@@ -164,12 +164,12 @@ export function urlDecodeTx() {
     return ''
 }
 
-export function discoverWallet(seed) {
+export function getWallet(seed) {
     return new Promise(resolve => {
         const wallets = getWalletsFromSeed({
             seed: seed,
             index: 0,
-            count: 5
+            count: 1
         })
         const addresses = wallets.map(wallet => wallet.address)
         resolve({
