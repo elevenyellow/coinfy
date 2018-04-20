@@ -164,7 +164,7 @@ export function urlDecodeTx() {
     return ''
 }
 
-export function getWallet(seed) {
+export function discoverAddress(seed) {
     return new Promise(resolve => {
         const wallets = getWalletsFromSeed({
             seed: seed,
