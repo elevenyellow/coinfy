@@ -337,10 +337,11 @@ export function discoverAddress({ seed, index = 0, segwit = false }) {
         })
         const address = wallet.address
         fetchTotals(address).then(totals => {
-            if (totals.totalReceived === 0 && !segwit) {
-                return resolve(discoverAddress({seed,segwit:true}))
-            }
-            else resolve({address, balance:totals.balance})
+            resolve({
+                address,
+                balance: totals.balance,
+                totalReceived: totals.totalReceived
+            })
         })
     })
 }
@@ -350,32 +351,31 @@ export function discoverWallet(seed, onDiscoverAddress) {
         let index = 0
         let segwit = false
         const addresses = []
-        const onPush = (address, balance) => {
-            if (onDiscoverAddress) onDiscoverAddress({ address, balance })
-            addresses.push(address)
+        const onPush = wallet => {
+            if (onDiscoverAddress) onDiscoverAddress(wallet)
+            addresses.push(wallet.address)
         }
         const onFetch = () => {
-            const wallet = getWalletFromSeed({
-                seed: seed,
-                index: index,
-                segwit: segwit
-            })
-            const address = wallet.address
-            fetchTotals(address).then(totals => {
-                // console.log(seed, index, totals)
-                if (totals.totalReceived > 0) {
+            discoverAddress({ seed, index, segwit }).then(wallet => {
+                // console.log(seed, index, wallet)
+                if (wallet.totalReceived > 0) {
                     index += 1
-                    onPush(address, totals.balance)
+                    onPush(wallet)
                     onFetch()
                 } else if (!segwit) {
                     index = 0
                     segwit = true
                     onFetch()
                 } else {
-                    if (addresses.length === 0) onPush(address, '0')
+                    if (addresses.length === 0) {
+                        onPush({ address: wallet.address, balance: 0 })
+                        index += 1
+                    }
                     resolve({
                         address: addresses[addresses.length - 1],
-                        addresses: addresses
+                        addresses,
+                        index,
+                        segwit
                     })
                 }
             })

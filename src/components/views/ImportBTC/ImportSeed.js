@@ -75,6 +75,7 @@ export default class ImportPrivate extends Component {
         this.onChangeRepassword = this.onChangeRepassword.bind(this)
         this.onNext = this.onNext.bind(this)
         this.onBack = this.onBack.bind(this)
+        this.onLoadMore = this.onLoadMore.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
     componentWillUnmount() {
@@ -134,15 +135,16 @@ export default class ImportPrivate extends Component {
         const seed = state.view.seed_input
         const collector = collect()
         state.view.step = STEP.addresses
-        this.discoverWallet({ seed })
+        this.discoverWallet(seed)
         collector.emit()
     }
 
-    discoverWallet(data) {
+    discoverWallet(seed) {
         const collector = collect()
         const addresses = state.view.addresses
         state.view.discovering = true
-        this.Coin.discoverWallet(data, wallet => {
+        this.Coin.discoverWallet(seed, wallet => {
+            console.log(wallet)
             // console.log(addresses === state.view.addresses)
             if (addresses === state.view.addresses)
                 state.view.addresses.push(wallet)
@@ -150,10 +152,23 @@ export default class ImportPrivate extends Component {
             // console.log(wallet)
             if (addresses === state.view.addresses) {
                 this.wallet = wallet
+                this.wallet.seed = seed
                 state.view.discovering = false
             }
         })
         collector.emit()
+    }
+
+    onLoadMore() {
+        state.view.discovering = true
+        this.Coin.discoverAddress(this.wallet).then(wallet => {
+            // console.log(wallet)
+            const collector = collect()
+            this.wallet.index += 1
+            state.view.discovering = false
+            state.view.addresses.push(wallet)
+            collector.emit()
+        })
     }
 
     onBack(e) {
@@ -174,7 +189,7 @@ export default class ImportPrivate extends Component {
             this.Coin.type,
             symbol,
             address,
-            this.wallet.addresses
+            state.view.addresses.map(wallet => wallet.address)
         )
         const asset_id = getAssetId(asset)
         setSeed(asset_id, seed, state.view.seed_password)
@@ -227,6 +242,7 @@ export default class ImportPrivate extends Component {
             onChangeRepassword: this.onChangeRepassword,
             onNext: this.onNext,
             onBack: this.onBack,
+            onLoadMore: this.onLoadMore,
             onSubmit: this.onSubmit
         })
     }
@@ -251,6 +267,7 @@ function ImportPrivateTemplate({
     onChangeRepassword,
     onNext,
     onBack,
+    onLoadMore,
     onSubmit
 }) {
     return (
@@ -367,7 +384,11 @@ function ImportPrivateTemplate({
                         })}
                     </ItemsList>
                     <ResultAddress>
-                        <LoadMore>Load more Addresses</LoadMore>
+                        <Show if={!discovering}>
+                            <LoadMore onClick={onLoadMore}>
+                                Load more Addresses
+                            </LoadMore>
+                        </Show>
                         <Total>
                             {total} {Coin.symbol}
                         </Total>
