@@ -47,6 +47,7 @@ export const ascii = ''
 export const coin_decimals = 18
 export const price_decimals = 0
 export const satoshis = Math.pow(10, coin_decimals)
+export const multiaddress = false
 export const default_gas_limit = 21000
 export const labels = 'eth coin etereum'
 export const logo = ASSET_LOGO(symbol)
@@ -185,8 +186,6 @@ export function discoverWallet(seed, onDiscoverAddress) {
         let index = 0
         const addresses = []
         const onPush = wallet => {
-            console.log(wallet)
-
             if (onDiscoverAddress) onDiscoverAddress(wallet)
             addresses.push(wallet.address)
         }

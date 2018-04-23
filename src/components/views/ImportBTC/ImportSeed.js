@@ -20,7 +20,7 @@ import { routes, Show } from '/store/router'
 
 import Input from '/components/styled/Input'
 import Div from '/components/styled/Div'
-import CheckboxButton from '/components/styled/CheckboxButton'
+import RadioButton from '/components/styled/RadioButton'
 import Textarea from '/components/styled/Textarea'
 import Password from '/components/styled/Password'
 import Button from '/components/styled/Button'
@@ -59,6 +59,7 @@ export default class ImportPrivate extends Component {
         state.view.seed_repassword = ''
         state.view.discovering = false
         state.view.addresses = []
+        state.view.address_selected = 0
         collector.destroy()
 
         this.observer = createObserver(m => this.forceUpdate())
@@ -75,6 +76,7 @@ export default class ImportPrivate extends Component {
         this.onChangeRepassword = this.onChangeRepassword.bind(this)
         this.onNext = this.onNext.bind(this)
         this.onBack = this.onBack.bind(this)
+        this.onChangeSelected = this.onChangeSelected.bind(this)
         this.onLoadMore = this.onLoadMore.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
@@ -144,7 +146,6 @@ export default class ImportPrivate extends Component {
         const addresses = state.view.addresses
         state.view.discovering = true
         this.Coin.discoverWallet(seed, wallet => {
-            console.log(wallet)
             // console.log(addresses === state.view.addresses)
             if (addresses === state.view.addresses)
                 state.view.addresses.push(wallet)
@@ -177,6 +178,10 @@ export default class ImportPrivate extends Component {
         state.view.addresses = []
         state.view.step = STEP.typing
         collector.emit()
+    }
+
+    onChangeSelected(index) {
+        state.view.address_selected = index
     }
 
     onSubmit(e) {
@@ -232,6 +237,7 @@ export default class ImportPrivate extends Component {
             seed_repassword: state.view.seed_repassword,
             discovering: state.view.discovering,
             addresses: state.view.addresses,
+            address_selected: state.view.address_selected,
             total: total,
             is_valid_seed: state.view.is_valid_seed,
             isValidForm: this.isValidForm,
@@ -242,6 +248,7 @@ export default class ImportPrivate extends Component {
             onChangeRepassword: this.onChangeRepassword,
             onNext: this.onNext,
             onBack: this.onBack,
+            onChangeSelected: this.onChangeSelected,
             onLoadMore: this.onLoadMore,
             onSubmit: this.onSubmit
         })
@@ -257,6 +264,7 @@ function ImportPrivateTemplate({
     seed_repassword,
     discovering,
     addresses,
+    address_selected,
     total,
     is_valid_seed,
     isValidForm,
@@ -267,6 +275,7 @@ function ImportPrivateTemplate({
     onChangeRepassword,
     onNext,
     onBack,
+    onChangeSelected,
     onLoadMore,
     onSubmit
 }) {
@@ -362,16 +371,24 @@ function ImportPrivateTemplate({
             <Show if={step === STEP.addresses}>
                 <div>
                     <ItemsList>
-                        {addresses.map(addr => {
+                        {addresses.map((addr, index) => {
+                            const selected =
+                                Coin.multiaddress ||
+                                (!Coin.multiaddress &&
+                                    index === address_selected)
                             return (
-                                <ItemList selected={true}>
+                                <ItemList selected={selected}>
                                     <ItemListInner>
-                                        {/* <ItemListItemRadio>
-                                            <CheckboxButton
-                                                onClick={e => {}}
-                                                checked={true}
-                                            />
-                                        </ItemListItemRadio> */}
+                                        <Show if={!Coin.multiaddress}>
+                                            <ItemListItemRadio>
+                                                <RadioButton
+                                                    onClick={e =>
+                                                        onChangeSelected(index)
+                                                    }
+                                                    checked={selected}
+                                                />
+                                            </ItemListItemRadio>
+                                        </Show>
                                         <ItemListItemLeft>
                                             {addr.address}
                                         </ItemListItemLeft>

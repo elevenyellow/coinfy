@@ -39,7 +39,8 @@ export const color = '#fdb033'
 export const ascii = 'Ƀ'
 export const coin_decimals = 8
 export const price_decimals = 0
-export const satoshis = 100000000
+export const satoshis = Math.pow(10, coin_decimals)
+export const multiaddress = true
 export const labels = 'btc coin'
 export const logo = ASSET_LOGO(symbol)
 
