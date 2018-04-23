@@ -368,8 +368,8 @@ export function discoverWallet(seed, onDiscoverAddress) {
                     onFetch()
                 } else {
                     if (addresses.length === 0) {
-                        onPush({ address: wallet.address, balance: 0 })
                         index += 1
+                        onPush({ address: wallet.address, balance: 0 })
                     }
                     resolve({
                         address: addresses[addresses.length - 1],

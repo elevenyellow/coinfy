@@ -164,17 +164,18 @@ export function urlDecodeTx() {
     return ''
 }
 
-export function discoverAddress(seed) {
+export function discoverAddress({ seed, index = 0 }) {
     return new Promise(resolve => {
-        const wallets = getWalletsFromSeed({
-            seed: seed,
-            index: 0,
-            count: 1
+        const wallet = getWalletFromSeed({
+            seed,
+            index
         })
-        const addresses = wallets.map(wallet => wallet.address)
-        resolve({
-            address: addresses[0],
-            addresses: addresses
+        const address = wallet.address
+        fetchBalance(address).then(balance => {
+            resolve({
+                address,
+                balance
+            })
         })
     })
 }
@@ -183,26 +184,28 @@ export function discoverWallet(seed, onDiscoverAddress) {
     return new Promise(resolve => {
         let index = 0
         const addresses = []
-        const onPush = (address, balance) => {
-            if (onDiscoverAddress) onDiscoverAddress({ address, balance })
-            addresses.push(address)
+        const onPush = wallet => {
+            console.log(wallet)
+
+            if (onDiscoverAddress) onDiscoverAddress(wallet)
+            addresses.push(wallet.address)
         }
         const onFetch = () => {
-            const wallet = getWalletFromSeed({
-                seed: seed,
-                index: index
-            })
-            const address = wallet.address
-            fetchBalance(address).then(balance => {
+            discoverAddress({ seed, index }).then(wallet => {
+                const balance = wallet.balance
                 if (balance > 0) {
                     index += 1
-                    onPush(address, balance)
+                    onPush(wallet)
                     onFetch()
                 } else {
-                    if (addresses.length === 0) onPush(address, '0')
+                    if (addresses.length === 0) {
+                        index += 1
+                        onPush({ address: wallet.address, balance: 0 })
+                    }
                     resolve({
                         address: addresses[addresses.length - 1],
-                        addresses: addresses
+                        addresses,
+                        index
                     })
                 }
             })
