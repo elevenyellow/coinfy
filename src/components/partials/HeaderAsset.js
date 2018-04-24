@@ -6,7 +6,8 @@ import {
     getAsset,
     convertBalance,
     formatCurrency,
-    getParamsFromLocation
+    getParamsFromLocation,
+    isAssetWithSeed
 } from '/store/getters'
 import {
     setHref,
@@ -28,12 +29,16 @@ import H2 from '/components/styled/H2'
 import Opacity from '/components/styled/Opacity'
 import { RightHeader } from '/components/styled/Right'
 
+import IconSettings from 'react-icons/lib/md/settings'
+import IconEdit from 'react-icons/lib/md/edit'
+
 export default class HeaderAsset extends Component {
     componentWillMount() {
         const { asset_id } = getParamsFromLocation()
         this.asset_id = asset_id
         this.changedLabel = false
         this.asset = getAsset(this.asset_id)
+        this.Coin = Coins[this.asset.symbol]
         // this.qr = generateQRCode(this.address, 140, styles.color.front3)
         this.observer = createObserver(mutations => {
             if (mutations[0].prop === 'pathname') {
@@ -93,6 +98,7 @@ export default class HeaderAsset extends Component {
 
     render() {
         return React.createElement(HeaderAssetTemplate, {
+            is_seed: isAssetWithSeed(this.asset_id),
             address: this.asset.address,
             label: this.asset ? this.asset.label : '',
             symbol: this.asset.symbol,
@@ -108,6 +114,7 @@ export default class HeaderAsset extends Component {
 }
 
 function HeaderAssetTemplate({
+    is_seed,
     address,
     label,
     symbol,
@@ -119,6 +126,9 @@ function HeaderAssetTemplate({
 }) {
     return (
         <RightHeader>
+            <Settings>
+                <IconSettings size={18} color={styles.color.grey1} />
+            </Settings>
             <Icon>
                 <img src={logo} />
             </Icon>
@@ -132,7 +142,17 @@ function HeaderAssetTemplate({
                 />
                 <Div padding-left="2px">
                     <H2>
-                        <strong>{address}</strong>
+                        {is_seed ? (
+                            <Link href="#">
+                                <span>{address}</span>
+                                <IconEdit
+                                    size={15}
+                                    color={styles.color.grey1}
+                                />
+                            </Link>
+                        ) : (
+                            <strong>{address}</strong>
+                        )}
                     </H2>
                 </Div>
             </Left>
@@ -146,6 +166,17 @@ function HeaderAssetTemplate({
         </RightHeader>
     )
 }
+
+const Settings = styled.div`
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: styles.color.grey1;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.6;
+    }
+`
 
 const Icon = styled.div`
     width: 30px;
@@ -202,5 +233,15 @@ const H1b = styled.div`
     }
     ${styles.media.fourth} {
         display: none;
+    }
+`
+const Link = styled.a`
+    font-weight: bold;
+    &:hover {
+        color: ${styles.color.background2};
+    }
+    svg {
+        position: relative;
+        top: -2px;
     }
 `

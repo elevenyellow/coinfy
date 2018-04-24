@@ -99,7 +99,7 @@ export default class ImportPrivate extends Component {
                 validateSeed(seed) &&
                 seed.trim().split(/\s+/g).length === recovery_phrase_words
 
-            if (this.Coin.multiaddress && isAssetRegisteredBySeed(this.Coin.symbol, seed)) {
+            if (isAssetRegisteredBySeed(this.Coin.symbol, seed)) {
                 state.view.seed_input_error = 'You already have this asset'
                 state.view.is_valid_input = false
             } else {
@@ -192,9 +192,7 @@ export default class ImportPrivate extends Component {
         const address = this.Coin.multiaddress
             ? this.wallet.address
             : state.view.addresses[state.view.address_selected].address
-        const addresses = this.Coin.multiaddress
-            ? state.view.addresses.map(wallet => wallet.address)
-            : [address]
+        const addresses = state.view.addresses.map(wallet => wallet.address)
         const asset = createAsset(this.Coin.type, symbol, address, addresses)
         const asset_id = getAssetId(asset)
         setSeed(asset_id, seed, state.view.seed_password)
