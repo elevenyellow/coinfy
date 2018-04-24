@@ -31,7 +31,7 @@ export default class SelectDropdown extends React.Component {
         const state = this.state
         const childrens = props.children || this.childrens
         this.childrens = Array.isArray(childrens) ? childrens : [childrens]
-        let selected_index = 0
+        let selected_index = -1
         const options = this.childrens.map((child, index) => {
             const attrs = child.attributes // || child.props
             if (attrs.selected) selected_index = index
@@ -47,8 +47,9 @@ export default class SelectDropdown extends React.Component {
                 </DropdownItem>
             )
         })
-        const selected = childrens[selected_index]
-
+        // const selected = selected_index === -1 ? childrens[0] : childrens[selected_index]
+        const label =
+            selected_index === -1 ? '' : childrens[selected_index].children
         return (
             <Dropdown
                 onOpen={this.onOpen.bind(this)}
@@ -56,9 +57,7 @@ export default class SelectDropdown extends React.Component {
                 open={state.open}
             >
                 <DropdownButton open={state.open}>
-                    <DropdownLabel open={state.open}>
-                        {selected.children}
-                    </DropdownLabel>
+                    <DropdownLabel open={state.open}>{label}</DropdownLabel>
                     <DropdownArrow open={state.open}>
                         <span />
                     </DropdownArrow>

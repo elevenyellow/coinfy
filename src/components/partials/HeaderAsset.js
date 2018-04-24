@@ -18,7 +18,7 @@ import {
 
 import { Coins } from '/api/coins'
 import { Fiats } from '/api/fiats'
-import { routes, Router, Route, Show } from '/store/router'
+import { routes } from '/store/router'
 import styles from '/const/styles'
 import state from '/store/state'
 
@@ -62,6 +62,7 @@ export default class HeaderAsset extends Component {
 
         this.onChangeLabel = this.onChangeLabel.bind(this)
         this.onBlur = this.onBlur.bind(this)
+        this.onChangeRoute = this.onChangeRoute.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -96,6 +97,10 @@ export default class HeaderAsset extends Component {
         }
     }
 
+    onChangeRoute(route) {
+        setHref(route(getParamsFromLocation()))
+    }
+
     render() {
         return React.createElement(HeaderAssetTemplate, {
             is_seed: isAssetWithSeed(this.asset_id),
@@ -108,7 +113,8 @@ export default class HeaderAsset extends Component {
                 convertBalance(this.asset.symbol, this.asset.balance)
             ),
             onChangeLabel: this.onChangeLabel,
-            onBlur: this.onBlur
+            onBlur: this.onBlur,
+            onChangeRoute: this.onChangeRoute
         })
     }
 }
@@ -122,11 +128,12 @@ function HeaderAssetTemplate({
     balance_asset,
     balance_currency,
     onChangeLabel,
-    onBlur
+    onBlur,
+    onChangeRoute
 }) {
     return (
         <RightHeader>
-            <Settings>
+            <Settings onClick={() => onChangeRoute(routes.assetSettings)}>
                 <IconSettings size={18} color={styles.color.grey1} />
             </Settings>
             <Icon>
@@ -143,7 +150,11 @@ function HeaderAssetTemplate({
                 <Div padding-left="2px">
                     <H2>
                         {is_seed ? (
-                            <Link href="#">
+                            <Link
+                                onClick={() =>
+                                    onChangeRoute(routes.assetAddresses)
+                                }
+                            >
                                 <span>{address}</span>
                                 <IconEdit
                                     size={15}
@@ -170,7 +181,7 @@ function HeaderAssetTemplate({
 const Settings = styled.div`
     position: absolute;
     top: 10px;
-    right: 10px;
+    right: 15px;
     color: styles.color.grey1;
     cursor: pointer;
     &:hover {
@@ -237,6 +248,8 @@ const H1b = styled.div`
 `
 const Link = styled.a`
     font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
     &:hover {
         color: ${styles.color.background2};
     }

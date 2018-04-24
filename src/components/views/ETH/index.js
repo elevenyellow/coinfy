@@ -36,8 +36,9 @@ import Summary from '/components/views/BTC/Summary'
 import Send from '/components/views/BTC/Send'
 import Addresses from '/components/views/BTC/Addresses'
 import ExportETH from '/components/views/ETH/Export'
-import ChangePassword from '/components/views/BTC/ChangePassword'
-import Delete from '/components/views/BTC/Delete'
+// import ChangePassword from '/components/views/BTC/ChangePassword'
+// import Delete from '/components/views/BTC/Delete'
+import Settings from '/components/views/BTC/Settings'
 
 export default class ViewETH extends Component {
     componentWillMount() {
@@ -107,7 +108,7 @@ function ViewETHTemplate({ location, route, hasPrivateKey, hasSeed, onClick }) {
                             </MenuContentItemText>
                         </MenuContentItem>
 
-                        <MenuContentItem
+                        {/* <MenuContentItem
                             disabled={!hasSeed}
                             selected={route === routes.assetAddresses}
                             onClick={e => {
@@ -117,7 +118,7 @@ function ViewETHTemplate({ location, route, hasPrivateKey, hasSeed, onClick }) {
                             <MenuContentItemText>
                                 Addresses{tooltipSeed}
                             </MenuContentItemText>
-                        </MenuContentItem>
+                        </MenuContentItem> */}
 
                         <MenuContentItem
                             disabled={!hasPrivateKey}
@@ -131,7 +132,7 @@ function ViewETHTemplate({ location, route, hasPrivateKey, hasSeed, onClick }) {
                             </MenuContentItemText>
                         </MenuContentItem>
 
-                        <MenuContentItem
+                        {/* <MenuContentItem
                             disabled={!hasPrivateKey}
                             selected={route === routes.assetChangepassword}
                             onClick={e => {
@@ -142,14 +143,14 @@ function ViewETHTemplate({ location, route, hasPrivateKey, hasSeed, onClick }) {
                             <MenuContentItemText>
                                 Change password{tooltipPrivatekey}
                             </MenuContentItemText>
-                        </MenuContentItem>
+                        </MenuContentItem> */}
 
-                        <MenuContentItem
+                        {/* <MenuContentItem
                             selected={route === routes.assetDelete}
                             onClick={e => onClick(routes.assetDelete)}
                         >
                             <MenuContentItemText>Delete</MenuContentItemText>
-                        </MenuContentItem>
+                        </MenuContentItem> */}
                     </Menu>
                 </Div>
 
@@ -170,12 +171,8 @@ function ViewETHTemplate({ location, route, hasPrivateKey, hasSeed, onClick }) {
                         <ExportETH />
                     </Route>
 
-                    <Route if={hasPrivateKey} is={routes.assetChangepassword}>
-                        <ChangePassword />
-                    </Route>
-
-                    <Route is={routes.assetDelete}>
-                        <Delete />
+                    <Route is={routes.assetSettings}>
+                        <Settings />
                     </Route>
 
                     <Route>

@@ -22,7 +22,8 @@ export const routes = {
     assetChangepassword: group.add(
         createRoute(`/asset/:asset_id/changepassword`)
     ),
-    assetDelete: group.add(createRoute(`/asset/:asset_id/delete`))
+    assetDelete: group.add(createRoute(`/asset/:asset_id/delete`)),
+    assetSettings: group.add(createRoute(`/asset/:asset_id/settings`))
 }
 
 export const Router = props => {

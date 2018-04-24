@@ -36,8 +36,9 @@ import Summary from '/components/views/BTC/Summary'
 import Send from '/components/views/ERC20/Send'
 import Addresses from '/components/views/BTC/Addresses'
 import Export from '/components/views/ETH/Export'
-import ChangePassword from '/components/views/BTC/ChangePassword'
-import Delete from '/components/views/BTC/Delete'
+// import ChangePassword from '/components/views/BTC/ChangePassword'
+// import Delete from '/components/views/BTC/Delete'
+import Settings from '/components/views/BTC/Settings'
 
 export default class ViewERC20 extends Component {
     componentWillMount() {
@@ -113,7 +114,7 @@ function ViewERC20Template({
                             </MenuContentItemText>
                         </MenuContentItem>
 
-                        <MenuContentItem
+                        {/* <MenuContentItem
                             disabled={!hasSeed}
                             selected={route === routes.assetAddresses}
                             onClick={e => {
@@ -123,7 +124,7 @@ function ViewERC20Template({
                             <MenuContentItemText>
                                 Addresses{tooltipSeed}
                             </MenuContentItemText>
-                        </MenuContentItem>
+                        </MenuContentItem> */}
 
                         <MenuContentItem
                             disabled={!hasPrivateKey}
@@ -137,7 +138,7 @@ function ViewERC20Template({
                             </MenuContentItemText>
                         </MenuContentItem>
 
-                        <MenuContentItem
+                        {/* <MenuContentItem
                             disabled={!hasPrivateKey}
                             selected={route === routes.assetChangepassword}
                             onClick={e => {
@@ -148,14 +149,14 @@ function ViewERC20Template({
                             <MenuContentItemText>
                                 Change password{tooltipPrivatekey}
                             </MenuContentItemText>
-                        </MenuContentItem>
+                        </MenuContentItem> */}
 
-                        <MenuContentItem
+                        {/* <MenuContentItem
                             selected={route === routes.assetDelete}
                             onClick={e => onClick(routes.assetDelete)}
                         >
                             <MenuContentItemText>Delete</MenuContentItemText>
-                        </MenuContentItem>
+                        </MenuContentItem> */}
                     </Menu>
                 </Div>
 
@@ -176,12 +177,8 @@ function ViewERC20Template({
                         <Export />
                     </Route>
 
-                    <Route is={routes.assetChangepassword} if={hasPrivateKey}>
-                        <ChangePassword />
-                    </Route>
-
-                    <Route is={routes.assetDelete}>
-                        <Delete />
+                    <Route is={routes.assetSettings}>
+                        <Settings />
                     </Route>
 
                     <Route>
