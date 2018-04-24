@@ -181,7 +181,7 @@ export function discoverAddress({ seed, index = 0 }) {
     })
 }
 
-export function discoverWallet(seed, onDiscoverAddress) {
+export function discoverWallet({ seed }, onDiscoverAddress) {
     return new Promise(resolve => {
         let index = 0
         const addresses = []

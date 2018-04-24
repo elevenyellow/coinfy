@@ -252,8 +252,12 @@ const Link = styled.a`
     cursor: pointer;
     &:hover {
         color: ${styles.color.background2};
+        svg {
+            display: inline;
+        }
     }
     svg {
+        display: none;
         position: relative;
         top: -2px;
     }

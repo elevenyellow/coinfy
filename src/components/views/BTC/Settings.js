@@ -187,7 +187,6 @@ function ChangePasswordTemplate({
     onDeleteConfirm,
     onDeleteSubmit
 }) {
-    console.log(hasPrivateKeyOrSeed, hasSeed)
     return (
         <div>
             <Show if={hasPrivateKeyOrSeed}>

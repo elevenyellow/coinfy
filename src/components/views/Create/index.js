@@ -103,7 +103,7 @@ export default class AddAsset extends Component {
         )
         if (seed) {
             state.view.discovering = true
-            this.Coin.discoverWallet(seed).then(wallet => {
+            this.Coin.discoverWallet({ seed }).then(wallet => {
                 const collector = collect()
                 const address = wallet.address
                 const symbol = this.Coin.symbol

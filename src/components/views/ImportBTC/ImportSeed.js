@@ -145,7 +145,7 @@ export default class ImportPrivate extends Component {
         const collector = collect()
         const addresses = state.view.addresses
         state.view.discovering = true
-        this.Coin.discoverWallet(seed, wallet => {
+        this.Coin.discoverWallet({ seed }, wallet => {
             // console.log(addresses === state.view.addresses)
             if (addresses === state.view.addresses)
                 state.view.addresses.push(wallet)

@@ -347,7 +347,7 @@ export function discoverAddress({ seed, index = 0, segwit = false }) {
     })
 }
 
-export function discoverWallet(seed, onDiscoverAddress) {
+export function discoverWallet({ seed }, onDiscoverAddress) {
     return new Promise(resolve => {
         let index = 0
         let segwit = false
