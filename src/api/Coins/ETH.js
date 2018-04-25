@@ -165,14 +165,19 @@ export function urlDecodeTx() {
     return ''
 }
 
-export function discoverAddress({ seed, index = 0 }) {
+export function discoverAddress({
+    seed,
+    contract_address,
+    satoshis,
+    index = 0
+}) {
     return new Promise(resolve => {
         const wallet = getWalletFromSeed({
             seed,
             index
         })
         const address = wallet.address
-        fetchBalance(address).then(balance => {
+        fetchBalance(address, contract_address, satoshis).then(balance => {
             resolve({
                 address,
                 balance
@@ -181,7 +186,10 @@ export function discoverAddress({ seed, index = 0 }) {
     })
 }
 
-export function discoverWallet({ seed }, onDiscoverAddress) {
+export function discoverWallet(
+    { seed, contract_address, satoshis },
+    onDiscoverAddress
+) {
     return new Promise(resolve => {
         let index = 0
         const addresses = []
@@ -190,24 +198,26 @@ export function discoverWallet({ seed }, onDiscoverAddress) {
             addresses.push(wallet.address)
         }
         const onFetch = () => {
-            discoverAddress({ seed, index }).then(wallet => {
-                const balance = wallet.balance
-                if (balance > 0) {
-                    index += 1
-                    onPush(wallet)
-                    onFetch()
-                } else {
-                    if (addresses.length === 0) {
+            discoverAddress({ seed, index, contract_address, satoshis }).then(
+                wallet => {
+                    const balance = wallet.balance
+                    if (balance > 0) {
                         index += 1
-                        onPush({ address: wallet.address, balance: 0 })
+                        onPush(wallet)
+                        onFetch()
+                    } else {
+                        if (addresses.length === 0) {
+                            index += 1
+                            onPush({ address: wallet.address, balance: 0 })
+                        }
+                        resolve({
+                            address: addresses[addresses.length - 1],
+                            addresses,
+                            index
+                        })
                     }
-                    resolve({
-                        address: addresses[addresses.length - 1],
-                        addresses,
-                        index
-                    })
                 }
-            })
+            )
         }
         onFetch()
     })

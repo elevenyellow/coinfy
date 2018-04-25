@@ -85,6 +85,26 @@ export function createERC20({
                 .then(txs => Object.assign(txs, totals))
         },
 
+        discoverAddress: function({ seed, index }) {
+            return discoverAddress({
+                seed,
+                contract_address,
+                satoshis,
+                index
+            })
+        },
+
+        discoverWallet: function({ seed }, onDiscoverAddress) {
+            return discoverWallet(
+                {
+                    seed,
+                    contract_address,
+                    satoshis
+                },
+                onDiscoverAddress
+            )
+        },
+
         fetchTxs: function(address, from = 0, to = from + 100) {
             const unique_index = contract_address + address
             const address64 = addHexPrefix(
@@ -186,8 +206,6 @@ export function createERC20({
         formatAddress,
         cutDecimals,
         urlInfoTx,
-        discoverAddress,
-        discoverWallet,
         multiaddress
     }
 }

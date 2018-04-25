@@ -9,7 +9,12 @@ import { routes } from '/store/router'
 import styles from '/const/styles'
 
 import state from '/store/state'
-import { getParamsFromLocation, getAsset, getAssetId } from '/store/getters'
+import {
+    getParamsFromLocation,
+    getAsset,
+    getAssetId,
+    getSeed
+} from '/store/getters'
 import { changeAddress } from '/store/actions'
 
 import Div from '/components/styled/Div'
@@ -21,12 +26,15 @@ import Input from '/components/styled/Input'
 export default class Addresses extends Component {
     componentWillMount() {
         const { asset_id } = getParamsFromLocation()
+        this.asset_id = asset_id
         this.asset = getAsset(asset_id)
         this.Coin = Coins[this.asset.symbol]
 
         // Initial state
         const addresses = this.asset.addresses
         state.view = {
+            password: '',
+            invalid_password: false,
             addresses: addresses.map(addr => ({
                 address: addr,
                 balance: 0,
@@ -38,12 +46,15 @@ export default class Addresses extends Component {
         addresses.forEach((e, index) => {
             this.observer.observe(state.view.addresses[index])
         })
+        this.observer.observe(state.view)
         this.observer.observe(state.view.addresses)
         this.observer.observe(this.asset, 'address')
         this.fetchBalances()
 
         // binding
         this.onChangeAddress = this.onChangeAddress.bind(this)
+        this.onChangePassword = this.onChangePassword.bind(this)
+        this.onAddAddress = this.onAddAddress.bind(this)
     }
     componentWillUnmount() {
         this.observer.destroy()
@@ -75,6 +86,22 @@ export default class Addresses extends Component {
         }
     }
 
+    onChangePassword(e) {
+        const collector = collect()
+        state.view.password = e.target.value
+        state.view.invalid_password = false
+        collector.emit()
+    }
+
+    onAddAddress() {
+        const seed = getSeed(this.asset_id, state.view.password)
+        if (seed) {
+            console.log('new addr')
+        } else {
+            state.view.invalid_password = true
+        }
+    }
+
     render() {
         const addresses = state.view.addresses
         const total = addresses.reduce(
@@ -86,7 +113,11 @@ export default class Addresses extends Component {
             addresses: addresses,
             symbol: this.asset.symbol,
             total: total,
-            onChangeAddress: this.onChangeAddress
+            password: state.view.password,
+            invalid_password: state.view.invalid_password,
+            onChangeAddress: this.onChangeAddress,
+            onChangePassword: this.onChangePassword,
+            onAddAddress: this.onAddAddress
         })
     }
 }
@@ -96,7 +127,11 @@ function AddressesTemplate({
     addresses,
     symbol,
     total,
-    onChangeAddress
+    password,
+    invalid_password,
+    onChangeAddress,
+    onChangePassword,
+    onAddAddress
 }) {
     const loading_ico = (
         <img src="/static/image/loading.gif" width="22" height="22" />
@@ -140,20 +175,24 @@ function AddressesTemplate({
                 <Input
                     type="password"
                     placeholder="Password of this asset"
-                    value={''}
-                    invalid={false}
+                    value={password}
+                    invalid={invalid_password}
                     error="Invalid password"
                     width="100%"
                     text-align="center"
-                    onChange={e => {}}
+                    onChange={onChangePassword}
                 />
             </Div>
             <Div padding-top="10px">
                 <ButtonBig
-                    onClick={e => {}}
+                    onClick={onAddAddress}
                     loading={false}
                     loadingIco="/static/image/loading.gif"
-                    disabled={true}
+                    disabled={
+                        password.length === 0 ||
+                        invalid_password ||
+                        addresses.some(addr => addr.loading)
+                    }
                 >
                     Add Another Address
                 </ButtonBig>
