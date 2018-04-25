@@ -81,6 +81,12 @@ export function changeAddress(asset_id, address) {
     fetchBalance(asset_id)
 }
 
+export function addAddress(asset_id, address) {
+    const asset = getAsset(asset_id)
+    asset.addresses.push(address)
+    saveAssetsLocalstorage()
+}
+
 export function setPrivateKey(asset_id, private_key, password) {
     return setPrivateKeyOrSeed(asset_id, private_key, password, false)
 }

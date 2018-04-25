@@ -5,7 +5,7 @@ import { createObserver, collect } from 'dop'
 import { Coins } from '/api/coins'
 import { bigNumber } from '/api/numbers'
 
-import { routes } from '/store/router'
+import { routes, Show } from '/store/router'
 import styles from '/const/styles'
 
 import state from '/store/state'
@@ -15,7 +15,7 @@ import {
     getAssetId,
     getSeed
 } from '/store/getters'
-import { changeAddress } from '/store/actions'
+import { changeAddress, addAddress } from '/store/actions'
 
 import Div from '/components/styled/Div'
 import ButtonBig from '/components/styled/ButtonBig'
@@ -35,11 +35,7 @@ export default class Addresses extends Component {
         state.view = {
             password: '',
             invalid_password: false,
-            addresses: addresses.map(addr => ({
-                address: addr,
-                balance: 0,
-                loading: true
-            }))
+            addresses: addresses.map(this.formatModelAddress)
         }
 
         this.observer = createObserver(m => this.forceUpdate())
@@ -61,6 +57,14 @@ export default class Addresses extends Component {
     }
     shouldComponentUpdate() {
         return false
+    }
+
+    formatModelAddress(address) {
+        return {
+            address: address,
+            balance: 0,
+            loading: true
+        }
     }
 
     fetchBalances(index = 0) {
@@ -94,12 +98,26 @@ export default class Addresses extends Component {
     }
 
     onAddAddress() {
-        const seed = getSeed(this.asset_id, state.view.password)
-        if (seed) {
-            console.log('new addr')
+        const collector = collect()
+        const asset = this.asset
+        const wallet = this.Coin.getNextWalletFromSeed(
+            asset.addresses[asset.addresses.length - 1],
+            asset.addresses,
+            asset.seed,
+            state.view.password
+        )
+        if (wallet) {
+            // const asset = console.log('new addr', wallet)
+            const address = wallet.address
+            state.view.addresses.push(this.formatModelAddress(address))
+            addAddress(this.asset_id, address)
+            const index = state.view.addresses.length - 1
+            this.observer.observe(state.view.addresses[index])
+            this.fetchBalances(index)
         } else {
             state.view.invalid_password = true
         }
+        collector.emit()
     }
 
     render() {
@@ -109,6 +127,7 @@ export default class Addresses extends Component {
             bigNumber(0)
         )
         return React.createElement(AddressesTemplate, {
+            Coin: this.Coin,
             address_current: this.asset.address,
             addresses: addresses,
             symbol: this.asset.symbol,
@@ -123,6 +142,7 @@ export default class Addresses extends Component {
 }
 
 function AddressesTemplate({
+    Coin,
     address_current,
     addresses,
     symbol,
@@ -140,21 +160,22 @@ function AddressesTemplate({
         <Div>
             <Transactions>
                 {addresses.map(addr => {
+                    const selected =
+                        Coin.multiaddress ||
+                        (!Coin.multiaddress && address_current === addr.address)
                     return (
-                        <Transaction
-                            selected={address_current === addr.address}
-                        >
+                        <Transaction selected={selected}>
                             <TransactionInner>
-                                <TransactionItemRadio>
-                                    <RadioButton
-                                        onClick={e =>
-                                            onChangeAddress(addr.address)
-                                        }
-                                        checked={
-                                            address_current === addr.address
-                                        }
-                                    />
-                                </TransactionItemRadio>
+                                <Show if={!Coin.multiaddress}>
+                                    <TransactionItemRadio>
+                                        <RadioButton
+                                            onClick={e =>
+                                                onChangeAddress(addr.address)
+                                            }
+                                            checked={selected}
+                                        />
+                                    </TransactionItemRadio>
+                                </Show>
                                 <TransactionItemLeft>
                                     {addr.address}
                                 </TransactionItemLeft>

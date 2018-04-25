@@ -424,10 +424,46 @@ export function decryptPrivateKeyFromSeed(
     seed_encrypted,
     password
 ) {
+    const wallet = decryptWalletFromSeed(
+        address,
+        addresses,
+        seed_encrypted,
+        password
+    )
+    if (wallet) return wallet.private_key
+}
+
+export function getNextWalletFromSeed(
+    address,
+    addresses,
+    seed_encrypted,
+    password
+) {
+    const wallet = decryptWalletFromSeed(
+        address,
+        addresses,
+        seed_encrypted,
+        password
+    )
+    if (wallet)
+        return getWalletFromSeed({ seed: wallet.seed, index: wallet.index + 1 })
+}
+
+export function decryptWalletFromSeed(
+    address,
+    addresses,
+    seed_encrypted,
+    password
+) {
     const seed = decryptAES128CTR(seed_encrypted, password)
-    for (let index = 0, wallet; index < addresses.length; index++) {
+    // for (let index = 0, wallet; index < addresses.length; index++) {
+    for (let index = addresses.length - 1, wallet; index >= 0; index--) {
         wallet = getWalletFromSeed({ seed, index })
-        if (wallet.address === address) return wallet.private_key
+        if (wallet.address === address) {
+            wallet.seed = seed
+            wallet.index = index
+            return wallet
+        }
     }
 }
 
