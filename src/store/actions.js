@@ -13,7 +13,6 @@ import {
     NORMAL,
     TIMEOUT_FETCH_PRICES,
     TIMEOUT_FETCH_PRICES_TIMEOUT,
-    TIMEOUT_FETCH_SUMMARY,
     TIMEOUT_UPDATE_ALL_BALANCES,
     TIMEOUT_BETWEEN_EACH_GETBALANCE,
     LOCALSTORAGE_NETWORK,
@@ -52,7 +51,8 @@ import {
     getAsset,
     getAssetId,
     getSymbolsFromAssets,
-    isValidAsset
+    isValidAsset,
+    getFechableAddress
 } from '/store/getters'
 
 export function setHref(href) {
@@ -328,13 +328,7 @@ export function setAssetLabel(asset_id, label) {
 
 export function updateBalance(asset_id, balance) {
     const asset = getAsset(asset_id)
-    if (asset.balance !== balance) {
-        const collector = collect()
-        asset.state.shall_we_fetch_summary = true
-        asset.balance = balance
-        collector.emit()
-        saveAssetsLocalstorage()
-    }
+    asset.balance = balance
 }
 
 export function createCustomERC20(data) {
@@ -411,35 +405,14 @@ export function fetchFullBalance(asset_id) {
     }
 }
 
-// export function fetchSummaryIfReady(asset_id) {
-//     const asset = getAsset(asset_id)
-//     if (asset.state.shall_we_fetch_summary && !asset.state.fetching_summary)
-//         return fetchSummary(asset_id)
-// }
-
-// export function fetchSummary(asset_id) {
-// // console.log( 'fetchSummary', asset_id );
-// const asset = getAsset(asset_id)
-// const collector = collect()
-// asset.state.fetching_summary = true
-// asset.summary = {}
-// collector.emit()
-
-// return fetchWrapper(Coins[asset.symbol].fetchSummary(asset.address))
-//     .then(summary => {
-//         const collector = collect()
-//         asset.state.fetching_summary = false
-//         asset.state.shall_we_fetch_summary = false
-//         asset.balance = summary.balance
-//         set(asset, 'summary', summary, { deep: false })
-//         collector.emit()
-//     })
-//     .catch(e => {
-//         asset.state.fetching_summary = false
-//         // asset.state.shall_we_fetch_summary = now()
-//         console.error(asset.symbol, 'fetchSummary', e)
-//     })
-// }
+export function fetchTxs(asset_id, from = 0, to = from + 25) {
+    const asset = getAsset(asset_id)
+    if (asset !== undefined) {
+        const Coin = Coins[asset.symbol]
+        const addresses = getFechableAddress(asset_id)
+        return fetchWrapper(Coin.fetchTxs(addresses, from, to)).then(txs => txs)
+    }
+}
 
 export const fetchPrices = (function() {
     let timeout

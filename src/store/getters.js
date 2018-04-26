@@ -54,6 +54,13 @@ export function isAssetRegisteredBySeed(symbol, seed) {
     )
 }
 
+export function getFechableAddress(asset_id) {
+    const asset = getAsset(asset_id)
+    const Coin = Coins[asset.symbol]
+    return Coin.multiaddress ? asset.addresses.slice(0) : [asset.address]
+    // return [asset.address]
+}
+
 export function isAssetWithPrivateKeyOrSeed(asset_id) {
     return isAssetWithPrivateKey(asset_id) || isAssetWithSeed(asset_id)
 }
@@ -96,15 +103,10 @@ export function generateDefaultAsset(object = {}) {
         // addresses: [object.address],
         // id: getNextAssetId(object),
         label: '',
-        balance: 0,
+        balance: '0',
         printed: false, // wallet printed?
         state: {
             // this must be removed when exporting or saving in localstorage
-            shall_we_fetch_summary: true,
-            fetching_summary: false
-        },
-        summary: {
-            // summary data, must be removed when exporting
         }
     }
 

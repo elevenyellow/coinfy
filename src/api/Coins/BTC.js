@@ -532,9 +532,11 @@ function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
 //         .then(fees => fees[2])
 // }
 
-export function fetchTxs(address, from = 0, to = from + 25) {
+export function fetchTxs(addresses, from = 0, to = from + 25) {
     return fetch(
-        `${api_url}/addrs/${address}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${from}&to=${to}`
+        `${api_url}/addrs/${addresses.join(
+            ','
+        )}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${from}&to=${to}`
     )
         .then(response => response.json())
         .then(json => {
@@ -559,7 +561,7 @@ export function fetchTxs(address, from = 0, to = from + 25) {
                     index < total;
                     ++index
                 ) {
-                    if (txRaw.vin[index].addr === address) {
+                    if (addresses.includes(txRaw.vin[index].addr)) {
                         tx.value = tx.value.minus(txRaw.vin[index].value)
                     }
                 }
@@ -569,16 +571,17 @@ export function fetchTxs(address, from = 0, to = from + 25) {
                     index < total;
                     ++index
                 ) {
-                    if (
-                        txRaw.vout[index].scriptPubKey &&
-                        txRaw.vout[index].scriptPubKey.addresses &&
-                        txRaw.vout[index].scriptPubKey.addresses.indexOf(
-                            address
-                        ) > -1
-                    ) {
-                        tx.value = tx.value.add(txRaw.vout[index].value)
-                        // break // maybe
-                    }
+                    console.log('here')
+                    // if (
+                    //     txRaw.vout[index].scriptPubKey &&
+                    //     txRaw.vout[index].scriptPubKey.addresses &&
+                    //     txRaw.vout[index].scriptPubKey.addresses.include(
+                    //         address
+                    //     )
+                    // ) {
+                    //     tx.value = tx.value.add(txRaw.vout[index].value)
+                    //     // break // maybe
+                    // }
                 }
 
                 // console.log(txRaw)
@@ -589,7 +592,7 @@ export function fetchTxs(address, from = 0, to = from + 25) {
         })
 }
 
-export function fetchTotals(address) {
+function fetchTotals(address) {
     return fetch(`${api_url}/addr/${address}`)
         .then(response => response.json())
         .then(totals => totals)

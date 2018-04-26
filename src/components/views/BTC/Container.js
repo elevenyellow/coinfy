@@ -2,17 +2,18 @@ import React, { Component } from 'react'
 import { createObserver } from 'dop'
 import styled from 'styled-components'
 
-import { setHref } from '/store/actions'
 import styles from '/const/styles'
-
 import { BTC } from '/api/coins'
+
 import { routes, Router, Route, Show } from '/store/router'
 import state from '/store/state'
+import { setHref, fetchFullBalance, fetchTxs } from '/store/actions'
 import {
     isAssetWithPrivateKeyOrSeed,
     isAssetWithSeed,
     getParamsFromLocation,
-    getRouteFromLocation
+    getRouteFromLocation,
+    getAsset
 } from '/store/getters'
 
 import Help from '/components/styled/Help'
@@ -42,12 +43,36 @@ export default class Container extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.location, 'pathname')
+        this.fetchSummary()
     }
     componentWillUnmount() {
         this.observer.destroy()
     }
     shouldComponentUpdate() {
+        this.fetchSummary()
         return false
+    }
+
+    fetchSummary() {
+        const { asset_id } = getParamsFromLocation()
+        const asset = getAsset(asset_id)
+        if (this.asset_id !== asset_id && !asset.state.fetching_summary) {
+            this.asset_id = asset_id
+            asset.state.fetching_summary = true
+            fetchFullBalance(asset_id)
+                .then(balance => {
+                    console.log(asset_id, balance)
+                    return fetchTxs(asset_id).then(txs => {
+                        asset.state.fetching_summary = false
+                        console.log(asset_id, txs)
+                    })
+                })
+                .catch(e => {
+                    console.log(e)
+
+                    asset.state.fetching_summary = false
+                })
+        }
     }
 
     onClick(route) {
