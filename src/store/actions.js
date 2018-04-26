@@ -2,6 +2,8 @@ import React from 'react'
 import { set, collect } from 'dop'
 import { sha3 } from 'ethereumjs-util'
 
+import styles from '/const/styles'
+
 import {
     MAINNET,
     KEYS_TO_REMOVE_WHEN_EXPORTING,
@@ -21,14 +23,13 @@ import {
     LOCALSTORAGE_CUSTOMS,
     TYPE_ERC20
 } from '/const/'
-import { routes } from '/store/router'
-import styles from '/const/styles'
 
+import { resolveAll } from '/api/promises'
 import { Coins } from '/api/coins'
 import { createERC20 } from '/api/coins/ERC20'
 import { median } from '/api/arrays'
 import { getAllPrices } from '/api/prices'
-import { decimals } from '/api/numbers'
+import { decimals, bigNumber } from '/api/numbers'
 import { jsonParse } from '/api/objects'
 import {
     localStorageSet,
@@ -40,6 +41,7 @@ import {
     locationHref
 } from '/api/browser'
 
+import { routes } from '/store/router'
 import state from '/store/state'
 import {
     getTotalAssets,
@@ -67,9 +69,9 @@ export function createAsset(type, symbol, address, addresses) {
     state.assets[asset_id] = asset
     saveAssetsLocalstorage()
     setAssetsExported(false)
-    fetchBalanceAsset(asset_id)
+    // fetchFullBalance(asset_id)
+    // fetchPrices()
     sendEventToAnalytics('createAsset', symbol)
-    fetchPrices()
     collector.emit()
     return state.assets[asset_id]
 }
@@ -374,7 +376,7 @@ export function fetchWrapper(promise) {
 export function fetchAllBalances() {
     getAssetsAsArray().forEach((asset, index) => {
         setTimeout(
-            () => fetchBalance(getAssetId(asset)),
+            () => fetchFullBalance(getAssetId(asset)),
             index * TIMEOUT_BETWEEN_EACH_GETBALANCE
         )
     })
@@ -394,47 +396,50 @@ export function fetchBalance(asset_id) {
     }
 }
 
-export function fetchSummaryAssetIfReady(asset_id) {
+export function fetchFullBalance(asset_id) {
     const asset = getAsset(asset_id)
-    if (asset.state.shall_we_fetch_summary && !asset.state.fetching_summary)
-        return fetchSummaryAsset(asset_id)
+    if (asset !== undefined) {
+        const Coin = Coins[asset.symbol]
+        const promises = asset.addresses.map(addr => Coin.fetchBalance(addr))
+        return fetchWrapper(resolveAll(promises)).then(balances => {
+            const total = balances
+                .reduce((t, balance) => t.add(balance), bigNumber(0))
+                .toFixed()
+            updateBalance(asset_id, total)
+            return total
+        })
+    }
 }
 
-export function fetchSummaryAsset(asset_id) {
-    // console.log( 'fetchSummaryAsset', asset_id );
-    const asset = getAsset(asset_id)
-    const collector = collect()
-    asset.state.fetching_summary = true
-    asset.summary = {}
-    collector.emit()
+// export function fetchSummaryIfReady(asset_id) {
+//     const asset = getAsset(asset_id)
+//     if (asset.state.shall_we_fetch_summary && !asset.state.fetching_summary)
+//         return fetchSummary(asset_id)
+// }
 
-    return fetchWrapper(Coins[asset.symbol].fetchSummary(asset.address))
-        .then(summary => {
-            const collector = collect()
-            asset.state.fetching_summary = false
-            asset.state.shall_we_fetch_summary = false
-            asset.balance = summary.balance
-            set(asset, 'summary', summary, { deep: false })
-            collector.emit()
-        })
-        .catch(e => {
-            asset.state.fetching_summary = false
-            // asset.state.shall_we_fetch_summary = now()
-            console.error(asset.symbol, 'fetchSummaryAsset', e)
-        })
-}
+// export function fetchSummary(asset_id) {
+// // console.log( 'fetchSummary', asset_id );
+// const asset = getAsset(asset_id)
+// const collector = collect()
+// asset.state.fetching_summary = true
+// asset.summary = {}
+// collector.emit()
 
-export function fetchBalanceAsset(asset_id) {
-    // console.log( 'fetchSummaryAsset', asset_id );
-    const asset = getAsset(asset_id)
-    return fetchWrapper(Coins[asset.symbol].fetchBalance(asset.address))
-        .then(balance => {
-            asset.balance = balance
-        })
-        .catch(e => {
-            console.error(asset.symbol, 'fetchBalanceAsset', e)
-        })
-}
+// return fetchWrapper(Coins[asset.symbol].fetchSummary(asset.address))
+//     .then(summary => {
+//         const collector = collect()
+//         asset.state.fetching_summary = false
+//         asset.state.shall_we_fetch_summary = false
+//         asset.balance = summary.balance
+//         set(asset, 'summary', summary, { deep: false })
+//         collector.emit()
+//     })
+//     .catch(e => {
+//         asset.state.fetching_summary = false
+//         // asset.state.shall_we_fetch_summary = now()
+//         console.error(asset.symbol, 'fetchSummary', e)
+//     })
+// }
 
 export const fetchPrices = (function() {
     let timeout

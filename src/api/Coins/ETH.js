@@ -281,22 +281,6 @@ export function fetchTxs(
     // }
 }
 
-export function fetchSummary(address, contract_address, _satoshis = satoshis) {
-    const totals = {}
-    return fetchBalance(address, contract_address, _satoshis)
-        .then(balance => {
-            totals.balance = balance
-            return fetchTxs(
-                address,
-                undefined,
-                undefined,
-                contract_address,
-                _satoshis
-            )
-        })
-        .then(txs => Object.assign(txs, totals))
-}
-
 // http://ipfs.b9lab.com:8080/ipfs/QmTHdYEYiJPmbkcth3mQvEQQgEamFypLhc9zapsBatQW7Y/throttled_faucet.html
 
 const cacheRecomendedFee = {}

@@ -70,22 +70,6 @@ export function createERC20({
             return fetchBalance(address, contract_address, satoshis)
         },
 
-        fetchSummary: function(address) {
-            const totals = {}
-            return fetchBalance(address, contract_address, satoshis)
-                .then(balance => {
-                    totals.balance = balance
-                    return this.fetchTxs(
-                        address,
-                        undefined,
-                        undefined,
-                        contract_address,
-                        satoshis
-                    )
-                })
-                .then(txs => Object.assign(txs, totals))
-        },
-
         discoverAddress: function({ seed, index }) {
             return discoverAddress({
                 seed,

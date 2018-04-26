@@ -42,6 +42,8 @@ import Settings from '/components/views/BTC/Settings'
 
 export default class ViewBTC extends Component {
     componentWillMount() {
+        console.log(1234)
+
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.location, 'pathname')
     }

@@ -16,7 +16,6 @@ import { printTemplate } from '/api/browser'
 import { selectContentElement, copyContentSelected } from '/api/browser'
 
 import state from '/store/state'
-import { fetchSummaryAsset, fetchSummaryAssetIfReady } from '/store/actions'
 import {
     convertBalance,
     getAsset,
@@ -64,14 +63,12 @@ export default class Summary extends Component {
         this.onPrint = this.onPrint.bind(this)
 
         this.observeAll()
-        this.fetchData()
     }
     componentWillUnmount() {
         this.observerPath.destroy()
         this.observer.destroy()
     }
     shouldComponentUpdate() {
-        this.fetchData()
         return false
     }
 
@@ -112,14 +109,6 @@ export default class Summary extends Component {
         )
     }
 
-    fetchData() {
-        fetchSummaryAssetIfReady(this.asset_id)
-    }
-
-    forceFetch() {
-        fetchSummaryAsset(this.asset_id)
-    }
-
     rescanOrLoad() {
         const totalTransactions = this.asset.summary.totalTxs || 0
         const txs = this.asset.summary.txs || []
@@ -142,14 +131,8 @@ export default class Summary extends Component {
     render() {
         const address = this.asset.address
         return React.createElement(SummaryTemplate, {
-            balance_asset: this.asset.balance,
-            balance_currency: formatCurrency(
-                convertBalance(this.asset.symbol, this.asset.balance)
-            ),
             symbol: this.asset.symbol,
             totalTransactions: this.asset.summary.totalTxs || 0,
-            totalReceived: round(this.asset.summary.totalReceived || 0, 2),
-            totalSent: round(this.asset.summary.totalSent || 0, 2),
             txs: this.asset.summary.txs || [],
             fetchingSummary: this.asset.state.fetching_summary,
             fetchingTxs: state.view.fetchingTxs,
@@ -170,12 +153,8 @@ export default class Summary extends Component {
 }
 
 function SummaryTemplate({
-    balance_asset,
-    balance_currency,
     symbol,
     totalTransactions,
-    totalReceived,
-    totalSent,
     txs,
     fetchingSummary,
     fetchingTxs,

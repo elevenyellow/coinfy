@@ -589,22 +589,6 @@ export function fetchTxs(address, from = 0, to = from + 25) {
         })
 }
 
-export function fetchSummary(address) {
-    const totals = {}
-    return fetchTotals(address)
-        .then(data => {
-            totals.balance =
-                data.unconfirmedBalance < 0
-                    ? data.balance + data.unconfirmedBalance
-                    : data.balance
-            totals.totalReceived = data.totalReceived
-            totals.totalSent = data.totalSent
-            totals.unconfirmedBalance = data.unconfirmedBalance
-            return fetchTxs(address)
-        })
-        .then(txs => Object.assign(txs, totals))
-}
-
 export function fetchTotals(address) {
     return fetch(`${api_url}/addr/${address}`)
         .then(response => response.json())
