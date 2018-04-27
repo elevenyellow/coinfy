@@ -7,7 +7,7 @@ import {
     decryptBIP38 as _decryptBIP38,
     encryptBIP38 as _encryptBIP38
 } from '/api/crypto'
-import { sortBy, highest, sum } from '/api/arrays'
+import { sortBy, highest, sum, includes } from '/api/arrays'
 import { localStorageGet } from '/api/browser'
 import { resolveAll } from '/api/promises'
 
@@ -571,17 +571,15 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
                     index < total;
                     ++index
                 ) {
-                    console.log('here')
-                    // if (
-                    //     txRaw.vout[index].scriptPubKey &&
-                    //     txRaw.vout[index].scriptPubKey.addresses &&
-                    //     txRaw.vout[index].scriptPubKey.addresses.include(
-                    //         address
-                    //     )
-                    // ) {
-                    //     tx.value = tx.value.add(txRaw.vout[index].value)
-                    //     // break // maybe
-                    // }
+                    const pubkey = txRaw.vout[index].scriptPubKey
+                    if (
+                        pubkey &&
+                        pubkey.addresses &&
+                        includes(pubkey.addresses, addresses)
+                    ) {
+                        tx.value = tx.value.add(txRaw.vout[index].value)
+                        // break // maybe
+                    }
                 }
 
                 // console.log(txRaw)

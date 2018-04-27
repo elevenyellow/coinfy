@@ -56,21 +56,23 @@ export default class Container extends Component {
     fetchSummary() {
         const { asset_id } = getParamsFromLocation()
         const asset = getAsset(asset_id)
-        if (this.asset_id !== asset_id && !asset.state.fetching_summary) {
+        if (this.asset_id !== asset_id && !asset.summary.fetching) {
             this.asset_id = asset_id
-            asset.state.fetching_summary = true
+            asset.summary.fetching = true
             fetchFullBalance(asset_id)
                 .then(balance => {
                     console.log(asset_id, balance)
                     return fetchTxs(asset_id).then(txs => {
-                        asset.state.fetching_summary = false
+                        asset.summary.fetching = false
+                        asset.summary.totalTransactions = txs.totalTxs
+                        asset.summary.txs = txs.txs
                         console.log(asset_id, txs)
                     })
                 })
                 .catch(e => {
                     console.log(e)
 
-                    asset.state.fetching_summary = false
+                    asset.summary.fetching = false
                 })
         }
     }

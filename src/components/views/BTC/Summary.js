@@ -80,7 +80,7 @@ export default class Summary extends Component {
         this.Coin = Coins[this.asset.symbol] // Storing Coin api (Coin.BTC, Coin.ETH, ...)
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(this.asset, 'summary')
-        this.observer.observe(this.asset.state, 'fetching_summary')
+        this.observer.observe(this.asset.summary, 'fetching')
         this.observer.observe(state, 'currency')
         this.observer.observe(state.prices, this.asset.symbol)
         this.observer.observe(state.view, 'fetchingTxs')
@@ -134,7 +134,7 @@ export default class Summary extends Component {
             symbol: this.asset.symbol,
             totalTransactions: this.asset.summary.totalTxs || 0,
             txs: this.asset.summary.txs || [],
-            fetchingSummary: this.asset.state.fetching_summary,
+            fetchingSummary: this.asset.summary.fetching,
             fetchingTxs: state.view.fetchingTxs,
             rescanOrLoad: this.rescanOrLoad,
             address: address,

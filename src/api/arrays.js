@@ -14,6 +14,12 @@ export function sum(array) {
               .reduce((x, y) => x + y)
         : 0
 }
+export function includes(array, array2) {
+    for (let index = 0; index < array2.length; ++index)
+        if (array.includes(array2[index])) return true
+
+    return false
+}
 
 export function shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {
