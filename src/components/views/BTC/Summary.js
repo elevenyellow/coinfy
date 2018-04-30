@@ -52,7 +52,7 @@ export default class Summary extends Component {
     componentWillMount() {
         this.observerPath = createObserver(mutations => {
             this.observer.destroy()
-            this.observeAll()
+            this.getInfoAsset()
             this.forceUpdate()
         })
         this.observerPath.observe(state.location, 'pathname')
@@ -72,16 +72,26 @@ export default class Summary extends Component {
         return false
     }
 
-    observeAll() {
-        state.view = { fetchingTxs: false }
+    // getInfoAsset() {
+    //     const { asset_id } = getParamsFromLocation()
+    //     this.asset_id = asset_id
+    //     this.asset = getAsset(this.asset_id)
+    //     this.Coin = Coins[this.asset.symbol] // Storing Coin api (Coin.BTC, Coin.ETH, ...)
+    // }
 
-        console.log(this.asset.summary)
-        this.Coin = Coins[this.asset.symbol] // Storing Coin api (Coin.BTC, Coin.ETH, ...)
-        this.observer = createObserver(mutations => {
-            console.log(this.asset.summary, mutations)
-            this.forceUpdate()
-        })
-        this.observer.observe(this.asset.summary)
+    observeAll() {
+        const { asset_id } = getParamsFromLocation()
+        if (asset_id !== this.asset_id) {
+            console.log('fetch summary!!!')
+            this.asset_id = asset_id
+            this.asset = getAsset(this.asset_id)
+            this.Coin = Coins[this.asset.symbol] // Storing Coin api (Coin.BTC, Coin.ETH, ...)
+            this.observer = createObserver(mutations => {
+                console.log(this.asset.summary, mutations)
+                this.forceUpdate()
+            })
+            this.observer.observe(this.asset.summary)
+        }
     }
 
     refAddress(e) {
@@ -114,14 +124,14 @@ export default class Summary extends Component {
         if (totalTransactions === txs.length) {
             this.forceFetch()
         } else {
-            state.view.fetchingTxs = true
+            this.asset.summary.fetching = true
             this.Coin.fetchTxs(
                 this.asset.address,
                 this.asset.summary.txs.length
             ).then(txs => {
                 this.asset.summary.totalTransactions = txs.totalTxs
                 this.asset.summary.txs = this.asset.summary.txs.concat(txs.txs)
-                state.view.fetchingTxs = false
+                this.asset.summary.fetching = false
             })
         }
     }
@@ -133,7 +143,6 @@ export default class Summary extends Component {
             totalTransactions: this.asset.summary.totalTxs || 0,
             txs: this.asset.summary.txs || [],
             fetchingSummary: this.asset.summary.fetching,
-            fetchingTxs: state.view.fetchingTxs,
             rescanOrLoad: this.rescanOrLoad,
             address: address,
             qrcodebase64: generateQRCode(address),
@@ -155,7 +164,6 @@ function SummaryTemplate({
     totalTransactions,
     txs,
     fetchingSummary,
-    fetchingTxs,
     rescanOrLoad,
     address,
     qrcodebase64,
@@ -240,9 +248,7 @@ function SummaryTemplate({
                     </ListItem>
                 </List>
             </Header> */}
-            <Show
-                if={totalTransactions === 0 && !fetchingTxs && !fetchingSummary}
-            >
+            <Show if={totalTransactions === 0 && !fetchingSummary}>
                 <Div padding-top="50px" padding-bottom="50px">
                     <Message>No transactions found for this address</Message>
                 </Div>
@@ -321,7 +327,7 @@ function SummaryTemplate({
             {/* <Show if={totalTransactions === txs.length || totalTransactions > txs.length}> */}
             <Div clear="both" padding-top="20px">
                 <Button
-                    loading={fetchingTxs || fetchingSummary}
+                    loading={fetchingSummary}
                     onClick={rescanOrLoad}
                     loadingIco="/static/image/loading.gif"
                     margin="0 auto"
