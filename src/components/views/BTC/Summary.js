@@ -74,16 +74,14 @@ export default class Summary extends Component {
 
     observeAll() {
         state.view = { fetchingTxs: false }
-        const { asset_id } = getParamsFromLocation()
-        this.asset_id = asset_id
-        this.asset = getAsset(this.asset_id)
+
+        console.log(this.asset.summary)
         this.Coin = Coins[this.asset.symbol] // Storing Coin api (Coin.BTC, Coin.ETH, ...)
-        this.observer = createObserver(mutations => this.forceUpdate())
-        this.observer.observe(this.asset, 'summary')
-        this.observer.observe(this.asset.summary, 'fetching')
-        this.observer.observe(state, 'currency')
-        this.observer.observe(state.prices, this.asset.symbol)
-        this.observer.observe(state.view, 'fetchingTxs')
+        this.observer = createObserver(mutations => {
+            console.log(this.asset.summary, mutations)
+            this.forceUpdate()
+        })
+        this.observer.observe(this.asset.summary)
     }
 
     refAddress(e) {

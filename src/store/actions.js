@@ -394,7 +394,9 @@ export function fetchFullBalance(asset_id) {
     const asset = getAsset(asset_id)
     if (asset !== undefined) {
         const Coin = Coins[asset.symbol]
-        const promises = asset.addresses.map(addr => Coin.fetchBalance(addr))
+        const promises = getFechableAddress(asset_id).map(addr =>
+            Coin.fetchBalance(addr)
+        )
         return fetchWrapper(resolveAll(promises)).then(balances => {
             const total = balances
                 .reduce((t, balance) => t.add(balance), bigNumber(0))

@@ -43,39 +43,36 @@ export default class Container extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.location, 'pathname')
-        this.fetchSummary()
+        // this.fetchSummary()
     }
     componentWillUnmount() {
         this.observer.destroy()
     }
     shouldComponentUpdate() {
-        this.fetchSummary()
+        // this.fetchSummary()
         return false
     }
 
-    fetchSummary() {
-        const { asset_id } = getParamsFromLocation()
-        const asset = getAsset(asset_id)
-        if (this.asset_id !== asset_id && !asset.summary.fetching) {
-            this.asset_id = asset_id
-            asset.summary.fetching = true
-            fetchFullBalance(asset_id)
-                .then(balance => {
-                    console.log(asset_id, balance)
-                    return fetchTxs(asset_id).then(txs => {
-                        asset.summary.fetching = false
-                        asset.summary.totalTransactions = txs.totalTxs
-                        asset.summary.txs = txs.txs
-                        console.log(asset_id, txs)
-                    })
-                })
-                .catch(e => {
-                    console.log(e)
-
-                    asset.summary.fetching = false
-                })
-        }
-    }
+    // fetchSummary() {
+    //     const { asset_id } = getParamsFromLocation()
+    //     const asset = getAsset(asset_id)
+    //     if (this.asset_id !== asset_id && !asset.summary.fetching) {
+    //         this.asset_id = asset_id
+    //         asset.summary.fetching = true
+    //         fetchFullBalance(asset_id)
+    //             .then(balance => {
+    //                 return fetchTxs(asset_id).then(txs => {
+    //                     asset.summary.fetching = false
+    //                     asset.summary.totalTransactions = txs.totalTxs
+    //                     asset.summary.txs = txs.txs
+    //                 })
+    //             })
+    //             .catch(e => {
+    //                 console.error(e)
+    //                 asset.summary.fetching = false
+    //             })
+    //     }
+    // }
 
     onClick(route) {
         setHref(route(getParamsFromLocation()))

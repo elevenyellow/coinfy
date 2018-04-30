@@ -7,7 +7,7 @@ import {
     decryptBIP38 as _decryptBIP38,
     encryptBIP38 as _encryptBIP38
 } from '/api/crypto'
-import { sortBy, highest, sum, includes } from '/api/arrays'
+import { sortBy, highest, sum, includesMultiple } from '/api/arrays'
 import { localStorageGet } from '/api/browser'
 import { resolveAll } from '/api/promises'
 
@@ -40,7 +40,7 @@ export const ascii = 'Ƀ'
 export const coin_decimals = 8
 export const price_decimals = 0
 export const satoshis = Math.pow(10, coin_decimals)
-export const multiaddress = true
+export const multiaddress = false
 export const labels = 'btc coin'
 export const logo = ASSET_LOGO(symbol)
 
@@ -575,7 +575,7 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
                     if (
                         pubkey &&
                         pubkey.addresses &&
-                        includes(pubkey.addresses, addresses)
+                        includesMultiple(pubkey.addresses, addresses)
                     ) {
                         tx.value = tx.value.add(txRaw.vout[index].value)
                         // break // maybe

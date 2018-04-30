@@ -14,7 +14,7 @@ export function sum(array) {
               .reduce((x, y) => x + y)
         : 0
 }
-export function includes(array, array2) {
+export function includesMultiple(array, array2) {
     for (let index = 0; index < array2.length; ++index)
         if (array.includes(array2[index])) return true
 
