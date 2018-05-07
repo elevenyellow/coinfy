@@ -66,7 +66,7 @@ export default class Container extends Component {
                 // })
                 .then(txs => {
                     asset.summary.fetching = false
-                    asset.summary.totalTransactions = txs.totalTxs
+                    asset.summary.totalTxs = txs.totalTxs
                     asset.summary.txs = txs.txs
                 })
                 .catch(e => {

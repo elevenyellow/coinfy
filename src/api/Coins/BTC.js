@@ -585,7 +585,7 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
                 // console.log(txRaw)
                 data.txs.push(tx)
             })
-            // console.log( json )
+            // console.log(JSON.stringify(data))
             return data
         })
 }

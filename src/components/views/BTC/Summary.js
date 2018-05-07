@@ -20,7 +20,8 @@ import {
     convertBalance,
     getAsset,
     formatCurrency,
-    getParamsFromLocation
+    getParamsFromLocation,
+    getFechableAddress
 } from '/store/getters'
 
 import IconCopy from 'react-icons/lib/md/content-copy'
@@ -52,7 +53,7 @@ export default class Summary extends Component {
     componentWillMount() {
         this.observerPath = createObserver(mutations => {
             this.observer.destroy()
-            this.getInfoAsset()
+            // this.getInfoAsset()
             this.forceUpdate()
         })
         this.observerPath.observe(state.location, 'pathname')
@@ -82,12 +83,12 @@ export default class Summary extends Component {
     observeAll() {
         const { asset_id } = getParamsFromLocation()
         if (asset_id !== this.asset_id) {
-            console.log('fetch summary!!!')
+            // console.log('fetch summary!!!')
             this.asset_id = asset_id
             this.asset = getAsset(this.asset_id)
             this.Coin = Coins[this.asset.symbol] // Storing Coin api (Coin.BTC, Coin.ETH, ...)
             this.observer = createObserver(mutations => {
-                console.log(this.asset.summary, mutations)
+                // console.log(this.asset.summary, mutations)
                 this.forceUpdate()
             })
             this.observer.observe(this.asset.summary)
@@ -118,29 +119,28 @@ export default class Summary extends Component {
     }
 
     rescanOrLoad() {
-        const totalTransactions = this.asset.summary.totalTxs || 0
+        const { asset_id } = getParamsFromLocation()
+        const totalTxs = this.asset.summary.totalTxs || 0
         const txs = this.asset.summary.txs || []
+        const index =
+            totalTxs === txs.length ? 0 : this.asset.summary.txs.length
+        const slice = this.asset.summary.txs.length - index
 
-        if (totalTransactions === txs.length) {
-            this.forceFetch()
-        } else {
-            this.asset.summary.fetching = true
-            this.Coin.fetchTxs(
-                this.asset.address,
-                this.asset.summary.txs.length
-            ).then(txs => {
-                this.asset.summary.totalTransactions = txs.totalTxs
-                this.asset.summary.txs = this.asset.summary.txs.concat(txs.txs)
-                this.asset.summary.fetching = false
-            })
-        }
+        this.asset.summary.fetching = true
+        this.Coin.fetchTxs(getFechableAddress(asset_id), index).then(txs => {
+            this.asset.summary.totalTxs = txs.totalTxs
+            this.asset.summary.txs = this.asset.summary.txs
+                .slice(slice)
+                .concat(txs.txs)
+            this.asset.summary.fetching = false
+        })
     }
 
     render() {
         const address = this.asset.address
         return React.createElement(SummaryTemplate, {
             symbol: this.asset.symbol,
-            totalTransactions: this.asset.summary.totalTxs || 0,
+            totalTxs: this.asset.summary.totalTxs || 0,
             txs: this.asset.summary.txs || [],
             fetchingSummary: this.asset.summary.fetching,
             rescanOrLoad: this.rescanOrLoad,
@@ -161,7 +161,7 @@ export default class Summary extends Component {
 
 function SummaryTemplate({
     symbol,
-    totalTransactions,
+    totalTxs,
     txs,
     fetchingSummary,
     rescanOrLoad,
@@ -236,7 +236,7 @@ function SummaryTemplate({
                 <List>
                     <ListItem>
                         <ListItemLabel>Transactions</ListItemLabel>
-                        <ListItemValue>{totalTransactions}</ListItemValue>
+                        <ListItemValue>{totalTxs}</ListItemValue>
                     </ListItem>
                     <ListItem>
                         <ListItemLabel>Total Received</ListItemLabel>
@@ -248,7 +248,7 @@ function SummaryTemplate({
                     </ListItem>
                 </List>
             </Header> */}
-            <Show if={totalTransactions === 0 && !fetchingSummary}>
+            <Show if={totalTxs === 0 && !fetchingSummary}>
                 <Div padding-top="50px" padding-bottom="50px">
                     <Message>No transactions found for this address</Message>
                 </Div>
@@ -324,7 +324,7 @@ function SummaryTemplate({
                     )
                 })}
             </Transactions>
-            {/* <Show if={totalTransactions === txs.length || totalTransactions > txs.length}> */}
+            {/* <Show if={totalTxs === txs.length || totalTxs > txs.length}> */}
             <Div clear="both" padding-top="20px">
                 <Button
                     loading={fetchingSummary}
@@ -332,7 +332,7 @@ function SummaryTemplate({
                     loadingIco="/static/image/loading.gif"
                     margin="0 auto"
                 >
-                    {totalTransactions === txs.length
+                    {totalTxs === txs.length
                         ? 'Rescan all transactions'
                         : 'Load more'}
                 </Button>
