@@ -81,6 +81,7 @@ export function changeAddress(asset_id, address) {
     asset.address = address
     saveAssetsLocalstorage()
     fetchBalance(asset_id)
+    fetchTxs(asset_id)
 }
 
 export function addAddress(asset_id, address) {
@@ -407,12 +408,25 @@ export function fetchFullBalance(asset_id) {
     }
 }
 
-export function fetchTxs(asset_id, from = 0, to = from + 25) {
+export function fetchTxs(asset_id) {
+    const args = Array.prototype.slice.call(arguments, 1)
     const asset = getAsset(asset_id)
     if (asset !== undefined) {
         const Coin = Coins[asset.symbol]
-        const addresses = getFechableAddress(asset_id)
-        return fetchWrapper(Coin.fetchTxs(addresses, from, to)).then(txs => txs)
+        args.unshift(getFechableAddress(asset_id))
+
+        asset.summary.fetching = true
+        return fetchWrapper(Coin.fetchTxs.apply(this, args))
+            .then(txs => {
+                const collector = collect()
+                asset.summary.fetching = false
+                asset.summary.totalTxs = txs.totalTxs
+                asset.summary.txs = txs.txs
+                collector.emit()
+            })
+            .catch(e => {
+                asset.summary.fetching = false
+            })
     }
 }
 

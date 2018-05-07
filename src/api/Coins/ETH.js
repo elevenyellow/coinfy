@@ -244,8 +244,9 @@ export function fetchTxs(
     contract_address,
     _satoshis = satoshis
 ) {
+    const address = addresses[0]
     const resolver =
-        from > 0 && txs_cache[addresses[0]] !== undefined
+        from > 0 && txs_cache[address] !== undefined
             ? Promise.resolve(txs_cache[address])
             : fetch(
                   `${api_url}?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${api_key}`
