@@ -14,9 +14,12 @@ export default function(initialState) {
     const cryptos = jsonParse(
         localStorageGet(LOCALSTORAGE_CUSTOMS, initialState.network)
     )
-    for (let symbol in cryptos)
-        if (!Coins.hasOwnProperty(symbol))
+    for (let symbol in cryptos) {
+        if (!Coins.hasOwnProperty(symbol)) {
+            cryptos[symbol].custom = true
             Coins[symbol] = createERC20(cryptos[symbol])
+        }
+    }
 
     // restoring assets
     const assets = jsonParse(

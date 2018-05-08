@@ -331,6 +331,19 @@ export function saveCustomLocalstorage(data) {
     )
 }
 
+export function deleteCustomERC20(symbol) {
+    const coins_localstorage = jsonParse(
+        localStorageGet(LOCALSTORAGE_CUSTOMS, state.network)
+    )
+    delete coins_localstorage[symbol]
+    delete Coins[symbol]
+    localStorageSet(
+        LOCALSTORAGE_CUSTOMS,
+        JSON.stringify(coins_localstorage),
+        state.network
+    )
+}
+
 // Fetchers
 
 export function fetchWrapper(promise) {

@@ -47,7 +47,8 @@ export function createERC20({
     labels,
     coin_decimals = 18,
     price_decimals = 2,
-    logo = ASSET_LOGO(symbol)
+    logo = ASSET_LOGO(symbol),
+    custom = false
 }) {
     const default_gas_limit = 130000
     const txs_cache = {}
@@ -154,6 +155,7 @@ export function createERC20({
             return fetchRecomendedFee(props)
         },
 
+        custom,
         logo: logo,
         symbol,
         name,

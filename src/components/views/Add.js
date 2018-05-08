@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
 
-import { routes, Router, Route } from '/store/router'
 import { TYPE_COIN, TYPE_ERC20 } from '/const/'
 import styles from '/const/styles'
 
@@ -11,7 +10,9 @@ import { Coins } from '/api/coins'
 import { searchInArray } from '/api/arrays'
 
 import state from '/store/state'
-import { setHref } from '/store/actions'
+import { routes, Show } from '/store/router'
+import { setHref, deleteCustomERC20 } from '/store/actions'
+import { getAssetsBySymbol } from '/store/getters'
 
 import Div from '/components/styled/Div'
 import ButtonBig from '/components/styled/ButtonBig'
@@ -23,6 +24,8 @@ import {
     RightHeader,
     RightContent
 } from '/components/styled/Right'
+
+import IconDelete from 'react-icons/lib/md/delete'
 
 export default class AddAsset extends Component {
     componentWillMount() {
@@ -48,6 +51,8 @@ export default class AddAsset extends Component {
                         background_image_opacity: 0.2
                     })
                 } else if (Coin.type === TYPE_ERC20) {
+                    const deletable =
+                        Coin.custom && getAssetsBySymbol(symbol).length === 0
                     this.assetList.push({
                         name: Coin.name,
                         symbol: symbol,
@@ -58,7 +63,8 @@ export default class AddAsset extends Component {
                         labels: Coin.labels,
                         position: 1,
                         background_image: '/static/image/erc20_background.svg',
-                        background_image_opacity: 0.04
+                        background_image_opacity: 0.04,
+                        deletable: deletable
                     })
                 }
             })
@@ -79,6 +85,10 @@ export default class AddAsset extends Component {
         // state.view.filter = e.target.value
     }
 
+    onDeleteCustomErc20(symbol) {
+        deleteCustomERC20(symbol)
+    }
+
     onClick(route) {
         setHref(route)
     }
@@ -94,6 +104,7 @@ export default class AddAsset extends Component {
             ]),
             filter: filter,
             onChangeFilter: this.onChangeFilter,
+            onDeleteCustomErc20: this.onDeleteCustomErc20,
             onClick: this.onClick
         })
     }
@@ -104,6 +115,7 @@ function AddAssetTemplate({
     assetList,
     filter,
     onChangeFilter,
+    onDeleteCustomErc20,
     onClick
 }) {
     return (
@@ -147,7 +159,22 @@ function AddAssetTemplate({
                                 onClick={e => onClick(asset.url_create)}
                             />
                             <ItemContent>
-                                <ItemLinks />
+                                <ItemLinks>
+                                    <Show if={asset.deletable === true}>
+                                        <ItemLink
+                                            onClick={e =>
+                                                onDeleteCustomErc20(
+                                                    asset.symbol
+                                                )
+                                            }
+                                        >
+                                            <IconDelete
+                                                size={18}
+                                                color={styles.color.front2}
+                                            />
+                                        </ItemLink>
+                                    </Show>
+                                </ItemLinks>
                                 <ItemLogo>
                                     <img src={asset.logo} />
                                 </ItemLogo>
@@ -254,6 +281,17 @@ const ItemOverlay = styled.div`
 const ItemLinks = styled.div`
     height: 25px;
 `
+const ItemLink = styled.div`
+    float: right;
+    padding-right: 10px;
+    padding-top: 5px;
+    opacity: 0.5;
+    cursor: pointer;
+    &:hover {
+        opacity: 1;
+    }
+`
+
 const ItemLogo = styled.div`
     width: 70px;
     height: 70px;
