@@ -2,13 +2,37 @@ server {
     listen 80;
     server_name coinfy.com;
     rewrite ^(.*) https://coinfy.com$1 permanent;
+
+    # Redirect non-https traffic to https
+    # if ($scheme != "https") {
+    #     return 301 https://$host$request_uri;
+    # } # managed by Certbot
+
 }
 
 server {
     listen 80;
     server_name www.coinfy.com;
     rewrite ^(.*) https://coinfy.com$1 permanent;
+
+    listen 443 ssl; # managed by Certbot
+ssl_certificate /etc/letsencrypt/live/www.coinfy.com/fullchain.pem; # managed by Certbot
+ssl_certificate_key /etc/letsencrypt/live/www.coinfy.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+
+
+    # Redirect non-https traffic to https
+    # if ($scheme != "https") {
+    #     return 301 https://$host$request_uri;
+    # } # managed by Certbot
+
 }
+
+#server {
+#    listen 443 ssl;
+#    server_name www.coinfy.com;
+#    rewrite ^(.*) https://coinfy.com$1 permanent;
+#}
 
 server {
     listen 443 ssl;
@@ -29,4 +53,7 @@ server {
     location ~ /.well-known {
         allow all;
     }
+
+ssl_certificate /etc/letsencrypt/live/coinfy.com-0001/fullchain.pem; # managed by Certbot
+ssl_certificate_key /etc/letsencrypt/live/coinfy.com-0001/privkey.pem; # managed by Certbot
 }
