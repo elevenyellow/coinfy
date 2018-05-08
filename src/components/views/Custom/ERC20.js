@@ -3,13 +3,12 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
 import styles from '/const/styles'
-import { ASSET_LOGO, ASSET_LOGO_LIBRARY } from '/const/'
+import { ASSET_LOGO, ASSET_LOGO_LIBRARY, OK } from '/const/'
 import { routes } from '/store/router'
 
 import { generateRandomColor, getAverageColor, rgbToHex } from '/api/colors'
 import { Coins } from '/api/coins'
 import { isAddress } from '/api/coins/ETH'
-import {} from '/api/browser'
 import {
     getNameContract,
     getSymbolContract,
@@ -19,7 +18,7 @@ import {
 } from '/api/coins/ERC20'
 
 import state from '/store/state'
-import { createCustomERC20, setHref } from '/store/actions'
+import { createCustomERC20, addNotification, setHref } from '/store/actions'
 
 import H1 from '/components/styled/H1'
 import H2 from '/components/styled/H2'
@@ -207,6 +206,7 @@ export default class ImportBitcoin extends Component {
             labels: `${symbol.toLowerCase()} ethereum token erc20 ecr20 custom`,
             logo: state.view.logo_visible
         })
+        addNotification(`You have created ${symbol} as Custom ERC20 token`, OK)
         setHref(routes.add({ filter: symbol }))
     }
 

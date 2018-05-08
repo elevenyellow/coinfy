@@ -315,6 +315,7 @@ export function updateBalance(asset_id, balance) {
 export function createCustomERC20(data) {
     const { symbol } = data
     data.type = TYPE_ERC20
+    data.custom = true
     Coins[symbol] = createERC20(data)
     saveCustomLocalstorage(data)
 }

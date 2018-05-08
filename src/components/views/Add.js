@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver } from 'dop'
 
-import { TYPE_COIN, TYPE_ERC20 } from '/const/'
+import { TYPE_COIN, TYPE_ERC20, OK } from '/const/'
 import styles from '/const/styles'
 
 import { sortBy } from '/api/arrays'
@@ -11,7 +11,7 @@ import { searchInArray } from '/api/arrays'
 
 import state from '/store/state'
 import { routes, Show } from '/store/router'
-import { setHref, deleteCustomERC20 } from '/store/actions'
+import { setHref, deleteCustomERC20, addNotification } from '/store/actions'
 import { getAssetsBySymbol } from '/store/getters'
 
 import Div from '/components/styled/Div'
@@ -31,7 +31,19 @@ export default class AddAsset extends Component {
     componentWillMount() {
         this.observer = createObserver(mutations => this.forceUpdate())
         this.observer.observe(state.location.query)
+        this.onDeleteCustomErc20 = this.onDeleteCustomErc20.bind(this)
+        this.loadAssetList()
+    }
 
+    componentWillUnmount() {
+        this.observer.destroy()
+    }
+
+    shouldComponentUpdate() {
+        return false
+    }
+
+    loadAssetList() {
         this.assetList = []
         Object.keys(Coins)
             .filter(symbol => symbol !== 'Coins')
@@ -72,14 +84,6 @@ export default class AddAsset extends Component {
         this.assetList = sortBy(this.assetList, 'position', 'name', 'symbol')
     }
 
-    componentWillUnmount() {
-        this.observer.destroy()
-    }
-
-    shouldComponentUpdate() {
-        return false
-    }
-
     onChangeFilter(e) {
         state.location.query.filter = e.target.value
         // state.view.filter = e.target.value
@@ -87,6 +91,12 @@ export default class AddAsset extends Component {
 
     onDeleteCustomErc20(symbol) {
         deleteCustomERC20(symbol)
+        addNotification(
+            `You have removed the Custom ERC20 token: ${symbol}`,
+            OK
+        )
+        this.loadAssetList()
+        this.forceUpdate()
     }
 
     onClick(route) {
