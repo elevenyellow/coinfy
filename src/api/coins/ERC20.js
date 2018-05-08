@@ -227,3 +227,10 @@ export function getSupplyContract(contract_address) {
         return result_hex ? hexToDec(result_hex) : null
     })
 }
+
+export function isErc20Contract(contract_address) {
+    const url = `${api_url}?module=contract&action=getabi&address=${contract_address}`
+    return fetch(url)
+        .then(response => response.json())
+        .then(data => data.status === '1')
+}

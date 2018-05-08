@@ -14,7 +14,8 @@ import {
     getNameContract,
     getSymbolContract,
     getDecimalsContract,
-    getSupplyContract
+    getSupplyContract,
+    isErc20Contract
 } from '/api/coins/ERC20'
 
 import state from '/store/state'
@@ -110,13 +111,17 @@ export default class ImportBitcoin extends Component {
                             return getSupplyContract(contract_address)
                         }
                     })
-                    .then(result => {
-                        const collector = collect()
+                    .then(
+                        result =>
+                            result === null
+                                ? isErc20Contract(contract_address)
+                                : true
+                    )
+                    .then(valid_erc20 => {
                         state.view.fetching = false
-                        if (result === null)
+                        if (!valid_erc20)
                             state.view.contract_address_error =
                                 'Seems like this address is not an ERC20 contract.'
-                        collector.emit()
                     })
             } else {
                 state.view.contract_address_error = 'Invalid address'
