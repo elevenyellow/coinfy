@@ -279,15 +279,24 @@ export default class Send extends Component {
         state.view.error_when_create = false
         state.view.error_when_send = ''
 
-        // Change address
-        if (this.Coin.changeaddress) {
-            const index = addresses.indexOf(address)
-            if (index === addresses.length - 1) {
-                // create
-            } else state.view.change_address = addresses[index + 1]
-        }
-
         if (private_key) {
+            // Change address
+            if (this.Coin.changeaddress) {
+                const index = addresses.indexOf(address)
+                if (index === addresses.length - 1) {
+                    // create
+                    const wallet = this.Coin.getNextWalletFromSeed(
+                        asset.address,
+                        asset.addresses,
+                        asset.seed,
+                        password
+                    )
+                    state.view.change_address = wallet.address
+                } else {
+                    state.view.change_address = addresses[index + 1]
+                }
+            }
+
             state.view.loading = true
             this.Coin.createSimpleTx({
                 from_address: address,
@@ -328,6 +337,7 @@ export default class Send extends Component {
     }
 
     onSend(e) {
+        const asset_id = this.asset_id
         const asset = this.asset
         const provider = this.send_providers[state.view.send_provider_selected]
         const collector = collect()
@@ -353,12 +363,15 @@ export default class Send extends Component {
                         .minus(state.view.fee)
                 )
 
-                collector.emit()
-
                 // Changing address on UI
-                if (state.view.change_address !== undefined) {
-                    changeAddress(getAssetId(asset), state.view.change_address)
+                const change_address = state.view.change_address
+                if (change_address !== undefined) {
+                    if (!asset.addresses.includes(change_address))
+                        addAddress(asset_id, change_address)
+                    changeAddress(asset_id, change_address)
                 }
+
+                collector.emit()
             })
             .catch(error => {
                 console.error(error)
