@@ -40,7 +40,8 @@ export const ascii = 'Ƀ'
 export const coin_decimals = 8
 export const price_decimals = 0
 export const satoshis = Math.pow(10, coin_decimals)
-export const multiaddress = false
+export const multiaddress = false // if true we can't change the address on the user interface we use all the address as a full balance
+export const changeaddress = true // if true we change the remaining balance to the next address
 export const labels = 'btc coin'
 export const logo = ASSET_LOGO(symbol)
 
@@ -492,7 +493,7 @@ export function fetchRecomendedFee({
             amount: amount || 0,
             fee_per_kb: address_data.fee_per_kb,
             inputs: inputs,
-            outputs: outputs + 1 // extra output for changeAddress
+            outputs: outputs + 1 // extra output for change_address
         }
         // console.log(data)
         return calcFee(data)
@@ -597,16 +598,18 @@ function fetchTotals(address) {
 }
 
 export function createSimpleTx({
-    fromAddress,
-    toAddress,
+    from_address,
+    to_address,
     private_key,
     amount,
     fee,
-    changeAddress
+    change_address
 }) {
-    // const fromAddress = getAddressFromPrivateKey(private_key)
-    changeAddress = isAddressCheck(changeAddress) ? changeAddress : fromAddress
-    return fetch(`${api_url}/addr/${fromAddress}/utxo?noCache=1`)
+    // const from_address = getAddressFromPrivateKey(private_key)
+    change_address = isAddressCheck(change_address)
+        ? change_address
+        : from_address
+    return fetch(`${api_url}/addr/${from_address}/utxo?noCache=1`)
         .then(response => response.json())
         .then(txs => {
             // console.log(txs)
@@ -627,16 +630,16 @@ export function createSimpleTx({
             })
 
             // Adding outputs
-            // txb.addOutput(toAddress, 100000000)
-            txb.addOutput(toAddress, toSatoshis(amount))
+            // txb.addOutput(to_address, 100000000)
+            txb.addOutput(to_address, toSatoshis(amount))
             const amountBack = bigNumber(totalInput)
                 .minus(amount)
                 .minus(bigNumber(fee))
             if (amountBack.gt(0))
-                txb.addOutput(changeAddress, toSatoshis(amountBack))
+                txb.addOutput(change_address, toSatoshis(amountBack))
 
             // signing inputs
-            const is_segwit = isSegwitAddress(fromAddress)
+            const is_segwit = isSegwitAddress(from_address)
             const redeem_script = getRedeemScript(ecpair)
             txb.inputs.forEach((input, index) => {
                 try {

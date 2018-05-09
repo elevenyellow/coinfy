@@ -39,6 +39,7 @@ import {
     discoverAddress,
     discoverWallet,
     multiaddress,
+    changeaddress,
     getNextWalletFromSeed
 } from '/api/coins/ETH'
 import { addHexPrefix } from './ETH'
@@ -145,13 +146,13 @@ export function createERC20({
         createSimpleTx: function(params) {
             params.data = getDataContractMethodCall(
                 'transfer(address,uint256)',
-                params.toAddress,
+                params.to_address,
                 params.amount
                     .times(bigNumber(10).pow(coin_decimals))
                     .toString(16)
             )
             params.gas_limit = default_gas_limit
-            params.toAddress = contract_address
+            params.to_address = contract_address
             params.amount = bigNumber(0)
             return createSimpleTx(params)
         },
@@ -192,6 +193,7 @@ export function createERC20({
         cutDecimals,
         urlInfoTx,
         multiaddress,
+        changeaddress,
         getNextWalletFromSeed
     }
 }

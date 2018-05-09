@@ -18,7 +18,13 @@ import { parseNumberAsString, limitDecimals, bigNumber } from '/api/numbers'
 import { repeatUntilResolve } from '/api/promises'
 
 import state from '/store/state'
-import { fetchBalance, setHref, sendEventToAnalytics } from '/store/actions'
+import {
+    fetchBalance,
+    setHref,
+    sendEventToAnalytics,
+    changeAddress,
+    addAddress
+} from '/store/actions'
 import {
     getAsset,
     getPrice,
@@ -26,7 +32,8 @@ import {
     convertBalance,
     isAssetWithSeed,
     getPrivateKey,
-    getParamsFromLocation
+    getParamsFromLocation,
+    getAssetId
 } from '/store/getters'
 
 import Div from '/components/styled/Div'
@@ -73,6 +80,7 @@ export default class Send extends Component {
             fee_input_visible: false,
             password_input: '',
             password_input_invalid: false,
+            change_address: undefined,
             error_when_create: false,
             send_provider_selected: 0,
             show_tx_raw: false,
@@ -263,6 +271,7 @@ export default class Send extends Component {
         const asset = this.asset
         const asset_id = this.asset_id
         const address = asset.address
+        const addresses = asset.addresses
         const password = state.view.password_input
         const private_key = getPrivateKey(asset_id, password)
 
@@ -270,14 +279,23 @@ export default class Send extends Component {
         state.view.error_when_create = false
         state.view.error_when_send = ''
 
+        // Change address
+        if (this.Coin.changeaddress) {
+            const index = addresses.indexOf(address)
+            if (index === addresses.length - 1) {
+                // create
+            } else state.view.change_address = addresses[index + 1]
+        }
+
         if (private_key) {
             state.view.loading = true
             this.Coin.createSimpleTx({
-                fromAddress: address,
-                toAddress: state.view.address_input, // to/destiny
+                from_address: address,
+                to_address: state.view.address_input, // to/destiny
                 private_key: private_key,
                 amount: state.view.amount, // amount to send
-                fee: state.view.fee
+                fee: state.view.fee,
+                change_address: state.view.change_address
             })
                 .then(tx_raw => {
                     this.tx_raw = tx_raw
@@ -310,6 +328,7 @@ export default class Send extends Component {
     }
 
     onSend(e) {
+        const asset = this.asset
         const provider = this.send_providers[state.view.send_provider_selected]
         const collector = collect()
         state.view.loading = true
@@ -333,7 +352,13 @@ export default class Send extends Component {
                         .minus(state.view.amount)
                         .minus(state.view.fee)
                 )
+
                 collector.emit()
+
+                // Changing address on UI
+                if (state.view.change_address !== undefined) {
+                    changeAddress(getAssetId(asset), state.view.change_address)
+                }
             })
             .catch(error => {
                 console.error(error)

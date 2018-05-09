@@ -48,6 +48,7 @@ export const coin_decimals = 18
 export const price_decimals = 0
 export const satoshis = Math.pow(10, coin_decimals)
 export const multiaddress = false
+export const changeaddress = true // if true we change the remaining balance to the next address
 export const default_gas_limit = 21000
 export const labels = 'eth coin etereum'
 export const logo = ASSET_LOGO(symbol)
@@ -321,21 +322,21 @@ export function getDataContractMethodCall(method_name) {
 }
 
 export function createSimpleTx({
-    fromAddress,
-    toAddress,
+    from_address,
+    to_address,
     private_key,
     amount,
     fee,
     gas_limit = default_gas_limit,
     data
 }) {
-    // const fromAddress = getAddressFromPrivateKey(private_key)
+    // const from_address = getAddressFromPrivateKey(private_key)
     // return JSONRpc(url_myetherapi, 'eth_getTransactionCount', [
-    //     fromAddress,
+    //     from_address,
     //     'pending'
     // ])
     return fetch(
-        `${api_url}?module=proxy&action=eth_getTransactionCount&tag=latest&address=${fromAddress}&apikey=${api_key}`
+        `${api_url}?module=proxy&action=eth_getTransactionCount&tag=latest&address=${from_address}&apikey=${api_key}`
     )
         .then(response => response.json())
         .then(e => {
@@ -367,7 +368,7 @@ export function createSimpleTx({
                 // gasPrice: '0x04a817c800',
                 // gasLimit: '0x016f2e',
                 nonce: sanitizeHex(e.result),
-                to: sanitizeHex(toAddress),
+                to: sanitizeHex(to_address),
                 value: sanitizeHex(decToHex(amount.times(satoshis).round()))
             }
 
