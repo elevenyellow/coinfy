@@ -40,7 +40,7 @@ export const ascii = 'Ƀ'
 export const coin_decimals = 8
 export const price_decimals = 0
 export const satoshis = Math.pow(10, coin_decimals)
-export const multiaddress = false // if true we can't change the address on the user interface we use all the address as a full balance
+export const multiaddress = true // if true we can't change the address on the user interface we use all the address as a full balance
 export const changeaddress = true // if true we change the remaining balance to the next address
 export const labels = 'btc coin'
 export const logo = ASSET_LOGO(symbol)
@@ -545,51 +545,108 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
                 totalTxs: json.totalItems,
                 txs: []
             }
-            json.items.forEach(txRaw => {
-                let index, total
-                let value = bigNumber(0)
-                let tx = {
-                    txid: txRaw.txid,
-                    fees: bigNumber(txRaw.fees),
-                    time: txRaw.time,
-                    confirmations: txRaw.confirmations,
-                    value: bigNumber(0)
-                    // raw: txRaw,
+            json.items.forEach(tx_raw => {
+                const value_inputs = tx_raw.vin
+                    .filter(input => addresses.includes(input.addr))
+                    .reduce((v, input) => v.add(input.value), bigNumber(0))
+
+                const value_outputs = tx_raw.vout
+                    .filter(output => {
+                        const pubkey = output.scriptPubKey
+                        return (
+                            pubkey &&
+                            pubkey.addresses &&
+                            includesMultiple(pubkey.addresses, addresses)
+                        )
+                    })
+                    .reduce((v, output) => v.add(output.value), bigNumber(0))
+
+                const tx = {
+                    txid: tx_raw.txid,
+                    fees: bigNumber(tx_raw.fees),
+                    time: tx_raw.time,
+                    confirmations: tx_raw.confirmations,
+                    value: value_inputs
+                        .minus(value_outputs)
+                        .minus(tx_raw.fees)
+                        .times(-1)
+                    // raw: tx_raw,
                 }
 
-                for (
-                    index = 0, total = txRaw.vin.length;
-                    index < total;
-                    ++index
-                ) {
-                    if (addresses.includes(txRaw.vin[index].addr)) {
-                        tx.value = tx.value.minus(txRaw.vin[index].value)
-                    }
-                }
+                // console.log(
+                //     value_inputs.toString(),
+                //     value_outputs.toString(),
+                //     tx.value.toString()
+                // )
 
-                for (
-                    index = 0, total = txRaw.vout.length;
-                    index < total;
-                    ++index
-                ) {
-                    const pubkey = txRaw.vout[index].scriptPubKey
-                    if (
-                        pubkey &&
-                        pubkey.addresses &&
-                        includesMultiple(pubkey.addresses, addresses)
-                    ) {
-                        tx.value = tx.value.add(txRaw.vout[index].value)
-                        // break // maybe
-                    }
+                if (tx.value.gt(0) || tx.value.lt(0)) {
+                    data.txs.push(tx)
+                } else {
+                    data.totalTxs -= 1
                 }
-
-                // console.log(txRaw)
-                data.txs.push(tx)
             })
             // console.log(JSON.stringify(data))
             return data
         })
 }
+
+// export function fetchTxs(addresses, from = 0, to = from + 25) {
+//     return fetch(
+//         `${api_url}/addrs/${addresses.join(
+//             ','
+//         )}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${from}&to=${to}`
+//     )
+//         .then(response => response.json())
+//         .then(json => {
+//             const data = {
+//                 totalTxs: json.totalItems,
+//                 txs: []
+//             }
+//             json.items.forEach(txRaw => {
+//                 let index, total
+//                 let value = bigNumber(0)
+//                 let tx = {
+//                     txid: txRaw.txid,
+//                     fees: bigNumber(txRaw.fees),
+//                     time: txRaw.time,
+//                     confirmations: txRaw.confirmations,
+//                     value: bigNumber(0)
+//                     // raw: txRaw,
+//                 }
+
+//                 for (
+//                     index = 0, total = txRaw.vin.length;
+//                     index < total;
+//                     ++index
+//                 ) {
+//                     if (addresses.includes(txRaw.vin[index].addr)) {
+//                         tx.value = tx.value.minus(txRaw.vin[index].value)
+//                     }
+//                 }
+
+//                 for (
+//                     index = 0, total = txRaw.vout.length;
+//                     index < total;
+//                     ++index
+//                 ) {
+//                     const pubkey = txRaw.vout[index].scriptPubKey
+//                     if (
+//                         pubkey &&
+//                         pubkey.addresses &&
+//                         includesMultiple(pubkey.addresses, addresses)
+//                     ) {
+//                         tx.value = tx.value.add(txRaw.vout[index].value)
+//                         // break // maybe
+//                     }
+//                 }
+
+//                 // console.log(txRaw)
+//                 data.txs.push(tx)
+//             })
+//             // console.log(JSON.stringify(data))
+//             return data
+//         })
+// }
 
 function fetchTotals(address) {
     return fetch(`${api_url}/addr/${address}`)
