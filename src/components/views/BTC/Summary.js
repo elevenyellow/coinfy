@@ -53,7 +53,7 @@ export default class Summary extends Component {
     componentWillMount() {
         this.observerPath = createObserver(mutations => {
             this.observer.destroy()
-            // this.getInfoAsset()
+            this.observeAll()
             this.forceUpdate()
         })
         this.observerPath.observe(state.location, 'pathname')

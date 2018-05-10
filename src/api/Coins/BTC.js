@@ -590,64 +590,6 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
         })
 }
 
-// export function fetchTxs(addresses, from = 0, to = from + 25) {
-//     return fetch(
-//         `${api_url}/addrs/${addresses.join(
-//             ','
-//         )}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${from}&to=${to}`
-//     )
-//         .then(response => response.json())
-//         .then(json => {
-//             const data = {
-//                 totalTxs: json.totalItems,
-//                 txs: []
-//             }
-//             json.items.forEach(txRaw => {
-//                 let index, total
-//                 let value = bigNumber(0)
-//                 let tx = {
-//                     txid: txRaw.txid,
-//                     fees: bigNumber(txRaw.fees),
-//                     time: txRaw.time,
-//                     confirmations: txRaw.confirmations,
-//                     value: bigNumber(0)
-//                     // raw: txRaw,
-//                 }
-
-//                 for (
-//                     index = 0, total = txRaw.vin.length;
-//                     index < total;
-//                     ++index
-//                 ) {
-//                     if (addresses.includes(txRaw.vin[index].addr)) {
-//                         tx.value = tx.value.minus(txRaw.vin[index].value)
-//                     }
-//                 }
-
-//                 for (
-//                     index = 0, total = txRaw.vout.length;
-//                     index < total;
-//                     ++index
-//                 ) {
-//                     const pubkey = txRaw.vout[index].scriptPubKey
-//                     if (
-//                         pubkey &&
-//                         pubkey.addresses &&
-//                         includesMultiple(pubkey.addresses, addresses)
-//                     ) {
-//                         tx.value = tx.value.add(txRaw.vout[index].value)
-//                         // break // maybe
-//                     }
-//                 }
-
-//                 // console.log(txRaw)
-//                 data.txs.push(tx)
-//             })
-//             // console.log(JSON.stringify(data))
-//             return data
-//         })
-// }
-
 function fetchTotals(address) {
     return fetch(`${api_url}/addr/${address}`)
         .then(response => response.json())

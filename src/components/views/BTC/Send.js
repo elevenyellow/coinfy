@@ -281,7 +281,7 @@ export default class Send extends Component {
 
         if (private_key) {
             // Change address
-            if (this.Coin.changeaddress) {
+            if (this.Coin.changeaddress && isAssetWithSeed(asset_id)) {
                 const index = addresses.indexOf(address)
                 if (index === addresses.length - 1) {
                     // create
