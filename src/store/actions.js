@@ -69,8 +69,6 @@ export function createAsset(type, symbol, address, addresses) {
     state.assets[asset_id] = asset
     saveAssetsLocalstorage()
     setAssetsExported(false)
-    // fetchFullBalance(asset_id)
-    // fetchPrices()
     sendEventToAnalytics('createAsset', symbol)
     collector.emit()
     return state.assets[asset_id]
@@ -80,7 +78,7 @@ export function changeAddress(asset_id, address) {
     const asset = getAsset(asset_id)
     asset.address = address
     saveAssetsLocalstorage()
-    fetchBalance(asset_id)
+    fetchFullBalance(asset_id)
     fetchTxs(asset_id)
 }
 

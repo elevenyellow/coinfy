@@ -322,14 +322,16 @@ export function getDataContractMethodCall(method_name) {
 }
 
 export function createSimpleTx({
-    from_address,
+    from_addresses,
     to_address,
-    private_key,
+    private_keys,
     amount,
     fee,
     gas_limit = default_gas_limit,
     data
 }) {
+    const from_address = from_addresses[0]
+    const private_key = private_keys[0]
     // const from_address = getAddressFromPrivateKey(private_key)
     // return JSONRpc(url_myetherapi, 'eth_getTransactionCount', [
     //     from_address,

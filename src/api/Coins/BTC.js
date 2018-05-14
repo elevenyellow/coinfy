@@ -449,11 +449,12 @@ export function fetchBalance(address) {
 
 const cacheRecomendedFee = {}
 export function fetchRecomendedFee({
-    address,
+    addresses,
     amount = 0,
     outputs = 1,
     use_cache = false
 }) {
+    const address = addresses.join(',')
     const cache = cacheRecomendedFee[address]
     const first_time =
         cache === undefined ||
@@ -470,7 +471,7 @@ export function fetchRecomendedFee({
                   )
                   .then(fee => {
                       cacheRecomendedFee[address] = { fee_per_kb: fee }
-                      return fetch(`${api_url}/addr/${address}/utxo?noCache=1`)
+                      return fetch(`${api_url}/addrs/${address}/utxo?noCache=1`)
                   })
                   .then(response => response.json())
                   .catch(e =>
@@ -597,18 +598,19 @@ function fetchTotals(address) {
 }
 
 export function createSimpleTx({
-    from_address,
+    from_addresses,
     to_address,
-    private_key,
+    private_keys,
     amount,
     fee,
     change_address
 }) {
     // const from_address = getAddressFromPrivateKey(private_key)
+    const last_address = from_addresses[from_addresses.length - 1]
     change_address = isAddressCheck(change_address)
         ? change_address
-        : from_address
-    return fetch(`${api_url}/addr/${from_address}/utxo?noCache=1`)
+        : last_address
+    return fetch(`${api_url}/addrs/${from_addresses.join(',')}/utxo?noCache=1`)
         .then(response => response.json())
         .then(txs => {
             // console.log(txs)
@@ -616,7 +618,6 @@ export function createSimpleTx({
             let totalInput = bigNumber(0)
             const totalOutput = bigNumber(amount).plus(fee)
             const txb = new Bitcoin.TransactionBuilder(network)
-            const ecpair = Bitcoin.ECPair.fromWIF(private_key, network)
 
             // Adding inputs
             // console.log(txs)
@@ -624,6 +625,7 @@ export function createSimpleTx({
                 if (totalInput.lt(totalOutput)) {
                     txb.addInput(tx.txid, tx.vout)
                     txb.inputs[index].satoshis = tx.satoshis
+                    txb.inputs[index].address = tx.address
                     totalInput = totalInput.plus(tx.amount)
                 }
             })
@@ -638,19 +640,25 @@ export function createSimpleTx({
                 txb.addOutput(change_address, toSatoshis(amountBack))
 
             // signing inputs
-            const is_segwit = isSegwitAddress(from_address)
-            const redeem_script = getRedeemScript(ecpair)
             txb.inputs.forEach((input, index) => {
                 try {
-                    is_segwit
-                        ? txb.sign(
-                              index,
-                              ecpair,
-                              redeem_script,
-                              null,
-                              input.satoshis
-                          )
-                        : txb.sign(index, ecpair)
+                    const is_segwit = isSegwitAddress(input.address)
+                    const ecpair = Bitcoin.ECPair.fromWIF(
+                        private_keys[0],
+                        network
+                    )
+
+                    if (is_segwit) {
+                        txb.sign(
+                            index,
+                            ecpair,
+                            getRedeemScript(ecpair),
+                            null,
+                            input.satoshis
+                        )
+                    } else {
+                        txb.sign(index, ecpair)
+                    }
                 } catch (e) {
                     console.error(e)
                 }

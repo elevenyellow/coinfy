@@ -19,7 +19,7 @@ import { repeatUntilResolve } from '/api/promises'
 
 import state from '/store/state'
 import {
-    fetchBalance,
+    fetchFullBalance,
     setHref,
     sendEventToAnalytics,
     changeAddress,
@@ -118,7 +118,7 @@ export default class Send extends Component {
     }
 
     fetchBalance() {
-        return fetchBalance(this.asset_id).then(balance => {
+        return fetchFullBalance(this.asset_id).then(balance => {
             const collector = collect()
             state.view.balance = bigNumber(balance)
             state.view.balance_fee = bigNumber(balance) // balance_fee is used for erc20 tokens
@@ -134,7 +134,7 @@ export default class Send extends Component {
                 {
                     use_cache,
                     amount,
-                    address: this.asset.address
+                    addresses: this.asset.addresses
                 }
             ],
             { timeout: TIMEOUT_BETWEEN_EACH_FAIL_FETCH_FEE }
@@ -299,9 +299,9 @@ export default class Send extends Component {
 
             state.view.loading = true
             this.Coin.createSimpleTx({
-                from_address: address,
+                from_addresses: addresses,
                 to_address: state.view.address_input, // to/destiny
-                private_key: private_key,
+                private_keys: [private_key],
                 amount: state.view.amount, // amount to send
                 fee: state.view.fee,
                 change_address: state.view.change_address

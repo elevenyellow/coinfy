@@ -7,7 +7,7 @@ import { BTC } from '/api/coins'
 
 import { routes, Router, Route, Show } from '/store/router'
 import state from '/store/state'
-import { setHref, fetchFullBalance, fetchTxs } from '/store/actions'
+import { setHref, fetchTxs } from '/store/actions'
 import {
     isAssetWithPrivateKeyOrSeed,
     isAssetWithSeed,
