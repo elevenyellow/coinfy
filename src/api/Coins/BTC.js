@@ -330,6 +330,10 @@ export function getNextWalletFromSeed(
         })
 }
 
+// export function getPrivatekeysByAddressesFromSeed({}){
+
+// }
+
 export function decryptWalletFromSeed(
     address,
     addresses,
@@ -643,8 +647,9 @@ export function createSimpleTx({
             txb.inputs.forEach((input, index) => {
                 try {
                     const is_segwit = isSegwitAddress(input.address)
+                    const index_pk = from_addresses.indexOf(input.address)
                     const ecpair = Bitcoin.ECPair.fromWIF(
-                        private_keys[0],
+                        private_keys[index_pk],
                         network
                     )
 

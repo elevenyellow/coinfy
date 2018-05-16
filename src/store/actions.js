@@ -52,7 +52,7 @@ import {
     getAssetId,
     getSymbolsFromAssets,
     isValidAsset,
-    getFechableAddress
+    getAddresses
 } from '/store/getters'
 
 export function setHref(href) {
@@ -393,7 +393,7 @@ export function fetchFullBalance(asset_id) {
     const asset = getAsset(asset_id)
     if (asset !== undefined) {
         const Coin = Coins[asset.symbol]
-        const promises = getFechableAddress(asset_id).map(addr =>
+        const promises = getAddresses(asset_id).map(addr =>
             Coin.fetchBalance(addr)
         )
         return fetchWrapper(resolveAll(promises)).then(balances => {
@@ -411,7 +411,7 @@ export function fetchTxs(asset_id) {
     const asset = getAsset(asset_id)
     if (asset !== undefined) {
         const Coin = Coins[asset.symbol]
-        args.unshift(getFechableAddress(asset_id))
+        args.unshift(getAddresses(asset_id))
 
         asset.summary.fetching = true
         return fetchWrapper(Coin.fetchTxs.apply(this, args))

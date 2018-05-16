@@ -21,7 +21,7 @@ import {
     getAsset,
     formatCurrency,
     getParamsFromLocation,
-    getFechableAddress
+    getAddresses
 } from '/store/getters'
 
 import IconCopy from 'react-icons/lib/md/content-copy'
@@ -127,7 +127,7 @@ export default class Summary extends Component {
         const slice = this.asset.summary.txs.length - index
 
         this.asset.summary.fetching = true
-        this.Coin.fetchTxs(getFechableAddress(asset_id), index).then(txs => {
+        this.Coin.fetchTxs(getAddresses(asset_id), index).then(txs => {
             this.asset.summary.totalTxs = txs.totalTxs
             this.asset.summary.txs = this.asset.summary.txs
                 .slice(slice)

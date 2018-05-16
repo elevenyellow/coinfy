@@ -54,7 +54,7 @@ export function isAssetRegisteredBySeed(symbol, seed) {
     )
 }
 
-export function getFechableAddress(asset_id) {
+export function getAddresses(asset_id) {
     const asset = getAsset(asset_id)
     const Coin = Coins[asset.symbol]
     return Coin.multiaddress ? asset.addresses.slice(0) : [asset.address]
@@ -164,6 +164,26 @@ export function getPrivateKey(asset_id, password) {
               password
           )
         : Coin.decryptPrivateKey(asset.address, asset.private_key, password)
+}
+
+export function getPrivateKeys(asset_id, password) {
+    const asset = getAsset(asset_id)
+    const Coin = Coins[asset.symbol]
+    const is_seed = isAssetWithSeed(asset_id)
+    const addresses = Coin.multiaddress
+        ? asset.addresses.slice(0)
+        : [asset.address]
+
+    return addresses.map(address => {
+        return is_seed
+            ? Coin.decryptPrivateKeyFromSeed(
+                  address,
+                  addresses,
+                  asset.seed,
+                  password
+              )
+            : Coin.decryptPrivateKey(asset.address, asset.private_key, password)
+    })
 }
 
 export function getSeed(asset_id, password) {

@@ -31,7 +31,7 @@ import {
     formatCurrency,
     convertBalance,
     isAssetWithSeed,
-    getPrivateKey,
+    getPrivateKeys,
     getParamsFromLocation,
     getAssetId
 } from '/store/getters'
@@ -273,13 +273,13 @@ export default class Send extends Component {
         const address = asset.address
         const addresses = asset.addresses
         const password = state.view.password_input
-        const private_key = getPrivateKey(asset_id, password)
+        const private_keys = getPrivateKeys(asset_id, password)
 
         const collector = collect()
         state.view.error_when_create = false
         state.view.error_when_send = ''
 
-        if (private_key) {
+        if (private_keys[0]) {
             // Change address
             if (this.Coin.changeaddress && isAssetWithSeed(asset_id)) {
                 const index = addresses.indexOf(address)
@@ -301,7 +301,7 @@ export default class Send extends Component {
             this.Coin.createSimpleTx({
                 from_addresses: addresses,
                 to_address: state.view.address_input, // to/destiny
-                private_keys: [private_key],
+                private_keys: private_keys,
                 amount: state.view.amount, // amount to send
                 fee: state.view.fee,
                 change_address: state.view.change_address
