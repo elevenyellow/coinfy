@@ -578,12 +578,12 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
                     // raw: tx_raw,
                 }
 
-                // console.log(
-                //     value_inputs.toString(),
-                //     value_outputs.toString(),
-                //     tx.value.toString()
-                // )
+                // If is a sent we remove the fee on the calculation
+                if (tx.value.gt(0)) {
+                    tx.value = tx.value.minus(tx_raw.fees)
+                }
 
+                // We don't show the tx if value is 0
                 if (tx.value.gt(0) || tx.value.lt(0)) {
                     data.txs.push(tx)
                 } else {

@@ -170,20 +170,49 @@ export function getPrivateKeys(asset_id, password) {
     const asset = getAsset(asset_id)
     const Coin = Coins[asset.symbol]
     const is_seed = isAssetWithSeed(asset_id)
+    const seed_encrypted = asset.seed
     const addresses = Coin.multiaddress
         ? asset.addresses.slice(0)
         : [asset.address]
 
-    return addresses.map(address => {
-        return is_seed
-            ? Coin.decryptPrivateKeyFromSeed(
-                  address,
-                  addresses,
-                  asset.seed,
-                  password
-              )
-            : Coin.decryptPrivateKey(asset.address, asset.private_key, password)
-    })
+    if (is_seed) {
+        const seed = Coin.decryptSeed(addresses, seed_encrypted, password)
+        const wallets = Coin.getWalletsFromSeed({
+            seed,
+            count: addresses.length
+        })
+        let keys = addresses.map(
+            (address, index) =>
+                wallets.find(w => w.address === address) === undefined
+                    ? undefined
+                    : wallets[index].private_key
+        )
+
+        // No-Segwit
+        if (keys.includes(undefined)) {
+            const wallets2 = Coin.getWalletsFromSeed({
+                seed,
+                count: addresses.length,
+                segwit: false
+            })
+            const addresses_wallets2 = wallets2.map(w => w.address)
+            keys = keys.map((key, index) => {
+                const address = addresses[index]
+                const index_found = addresses_wallets2.indexOf(address)
+                return key === undefined
+                    ? index_found > -1
+                        ? wallets2[index_found].private_key
+                        : undefined
+                    : key
+            })
+        }
+
+        return keys
+    } else {
+        return addresses.map(address =>
+            Coin.decryptPrivateKey(asset.address, asset.private_key, password)
+        )
+    }
 }
 
 export function getSeed(asset_id, password) {
