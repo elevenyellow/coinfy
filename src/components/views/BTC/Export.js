@@ -48,6 +48,7 @@ export default class ExportBTC extends Component {
 
         const { asset_id } = getParamsFromLocation()
         this.asset_id = asset_id
+        this.asset = getAsset(asset_id)
         this.is_asset_with_seed = isAssetWithSeed(this.asset_id)
 
         // Initial state
@@ -56,12 +57,16 @@ export default class ExportBTC extends Component {
                 ? TYPES_EXPORTS.seed
                 : TYPES_EXPORTS.wif,
             loading: false,
+            address_selected: this.asset.addresses[
+                this.asset.addresses.length - 1
+            ],
             password: '',
             invalid_password: false
         }
 
         // binding
         this.onChangeTypeExport = this.onChangeTypeExport.bind(this)
+        this.onChangeAddress = this.onChangeAddress.bind(this)
         this.onChangePassword = this.onChangePassword.bind(this)
         this.onExport = this.onExport.bind(this)
     }
@@ -75,6 +80,9 @@ export default class ExportBTC extends Component {
     onChangeTypeExport(e) {
         state.view.type_export = e.target.value
     }
+    onChangeAddress(e) {
+        state.view.address_selected = e.target.value
+    }
     onChangePassword(e) {
         const collector = collect()
         state.view.password = e.target.value
@@ -86,7 +94,7 @@ export default class ExportBTC extends Component {
         const type_export = state.view.type_export
         const asset_id = this.asset_id
         const asset = getAsset(asset_id)
-        const address = asset.address
+        const address = state.view.address_selected
         const password = state.view.password
 
         // Seed
@@ -96,7 +104,7 @@ export default class ExportBTC extends Component {
             else state.view.invalid_password = true
         } else {
             // Private Key
-            const private_key = getPrivateKey(asset_id, password)
+            const private_key = getPrivateKey(asset_id, password, address)
             if (private_key) {
                 state.view.loading = true
                 setTimeout(() => {
@@ -182,10 +190,13 @@ export default class ExportBTC extends Component {
         return React.createElement(ExportBTCTemplate, {
             type_export: state.view.type_export,
             is_asset_with_seed: this.is_asset_with_seed,
+            addresses: this.asset.addresses,
+            address_selected: state.view.address_selected,
             password: state.view.password,
             invalid_password: state.view.invalid_password,
             loading: state.view.loading,
             onChangeTypeExport: this.onChangeTypeExport,
+            onChangeAddress: this.onChangeAddress,
             onChangePassword: this.onChangePassword,
             onExport: this.onExport
         })
@@ -195,10 +206,13 @@ export default class ExportBTC extends Component {
 function ExportBTCTemplate({
     loading,
     type_export,
+    addresses,
+    address_selected,
     is_asset_with_seed,
     password,
     invalid_password,
     onChangeTypeExport,
+    onChangeAddress,
     onChangePassword,
     onExport
 }) {
@@ -244,6 +258,35 @@ function ExportBTCTemplate({
                         label="Encrypted (BIP38)"
                     /> */}
                 </FormField>
+                <Show
+                    if={
+                        is_asset_with_seed &&
+                        (type_export === TYPES_EXPORTS.wif ||
+                            type_export === TYPES_EXPORTS.bip)
+                    }
+                >
+                    <FormField>
+                        <FormFieldLeft>
+                            <Label>Address</Label>
+                        </FormFieldLeft>
+                        <FormFieldRight>
+                            <Select width="100%" onChange={onChangeAddress}>
+                                {addresses.map(addr => (
+                                    <option
+                                        selected={addr === address_selected}
+                                    >
+                                        {addr}
+                                    </option>
+                                ))}
+                            </Select>
+                        </FormFieldRight>
+                        {/* <Checkbox
+                        checked={encrypted}
+                        onChange={onChangeTypeExport}
+                        label="Encrypted (BIP38)"
+                    /> */}
+                    </FormField>
+                </Show>
                 <FormField>
                     <FormFieldLeft>
                         <Label>Password</Label>
