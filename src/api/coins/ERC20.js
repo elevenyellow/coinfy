@@ -52,7 +52,8 @@ export function createERC20({
     labels,
     coin_decimals = 18,
     price_decimals = 2,
-    logo = ASSET_LOGO(symbol)
+    logo = ASSET_LOGO(symbol),
+    custom = false
 }) {
     const default_gas_limit = 130000
     const txs_cache = {}
@@ -163,6 +164,7 @@ export function createERC20({
             return fetchRecomendedFee(props)
         },
 
+        custom,
         logo: logo,
         symbol,
         name,
@@ -238,4 +240,11 @@ export function getSupplyContract(contract_address) {
     return ethCall(contract_address, data).then(result_hex => {
         return result_hex ? hexToDec(result_hex) : null
     })
+}
+
+export function isErc20Contract(contract_address) {
+    const url = `${api_url}?module=contract&action=getabi&address=${contract_address}`
+    return fetch(url)
+        .then(response => response.json())
+        .then(data => data.status === '1')
 }

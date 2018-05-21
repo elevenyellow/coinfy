@@ -12,6 +12,7 @@ export default function InputDouble(props) {
             <InputDoubleStyled invalid={props.invalid}>
                 <div>
                     <InputValue
+                        type="text"
                         onChange={props.onChange1}
                         color={props.color1}
                         value={props.value1}
@@ -20,6 +21,7 @@ export default function InputDouble(props) {
                 </div>
                 <div>
                     <InputValue
+                        type="text"
                         onChange={props.onChange2}
                         color={props.color2}
                         value={props.value2}

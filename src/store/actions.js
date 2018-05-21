@@ -333,6 +333,7 @@ export function updateBalance(asset_id, balance) {
 export function createCustomERC20(data) {
     const { symbol } = data
     data.type = TYPE_ERC20
+    data.custom = true
     Coins[symbol] = createERC20(data)
     saveCustomLocalstorage(data)
 }
@@ -342,6 +343,19 @@ export function saveCustomLocalstorage(data) {
         localStorageGet(LOCALSTORAGE_CUSTOMS, state.network)
     )
     coins_localstorage[data.symbol] = data
+    localStorageSet(
+        LOCALSTORAGE_CUSTOMS,
+        JSON.stringify(coins_localstorage),
+        state.network
+    )
+}
+
+export function deleteCustomERC20(symbol) {
+    const coins_localstorage = jsonParse(
+        localStorageGet(LOCALSTORAGE_CUSTOMS, state.network)
+    )
+    delete coins_localstorage[symbol]
+    delete Coins[symbol]
     localStorageSet(
         LOCALSTORAGE_CUSTOMS,
         JSON.stringify(coins_localstorage),

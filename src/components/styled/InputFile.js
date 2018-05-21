@@ -30,6 +30,7 @@ export default class InputFile extends Component {
                 <div className="input">
                     <Input
                         {...this.props}
+                        type="text"
                         placeholder={this.props.placeholder || 'Select file'}
                         disabled={true}
                         value={this.state.fileName}

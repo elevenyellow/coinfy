@@ -19,7 +19,8 @@ const list = [
     'ETHOS',
     'FUN',
     'REQ',
-    'KNC'
+    'KNC',
+    'DAI'
 ]
 
 exports.Coins = Coins

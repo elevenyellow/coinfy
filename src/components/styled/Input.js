@@ -8,8 +8,8 @@ export default function Input(props) {
             <InputError>{props.error}</InputError>
         ) : null
     return (
-        <InputContainerStyled {...props}>
-            <InputStyled {...props} />
+        <InputContainerStyled>
+            <InputStyled type="text" {...props} />
             {showerror}
         </InputContainerStyled>
     )

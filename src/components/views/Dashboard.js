@@ -141,6 +141,7 @@ function DashboardTemplate({
     cryptoPrices,
     currency
 }) {
+    let percentage_completed = 0
     return (
         <RightContainerPadding>
             <Left>
@@ -166,13 +167,22 @@ function DashboardTemplate({
                         <Circle
                             size={200}
                             strokeWidth="1.5"
-                            segments={
-                                /* [{percentage:70,color:'red'},{percentage:30,color:'blue'}] */
-                                data.map(category => ({
-                                    percentage: category.percentage,
+                            segments={data.map(category => {
+                                // console.log(category.percentage, category.color)
+                                let percentage = category.percentage
+                                if (
+                                    percentage === 0 &&
+                                    percentage_completed < 100
+                                ) {
+                                    percentage = 100 - percentage_completed
+                                }
+
+                                percentage_completed += percentage
+                                return {
+                                    percentage: percentage,
                                     color: category.color
-                                }))
-                            }
+                                }
+                            })}
                         />
                     </ChartChart>
                 </Chart>
