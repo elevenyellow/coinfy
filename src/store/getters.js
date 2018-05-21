@@ -189,3 +189,7 @@ export function getParamsFromLocation() {
 export function getRouteFromLocation() {
     return group.getRoute(state.location)
 }
+
+export function getAssetsBySymbol(symbol) {
+    return getAssetsAsArray().filter(asset => asset.symbol === symbol)
+}
