@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Creator: CorelDRAW X7 -->
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="7.5in" height="7.5in" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+viewBox="0 0 7500 7500"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <style type="text/css">
+   <![CDATA[
+    .fil0 {fill:none}
+    .fil2 {fill:#BEBEBE}
+    .fil1 {fill:white}
+   ]]>
+  </style>
+ </defs>
+ <g id="Layer_x0020_1">
+  <metadata id="CorelCorpID_0Corel-Layer"/>
+  <rect class="fil0" width="7500" height="7500"/>
+  <g id="_2383744206544">
+   <g>
+    <path class="fil1" d="M3770 3820l477 -174 118 -446 -4 -11 -469 172 338 -1273 -959 0 -442 1661 -369 135 -122 459 369 -135 -261 980 2552 0 164 -610 -1593 0 201 -758 0 0zm0 0l0 0 0 0z"/>
+   </g>
+   <path class="fil2" d="M3750 650c-1712,0 -3100,1388 -3100,3100 0,1712 1388,3100 3100,3100 1712,0 3100,-1388 3100,-3100 0,-1712 -1388,-3100 -3100,-3100zm1248 4538l-2552 0 261 -980 -369 135 122 -459 369 -135 442 -1661 959 0 -338 1273 469 -172 4 11 -118 446 -477 174 -201 758 1593 0 -164 610z"/>
+  </g>
+ </g>
+</svg>

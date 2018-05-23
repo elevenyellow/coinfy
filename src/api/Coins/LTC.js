@@ -21,32 +21,32 @@ import {
 
 // private
 const network_int = Number(localStorageGet(LOCALSTORAGE_NETWORK)) || MAINNET
-const mainnet = Bitcoin.networks.bitcoin // 0x80
+const mainnet = Bitcoin.networks.litecoin // 0x80
 const testnet = Bitcoin.networks.testnet // 0xef
 const network = network_int === MAINNET ? mainnet : testnet
-const url_mainnet = 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io/api/"
-const url_testnet = 'https://testnet-bitcore1.trezor.io' // "https://testnet-bitcore1.trezor.io/api/"
+const url_mainnet = 'https://ltc-bitcore1.trezor.io' // "https://insight.litecore.io"
+const url_testnet = 'https://testnet.litecore.io'
 const url = network === mainnet ? url_mainnet : url_testnet
 const api_url = `${url}/api` // https://github.com/bitpay/insight-api
 
 // exports
 export const type = TYPE_COIN
-export const symbol = 'BTC'
+export const symbol = 'LTC'
 export const symbol_fee = symbol
-export const name = 'Bitcoin'
-export const color = '#fdb033'
-export const ascii = 'Ƀ'
+export const name = 'Litecoin'
+export const color = '#BEBEBE'
+export const ascii = 'Ł'
 export const coin_decimals = 8
 export const price_decimals = 0
 export const satoshis = Math.pow(10, coin_decimals)
 export const multiaddress = true // if true we can't change the address on the user interface we use all the address as a full balance
 export const changeaddress = true // if true we change the remaining balance to the next address
-export const labels = 'btc coin'
+export const labels = 'ltc coin'
 export const logo = ASSET_LOGO(symbol)
 
 export const derivation_path = {
-    mainnet: index => `m/44'/0'/0'/0/${index}`,
-    mainnetsegwit: index => `m/49'/0'/0'/0/${index}`,
+    mainnet: index => `m/44'/2'/0'/0/${index}`,
+    mainnetsegwit: index => `m/49'/2'/0'/0/${index}`,
     testnet: index => `m/44'/1'/0'/0/${index}`,
     testnetsegwit: index => `m/49'/1'/0'/0/${index}`
 }
@@ -140,7 +140,6 @@ function getSegwitWalletFromKeyPair(keypair) {
     }
 }
 
-// https://en.bitcoin.it/wiki/List_of_address_prefixes
 export function isAddress(address) {
     return network === mainnet
         ? /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
@@ -157,10 +156,6 @@ export function isAddressCheck(address) {
     return true
 }
 
-// export function isPublicKey(public_key) {
-//     return /^([0-9a-fA-F]{66}|[0-9a-fA-F]{130})$/.test(public_key)
-// }
-
 export function isPrivateKey(private_key) {
     return (
         isWalletImportFormat(private_key) ||
@@ -171,7 +166,6 @@ export function isPrivateKey(private_key) {
 }
 
 export function isPrivateKeyBip(private_key) {
-    // https://github.com/pointbiz/bitaddress.org/blob/67e167930c4ebd9cf91047c36792c4e32dc41f11/src/ninja.key.js#L38
     return /^6P[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{56}$/.test(
         private_key
     )
@@ -263,7 +257,7 @@ export function urlInfoTx(txid) {
 }
 
 export function urlDecodeTx() {
-    return 'https://live.blockcypher.com/btc/decodetx/'
+    return 'https://live.blockcypher.com/ltc/decodetx/'
 }
 
 function isSegwitAddress(address) {
@@ -328,10 +322,6 @@ export function getNextWalletFromSeed(
             segwit: wallet.segwit
         })
 }
-
-// export function getPrivatekeysByAddressesFromSeed({}){
-
-// }
 
 export function decryptWalletFromSeed(
     address,
@@ -528,15 +518,6 @@ function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
     )
 }
 
-// export function fetchRecomendedFee() {
-//     // https://btc-bitcore1.trezor.io/api/utils/estimatefee
-//     // https://bitcoinfees.21.co/api/v1/fees/recommended
-//     // https://www.bitgo.com/api/v1/tx/fee
-//     return fetch(`https://insight.bitpay.com/api/utils/estimatefee`)
-//         .then(response => response.json())
-//         .then(fees => fees[2])
-// }
-
 export function fetchTxs(addresses, from = 0, to = from + 25) {
     return fetch(
         `${api_url}/addrs/${addresses.join(
@@ -672,8 +653,6 @@ export function createSimpleTx({
 
             const txHex = txb.build().toHex()
             return txHex
-            // let a = new TxDecoder(txHex, network) // https://github.com/you21979/node-multisig-wallet/blob/master/lib/txdecoder.js
-            // console.log(a.decode())
         })
 }
 
@@ -684,21 +663,20 @@ export function getSendProviders() {
 const sendProviders = {
     mainnet: [
         {
-            name: 'Bitpay.com',
+            name: 'Trezor.io',
             url: `${url_mainnet}/tx/send`,
             send: sendRawTxInsight
         }
     ],
     testnet: [
         {
-            name: 'Trezor.io',
-            url: `${url_testnet}/tx/send`, //'https://test-insight.bitpay.com/tx/send',
+            name: 'Litecore.io',
+            url: `${url_testnet}/tx/send`,
             send: sendRawTxInsight
         }
     ]
 }
 
-// https://en.bitcoin.it/wiki/Transaction_broadcasting
 function sendRawTxInsight(rawTx) {
     const fetchOptions = {
         method: 'POST',
@@ -721,62 +699,3 @@ function sendRawTxInsight(rawTx) {
         })
         .then(data => data.txid)
 }
-
-/*
-// To allow: https://www.bitaddress.org
-Private Key Hexadecimal Format (64 characters [0-9A-F]):
-Private Key Base64 (44 characters):
-
-
-export function isHexFormat(key) {
-    key = key.toString();
-    return /^[A-Fa-f0-9]{64}$/.test(key);
-}
-
-
-export function isBase64Format(key) {
-    key = key.toString();
-    return (/^[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789=+\/]{44}$/.test(key));
-}
-
-
-
-function hexToBytes(hex) {
-    for (var bytes = [], c = 0; c < hex.length; c += 2)
-        bytes.push(parseInt(hex.substr(c, 2), 16));
-    return bytes;
-}
-
-function base64ToBytes(base64) {
-    // Remove non-base-64 characters
-    var base64map = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    base64 = base64.replace(/[^A-Z0-9+\/]/ig, "");
-
-    for (var bytes = [], i = 0, imod4 = 0; i < base64.length; imod4 = ++i % 4) {
-        if (imod4 == 0) continue;
-        bytes.push(((base64map.indexOf(base64.charAt(i - 1)) & (Math.pow(2, -2 * imod4 + 8) - 1)) << (imod4 * 2)) |
-        (base64map.indexOf(base64.charAt(i)) >>> (6 - imod4 * 2)));
-    }
-
-    return bytes;
-}
-
-
-function getBitcoinWalletImportFormat(bytes) {
-    if (bytes == null) return "";
-    bytes.unshift(network); // prepend 0x80 byte
-    var checksum = Crypto.SHA256(Crypto.SHA256(bytes, { asBytes: true }), { asBytes: true });
-    bytes = bytes.concat(checksum.slice(0, 4));
-    var privWif = Bitcoin.Base58.encode(bytes);
-    return privWif;
-};
-
-function getBitcoinPrivateKeyByteArray(priv) {
-    if (priv == null) return null;
-    // Get a copy of private key as a byte array
-    var bytes = priv.toByteArrayUnsigned();
-    // zero pad if private key is less than 32 bytes 
-    while (bytes.length < 32) bytes.unshift(0x00);
-    return bytes;
-};
-*/

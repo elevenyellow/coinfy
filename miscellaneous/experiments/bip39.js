@@ -33,6 +33,7 @@ function getSegwitAddressFromECPair(nkeyp, network) {
 
 const mainnet = bitcoin.networks.mainnet
 const testnet = bitcoin.networks.testnet
+const litecoin = bitcoin.networks.litecoin
 
 // var randomBytes = crypto.randomBytes(16) // 128 bits is enough
 // var words = bip39.entropyToMnemonic(randomBytes.toString('hex'))
@@ -43,16 +44,24 @@ var seed = bip39.mnemonicToSeed(words, '')
 
 var bip32RootKey = bitcoin.HDNode.fromSeedHex(seed, mainnet)
 var bip32RootKeyTestnet = bitcoin.HDNode.fromSeedHex(seed, testnet)
+var bip32RootKeyLitecoin = bitcoin.HDNode.fromSeedHex(seed, litecoin)
 // // var bip32RootKey = bitcoin.HDNode.fromSeedBuffer(seed, mainnet)
 // // var bip32RootKey = bitcoin.HDNode.fromBase58(rootKeyBase58, mainnet)
 // console.log('bip32RootKey:', bip32RootKey.toBase58())
 // console.log('bip32RootKeyTestnet:', bip32RootKeyTestnet.toBase58())
 
+// BTC
 var keyBTC = bip32RootKey.derivePath("m/44'/0'/0'/0/0")
 var keyBTCsegwit = bip32RootKey.derivePath("m/49'/0'/0'/0/0")
 var keyBTCTestnet = bip32RootKeyTestnet.derivePath("m/44'/1'/0'/0/0")
 var keyBTCsegwitTestnet = bip32RootKeyTestnet.derivePath("m/49'/1'/0'/0/0")
+
+// ETH
 var keyETH = bip32RootKey.derivePath("m/44'/60'/0'/0/0")
+
+// LTC
+var keyLTC = bip32RootKeyLitecoin.derivePath("m/44'/2'/0'/0/0")
+var keyLTCsegwit = bip32RootKeyLitecoin.derivePath("m/49'/2'/0'/0/0")
 
 // //
 console.log('BTC: ', keyBTC.keyPair.getAddress()) // .toWIF()
@@ -72,3 +81,10 @@ console.log(
     '0x' +
         ethereum.privateToAddress(keyETH.keyPair.d.toBuffer()).toString('hex')
 )
+
+// //
+console.log('LTC: ', keyLTC.keyPair.getAddress()) // .toWIF()
+console.log(
+    'LTCsegwit: ',
+    getSegwitAddressFromECPair(keyLTCsegwit.keyPair, litecoin)
+) // .toWIF()
