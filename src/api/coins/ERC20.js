@@ -92,7 +92,8 @@ export function createERC20({
             )
         },
 
-        fetchTxs: function(address, from = 0, to = from + 100) {
+        fetchTxs: function(addresses, from = 0, to = from + 100) {
+            const address = addresses[0]
             const unique_index = contract_address + address
             const address64 = addHexPrefix(
                 padLeft(removeHexPrefix(address), 64)
