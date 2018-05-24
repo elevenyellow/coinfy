@@ -11,6 +11,8 @@ import { sortBy, highest, sum, includesMultiple } from '/api/arrays'
 import { localStorageGet } from '/api/browser'
 import { resolveAll } from '/api/promises'
 
+import { validateAddress } from '/api/Coins/BTC'
+
 import {
     TYPE_COIN,
     MAINNET,
@@ -21,8 +23,8 @@ import {
 
 // private
 const network_int = Number(localStorageGet(LOCALSTORAGE_NETWORK)) || MAINNET
-const mainnet = Bitcoin.networks.litecoin // 0x80
-const testnet = Bitcoin.networks.testnet // 0xef
+const mainnet = Bitcoin.networks.litecoin
+const testnet = Bitcoin.networks.testnet
 const network = network_int === MAINNET ? mainnet : testnet
 const url_mainnet = 'https://ltc-bitcore1.trezor.io' // "https://insight.litecore.io"
 const url_testnet = 'https://testnet.litecore.io'
@@ -141,19 +143,12 @@ function getSegwitWalletFromKeyPair(keypair) {
 }
 
 export function isAddress(address) {
-    return network === mainnet
-        ? /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
-        : /^[mn2][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
+    return validateAddress({ symbol, address, network })
 }
 
-export function isAddressCheck(address) {
-    try {
-        Bitcoin.address.fromBase58Check(address)
-    } catch (e) {
-        // console.error(e)
-        return false
-    }
-    return true
+export function isSegwitAddress(address) {
+    const { version } = Bitcoin.address.fromBase58Check(address)
+    return version === mainnet.scriptHash || version === testnet.scriptHash
 }
 
 export function isPrivateKey(private_key) {
@@ -258,14 +253,6 @@ export function urlInfoTx(txid) {
 
 export function urlDecodeTx() {
     return 'https://live.blockcypher.com/ltc/decodetx/'
-}
-
-function isSegwitAddress(address) {
-    const { version } = Bitcoin.address.fromBase58Check(address)
-    return (
-        version === Bitcoin.networks.bitcoin.scriptHash ||
-        version === Bitcoin.networks.testnet.scriptHash
-    )
 }
 
 export function encryptSeed(seed, password) {
@@ -591,9 +578,7 @@ export function createSimpleTx({
 }) {
     // const from_address = getAddressFromPrivateKey(private_key)
     const last_address = from_addresses[from_addresses.length - 1]
-    change_address = isAddressCheck(change_address)
-        ? change_address
-        : last_address
+    change_address = isAddress(change_address) ? change_address : last_address
     return fetch(`${api_url}/addrs/${from_addresses.join(',')}/utxo?noCache=1`)
         .then(response => response.json())
         .then(txs => {

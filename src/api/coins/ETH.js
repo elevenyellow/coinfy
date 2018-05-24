@@ -69,11 +69,7 @@ export function cutDecimals(value) {
 }
 
 export function isAddress(string) {
-    return /^(0x)?[0-9a-fA-F]{40}$/.test(string)
-}
-
-export function isAddressCheck(string) {
-    return isValidAddress(string)
+    return isValidAddress(string) // /^(0x)?[0-9a-fA-F]{40}$/.test(string)
 }
 
 export function isPrivateKey(string) {

@@ -55,7 +55,7 @@ export default class ImportAddress extends Component {
         state.view.address_input = address
         // address = address.toLowerCase()
 
-        if (this.Coin.isAddressCheck(address)) {
+        if (this.Coin.isAddress(address)) {
             if (isAssetRegistered(this.Coin.symbol, address)) {
                 state.view.address_input_error = 'You already have this asset'
                 state.view.is_valid_input = false

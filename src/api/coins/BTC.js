@@ -140,26 +140,25 @@ function getSegwitWalletFromKeyPair(keypair) {
     }
 }
 
-// https://en.bitcoin.it/wiki/List_of_address_prefixes
-export function isAddress(address) {
-    return network === mainnet
-        ? /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
-        : /^[mn2][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address)
-}
-
-export function isAddressCheck(address) {
+export function validateAddress({ symbol, address, network }) {
     try {
-        Bitcoin.address.fromBase58Check(address)
+        const { version } = Bitcoin.address.fromBase58Check(address)
+        return network.pubKeyHash != version && network.scriptHash != version
+            ? false
+            : true
     } catch (e) {
-        // console.error(e)
         return false
     }
-    return true
 }
 
-// export function isPublicKey(public_key) {
-//     return /^([0-9a-fA-F]{66}|[0-9a-fA-F]{130})$/.test(public_key)
-// }
+export function isAddress(address) {
+    return validateAddress({ symbol, address, network })
+}
+
+export function isSegwitAddress(address) {
+    const { version } = Bitcoin.address.fromBase58Check(address)
+    return version === mainnet.scriptHash || version === testnet.scriptHash
+}
 
 export function isPrivateKey(private_key) {
     return (
@@ -264,14 +263,6 @@ export function urlInfoTx(txid) {
 
 export function urlDecodeTx() {
     return 'https://live.blockcypher.com/btc/decodetx/'
-}
-
-function isSegwitAddress(address) {
-    const { version } = Bitcoin.address.fromBase58Check(address)
-    return (
-        version === Bitcoin.networks.bitcoin.scriptHash ||
-        version === Bitcoin.networks.testnet.scriptHash
-    )
 }
 
 export function encryptSeed(seed, password) {
@@ -610,9 +601,7 @@ export function createSimpleTx({
 }) {
     // const from_address = getAddressFromPrivateKey(private_key)
     const last_address = from_addresses[from_addresses.length - 1]
-    change_address = isAddressCheck(change_address)
-        ? change_address
-        : last_address
+    change_address = isAddress(change_address) ? change_address : last_address
     return fetch(`${api_url}/addrs/${from_addresses.join(',')}/utxo?noCache=1`)
         .then(response => response.json())
         .then(txs => {
@@ -780,3 +769,55 @@ function getBitcoinPrivateKeyByteArray(priv) {
     return bytes;
 };
 */
+
+// const onChainNetworks = {
+//     BTC: {
+//         mainnet: {
+//             messagePrefix: '\x18Bitcoin Signed Message:\n',
+//             bip32: {
+//                 public: 0x049d7cb2,
+//                 private: 0x049d7878
+//             },
+//             pubKeyHash: 0x00,
+//             scriptHash: 0x05,
+//             wif: 0x80
+//         },
+//         testnet: {
+//             messagePrefix: '\x18Bitcoin Signed Message:\n',
+//             bip32: {
+//                 public: 71979618,
+//                 private: 71978536
+//             },
+//             pubKeyHash: 111,
+//             scriptHash: 196,
+//             wif: 239
+//         }
+//     },
+//     LTC: {
+//         mainnet: {
+//             messagePrefix: '\x19Litecoin Signed Message:\n',
+//             bip32: {
+//                 public: 0x01b26ef6,
+//                 private: 0x01b26792
+//             },
+//             pubKeyHash: 0x30,
+//             scriptHash: 0x32,
+//             wif: 0xb0
+//         }
+//     },
+//     DOGE: {
+//         messagePrefix: '\u0019Dogecoin Signed Message:\n',
+//         bip32: { public: 49990397, private: 49988504 },
+//         pubKeyHash: 30,
+//         scriptHash: 22,
+//         wif: 158
+//     },
+//     GRLC: {
+//         //m/44'/1982'/0'/0
+//         messagePrefix: '\u0019Garlicoin Signed Message:\n',
+//         bip32: { public: 76067358, private: 76066276 },
+//         pubKeyHash: 38,
+//         scriptHash: 50,
+//         wif: 176
+//     }
+// }
