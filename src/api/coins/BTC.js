@@ -143,9 +143,7 @@ function getSegwitWalletFromKeyPair(keypair) {
 export function validateAddress({ symbol, address, network }) {
     try {
         const { version } = Bitcoin.address.fromBase58Check(address)
-        return network.pubKeyHash != version && network.scriptHash != version
-            ? false
-            : true
+        return network.pubKeyHash === version || network.scriptHash === version
     } catch (e) {
         return false
     }
