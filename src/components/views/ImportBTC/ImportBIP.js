@@ -4,15 +4,10 @@ import { createObserver, collect } from 'dop'
 
 import { setHref, createAsset, setPrivateKey } from '/store/actions'
 import state from '/store/state'
-import { isAssetRegistered, getAssetId } from '/store/getters'
+import { isAssetRegistered, getAssetId, getParamsFromLocation } from '/store/getters'
 
-import {
-    isPrivateKeyBip,
-    getAddressFromPrivateKey,
-    getSegwitAddressFromPrivateKey
-} from '/api/coins/BTC'
 import { decryptBIP38 } from '/api/crypto'
-import { BTC } from '/api/coins'
+import { Coins } from '/api/coins'
 
 import styles from '/const/styles'
 import { routes, Show } from '/store/router'
@@ -31,6 +26,9 @@ import {
 
 export default class ImportBIP extends Component {
     componentWillMount() {
+        const { symbol } = getParamsFromLocation()
+        this.Coin = Coins[symbol]
+
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
         const collector = collect()
@@ -64,7 +62,7 @@ export default class ImportBIP extends Component {
         const value = e.target.value.trim()
         state.view.bip_input = value
 
-        if (isPrivateKeyBip(value)) {
+        if (this.Coin.isPrivateKeyBip(value)) {
             state.view.bip_input_error = ''
             state.view.is_valid_input = true
         } else {
@@ -88,20 +86,20 @@ export default class ImportBIP extends Component {
             const collector = collect()
             try {
                 const password = state.view.bip_password
-                const private_key = BTC.decryptBIP38(
+                const private_key = this.Coin.decryptBIP38(
                     state.view.bip_input,
                     password
                 )
                 const address = state.view.type_segwit
-                    ? getSegwitAddressFromPrivateKey(private_key)
-                    : getAddressFromPrivateKey(private_key)
+                    ? this.Coin.getSegwitAddressFromPrivateKey(private_key)
+                    : this.Coin.getAddressFromPrivateKey(private_key)
 
                 // console.log( address );
-                if (isAssetRegistered(BTC.symbol, address)) {
+                if (isAssetRegistered(this.Coin.symbol, address)) {
                     state.view.bip_input_error = 'You already have this asset'
                     state.view.is_valid_input = false
                 } else {
-                    const asset = createAsset(BTC.type, BTC.symbol, address)
+                    const asset = createAsset(this.Coin.type, this.Coin.symbol, address)
                     const asset_id = getAssetId(asset)
                     setPrivateKey(asset_id, private_key, password)
                     setHref(routes.asset({ asset_id: getAssetId(asset) }))

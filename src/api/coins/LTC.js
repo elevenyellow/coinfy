@@ -152,40 +152,18 @@ export function isSegwitAddress(address) {
 }
 
 export function isPrivateKey(private_key) {
-    return (
-        isWalletImportFormat(private_key) ||
-        isCompressedWalletImportFormat(private_key)
-        // isHexFormat(private_key) ||
-        // isBase64Format(private_key)
-    )
+    try {
+        const address = getAddressFromPrivateKey(private_key)
+        return isAddress(address)
+    } catch(e) {
+        return false
+    }
 }
 
 export function isPrivateKeyBip(private_key) {
     return /^6P[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{56}$/.test(
         private_key
     )
-}
-
-export function isWalletImportFormat(key) {
-    key = key.toString()
-    return network === mainnet
-        ? /^5[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
-              key
-          )
-        : /^9[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
-              key
-          )
-}
-
-export function isCompressedWalletImportFormat(key) {
-    key = key.toString()
-    return network === mainnet
-        ? /^[LK][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(
-              key
-          )
-        : /^c[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(
-              key
-          )
 }
 
 export function formatAddress(address) {

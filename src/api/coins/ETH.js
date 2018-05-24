@@ -88,12 +88,12 @@ export function formatAddress(address) {
 
 export function getAddressFromPrivateKey(private_key) {
     return addHexPrefix(
-        privateToAddress(stringToBuffer(private_key)).toString('hex')
+        privateToAddress(stringToBuffer(removeHexPrefix(private_key))).toString('hex')
     )
 }
 
 export function getPublicFromPrivateKey(private_key) {
-    return privateToPublic(stringToBuffer(private_key)).toString('hex')
+    return privateToPublic(stringToBuffer(removeHexPrefix(private_key))).toString('hex')
 }
 
 export function stringToBuffer(string) {

@@ -158,15 +158,6 @@ export function isSegwitAddress(address) {
     return version === mainnet.scriptHash || version === testnet.scriptHash
 }
 
-export function isPrivateKey(private_key) {
-    return (
-        isWalletImportFormat(private_key) ||
-        isCompressedWalletImportFormat(private_key)
-        // isHexFormat(private_key) ||
-        // isBase64Format(private_key)
-    )
-}
-
 export function isPrivateKeyBip(private_key) {
     // https://github.com/pointbiz/bitaddress.org/blob/67e167930c4ebd9cf91047c36792c4e32dc41f11/src/ninja.key.js#L38
     return /^6P[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{56}$/.test(
@@ -174,27 +165,44 @@ export function isPrivateKeyBip(private_key) {
     )
 }
 
-export function isWalletImportFormat(key) {
-    key = key.toString()
-    return network === mainnet
-        ? /^5[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
-              key
-          )
-        : /^9[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
-              key
-          )
+export function isPrivateKey(private_key) {
+    try {
+        const address = getAddressFromPrivateKey(private_key)
+        return isAddress(address)
+    } catch(e) {
+        return false
+    }
+    // return (
+    //     isWalletImportFormat(private_key) ||
+    //     isCompressedWalletImportFormat(private_key)
+    //     // isHexFormat(private_key) ||
+    //     // isBase64Format(private_key)
+    // )
 }
 
-export function isCompressedWalletImportFormat(key) {
-    key = key.toString()
-    return network === mainnet
-        ? /^[LK][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(
-              key
-          )
-        : /^c[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(
-              key
-          )
-}
+
+
+// export function isWalletImportFormat(key) {
+//     key = key.toString()
+//     return network === mainnet
+//         ? /^5[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
+//               key
+//           )
+//         : /^9[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
+//               key
+//           )
+// }
+
+// export function isCompressedWalletImportFormat(key) {
+//     key = key.toString()
+//     return network === mainnet
+//         ? /^[LK][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(
+//               key
+//           )
+//         : /^c[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(
+//               key
+//           )
+// }
 
 export function formatAddress(address) {
     return address.trim()
