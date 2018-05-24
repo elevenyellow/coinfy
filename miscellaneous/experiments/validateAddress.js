@@ -11,6 +11,58 @@ function validateAddress({ symbol, address, network }) {
     }
 }
 
+const onChainNetworks = {
+    BTC: {
+        mainnet: {
+            messagePrefix: '\x18Bitcoin Signed Message:\n',
+            bip32: {
+                public: 0x049d7cb2,
+                private: 0x049d7878
+            },
+            pubKeyHash: 0x00,
+            scriptHash: 0x05,
+            wif: 0x80
+        },
+        testnet: {
+            messagePrefix: '\x18Bitcoin Signed Message:\n',
+            bip32: {
+                public: 71979618,
+                private: 71978536
+            },
+            pubKeyHash: 111,
+            scriptHash: 196,
+            wif: 239
+        }
+    },
+    LTC: {
+        mainnet: {
+            messagePrefix: '\x19Litecoin Signed Message:\n',
+            bip32: {
+                public: 0x01b26ef6,
+                private: 0x01b26792
+            },
+            pubKeyHash: 0x30,
+            scriptHash: 0x32,
+            wif: 0xb0
+        }
+    },
+    DOGE: {
+        messagePrefix: '\u0019Dogecoin Signed Message:\n',
+        bip32: { public: 49990397, private: 49988504 },
+        pubKeyHash: 30,
+        scriptHash: 22,
+        wif: 158
+    },
+    GRLC: {
+        //m/44'/1982'/0'/0
+        messagePrefix: '\u0019Garlicoin Signed Message:\n',
+        bip32: { public: 76067358, private: 76066276 },
+        pubKeyHash: 38,
+        scriptHash: 50,
+        wif: 176
+    }
+}
+
 console.log(
     validateAddress({
         symbol: 'BTC',
