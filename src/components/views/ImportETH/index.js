@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
 import { generateQRCode } from '/api/qr'
-import { isAddress, logo } from '/api/coins/ETH'
+import { logo } from '/api/coins/ETH'
 import { routes, Router, Route, Show } from '/store/router'
 import state from '/store/state'
 

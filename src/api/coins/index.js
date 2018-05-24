@@ -2,6 +2,7 @@ const Coins = {}
 const list = [
     'BTC',
     'ETH',
+    'LTC',
     'ANT',
     'ZRX',
     'QTUM',

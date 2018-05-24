@@ -69,22 +69,18 @@ export function cutDecimals(value) {
 }
 
 export function isAddress(string) {
-    return /^(0x)?[0-9a-fA-F]{40}$/.test(string)
-}
-
-export function isAddressCheck(string) {
-    return isValidAddress(string)
+    return isValidAddress(string) // /^(0x)?[0-9a-fA-F]{40}$/.test(string)
 }
 
 export function isPrivateKey(string) {
-    return /^([0-9a-fA-F]{64}|[0-9a-fA-F]{66}|[0-9a-fA-F]{128}|[0-9a-fA-F]{13})$/.test(
+    return /^(0x)?([0-9a-fA-F]{64}|[0-9a-fA-F]{66}|[0-9a-fA-F]{128}|[0-9a-fA-F]{13})$/.test(
         string
     )
 }
 
-export function isPrivateKeyCheck(string) {
-    return isValidPrivate(stringToBuffer(string))
-}
+// export function isPrivateKeyCheck(string) {
+//     return isValidPrivate(stringToBuffer(string))
+// }
 
 export function formatAddress(address) {
     return addHexPrefix(address)

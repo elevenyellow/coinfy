@@ -240,7 +240,7 @@ export default class Send extends Component {
         const collector = collect()
         const value = e.target.value.trim()
         state.view.address_input = value
-        state.view.address_input_error = !this.Coin.isAddressCheck(value)
+        state.view.address_input_error = !this.Coin.isAddress(value)
         collector.emit()
     }
 

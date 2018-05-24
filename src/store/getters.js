@@ -89,7 +89,7 @@ export function isValidAsset(asset) {
         const symbol = asset.symbol
         const addr = asset.address
         const address = typeof addr == 'string' ? addr : addr[addr.length - 1]
-        return Coins[symbol].isAddressCheck(address)
+        return Coins[symbol].isAddress(address)
     } catch (e) {
         return false
     }
