@@ -424,17 +424,19 @@ export function fetchRecomendedFee({
             ? fetchFees()
                   .catch(e =>
                       Promise.reject(
-                          "BTC.fetchRecomendedFee: We couldn't fetch fee prices"
+                          "LTC.fetchRecomendedFee: We couldn't fetch fee prices"
                       )
                   )
                   .then(fee => {
+                    console.log(fee)
+                      
                       cacheRecomendedFee[address] = { fee_per_kb: fee }
                       return fetch(`${api_url}/addrs/${address}/utxo?noCache=1`)
                   })
                   .then(response => response.json())
                   .catch(e =>
                       Promise.reject(
-                          "BTC.fetchRecomendedFee: We couldn't fetch utxo"
+                          "LTC.fetchRecomendedFee: We couldn't fetch utxo"
                       )
                   )
                   .then(utxo => {
@@ -458,13 +460,11 @@ export function fetchRecomendedFee({
         return calcFee(data)
     })
 }
+// https://ltc-bitcore1.trezor.io/api/utils/estimatefee
 function fetchFees() {
-    const promises = BitcoinFee.SERVICES.map(service =>
-        BitcoinFee.fetchFee(service)
-    )
-    return resolveAll(promises).then(
-        fees => (fees.length > 0 ? highest(fees) : Promise.reject(null))
-    )
+    return fetch(`https://api.blockcypher.com/v1/ltc/main`)
+        .then(response => response.json())
+        .then(json => ((json.high_fee_per_kb+json.medium_fee_per_kb)/2)/1024)
 }
 function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
     let amount_sum = 0

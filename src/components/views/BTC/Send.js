@@ -766,7 +766,7 @@ function SendTemplate({
                             {url_decode_tx === '' ? null : (
                                 <Label size="11px">
                                     <a
-                                        href="https://live.blockcypher.com/btc/decodetx/"
+                                        href={url_decode_tx}
                                         target="_blank"
                                     >
                                         Decode raw transaction
