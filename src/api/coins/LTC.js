@@ -8,7 +8,6 @@ import {
     encryptBIP38 as _encryptBIP38
 } from '/api/crypto'
 import { sortBy, highest, sum, includesMultiple } from '/api/arrays'
-import { localStorageGet } from '/api/browser'
 import { resolveAll } from '/api/promises'
 
 import { validateAddress } from '/api/Coins/BTC'
@@ -21,15 +20,31 @@ import {
     LOCALSTORAGE_NETWORK
 } from '/const/'
 
-// private
-const network_int = Number(localStorageGet(LOCALSTORAGE_NETWORK)) || MAINNET
-const mainnet = Bitcoin.networks.litecoin
-const testnet = Bitcoin.networks.testnet
-const network = network_int === MAINNET ? mainnet : testnet
-const url_mainnet = 'https://ltc-bitcore1.trezor.io' // "https://insight.litecore.io"
-const url_testnet = 'https://testnet.litecore.io'
-const url = network === mainnet ? url_mainnet : url_testnet
-const api_url = `${url}/api` // https://github.com/bitpay/insight-api
+// network
+export const networks = {
+    [MAINNET]: {
+        // mainnet
+        network: Bitcoin.networks.litecoin,
+        url: 'https://ltc-bitcore1.trezor.io' // "https://insight.litecore.io"
+    }
+    // [TESTNET]: {
+    //     // testnet
+    //     network: Bitcoin.networks.testnet,
+    //     url: 'https://testnet.litecore.io'
+    // }
+}
+let url, network, network_id, api_url
+export function setupNetwork(id, networks) {
+    const network_data = networks[id]
+    if (typeof network_data !== 'undefined') {
+        network_id = id
+        network = network_data.network
+        url = network_data.url
+        api_url = `${url}/api` // https://github.com/bitpay/insight-api
+        return true
+    }
+    return false
+}
 
 // exports
 export const type = TYPE_COIN
@@ -155,7 +170,7 @@ export function isPrivateKey(private_key) {
     try {
         const address = getAddressFromPrivateKey(private_key)
         return isAddress(address)
-    } catch(e) {
+    } catch (e) {
         return false
     }
 }
@@ -428,8 +443,8 @@ export function fetchRecomendedFee({
                       )
                   )
                   .then(fee => {
-                    console.log(fee)
-                      
+                      console.log(fee)
+
                       cacheRecomendedFee[address] = { fee_per_kb: fee }
                       return fetch(`${api_url}/addrs/${address}/utxo?noCache=1`)
                   })
@@ -464,7 +479,9 @@ export function fetchRecomendedFee({
 function fetchFees() {
     return fetch(`https://api.blockcypher.com/v1/ltc/main`)
         .then(response => response.json())
-        .then(json => ((json.high_fee_per_kb+json.medium_fee_per_kb)/2)/1024)
+        .then(
+            json => (json.high_fee_per_kb + json.medium_fee_per_kb) / 2 / 1024
+        )
 }
 function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
     let amount_sum = 0
@@ -627,17 +644,17 @@ const sendProviders = {
     mainnet: [
         {
             name: 'Trezor.io',
-            url: `${url_mainnet}/tx/send`,
-            send: sendRawTxInsight
-        }
-    ],
-    testnet: [
-        {
-            name: 'Litecore.io',
-            url: `${url_testnet}/tx/send`,
+            url: `${networks[MAINNET].url}/tx/send`,
             send: sendRawTxInsight
         }
     ]
+    // testnet: [
+    //     {
+    //         name: 'Litecore.io',
+    //         url: `${networks[TESTNET].url}/tx/send`,
+    //         send: sendRawTxInsight
+    //     }
+    // ]
 }
 
 function sendRawTxInsight(rawTx) {

@@ -1,6 +1,6 @@
 import { bigNumber, formatCoin } from '/api/numbers'
 import { sortBy } from '/api/arrays'
-import { TYPE_ERC20, ASSET_LOGO } from '/const/'
+import { TYPE_ERC20, ASSET_LOGO, MAINNET, TESTNET } from '/const/'
 import { padLeft } from '/api/strings'
 import {
     hexToDec,
@@ -8,12 +8,10 @@ import {
     decodeSolidityString,
     removeHexPrefix
 } from '/api/hex'
+
 import {
     symbol as symbol_fee,
-    url,
-    api_url,
     api_key,
-    url_myetherapi,
     fetchBalance,
     fetchRecomendedFee,
     createSimpleTx,
@@ -42,6 +40,17 @@ import {
 } from '/api/coins/ETH'
 import { addHexPrefix } from './ETH'
 
+export const networks = {
+    [MAINNET]: {
+        // mainnet
+        api_url: 'https://api.etherscan.io/api',
+        url: 'https://etherscan.io',
+        url_myetherapi: 'https://api.myetherapi.com/eth'
+    }
+}
+
+let network_id, url, url_myetherapi, api_url
+
 export function createERC20({
     symbol,
     name,
@@ -58,6 +67,18 @@ export function createERC20({
     const satoshis = Math.pow(10, coin_decimals)
 
     return {
+        setupNetwork: function(id, networks) {
+            const network_data = networks[id]
+            if (typeof network_data !== 'undefined') {
+                network_id = id
+                api_url = network_data.api_url
+                url = network_data.url
+                url_myetherapi = network_data.url_myetherapi
+                return true
+            }
+            return false
+        },
+
         urlInfo: function(address) {
             return `${url}/token/${contract_address}?a=${address}`
         },
@@ -163,6 +184,7 @@ export function createERC20({
             return fetchRecomendedFee(props)
         },
 
+        networks,
         custom,
         logo: logo,
         symbol,
@@ -171,10 +193,6 @@ export function createERC20({
         labels,
         type: TYPE_ERC20,
         symbol_fee,
-        url,
-        api_url,
-        api_key,
-        url_myetherapi,
         removeHexPrefix,
         isAddress,
         isPrivateKey,

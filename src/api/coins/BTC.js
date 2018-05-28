@@ -8,7 +8,6 @@ import {
     encryptBIP38 as _encryptBIP38
 } from '/api/crypto'
 import { sortBy, highest, sum, includesMultiple } from '/api/arrays'
-import { localStorageGet } from '/api/browser'
 import { resolveAll } from '/api/promises'
 
 import {
@@ -19,15 +18,31 @@ import {
     LOCALSTORAGE_NETWORK
 } from '/const/'
 
-// private
-const network_int = Number(localStorageGet(LOCALSTORAGE_NETWORK)) || MAINNET
-const mainnet = Bitcoin.networks.bitcoin // 0x80
-const testnet = Bitcoin.networks.testnet // 0xef
-const network = network_int === MAINNET ? mainnet : testnet
-const url_mainnet = 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io/api/"
-const url_testnet = 'https://testnet-bitcore1.trezor.io' // "https://testnet-bitcore1.trezor.io/api/"
-const url = network === mainnet ? url_mainnet : url_testnet
-const api_url = `${url}/api` // https://github.com/bitpay/insight-api
+// network
+export const networks = {
+    [MAINNET]: {
+        // mainnet
+        network: Bitcoin.networks.bitcoin, // 0x80
+        url: 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io/api/"
+    },
+    [TESTNET]: {
+        // testnet
+        network: Bitcoin.networks.testnet, // 0xef
+        url: 'https://testnet-bitcore1.trezor.io' // "https://testnet-bitcore1.trezor.io/api/"
+    }
+}
+let url, network, network_id, api_url
+export function setupNetwork(id, networks) {
+    const network_data = networks[id]
+    if (typeof network_data !== 'undefined') {
+        network_id = id
+        network = network_data.network
+        url = network_data.url
+        api_url = `${url}/api` // https://github.com/bitpay/insight-api
+        return true
+    }
+    return false
+}
 
 // exports
 export const type = TYPE_COIN
@@ -95,7 +110,7 @@ export function getWalletsFromSeed({
 }) {
     if (derived_path_function === undefined)
         derived_path_function =
-            network_int === MAINNET
+            network_id === MAINNET
                 ? segwit
                     ? derivation_path.mainnetsegwit
                     : derivation_path.mainnet
@@ -169,7 +184,7 @@ export function isPrivateKey(private_key) {
     try {
         const address = getAddressFromPrivateKey(private_key)
         return isAddress(address)
-    } catch(e) {
+    } catch (e) {
         return false
     }
     // return (
@@ -179,8 +194,6 @@ export function isPrivateKey(private_key) {
     //     // isBase64Format(private_key)
     // )
 }
-
-
 
 // export function isWalletImportFormat(key) {
 //     key = key.toString()
@@ -680,14 +693,14 @@ const sendProviders = {
     mainnet: [
         {
             name: 'Bitpay.com',
-            url: `${url_mainnet}/tx/send`,
+            url: `${networks[MAINNET].url}/tx/send`,
             send: sendRawTxInsight
         }
     ],
     testnet: [
         {
             name: 'Trezor.io',
-            url: `${url_testnet}/tx/send`, //'https://test-insight.bitpay.com/tx/send',
+            url: `${networks[TESTNET].url}/tx/send`, //'https://test-insight.bitpay.com/tx/send',
             send: sendRawTxInsight
         }
     ]

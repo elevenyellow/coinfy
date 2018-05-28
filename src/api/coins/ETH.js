@@ -12,7 +12,6 @@ import { formatCoin, limitDecimals, bigNumber } from '/api/numbers'
 import { decToHex, hexToDec, sanitizeHex, removeHexPrefix } from '/api/hex'
 import { padLeft } from '/api/strings'
 import { encryptAES128CTR, decryptAES128CTR, randomBytes } from '/api/crypto'
-import { localStorageGet } from '/api/browser'
 import {
     TYPE_COIN,
     MAINNET,
@@ -22,20 +21,34 @@ import {
 } from '/const/'
 
 // private
-export const network = Number(localStorageGet(LOCALSTORAGE_NETWORK)) || MAINNET
 export const api_key = 'GY9KKYEJF1HDEPIAIRGA66R2RIQWQXV9UZ'
-export const api_url =
-    network === MAINNET
-        ? 'https://api.etherscan.io/api'
-        : 'https://ropsten.etherscan.io/api'
-export const url =
-    network === MAINNET
-        ? 'https://etherscan.io'
-        : 'https://ropsten.etherscan.io'
-export const url_myetherapi =
-    network === MAINNET
-        ? 'https://api.myetherapi.com/eth'
-        : 'https://api.myetherapi.com/rop'
+export const networks = {
+    [MAINNET]: {
+        // mainnet
+        api_url: 'https://api.etherscan.io/api',
+        url: 'https://etherscan.io',
+        url_myetherapi: 'https://api.myetherapi.com/eth'
+    },
+    [TESTNET]: {
+        // mainnet
+        api_url: 'https://ropsten.etherscan.io/api',
+        url: 'https://ropsten.etherscan.io',
+        url_myetherapi: 'https://api.myetherapi.com/rop'
+    }
+}
+
+let network_id, url, url_myetherapi, api_url
+export function setupNetwork(id, networks) {
+    const network_data = networks[id]
+    if (typeof network_data !== 'undefined') {
+        network_id = id
+        api_url = network_data.api_url
+        url = network_data.url
+        url_myetherapi = network_data.url_myetherapi
+        return true
+    }
+    return false
+}
 
 // exports
 export const type = TYPE_COIN
@@ -88,12 +101,16 @@ export function formatAddress(address) {
 
 export function getAddressFromPrivateKey(private_key) {
     return addHexPrefix(
-        privateToAddress(stringToBuffer(removeHexPrefix(private_key))).toString('hex')
+        privateToAddress(stringToBuffer(removeHexPrefix(private_key))).toString(
+            'hex'
+        )
     )
 }
 
 export function getPublicFromPrivateKey(private_key) {
-    return privateToPublic(stringToBuffer(removeHexPrefix(private_key))).toString('hex')
+    return privateToPublic(
+        stringToBuffer(removeHexPrefix(private_key))
+    ).toString('hex')
 }
 
 export function stringToBuffer(string) {
