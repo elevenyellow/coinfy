@@ -16,16 +16,9 @@ const ltcnet = {
     wif: 0xef
 }
 
-function generatePrivateKey() {
-    const key1 = 'T8FL38ApMzmi6GhVFzRJ4QBpVQHJ3AUm5CKifZ6SqZvCVHsfkAPK'
-    const w = bitcoin.ECPair.makeRandom(ltcnet)
-    console.log(w.toWIF())
-
-    const wallet = bitcoin.ECPair.fromWIF(w.toWIF(), ltcnet)
-    console.log(wallet.getAddress())
-}
-
-console.log(generatePrivateKey())
+var testnet = bitcoin.networks.testnet
+var alice = bitcoin.ECPair.makeRandom({ network: ltcnet })
+console.log(alice.getAddress(), alice.toWIF())
 
 function getAddressFromPrivateKey(private_key) {
     const wallet = bitcoin.ECPair.fromWIF(private_key)

@@ -26,21 +26,21 @@ export const networks = {
         // mainnet
         network: Bitcoin.networks.litecoin,
         url: 'https://ltc-bitcore1.trezor.io' // "https://insight.litecore.io"
+    },
+    [TESTNET]: {
+        // testnet
+        network: {
+            messagePrefix: '\x19Litecoin Signed Message:\n',
+            bip32: {
+                public: 0x043587cf,
+                private: 0x04358394
+            },
+            pubKeyHash: 0x6f,
+            scriptHash: 0xc4, //  for segwit (start with 2)
+            wif: 0xef
+        },
+        url: 'https://testnet.litecore.io'
     }
-    // [TESTNET]: {
-    //     // testnet
-    //     network: {
-    //         messagePrefix: '\x19Litecoin Signed Message:\n',
-    //         bip32: {
-    //             public: 0x043587cf,
-    //             private: 0x04358394
-    //         },
-    //         pubKeyHash: 0x6f,
-    //         scriptHash: 0xc4, //  for segwit (start with 2)
-    //         wif: 0xef
-    //     },
-    //     url: 'https://testnet.litecore.io'
-    // }
 }
 let url, network, network_id, api_url
 export function setupNetwork(id, networks) {
@@ -656,14 +656,14 @@ const sendProviders = {
             url: `${networks[MAINNET].url}/tx/send`,
             send: sendRawTxInsight
         }
+    ],
+    testnet: [
+        {
+            name: 'Litecore.io',
+            url: `${networks[TESTNET].url}/tx/send`,
+            send: sendRawTxInsight
+        }
     ]
-    // testnet: [
-    //     {
-    //         name: 'Litecore.io',
-    //         url: `${networks[TESTNET].url}/tx/send`,
-    //         send: sendRawTxInsight
-    //     }
-    // ]
 }
 
 function sendRawTxInsight(rawTx) {
