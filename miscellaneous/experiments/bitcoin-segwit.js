@@ -5,10 +5,27 @@ let crypto = require('crypto')
 // const address = '3Cbq7aT1tY8kMxWLbitaG7yT6bPbKChq64'
 // console.log(bitcoin.address.fromBase58Check(address))
 
-function generatePrivateKey() {
-    const wallet = bitcoin.ECPair.makeRandom()
-    return wallet.toWIF()
+const ltcnet = {
+    messagePrefix: '\x19Litecoin Signed Message:\n',
+    bip32: {
+        public: 0x043587cf,
+        private: 0x04358394
+    },
+    pubKeyHash: 0x6f,
+    scriptHash: 0xc4, //  for segwit (start with 2)
+    wif: 0xef
 }
+
+function generatePrivateKey() {
+    const key1 = 'T8FL38ApMzmi6GhVFzRJ4QBpVQHJ3AUm5CKifZ6SqZvCVHsfkAPK'
+    const w = bitcoin.ECPair.makeRandom(ltcnet)
+    console.log(w.toWIF())
+
+    const wallet = bitcoin.ECPair.fromWIF(w.toWIF(), ltcnet)
+    console.log(wallet.getAddress())
+}
+
+console.log(generatePrivateKey())
 
 function getAddressFromPrivateKey(private_key) {
     const wallet = bitcoin.ECPair.fromWIF(private_key)

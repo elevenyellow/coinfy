@@ -41,7 +41,7 @@ const TYPES_IMPORT = {
     bip38: 'bip38'
 }
 
-export default class ImportBitcoin extends Component {
+export default class ImportLitecoin extends Component {
     componentWillMount() {
         this.observer = createObserver(m => this.forceUpdate())
         this.observer.observe(state.view)
@@ -84,7 +84,7 @@ function ImportTemplate({ type_import, onChangeTypeImport }) {
                     <img src={logo} />
                 </IconHeader>
                 <Div float="left">
-                    <H1>Bitcoin</H1>
+                    <H1>Litecoin</H1>
                     <H2>Import wallet</H2>
                 </Div>
                 <Div clear="both" />

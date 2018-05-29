@@ -29,7 +29,16 @@ export const networks = {
     }
     // [TESTNET]: {
     //     // testnet
-    //     network: Bitcoin.networks.testnet,
+    //     network: {
+    //         messagePrefix: '\x19Litecoin Signed Message:\n',
+    //         bip32: {
+    //             public: 0x043587cf,
+    //             private: 0x04358394
+    //         },
+    //         pubKeyHash: 0x6f,
+    //         scriptHash: 0xc4, //  for segwit (start with 2)
+    //         wif: 0xef
+    //     },
     //     url: 'https://testnet.litecore.io'
     // }
 }
@@ -112,7 +121,7 @@ export function getWalletsFromSeed({
 }) {
     if (derived_path_function === undefined)
         derived_path_function =
-            network_int === MAINNET
+            network_id === MAINNET
                 ? segwit
                     ? derivation_path.mainnetsegwit
                     : derivation_path.mainnet
