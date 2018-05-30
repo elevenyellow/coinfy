@@ -144,7 +144,7 @@ export default class Summary extends Component {
             txs: this.asset.summary.txs || [],
             fetchingSummary: this.asset.summary.fetching,
             rescanOrLoad: this.rescanOrLoad,
-            address: address,
+            address: this.Coin.formatAddress(address),
             qrcodebase64: generateQRCode(address),
             refAddress: this.refAddress,
             colorAsset: this.Coin.color,

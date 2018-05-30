@@ -104,7 +104,7 @@ export default class HeaderAsset extends Component {
     render() {
         return React.createElement(HeaderAssetTemplate, {
             is_seed: isAssetWithSeed(this.asset_id),
-            address: this.asset.address,
+            address: this.Coin.formatAddress(this.asset.address),
             label: this.asset ? this.asset.label : '',
             symbol: this.asset.symbol,
             logo: Coins[this.asset.symbol].logo,

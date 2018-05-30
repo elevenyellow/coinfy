@@ -224,7 +224,10 @@ export function getSeed(asset_id, password) {
 
 export function getLabelOrAddress(asset) {
     if (typeof asset == 'string') asset = getAsset(asset)
-    return asset.label.length > 0 ? asset.label : asset.address
+    const Coin = Coins[asset.symbol]
+    return asset.label.length > 0
+        ? asset.label
+        : Coin.formatAddress(asset.address)
 }
 
 export function getReusableSeeds(symbol) {

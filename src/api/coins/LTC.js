@@ -27,20 +27,20 @@ export const networks = {
         network: Bitcoin.networks.litecoin,
         url: 'https://ltc-bitcore1.trezor.io' // "https://insight.litecore.io"
     },
-    [TESTNET]: {
-        // testnet
-        network: {
-            messagePrefix: '\x19Litecoin Signed Message:\n',
-            bip32: {
-                public: 0x043587cf,
-                private: 0x04358394
-            },
-            pubKeyHash: 0x6f,
-            scriptHash: 0xc4, //  for segwit (start with 2)
-            wif: 0xef
-        },
-        url: 'https://testnet.litecore.io'
-    }
+    // [TESTNET]: {
+    //     // testnet
+    //     network: {
+    //         messagePrefix: '\x19Litecoin Signed Message:\n',
+    //         bip32: {
+    //             public: 0x043587cf,
+    //             private: 0x04358394
+    //         },
+    //         pubKeyHash: 0x6f,
+    //         scriptHash: 0xc4, //  for segwit (start with 2)
+    //         wif: 0xef
+    //     },
+    //     url: 'https://testnet.litecore.io'
+    // }
 }
 let url, network, network_id, api_url
 export function setupNetwork(id, networks) {
@@ -71,10 +71,10 @@ export const labels = 'ltc coin'
 export const logo = ASSET_LOGO(symbol)
 
 export const derivation_path = {
-    mainnet: index => `m/44'/2'/0'/0/${index}`,
-    mainnetsegwit: index => `m/49'/2'/0'/0/${index}`,
-    testnet: index => `m/44'/1'/0'/0/${index}`,
-    testnetsegwit: index => `m/49'/1'/0'/0/${index}`
+    mainnet: index => `m/44'/2'/0'/0/${index}`, // ok
+    mainnetsegwit: index => `m/49'/2'/0'/0/${index}`, // ok
+    testnet: index => `m/44'/1'/0'/0/${index}`, // not ok
+    testnetsegwit: index => `m/49'/1'/0'/0/${index}` // not ok
 }
 
 export function format(value, decimals = coin_decimals) {
@@ -657,13 +657,13 @@ const sendProviders = {
             send: sendRawTxInsight
         }
     ],
-    testnet: [
-        {
-            name: 'Litecore.io',
-            url: `${networks[TESTNET].url}/tx/send`,
-            send: sendRawTxInsight
-        }
-    ]
+    // testnet: [
+    //     {
+    //         name: 'Litecore.io',
+    //         url: `${networks[TESTNET].url}/tx/send`,
+    //         send: sendRawTxInsight
+    //     }
+    // ]
 }
 
 function sendRawTxInsight(rawTx) {

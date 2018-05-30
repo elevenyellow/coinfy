@@ -8,12 +8,12 @@ let crypto = require('crypto')
 const ltcnet = {
     messagePrefix: '\x19Litecoin Signed Message:\n',
     bip32: {
-        public: 0x043587cf,
-        private: 0x04358394
+        public: 0x043587cf, // 70617039
+        private: 0x04358394 // 70615956
     },
-    pubKeyHash: 0x6f,
-    scriptHash: 0xc4, //  for segwit (start with 2)
-    wif: 0xef
+    pubKeyHash: 0x6f, // 111
+    scriptHash: 0xc4, // 196  for segwit (start with 2)
+    wif: 0xef // 239
 }
 
 var testnet = bitcoin.networks.testnet

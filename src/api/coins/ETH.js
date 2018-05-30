@@ -7,6 +7,7 @@ import {
     sha3
 } from 'ethereumjs-util'
 import EthereumTx from 'ethereumjs-tx'
+import createKeccakHash from 'keccak'
 import { getBip32RootKey } from '/api/bip39'
 import { formatCoin, limitDecimals, bigNumber } from '/api/numbers'
 import { decToHex, hexToDec, sanitizeHex, removeHexPrefix } from '/api/hex'
@@ -96,11 +97,11 @@ export function isPrivateKey(string) {
 // }
 
 export function formatAddress(address) {
-    return addHexPrefix(address)
+    return toChecksumAddress(address)
 }
 
 export function getAddressFromPrivateKey(private_key) {
-    return addHexPrefix(
+    return formatAddress(
         privateToAddress(stringToBuffer(removeHexPrefix(private_key))).toString(
             'hex'
         )
@@ -149,7 +150,7 @@ export function getWalletsFromSeed({
         let key = bip32RootKey.derivePath(path)
         let wallet = key.keyPair.d.toBuffer()
         wallets.push({
-            address: addHexPrefix(privateToAddress(wallet).toString('hex')),
+            address: formatAddress(privateToAddress(wallet).toString('hex')),
             private_key: wallet.toString('hex')
         })
     }
@@ -162,7 +163,7 @@ export function getWalletsFromSeed({
 //     const private_key = new Buffer(bytes, 'hex')
 //     const address = privateToAddress(private_key)
 //     return {
-//         address: addHexPrefix(address.toString('hex')),
+//         address: formatAddress(address.toString('hex')),
 //         private_key: private_key.toString('hex')
 //     }
 // }
@@ -324,7 +325,7 @@ export function fetchRecomendedFee({
 // getDataContractMethodCall('balanceOf(address)', '0xf9e4f0c2917d29753eca437f94b2997e597f3510')
 export function getDataContractMethodCall(method_name) {
     let args = Array.prototype.slice.call(arguments, 1)
-    let data = addHexPrefix(
+    let data = formatAddress(
         sha3(method_name)
             .toString('hex')
             .slice(0, 8)
@@ -501,6 +502,24 @@ export function sendRawEtherscan(rawTx) {
                 return Promise.reject(JSON.stringify(e.error))
             return e.result
         })
+}
+
+function toChecksumAddress(address) {
+    address = address.toLowerCase().replace('0x', '')
+    let hash = createKeccakHash('keccak256')
+        .update(address)
+        .digest('hex')
+    let ret = '0x'
+
+    for (let i = 0; i < address.length; i++) {
+        if (parseInt(hash[i], 16) >= 8) {
+            ret += address[i].toUpperCase()
+        } else {
+            ret += address[i]
+        }
+    }
+
+    return ret
 }
 
 // function fetchMyEtherScan(extraBody) {

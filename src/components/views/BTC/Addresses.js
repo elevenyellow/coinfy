@@ -177,7 +177,7 @@ function AddressesTemplate({
                                     </TransactionItemRadio>
                                 </Show>
                                 <TransactionItemLeft>
-                                    {addr.address}
+                                    {Coin.formatAddress(addr.address)}
                                 </TransactionItemLeft>
                                 <TransactionItemRight>
                                     {addr.loading
