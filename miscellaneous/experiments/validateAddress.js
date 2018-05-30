@@ -44,6 +44,16 @@ const onChainNetworks = {
             pubKeyHash: 0x30,
             scriptHash: 0x32,
             wif: 0xb0
+        },
+        testnet: {
+            messagePrefix: '\x19Litecoin Signed Message:\n',
+            bip32: {
+                public: 0x0436f6e1, // 70711009
+                private: 0x0436ef7d // 70709117
+            },
+            pubKeyHash: 0x6f, // 111
+            scriptHash: 0x3a, // 58 //  for segwit (start with 2)
+            wif: 0xef //239
         }
     },
     DOGE: {
@@ -62,6 +72,30 @@ const onChainNetworks = {
         wif: 176
     }
 }
+
+function getAddressFromPrivateKey(private_key, network) {
+    const wallet = Bitcoin.ECPair.fromWIF(private_key, network)
+    return wallet.getAddress().toString()
+}
+
+function isSegwitAddress(address) {
+    const { version } = Bitcoin.address.fromBase58Check(address)
+    return version === onChainNetworks.LTC.testnet.scriptHash
+}
+
+console.log(
+    getAddressFromPrivateKey(
+        'cPEkNUMMFXe8aPbZgMua7gL9ssP5ukvdcmXazceVYpJM5DhtRx3X',
+        onChainNetworks.LTC.testnet
+    )
+)
+
+// var alice = Bitcoin.ECPair.makeRandom({ network: onChainNetworks.LTC.testnet })
+// console.log(
+//     alice.toWIF(),
+//     getAddressFromPrivateKey(alice.toWIF(), onChainNetworks.LTC.testnet) ===
+//         alice.getAddress()
+// )
 
 console.log(
     validateAddress({
@@ -108,5 +142,29 @@ console.log(
         symbol: 'LTC',
         address: 'MQUZK6TjWdPoQuTWct2tBWRbtLSXrjVQD9',
         network: onChainNetworks.LTC.mainnet
+    })
+)
+
+console.log(
+    validateAddress({
+        symbol: 'LTC',
+        address: 'mj4bcqYcnqJTEiP3iDbQVws8XsmSHzx892',
+        network: onChainNetworks.LTC.testnet
+    })
+)
+
+console.log(
+    validateAddress({
+        symbol: 'LTC',
+        address: 'QcpN2ifug9nNBcd1gabhAZE3yXVsLnBgrb',
+        network: onChainNetworks.LTC.testnet
+    })
+)
+
+console.log(
+    validateAddress({
+        symbol: 'LTC',
+        address: 'n2kptJv6qHXfzNivb5SwERFfaXrp1MdmJv',
+        network: onChainNetworks.LTC.testnet
     })
 )

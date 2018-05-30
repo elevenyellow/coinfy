@@ -10,6 +10,8 @@ import {
 import { sortBy, highest, sum, includesMultiple } from '/api/arrays'
 import { resolveAll } from '/api/promises'
 
+import { validateAddress } from '/api/Coins/BTC'
+
 import {
     TYPE_COIN,
     MAINNET,
@@ -22,14 +24,23 @@ import {
 export const networks = {
     [MAINNET]: {
         // mainnet
-        network: Bitcoin.networks.bitcoin, // 0x80
-        url: 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io/api/"
-    },
-    [TESTNET]: {
-        // testnet
-        network: Bitcoin.networks.testnet, // 0xef
-        url: 'https://testnet-bitcore1.trezor.io' // "https://testnet-bitcore1.trezor.io/api/"
+        network: Bitcoin.networks.mainnet,
+        url: 'https://bch.blockdozer.com' // "https://insight.litecore.io"
     }
+    // [TESTNET]: {
+    //     // testnet
+    //     network: {
+    //         messagePrefix: '\x19Litecoin Signed Message:\n',
+    //         bip32: {
+    //             public: 0x043587cf,
+    //             private: 0x04358394
+    //         },
+    //         pubKeyHash: 0x6f,
+    //         scriptHash: 0xc4, //  for segwit (start with 2)
+    //         wif: 0xef
+    //     },
+    //     url: 'https://testnet.litecore.io'
+    // }
 }
 let url, network, network_id, api_url
 export function setupNetwork(id, networks) {
@@ -46,17 +57,17 @@ export function setupNetwork(id, networks) {
 
 // exports
 export const type = TYPE_COIN
-export const symbol = 'BTC'
+export const symbol = 'BCH'
 export const symbol_fee = symbol
-export const name = 'Bitcoin'
-export const color = '#fdb033'
+export const name = 'Bcash'
+export const color = '#99c361'
 export const ascii = 'Ƀ'
 export const coin_decimals = 8
 export const price_decimals = 0
 export const satoshis = Math.pow(10, coin_decimals)
 export const multiaddress = true // if true we can't change the address on the user interface we use all the address as a full balance
 export const changeaddress = true // if true we change the remaining balance to the next address
-export const labels = 'btc coin'
+export const labels = 'bch coin'
 export const logo = ASSET_LOGO(symbol)
 
 export const derivation_path = {
@@ -155,15 +166,6 @@ function getSegwitWalletFromKeyPair(keypair) {
     }
 }
 
-export function validateAddress({ symbol, address, network }) {
-    try {
-        const { version } = Bitcoin.address.fromBase58Check(address)
-        return network.pubKeyHash === version || network.scriptHash === version
-    } catch (e) {
-        return false
-    }
-}
-
 export function isAddress(address) {
     return validateAddress({ symbol, address, network })
 }
@@ -176,13 +178,6 @@ export function isSegwitAddress(address) {
     )
 }
 
-export function isPrivateKeyBip(private_key) {
-    // https://github.com/pointbiz/bitaddress.org/blob/67e167930c4ebd9cf91047c36792c4e32dc41f11/src/ninja.key.js#L38
-    return /^6P[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{56}$/.test(
-        private_key
-    )
-}
-
 export function isPrivateKey(private_key) {
     try {
         const address = getAddressFromPrivateKey(private_key)
@@ -190,35 +185,13 @@ export function isPrivateKey(private_key) {
     } catch (e) {
         return false
     }
-    // return (
-    //     isWalletImportFormat(private_key) ||
-    //     isCompressedWalletImportFormat(private_key)
-    //     // isHexFormat(private_key) ||
-    //     // isBase64Format(private_key)
-    // )
 }
 
-// export function isWalletImportFormat(key) {
-//     key = key.toString()
-//     return network === mainnet
-//         ? /^5[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
-//               key
-//           )
-//         : /^9[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{50}$/.test(
-//               key
-//           )
-// }
-
-// export function isCompressedWalletImportFormat(key) {
-//     key = key.toString()
-//     return network === mainnet
-//         ? /^[LK][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(
-//               key
-//           )
-//         : /^c[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{51}$/.test(
-//               key
-//           )
-// }
+export function isPrivateKeyBip(private_key) {
+    return /^6P[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{56}$/.test(
+        private_key
+    )
+}
 
 export function formatAddress(address) {
     return address.trim()
@@ -341,10 +314,6 @@ export function getNextWalletFromSeed(
             segwit: wallet.segwit
         })
 }
-
-// export function getPrivatekeysByAddressesFromSeed({}){
-
-// }
 
 export function decryptWalletFromSeed(
     address,
@@ -482,17 +451,19 @@ export function fetchRecomendedFee({
             ? fetchFees()
                   .catch(e =>
                       Promise.reject(
-                          "BTC.fetchRecomendedFee: We couldn't fetch fee prices"
+                          "LTC.fetchRecomendedFee: We couldn't fetch fee prices"
                       )
                   )
                   .then(fee => {
+                      console.log(fee)
+
                       cacheRecomendedFee[address] = { fee_per_kb: fee }
                       return fetch(`${api_url}/addrs/${address}/utxo?noCache=1`)
                   })
                   .then(response => response.json())
                   .catch(e =>
                       Promise.reject(
-                          "BTC.fetchRecomendedFee: We couldn't fetch utxo"
+                          "LTC.fetchRecomendedFee: We couldn't fetch utxo"
                       )
                   )
                   .then(utxo => {
@@ -516,13 +487,13 @@ export function fetchRecomendedFee({
         return calcFee(data)
     })
 }
+// https://ltc-bitcore1.trezor.io/api/utils/estimatefee
 function fetchFees() {
-    const promises = BitcoinFee.SERVICES.map(service =>
-        BitcoinFee.fetchFee(service)
-    )
-    return resolveAll(promises).then(
-        fees => (fees.length > 0 ? highest(fees) : Promise.reject(null))
-    )
+    return fetch(`https://api.blockcypher.com/v1/ltc/main`)
+        .then(response => response.json())
+        .then(
+            json => (json.high_fee_per_kb + json.medium_fee_per_kb) / 2 / 1024
+        )
 }
 function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
     let amount_sum = 0
@@ -540,15 +511,6 @@ function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
             .toFixed()
     )
 }
-
-// export function fetchRecomendedFee() {
-//     // https://btc-bitcore1.trezor.io/api/utils/estimatefee
-//     // https://bitcoinfees.21.co/api/v1/fees/recommended
-//     // https://www.bitgo.com/api/v1/tx/fee
-//     return fetch(`https://insight.bitpay.com/api/utils/estimatefee`)
-//         .then(response => response.json())
-//         .then(fees => fees[2])
-// }
 
 export function fetchTxs(addresses, from = 0, to = from + 25) {
     return fetch(
@@ -683,8 +645,6 @@ export function createSimpleTx({
 
             const txHex = txb.build().toHex()
             return txHex
-            // let a = new TxDecoder(txHex, network) // https://github.com/you21979/node-multisig-wallet/blob/master/lib/txdecoder.js
-            // console.log(a.decode())
         })
 }
 
@@ -695,21 +655,20 @@ export function getSendProviders() {
 const sendProviders = {
     mainnet: [
         {
-            name: 'Bitpay.com',
+            name: 'Trezor.io',
             url: `${networks[MAINNET].url}/tx/send`,
             send: sendRawTxInsight
         }
-    ],
-    testnet: [
-        {
-            name: 'Trezor.io',
-            url: `${networks[TESTNET].url}/tx/send`, //'https://test-insight.bitpay.com/tx/send',
-            send: sendRawTxInsight
-        }
     ]
+    // testnet: [
+    //     {
+    //         name: 'Litecore.io',
+    //         url: `${networks[TESTNET].url}/tx/send`,
+    //         send: sendRawTxInsight
+    //     }
+    // ]
 }
 
-// https://en.bitcoin.it/wiki/Transaction_broadcasting
 function sendRawTxInsight(rawTx) {
     const fetchOptions = {
         method: 'POST',
@@ -732,114 +691,3 @@ function sendRawTxInsight(rawTx) {
         })
         .then(data => data.txid)
 }
-
-/*
-// To allow: https://www.bitaddress.org
-Private Key Hexadecimal Format (64 characters [0-9A-F]):
-Private Key Base64 (44 characters):
-
-
-export function isHexFormat(key) {
-    key = key.toString();
-    return /^[A-Fa-f0-9]{64}$/.test(key);
-}
-
-
-export function isBase64Format(key) {
-    key = key.toString();
-    return (/^[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789=+\/]{44}$/.test(key));
-}
-
-
-
-function hexToBytes(hex) {
-    for (var bytes = [], c = 0; c < hex.length; c += 2)
-        bytes.push(parseInt(hex.substr(c, 2), 16));
-    return bytes;
-}
-
-function base64ToBytes(base64) {
-    // Remove non-base-64 characters
-    var base64map = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    base64 = base64.replace(/[^A-Z0-9+\/]/ig, "");
-
-    for (var bytes = [], i = 0, imod4 = 0; i < base64.length; imod4 = ++i % 4) {
-        if (imod4 == 0) continue;
-        bytes.push(((base64map.indexOf(base64.charAt(i - 1)) & (Math.pow(2, -2 * imod4 + 8) - 1)) << (imod4 * 2)) |
-        (base64map.indexOf(base64.charAt(i)) >>> (6 - imod4 * 2)));
-    }
-
-    return bytes;
-}
-
-
-function getBitcoinWalletImportFormat(bytes) {
-    if (bytes == null) return "";
-    bytes.unshift(network); // prepend 0x80 byte
-    var checksum = Crypto.SHA256(Crypto.SHA256(bytes, { asBytes: true }), { asBytes: true });
-    bytes = bytes.concat(checksum.slice(0, 4));
-    var privWif = Bitcoin.Base58.encode(bytes);
-    return privWif;
-};
-
-function getBitcoinPrivateKeyByteArray(priv) {
-    if (priv == null) return null;
-    // Get a copy of private key as a byte array
-    var bytes = priv.toByteArrayUnsigned();
-    // zero pad if private key is less than 32 bytes 
-    while (bytes.length < 32) bytes.unshift(0x00);
-    return bytes;
-};
-*/
-
-// const onChainNetworks = {
-//     BTC: {
-//         mainnet: {
-//             messagePrefix: '\x18Bitcoin Signed Message:\n',
-//             bip32: {
-//                 public: 0x049d7cb2,
-//                 private: 0x049d7878
-//             },
-//             pubKeyHash: 0x00,
-//             scriptHash: 0x05,
-//             wif: 0x80
-//         },
-//         testnet: {
-//             messagePrefix: '\x18Bitcoin Signed Message:\n',
-//             bip32: {
-//                 public: 71979618,
-//                 private: 71978536
-//             },
-//             pubKeyHash: 111,
-//             scriptHash: 196,
-//             wif: 239
-//         }
-//     },
-//     LTC: {
-//         mainnet: {
-//             messagePrefix: '\x19Litecoin Signed Message:\n',
-//             bip32: {
-//                 public: 0x01b26ef6,
-//                 private: 0x01b26792
-//             },
-//             pubKeyHash: 0x30,
-//             scriptHash: 0x32,
-//             wif: 0xb0
-//         }
-//     },
-//     DOGE: {
-//         messagePrefix: '\u0019Dogecoin Signed Message:\n',
-//         bip32: { public: 49990397, private: 49988504 },
-//         pubKeyHash: 30,
-//         scriptHash: 22,
-//         wif: 158
-//     },
-//     GRLC: {
-//         //m/44'/1982'/0'/0
-//         messagePrefix: '\u0019Garlicoin Signed Message:\n',
-//         bip32: { public: 76067358, private: 76066276 },
-//         pubKeyHash: 38,
-//         scriptHash: 50,
-//         wif: 176
-//     }
-// }

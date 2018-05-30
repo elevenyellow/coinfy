@@ -1,26 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 18.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Creator: CorelDRAW X7 -->
-<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="7.5in" height="7.5in" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
-viewBox="0 0 7500 7500"
- xmlns:xlink="http://www.w3.org/1999/xlink">
- <defs>
-  <style type="text/css">
-   <![CDATA[
-    .fil0 {fill:none}
-    .fil2 {fill:#BEBEBE}
-    .fil1 {fill:white}
-   ]]>
-  </style>
- </defs>
- <g id="Layer_x0020_1">
-  <metadata id="CorelCorpID_0Corel-Layer"/>
-  <rect class="fil0" width="7500" height="7500"/>
-  <g id="_2383744206544">
-   <g>
-    <path class="fil1" d="M3770 3820l477 -174 118 -446 -4 -11 -469 172 338 -1273 -959 0 -442 1661 -369 135 -122 459 369 -135 -261 980 2552 0 164 -610 -1593 0 201 -758 0 0zm0 0l0 0 0 0z"/>
-   </g>
-   <path class="fil2" d="M3750 650c-1712,0 -3100,1388 -3100,3100 0,1712 1388,3100 3100,3100 1712,0 3100,-1388 3100,-3100 0,-1712 -1388,-3100 -3100,-3100zm1248 4538l-2552 0 261 -980 -369 135 122 -459 369 -135 442 -1661 959 0 -338 1273 469 -172 4 11 -118 446 -477 174 -201 758 1593 0 -164 610z"/>
-  </g>
- </g>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 540 540" enable-background="new 0 0 540 540" xml:space="preserve">
+<rect x="-46" y="-46" fill="none" width="641" height="641"/>
+<g id="_2383744206544">
+	<g>
+		<path fill="#FFFFFF" d="M271.2,275.5l41.5-15.1l10.3-38.8l-0.3-1l-40.8,14.9L311.2,125h-83.4l-38.4,144.4l-32.1,11.7L146.7,321
+			l32.1-11.7l-22.7,85.2h221.8l14.3-53H253.7L271.2,275.5L271.2,275.5z M271.2,275.5L271.2,275.5L271.2,275.5z"/>
+	</g>
+	<path fill="#BEBEBE" d="M269.4,0C120.6,0,0,120.6,0,269.4s120.6,269.4,269.4,269.4s269.4-120.6,269.4-269.4S418.3,0,269.4,0z
+		 M377.9,394.4H156.1l22.7-85.2L146.7,321l10.6-39.9l32.1-11.7L227.8,125h83.4l-29.4,110.6l40.8-14.9l0.3,1l-10.3,38.8l-41.5,15.1
+		l-17.5,65.9h138.5L377.9,394.4z"/>
+</g>
 </svg>

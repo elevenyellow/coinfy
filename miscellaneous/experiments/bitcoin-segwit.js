@@ -5,21 +5,6 @@ let crypto = require('crypto')
 // const address = '3Cbq7aT1tY8kMxWLbitaG7yT6bPbKChq64'
 // console.log(bitcoin.address.fromBase58Check(address))
 
-const ltcnet = {
-    messagePrefix: '\x19Litecoin Signed Message:\n',
-    bip32: {
-        public: 0x043587cf, // 70617039
-        private: 0x04358394 // 70615956
-    },
-    pubKeyHash: 0x6f, // 111
-    scriptHash: 0xc4, // 196  for segwit (start with 2)
-    wif: 0xef // 239
-}
-
-var testnet = bitcoin.networks.testnet
-var alice = bitcoin.ECPair.makeRandom({ network: ltcnet })
-console.log(alice.getAddress(), alice.toWIF())
-
 function getAddressFromPrivateKey(private_key) {
     const wallet = bitcoin.ECPair.fromWIF(private_key)
     // wallet.compressed = false
