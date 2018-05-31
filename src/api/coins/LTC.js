@@ -1,5 +1,4 @@
 import Bitcoin from 'bitcoinjs-lib'
-import BitcoinFee from 'bitcoin-fee'
 import { getBip32RootKey } from '/api/bip39'
 import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
 import { formatCoin, limitDecimals, bigNumber } from '/api/numbers'

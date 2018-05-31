@@ -765,10 +765,7 @@ function SendTemplate({
                             <CodeBox>{tx_raw}</CodeBox>
                             {url_decode_tx === '' ? null : (
                                 <Label size="11px">
-                                    <a
-                                        href={url_decode_tx}
-                                        target="_blank"
-                                    >
+                                    <a href={url_decode_tx} target="_blank">
                                         Decode raw transaction
                                     </a>
                                 </Label>

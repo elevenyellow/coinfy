@@ -46,6 +46,12 @@ export const networks = {
         api_url: 'https://api.etherscan.io/api',
         url: 'https://etherscan.io',
         url_myetherapi: 'https://api.myetherapi.com/eth'
+    },
+    [TESTNET]: {
+        // mainnet
+        api_url: 'https://ropsten.etherscan.io/api',
+        url: 'https://ropsten.etherscan.io',
+        url_myetherapi: 'https://api.myetherapi.com/rop'
     }
 }
 

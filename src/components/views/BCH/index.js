@@ -1,6 +1,6 @@
 import React from 'react'
 import Container from '/components/views/BTC/Container'
 
-export default function ContainerLTC() {
+export default function ContainerBCH() {
     return <Container />
 }

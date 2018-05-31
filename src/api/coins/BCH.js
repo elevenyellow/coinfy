@@ -1,5 +1,4 @@
 import Bitcoin from 'bitcoinjs-lib'
-import BitcoinFee from 'bitcoin-fee'
 import { getBip32RootKey } from '/api/bip39'
 import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
 import { formatCoin, limitDecimals, bigNumber } from '/api/numbers'
@@ -20,27 +19,15 @@ import {
     LOCALSTORAGE_NETWORK
 } from '/const/'
 
-// network
 export const networks = {
     [MAINNET]: {
-        // mainnet
-        network: Bitcoin.networks.mainnet,
-        url: 'https://bch.blockdozer.com' // "https://insight.litecore.io"
+        network: Bitcoin.networks.bitcoin,
+        url: 'https://bch.blockdozer.com'
+    },
+    [TESTNET]: {
+        network: Bitcoin.networks.testnet,
+        url: 'https://tbch.blockdozer.com'
     }
-    // [TESTNET]: {
-    //     // testnet
-    //     network: {
-    //         messagePrefix: '\x19Litecoin Signed Message:\n',
-    //         bip32: {
-    //             public: 0x043587cf,
-    //             private: 0x04358394
-    //         },
-    //         pubKeyHash: 0x6f,
-    //         scriptHash: 0xc4, //  for segwit (start with 2)
-    //         wif: 0xef
-    //     },
-    //     url: 'https://testnet.litecore.io'
-    // }
 }
 let url, network, network_id, api_url
 export function setupNetwork(id, networks) {
@@ -432,84 +419,14 @@ export function fetchBalance(address) {
     })
 }
 
-const cacheRecomendedFee = {}
-export function fetchRecomendedFee({
-    addresses,
-    amount = 0,
-    outputs = 1,
-    use_cache = false
-}) {
-    const address = addresses.join(',')
-    const cache = cacheRecomendedFee[address]
-    const first_time =
-        cache === undefined ||
-        cache.fee_per_kb === undefined ||
-        cache.inputs === undefined
-
-    const promise =
-        first_time || !use_cache
-            ? fetchFees()
-                  .catch(e =>
-                      Promise.reject(
-                          "LTC.fetchRecomendedFee: We couldn't fetch fee prices"
-                      )
-                  )
-                  .then(fee => {
-                      console.log(fee)
-
-                      cacheRecomendedFee[address] = { fee_per_kb: fee }
-                      return fetch(`${api_url}/addrs/${address}/utxo?noCache=1`)
-                  })
-                  .then(response => response.json())
-                  .catch(e =>
-                      Promise.reject(
-                          "LTC.fetchRecomendedFee: We couldn't fetch utxo"
-                      )
-                  )
-                  .then(utxo => {
-                      const inputs = sortBy(utxo || [], '-amount').map(
-                          input => input.amount
-                      )
-                      return (cacheRecomendedFee[address].inputs = inputs)
-                  })
-            : Promise.resolve()
-
-    return promise.then(() => {
-        const address_data = cacheRecomendedFee[address]
-        const inputs = address_data.inputs || []
-        const data = {
-            amount: amount || 0,
-            fee_per_kb: address_data.fee_per_kb,
-            inputs: inputs,
-            outputs: outputs + 1 // extra output for change_address
-        }
-        // console.log(data)
-        return calcFee(data)
-    })
+export function fetchRecomendedFee() {
+    return fetchFees()
 }
 // https://ltc-bitcore1.trezor.io/api/utils/estimatefee
 function fetchFees() {
-    return fetch(`https://api.blockcypher.com/v1/ltc/main`)
+    return fetch(`${api_url}/utils/estimatefee`)
         .then(response => response.json())
-        .then(
-            json => (json.high_fee_per_kb + json.medium_fee_per_kb) / 2 / 1024
-        )
-}
-function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
-    let amount_sum = 0
-    let index = 0
-    let inputs_total = 0
-    for (; index < inputs.length && amount_sum < amount; ++index) {
-        amount_sum += inputs[index]
-        inputs_total += 1
-    }
-
-    return cutDecimals(
-        bigNumber(10 + inputs_total * 148 + outputs * 34 + extra_bytes)
-            .times(fee_per_kb)
-            .div(satoshis)
-            .toFixed()
-    )
+        .then(json => json[2])
 }
 
 export function fetchTxs(addresses, from = 0, to = from + 25) {
@@ -655,18 +572,18 @@ export function getSendProviders() {
 const sendProviders = {
     mainnet: [
         {
-            name: 'Trezor.io',
+            name: 'Blockdozer.com',
             url: `${networks[MAINNET].url}/tx/send`,
             send: sendRawTxInsight
         }
+    ],
+    testnet: [
+        {
+            name: 'Blockdozer.com',
+            url: `${networks[TESTNET].url}/tx/send`,
+            send: sendRawTxInsight
+        }
     ]
-    // testnet: [
-    //     {
-    //         name: 'Litecore.io',
-    //         url: `${networks[TESTNET].url}/tx/send`,
-    //         send: sendRawTxInsight
-    //     }
-    // ]
 }
 
 function sendRawTxInsight(rawTx) {
