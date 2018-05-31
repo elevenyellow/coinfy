@@ -6,7 +6,7 @@ const list = [
     'BTC',
     'ETH',
     'LTC',
-    'BCH',
+    // 'BCH',
     'ANT',
     'ZRX',
     'QTUM',

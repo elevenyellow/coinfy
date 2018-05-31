@@ -46,7 +46,7 @@ export function setupNetwork(id, networks) {
 export const type = TYPE_COIN
 export const symbol = 'BCH'
 export const symbol_fee = symbol
-export const name = 'Bcash'
+export const name = 'Bitcoin Cash'
 export const color = '#99c361'
 export const ascii = 'Ƀ'
 export const coin_decimals = 8

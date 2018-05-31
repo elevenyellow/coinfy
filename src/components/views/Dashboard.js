@@ -83,6 +83,8 @@ export default class Dashboard extends Component {
         let data = Object.keys(dataUnformated).map(symbol => {
             let category = dataUnformated[symbol]
 
+            category.price = getPrice(symbol)
+
             category.balance_asset =
                 category.balance_asset_big.toString() + ' ' + symbol
 
@@ -116,7 +118,7 @@ export default class Dashboard extends Component {
             return category
         })
 
-        data = sortBy(data, '-balance_currency_number')
+        data = sortBy(data, '-balance_currency_number', '-price')
 
         const balance_start = this.balance_start
         this.balance_start = state.balance
@@ -204,7 +206,7 @@ function DashboardTemplate({
                                     {coin.symbol} ≈{' '}
                                     <span>
                                         {Fiats[currency].format(
-                                            getPrice(coin.symbol),
+                                            coin.price,
                                             Coins[coin.symbol].price_decimals
                                         )}
                                     </span>
