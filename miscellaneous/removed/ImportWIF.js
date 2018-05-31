@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
-import { isPrivateKey, getAddressFromPrivateKey } from '/api/Coins/BTC'
-import { BTC } from '/api/Coins'
+import { isPrivateKey, getAddressFromPrivateKey } from '/api/coins/BTC'
+import { BTC } from '/api/coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'

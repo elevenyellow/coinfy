@@ -9,7 +9,7 @@ import {
 import { sortBy, highest, sum, includesMultiple } from '/api/arrays'
 import { resolveAll } from '/api/promises'
 
-import { validateAddress } from '/api/Coins/BTC'
+import { validateAddress } from '/api/coins/BTC'
 
 import {
     TYPE_COIN,

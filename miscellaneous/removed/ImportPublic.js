@@ -9,9 +9,9 @@ import {
     isAddressCheck,
     isPublicKey,
     getAddressFromPublicKey
-} from '/api/Coins/BTC'
+} from '/api/coins/BTC'
 import { isAssetRegistered } from '/store/getters'
-import { BTC, getCoinId } from '/api/Coins'
+import { BTC, getCoinId } from '/api/coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'

@@ -6,8 +6,8 @@ import { setHref, createAsset } from '/store/actions'
 import state from '/store/state'
 import { isAssetRegistered, getCoinId } from '/store/getters'
 
-import { isAddressCheck } from '/api/Coins/BTC'
-import { BTC } from '/api/Coins'
+import { isAddressCheck } from '/api/coins/BTC'
+import { BTC } from '/api/coins'
 
 import styles from '/const/styles'
 import routes from '/const/routes'
