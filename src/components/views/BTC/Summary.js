@@ -105,7 +105,7 @@ export default class Summary extends Component {
     }
 
     onPrint(e) {
-        const address = this.asset.address
+        const address = this.Coin.formatAddress(this.asset.address)
         printTemplate(
             template([
                 {
@@ -137,14 +137,14 @@ export default class Summary extends Component {
     }
 
     render() {
-        const address = this.asset.address
+        const address = this.Coin.formatAddress(this.asset.address)
         return React.createElement(SummaryTemplate, {
             symbol: this.asset.symbol,
             totalTxs: this.asset.summary.totalTxs || 0,
             txs: this.asset.summary.txs || [],
             fetchingSummary: this.asset.summary.fetching,
             rescanOrLoad: this.rescanOrLoad,
-            address: this.Coin.formatAddress(address),
+            address: address,
             qrcodebase64: generateQRCode(address),
             refAddress: this.refAddress,
             colorAsset: this.Coin.color,

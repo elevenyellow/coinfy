@@ -6,6 +6,8 @@ import state from '/store/state'
 import { group } from '/store/router'
 import { version } from './../../package.json'
 import { sha3 } from 'ethereumjs-util'
+import { localStorageGet } from '/api/browser'
+import { LOCALSTORAGE_ASSETSEXPORTED } from '/const/'
 
 export function getTotalAssets(assets) {
     return Object.keys(assets).length
@@ -262,4 +264,10 @@ export function getRouteFromLocation() {
 
 export function getAssetsBySymbol(symbol) {
     return getAssetsAsArray().filter(asset => asset.symbol === symbol)
+}
+
+export function isBackupAssetsExported() {
+    return (
+        localStorageGet(LOCALSTORAGE_ASSETSEXPORTED, state.network) === 'true'
+    )
 }

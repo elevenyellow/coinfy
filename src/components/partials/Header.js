@@ -18,6 +18,8 @@ import {
     closeSession,
     changeNetwork
 } from '/store/actions'
+import { isBackupAssetsExported } from '/store/getters'
+
 import state from '/store/state'
 
 import Div from '/components/styled/Div'
@@ -135,6 +137,7 @@ export default class Header extends Component {
             sideMenuOpen: state.sideMenuOpen,
             onSideMenu: this.onSideMenu,
             menuOpen: state.menuOpen,
+            showAlertBackup: !isBackupAssetsExported(),
             // onAddAsset: this.onAddAsset,
             onChangeNetwork: this.onChangeNetwork,
             onMenuOpen: this.onMenuOpen,
@@ -154,6 +157,7 @@ function HeaderTemplate({
     sideMenuOpen,
     onSideMenu,
     menuOpen,
+    showAlertBackup,
     // onAddAsset,
     onChangeNetwork,
     onMenuOpen,
@@ -202,6 +206,11 @@ function HeaderTemplate({
                     })} */}
                 </HeaderCenter>
                 <HeaderRight>
+                    <IconInfoPosition visible={showAlertBackup}>
+                        <IconInfo>
+                            <span>!</span>
+                        </IconInfo>
+                    </IconInfoPosition>
                     <Dropdown
                         onOpen={onMenuOpen}
                         onClose={onMenuClose}
@@ -219,7 +228,12 @@ function HeaderTemplate({
                                 onClick={onExport}
                                 disabled={totalAssets === 0}
                             >
-                                Export backup
+                                Export backup{' '}
+                                <IconInfoPosition2 visible={showAlertBackup}>
+                                    <IconInfo>
+                                        <span>!</span>
+                                    </IconInfo>
+                                </IconInfoPosition2>
                             </DropdownItem>
                             <DropdownItem onClick={onSettings}>
                                 Settings
@@ -350,6 +364,37 @@ const HeaderRight = styled.div`
     &:active {
         background: rgba(255, 255, 255, 0.2);
         box-shadow: 0 0 0px 4px rgba(255, 255, 255, 0.2);
+    }
+`
+
+const IconInfoPosition = styled.div`
+    display: ${props => (props.visible ? 'block' : 'none')};
+    z-index: 1;
+    position: absolute;
+    right: -2px;
+    top: -10px;
+`
+const IconInfoPosition2 = styled.div`
+    display: ${props => (props.visible ? 'block' : 'none')};
+    z-index: 1;
+    position: absolute;
+    top: 2px;
+    left: 99px;
+`
+const IconInfo = styled.div`
+    background-color: red;
+    border: 2px solid white;
+    border-radius: 50%;
+    height: 16px;
+    min-width: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & span {
+        color: white;
+        font-weight: bold;
+        font-size: 10px;
     }
 `
 

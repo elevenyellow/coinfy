@@ -3,6 +3,7 @@ import { createObserver, collect } from 'dop'
 import styled from 'styled-components'
 
 // import { createWorker } from '/api/workers'
+import { Coins } from '/api/coins'
 import { generateQRCode } from '/api/qr'
 import { BTC } from '/api/coins'
 import { encryptBIP38 } from '/api/coins/BTC'
@@ -48,8 +49,9 @@ export default class ExportBTC extends Component {
 
         const { asset_id } = getParamsFromLocation()
         this.asset_id = asset_id
-        this.asset = getAsset(asset_id)
         this.is_asset_with_seed = isAssetWithSeed(this.asset_id)
+        this.asset = getAsset(this.asset_id)
+        this.Coin = Coins[this.asset.symbol] // Storing Coin api (Coin.BTC, Coin.ETH, ...)
 
         // Initial state
         state.view = {
@@ -94,7 +96,7 @@ export default class ExportBTC extends Component {
         const type_export = state.view.type_export
         const asset_id = this.asset_id
         const asset = getAsset(asset_id)
-        const address = state.view.address_selected
+        const address = this.Coin.formatAddress(state.view.address_selected)
         const password = state.view.password
 
         // Seed

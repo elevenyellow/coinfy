@@ -12,7 +12,12 @@ import { Coins } from '/api/coins'
 import { sortBy } from '/api/arrays'
 
 import state from '/store/state'
-import { convertBalance, formatCurrency, getPrice } from '/store/getters'
+import {
+    convertBalance,
+    formatCurrency,
+    getPrice,
+    getLabelOrAddress
+} from '/store/getters'
 import { setHref } from '/store/actions'
 
 import { RightContainerPadding } from '/components/styled/Right'
@@ -69,8 +74,8 @@ export default class Dashboard extends Component {
             )
 
             assetUnformated.assets.push({
-                label: asset.label || asset.address,
-                address: asset.address,
+                label: getLabelOrAddress(asset),
+                address: Coin.formatAddress(asset.address),
                 balance_asset: balance + ' ' + asset.symbol,
                 balance_currency_number: convertBalance(asset.symbol, balance),
                 percentage: 0,
