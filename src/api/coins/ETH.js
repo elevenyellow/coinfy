@@ -470,7 +470,7 @@ export function decryptWalletFromSeed(
 }
 
 export function getSendProviders() {
-    return sendProviders[network === MAINNET ? 'mainnet' : 'testnet']
+    return sendProviders[network_id === MAINNET ? 'mainnet' : 'testnet']
 }
 
 const sendProviders = {

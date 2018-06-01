@@ -86,15 +86,13 @@ export function getWalletFromSeed({
     seed,
     index = 0,
     derived_path_function,
-    passphase = '',
-    segwit = true
+    passphase = ''
 }) {
     return getWalletsFromSeed({
         seed,
         index,
         derived_path_function,
-        passphase,
-        segwit
+        passphase
     })[0]
 }
 
@@ -103,18 +101,13 @@ export function getWalletsFromSeed({
     index = 0,
     count = 1,
     derived_path_function,
-    passphase = '',
-    segwit = true
+    passphase = ''
 }) {
     if (derived_path_function === undefined)
         derived_path_function =
             network_id === MAINNET
-                ? segwit
-                    ? derivation_path.mainnetsegwit
-                    : derivation_path.mainnet
-                : segwit
-                    ? derivation_path.testnetsegwit
-                    : derivation_path.testnet
+                ? derivation_path.mainnet
+                : derivation_path.testnet
 
     const wallets = []
     const bip32RootKey = getBip32RootKey({ seed, passphase, network })
@@ -123,11 +116,7 @@ export function getWalletsFromSeed({
         const path = derived_path_function(index++)
         const key = bip32RootKey.derivePath(path)
         const keypair = key.keyPair
-        wallets.push(
-            segwit
-                ? getSegwitWalletFromKeyPair(key.keyPair)
-                : getWalletFromKeyPair(keypair)
-        )
+        wallets.push(getWalletFromKeyPair(keypair))
     }
 
     return wallets
@@ -158,11 +147,7 @@ export function isAddress(address) {
 }
 
 export function isSegwitAddress(address) {
-    const { version } = Bitcoin.address.fromBase58Check(address)
-    return (
-        version === networks[MAINNET].network.scriptHash ||
-        version === networks[TESTNET].network.scriptHash
-    )
+    return false
 }
 
 export function isPrivateKey(private_key) {
@@ -297,8 +282,7 @@ export function getNextWalletFromSeed(
     if (wallet)
         return getWalletFromSeed({
             seed: wallet.seed,
-            index: wallet.index + 1,
-            segwit: wallet.segwit
+            index: wallet.index + 1
         })
 }
 
@@ -314,14 +298,6 @@ export function decryptWalletFromSeed(
         if (wallet.address === address) {
             wallet.seed = seed
             wallet.index = index
-            wallet.segwit = true
-            return wallet
-        }
-        wallet = getWalletFromSeed({ seed, index, segwit: false })
-        if (wallet.address === address) {
-            wallet.seed = seed
-            wallet.index = index
-            wallet.segwit = false
             return wallet
         }
     }
@@ -330,12 +306,7 @@ export function decryptWalletFromSeed(
 export function decryptSeed(addresses, seed_encrypted, password) {
     const seed = decryptAES128CTR(seed_encrypted, password)
     const wallet = getWalletFromSeed({ seed })
-    const wallet2 = getWalletFromSeed({ seed, segwit: false })
-    if (
-        addresses.includes(wallet.address) ||
-        addresses.includes(wallet2.address)
-    )
-        return seed
+    if (addresses.includes(wallet.address)) return seed
 }
 
 export function encryptBIP38(privateKey, password, progressCallback) {
@@ -347,12 +318,11 @@ export function decryptBIP38(encryptedKey, password, progressCallback) {
 }
 
 // fetchs
-export function discoverAddress({ seed, index = 0, segwit = false }) {
+export function discoverAddress({ seed, index = 0 }) {
     return new Promise(resolve => {
         const wallet = getWalletFromSeed({
             seed,
-            index,
-            segwit
+            index
         })
         const address = wallet.address
         fetchTotals(address).then(totals => {
