@@ -101,7 +101,7 @@ export function formatAddress(address) {
 }
 
 export function getAddressFromPrivateKey(private_key) {
-    return formatAddress(
+    return addHexPrefix(
         privateToAddress(stringToBuffer(removeHexPrefix(private_key))).toString(
             'hex'
         )
@@ -150,7 +150,7 @@ export function getWalletsFromSeed({
         let key = bip32RootKey.derivePath(path)
         let wallet = key.keyPair.d.toBuffer()
         wallets.push({
-            address: formatAddress(privateToAddress(wallet).toString('hex')),
+            address: addHexPrefix(privateToAddress(wallet).toString('hex')),
             private_key: wallet.toString('hex')
         })
     }
@@ -163,7 +163,7 @@ export function getWalletsFromSeed({
 //     const private_key = new Buffer(bytes, 'hex')
 //     const address = privateToAddress(private_key)
 //     return {
-//         address: formatAddress(address.toString('hex')),
+//         address: addHexPrefix(address.toString('hex')),
 //         private_key: private_key.toString('hex')
 //     }
 // }
@@ -325,7 +325,7 @@ export function fetchRecomendedFee({
 // getDataContractMethodCall('balanceOf(address)', '0xf9e4f0c2917d29753eca437f94b2997e597f3510')
 export function getDataContractMethodCall(method_name) {
     let args = Array.prototype.slice.call(arguments, 1)
-    let data = formatAddress(
+    let data = addHexPrefix(
         sha3(method_name)
             .toString('hex')
             .slice(0, 8)
