@@ -140,6 +140,9 @@ function getSegwitWalletFromKeyPair(keypair) {
     }
 }
 
+// https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md
+// https://github.com/schancel/cashaddr-converter
+// https://github.com/bitcoincashjs/cashaddrjs
 export function isAddress(address) {
     return validateAddress({ symbol, address, network })
 }
