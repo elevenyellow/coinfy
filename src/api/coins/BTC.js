@@ -23,12 +23,12 @@ export const networks = {
     [MAINNET]: {
         // mainnet
         network: Bitcoin.networks.bitcoin, // 0x80
-        url: 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io/api/"
+        url: 'https://btc-bitcore4.trezor.io' // 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io/api/"
     },
     [TESTNET]: {
         // testnet
         network: Bitcoin.networks.testnet, // 0xef
-        url: 'https://testnet-bitcore1.trezor.io' // "https://testnet-bitcore1.trezor.io/api/"
+        url: 'https://testnet-bitcore1.trezor.io' // 'https://test-insight.bitpay.com'
     }
 }
 let url, network, network_id, api_url

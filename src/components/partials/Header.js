@@ -368,6 +368,7 @@ const HeaderRight = styled.div`
 `
 
 const IconInfoPosition = styled.div`
+    pointer-events: none;
     display: ${props => (props.visible ? 'block' : 'none')};
     z-index: 1;
     position: absolute;
@@ -375,6 +376,7 @@ const IconInfoPosition = styled.div`
     top: -10px;
 `
 const IconInfoPosition2 = styled.div`
+    pointer-events: none;
     display: ${props => (props.visible ? 'block' : 'none')};
     z-index: 1;
     position: absolute;
