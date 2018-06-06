@@ -23,7 +23,7 @@ export const networks = {
     [MAINNET]: {
         // mainnet
         network: Bitcoin.networks.bitcoin, // 0x80
-        url: 'https://btc-bitcore4.trezor.io' // 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io/api/"
+        url: 'https://insight.bitcoin.com' // 'https://blockexplorer.com' // 'https://btc-bitcore4.trezor.io' // 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io"
     },
     [TESTNET]: {
         // testnet

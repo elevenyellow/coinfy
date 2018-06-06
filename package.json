@@ -1,6 +1,6 @@
 {
     "name": "coinfy",
-    "version": "1.5.4",
+    "version": "1.5.5",
     "repository": "https://github.com/elevenyellow/coinfy",
     "scripts": {
         "stats": "webpack --config=./webpack/production.js --profile --json > webpack-stats.json | open https://chrisbateman.github.io/webpack-visualizer/",
@@ -9,8 +9,9 @@
         "prod": "NODE_ENV=production node src/server",
         "forever": "NODE_ENV=production forever start src/server.js",
         "forever-stop": "forever stop src/server.js",
-        "test": "babel-node --presets=react,es2015 test/numbers.js | faucet",
-        "scrapper_logos": "node scripts/scrapper_logos"
+        "test": "babel-node --presets=react,es2015 test/btc.js | faucet",
+        "scrapper_logos": "node scripts/scrapper_logos",
+        "hashes": "node scripts/hashes"
     },
     "dependencies": {
         "bignumber.js": "5.0.0",
