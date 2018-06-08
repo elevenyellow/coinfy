@@ -293,6 +293,17 @@ export function encryptSeed(seed, password) {
     return seed_encrypted
 }
 
+export function decryptSeed(addresses, seed_encrypted, password) {
+    const seed = decryptAES128CTR(seed_encrypted, password)
+    const wallet = getWalletFromSeed({ seed })
+    const wallet2 = getWalletFromSeed({ seed, segwit: false })
+    if (
+        addresses.includes(wallet.address) ||
+        addresses.includes(wallet2.address)
+    )
+        return seed
+}
+
 export function encryptPrivateKey(private_key, password) {
     return encryptAES128CTR(private_key, password)
 }
@@ -371,19 +382,8 @@ export function decryptWalletFromSeed(
     }
 }
 
-export function decryptSeed(addresses, seed_encrypted, password) {
-    const seed = decryptAES128CTR(seed_encrypted, password)
-    const wallet = getWalletFromSeed({ seed })
-    const wallet2 = getWalletFromSeed({ seed, segwit: false })
-    if (
-        addresses.includes(wallet.address) ||
-        addresses.includes(wallet2.address)
-    )
-        return seed
-}
-
-export function encryptBIP38(privateKey, password, progressCallback) {
-    return _encryptBIP38(privateKey, password, progressCallback)
+export function encryptBIP38(private_key, password, progressCallback) {
+    return _encryptBIP38(private_key, password, progressCallback)
 }
 
 export function decryptBIP38(encryptedKey, password, progressCallback) {

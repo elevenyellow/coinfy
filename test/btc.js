@@ -36,7 +36,15 @@ import {
     urlInfo,
     urlInfoTx,
     urlDecodeTx,
-    encryptSeed
+    encryptSeed,
+    decryptSeed,
+    encryptPrivateKey,
+    decryptPrivateKey,
+    decryptPrivateKeyFromSeed,
+    getNextWalletFromSeed,
+    decryptWalletFromSeed,
+    encryptBIP38,
+    decryptBIP38
 } from '/api/coins/BTC'
 
 const seed =
@@ -154,25 +162,102 @@ test('Urls', t => {
     t.end()
 })
 
-test('Encrypt / Decrypt', t => {
-    t.deepEqual(
-        encryptSeed(seed, '1234'),
-        {
-            ciphertext:
-                '9dc38630a1d74b7a1a703fb80382604ea4aa5551249549629fdde5f9627a3dc324ae7958a648fdb5ad15050d35bc3a5d14f8042e8bc1dea74a503280ce9ecb0aca8990214053c0f604146f79',
-            cipherparams: { iv: '7e3dcc4f3343549dce29fff67fd75fb1' },
-            cipher: 'aes-128-ctr',
-            kdf: 'scrypt',
-            kdfparams: {
-                dklen: 32,
-                salt:
-                    '71c1d4bbb8a54373ec07644aec2a40da132d699910887c548e78a54c047d7aab',
-                n: 8192,
-                r: 8,
-                p: 1
-            }
-        },
-        'encryptSeed'
+test('encryptSeed decryptSeed', t => {
+    const pass = '1234'
+    const wallet = getWalletFromSeed({ seed })
+    const encrypted = encryptSeed(seed, pass)
+    const decrypted = decryptSeed([wallet.address], encrypted, pass)
+
+    t.equal(typeof encrypted, 'object', 'encryptSeed')
+    t.equal(typeof encrypted.ciphertext, 'string', 'encryptSeed 2')
+    t.equal(encrypted.cipher, 'aes-128-ctr', 'encryptSeed 2')
+    t.equal(encrypted.kdf, 'scrypt', 'encryptSeed 3')
+    t.equal(typeof encrypted.kdfparams, 'object', 'encryptSeed 4')
+
+    t.equal(decrypted, seed, 'decryptSeed')
+
+    t.end()
+})
+
+test('encryptPrivateKey decryptPrivateKey', t => {
+    const pass = '1234'
+    const private_key = 'L5YsAenc5eCuDFhEcC9DNe8sw47ttEevfMieRWKjGK5cP6ZpvxyE'
+    const address = getAddressFromPrivateKey(private_key)
+    const encrypted = encryptPrivateKey(private_key, pass)
+    const decrypted = decryptPrivateKey(address, encrypted, pass)
+
+    t.equal(typeof encrypted, 'object', 'encryptPrivateKey')
+    t.equal(typeof encrypted.ciphertext, 'string', 'encryptPrivateKey 2')
+    t.equal(encrypted.cipher, 'aes-128-ctr', 'encryptPrivateKey 2')
+    t.equal(encrypted.kdf, 'scrypt', 'encryptPrivateKey 3')
+    t.equal(typeof encrypted.kdfparams, 'object', 'encryptPrivateKey 4')
+
+    t.equal(decrypted, private_key, 'decryptPrivateKey')
+
+    t.end()
+})
+
+test('decryptPrivateKeyFromSeed', t => {
+    const pass = '1234'
+    const wallets = getWalletsFromSeed({ seed, count: 2 })
+    const encrypted = encryptSeed(seed, pass)
+    const private_key = decryptPrivateKeyFromSeed(
+        wallets[1].address,
+        wallets.map(wallet => wallet.address),
+        encrypted,
+        pass
     )
+
+    t.equal(private_key, wallets[1].private_key)
+
+    t.end()
+})
+
+test('getNextWalletFromSeed', t => {
+    const pass = '1234'
+    const wallets = getWalletsFromSeed({ seed, count: 3 })
+    const encrypted = encryptSeed(seed, pass)
+    const wallet = getNextWalletFromSeed(
+        wallets[1].address,
+        wallets.map(wallet => wallet.address),
+        encrypted,
+        pass
+    )
+
+    t.deepEqual(wallet, wallets[2])
+
+    t.end()
+})
+
+test('decryptWalletFromSeed', t => {
+    const pass = '1234'
+    const wallets = getWalletsFromSeed({ seed, count: 3 })
+    const encrypted = encryptSeed(seed, pass)
+    const wallet = decryptWalletFromSeed(
+        wallets[1].address,
+        wallets.map(wallet => wallet.address),
+        encrypted,
+        pass
+    )
+
+    t.equal(wallet.address, wallets[1].address, 'decryptWalletFromSeed.address')
+    t.equal(
+        wallet.private_key,
+        wallets[1].private_key,
+        'decryptWalletFromSeed.private_key'
+    )
+    t.equal(wallet.seed, seed, 'decryptWalletFromSeed.seed')
+
+    t.end()
+})
+
+test('encryptBIP38 decryptBIP38', t => {
+    const pass = '1234'
+    const private_key = 'L5YsAenc5eCuDFhEcC9DNe8sw47ttEevfMieRWKjGK5cP6ZpvxyE'
+    const encrypted = encryptBIP38(private_key, pass)
+    const decrypted = decryptBIP38(encrypted, pass)
+
+    t.equal(private_key, decrypted)
+
     t.end()
 })
