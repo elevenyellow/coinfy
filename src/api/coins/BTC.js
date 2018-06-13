@@ -402,8 +402,8 @@ export function discoverAddress({ seed, index = 0, segwit = false }) {
         fetchTotals(address).then(totals => {
             resolve({
                 address,
-                balance: totals.balance,
-                totalReceived: totals.totalReceived
+                balance: String(totals.balance),
+                totalReceived: String(totals.totalReceived)
             })
         })
     })
@@ -459,7 +459,7 @@ export function fetchBalance(address) {
             data.unconfirmedBalance < 0
                 ? data.balance + data.unconfirmedBalance
                 : data.balance
-        ).toString()
+        ).toFixed()
     })
 }
 
