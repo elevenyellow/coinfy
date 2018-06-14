@@ -370,8 +370,8 @@ export function discoverAddress({ seed, index = 0, segwit = false }) {
         fetchTotals(address).then(totals => {
             resolve({
                 address,
-                balance: totals.balance,
-                totalReceived: totals.totalReceived
+                balance: String(totals.balance),
+                totalReceived: String(totals.totalReceived)
             })
         })
     })
@@ -588,7 +588,7 @@ export function createSimpleTx({
     return fetch(`${api_url}/addrs/${from_addresses.join(',')}/utxo?noCache=1`)
         .then(response => response.json())
         .then(txs => {
-            // console.log(txs)
+            if (txs.length === 0) return
 
             let totalInput = bigNumber(0)
             const totalOutput = bigNumber(amount).plus(fee)
@@ -596,7 +596,7 @@ export function createSimpleTx({
 
             // Adding inputs
             // console.log(txs)
-            sortBy(txs || [], '-amount').forEach((tx, index) => {
+            sortBy(txs, '-amount').forEach((tx, index) => {
                 if (totalInput.lt(totalOutput)) {
                     txb.addInput(tx.txid, tx.vout)
                     txb.inputs[index].satoshis = tx.satoshis
