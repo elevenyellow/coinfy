@@ -35,7 +35,6 @@ import {
     isPrivateKey,
     formatAddress,
     getAddressFromPrivateKey,
-    getSegwitAddressFromPrivateKey,
     urlInfo,
     urlInfoTx,
     urlDecodeTx,
@@ -55,14 +54,15 @@ import {
     fetchTxs,
     createSimpleTx,
     getSendProviders
-} from '/api/coins/LTC'
+} from '/api/coins/ETH'
 
 global.fetch = fetch
 
 const seed =
     'civil void tool perfect avocado sweet immense fluid arrow aerobic boil flash'
-const private_key = 'T4YFpHviWfjt6dQ3UdZKKPVSdUSv3V8EfkArbkhkY2F4CpSdNVzK'
-const addresses = ['LXETnnwcEFTCrgyfAH6P1p3mJosvgG23xj']
+const private_key =
+    'f2d1c6825dbde8b1824761e343c06c4f796bdec7215f31eee1c79f844556b5ec'
+const addresses = ['0x4b0e5460304eee08d0f52708ed7a06498e9bc43e']
 
 test('setupNetwork', t => {
     t.equal(setupNetwork(MAINNET, networks), true, 'setupNetwork')
@@ -102,14 +102,17 @@ test('Numbers', t => {
     t.equal(format(12), `12 ${symbol}`, 'format')
     t.equal(format(12.12345, 4), `12.1234 ${symbol}`, 'format 2')
 
-    t.equal(cutDecimals(12.123456789), `12.12345678`, 'cutDecimals')
+    t.equal(
+        cutDecimals(12.123456789012345678901234567),
+        '12.123456789012346',
+        'cutDecimals'
+    )
 
     t.end()
 })
 
 test('Wallets / Address / Accounts / PrivateKeys', t => {
     const wallet = getWalletFromSeed({ seed })
-    const wallet2 = getWalletFromSeed({ seed, segwit: false })
 
     t.equal(isAddress(wallet.address), true, 'isAddress')
 
@@ -118,17 +121,9 @@ test('Wallets / Address / Accounts / PrivateKeys', t => {
     t.deepEqual(
         wallet,
         {
-            address: 'MC8hq3vFYJF8kvezNFopifqbVK5XhS2KHV',
-            private_key: 'T5JtaSRCwQXo3TGGu5GSi7Soqa7gdHsHXNbh1eJ2B9TmKgLUBurP'
-        },
-        'getWalletFromSeed'
-    )
-
-    t.deepEqual(
-        getWalletFromSeed({ seed, segwit: false }),
-        {
-            address: 'LdHgz1NDHW7kr2m47ejruLsQ3oGKQrqpaU',
-            private_key: 'T9bRAS7yMSL9a57MgABdaBa5XuTKmBDN4CqceCijW4FsiyMKBsin'
+            address: '0xd7e5e389a86a658d7f2f99889e01645351754d50',
+            private_key:
+                'c559e2ebb7f8d207640e59617ed18c52a7fac4bc7451ee8e4b1ce102601dd464'
         },
         'getWalletFromSeed'
     )
@@ -137,12 +132,12 @@ test('Wallets / Address / Accounts / PrivateKeys', t => {
         getWalletsFromSeed({ seed, count: 2 }),
         [
             {
-                address: 'MC8hq3vFYJF8kvezNFopifqbVK5XhS2KHV',
+                address: '0xd7e5e389a86a658d7f2f99889e01645351754d50',
                 private_key:
-                    'T5JtaSRCwQXo3TGGu5GSi7Soqa7gdHsHXNbh1eJ2B9TmKgLUBurP'
+                    'c559e2ebb7f8d207640e59617ed18c52a7fac4bc7451ee8e4b1ce102601dd464'
             },
             {
-                address: 'MWHztdnbbSx2xGqYpcHZykPFaDB3FHWvsR',
+                address: '0xca95a20a1306aaddeedd12f9725ffc18c7703430',
                 private_key: private_key
             }
         ],
@@ -150,18 +145,10 @@ test('Wallets / Address / Accounts / PrivateKeys', t => {
     )
 
     t.equal(
-        getSegwitAddressFromPrivateKey(wallet.private_key),
-        wallet.address,
-        'getSegwitAddressFromPrivateKey'
+        formatAddress(wallet.address),
+        '0xD7E5e389a86a658D7F2F99889E01645351754D50',
+        'formatAddress'
     )
-
-    t.equal(
-        getAddressFromPrivateKey(wallet2.private_key),
-        wallet2.address,
-        'getAddressFromPrivateKey'
-    )
-
-    t.equal(formatAddress(wallet.address), wallet.address, 'formatAddress')
 
     t.end()
 })
@@ -261,36 +248,13 @@ test('decryptWalletFromSeed', t => {
     t.end()
 })
 
-test('encryptBIP38 decryptBIP38', t => {
-    const pass = '1234'
-    const encrypted = encryptBIP38(private_key, pass)
-    const decrypted = decryptBIP38(encrypted, pass)
-
-    t.equal(private_key, decrypted)
-
-    t.end()
-})
-
 test('discoverAddress', t => {
-    const wallet = getWalletFromSeed({ seed, segwit: false })
-    return discoverAddress({ seed }).then(
-        ({ address, balance, totalReceived }) => {
-            t.equal(address, wallet.address)
-            t.equal(typeof balance, 'string')
-            t.equal(typeof totalReceived, 'string')
-            t.end()
-        }
-    )
-})
-
-test('discoverAddress segwit', t => {
-    const wallet = getWalletFromSeed({ seed, segwit: true })
-    return discoverAddress({ seed, segwit: true }).then(
-        ({ address, balance, totalReceived }) => {
-            t.equal(address, wallet.address)
-            t.end()
-        }
-    )
+    const wallet = getWalletFromSeed({ seed })
+    return discoverAddress({ seed }).then(({ address, balance }) => {
+        t.equal(address, wallet.address)
+        t.equal(typeof balance, 'string')
+        t.end()
+    })
 })
 
 test('discoverWallet', t => {
@@ -298,7 +262,6 @@ test('discoverWallet', t => {
         data => {
             t.equal(Array.isArray(data.addresses), true)
             t.equal(typeof data.index, 'number')
-            t.equal(typeof data.segwit, 'boolean')
             t.equal(data.address, data.addresses[data.addresses.length - 1])
             t.end()
         },
@@ -321,9 +284,9 @@ test('fetchRecomendedFee', t => {
 
 test('fetchTxs', t => {
     return fetchTxs(addresses).then(txs => {
-        t.equal(typeof txs, 'object')
-        t.equal(typeof txs.totalTxs, 'number')
-        t.equal(Array.isArray(txs.txs), true)
+        t.equal(typeof txs, 'object', 'is object')
+        t.equal(typeof txs.totalTxs, 'number', 'totalTxs')
+        t.equal(Array.isArray(txs.txs), true, 'txs is array')
         if (txs.txs.length > 0) {
             t.equal(typeof txs.txs[0].value, 'string', 'value')
             t.equal(
@@ -337,29 +300,36 @@ test('fetchTxs', t => {
                 txs.txs[0].fees,
                 'fees fixnumber'
             )
-            t.equal(typeof txs.txs[0].time, 'number')
-            t.equal(typeof txs.txs[0].txid, 'string')
+            t.equal(typeof txs.txs[0].time, 'number', 'time')
+            t.equal(typeof txs.txs[0].txid, 'string', 'txid')
         }
         t.end()
     })
 })
 
 test('createSimpleTx', t => {
-    // setupNetwork(TESTNET, networks) // changing to testnet
+    setupNetwork(TESTNET, networks) // changing to testnet
     return createSimpleTx({
-        from_addresses: ['QcZWq92S1Crd3z14gxf6irgq6Kwe6YUzQ6'],
-        private_keys: ['cQA29xw1do9iux5ZHRbRNVP81EPExK3N2Z6sgMKZsqd7NbH3uTec'],
-        to_address: 'Qgyb4joqse24BUzrZ94UkRPjPHx5BxGJMr',
+        from_addresses: ['0x64A3561257E3850995f83EF4DEc1c948197441C6'],
+        private_keys: [
+            'b5d75b789d8e68920a70af5565702fe263921decdc5344cd31e8c58be5d55cc5'
+        ],
+        to_address: '0x27cB73c2D7Fe089f9D6081Fa1D35149DdF7607b1',
         amount: 1,
         fee: 0.01
-    }).then(txsigned => {
-        t.equal(typeof txsigned, 'undefined')
-        t.end()
     })
+        .then(txsigned => {
+            t.equal(typeof txsigned, 'string')
+            t.end()
+        })
+        .catch(e => {
+            t.equal(e, 'string')
+            console.log(e)
+        })
 })
 
 test('getSendProviders', t => {
-    // setupNetwork(MAINNET, networks) // changing to testnet
+    setupNetwork(MAINNET, networks) // changing to testnet
     const providers = getSendProviders()
     t.equal(Array.isArray(providers), true)
     t.equal(typeof providers[0].name, 'string')

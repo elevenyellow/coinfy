@@ -1,6 +1,6 @@
 {
     "name": "coinfy",
-    "version": "1.5.5",
+    "version": "1.5.7",
     "repository": "https://github.com/elevenyellow/coinfy",
     "scripts": {
         "stats": "webpack --config=./webpack/production.js --profile --json > webpack-stats.json | open https://chrisbateman.github.io/webpack-visualizer/",
@@ -9,7 +9,7 @@
         "prod": "NODE_ENV=production node src/server",
         "forever": "NODE_ENV=production forever start src/server.js",
         "forever-stop": "forever stop src/server.js",
-        "test": "babel-node --presets=react,es2015 test/ltc.js | faucet",
+        "test": "babel-node --presets=react,es2015 test/eth.js | faucet",
         "scrapper_logos": "node scripts/scrapper_logos",
         "hashes": "node scripts/hashes"
     },
@@ -43,6 +43,7 @@
         "babel-preset-es2015": "^6.13.2",
         "babel-preset-react": "^6.11.1",
         "babel-root-slash-import": "^1.1.0",
+        "babel-tape-runner": "^2.0.1",
         "colors": "^1.1.2",
         "eslint": "^4.5.0",
         "eslint-plugin-react": "^7.3.0",
@@ -57,6 +58,7 @@
         "sha1": "^1.1.1",
         "sha1-file": "^1.0.0",
         "tape": "^4.8.0",
+        "tape-run": "^4.0.0",
         "uglify-es-webpack-plugin": "^0.10.0",
         "webpack": "^3.4.1",
         "webpack-dev-middleware": "^1.6.1",

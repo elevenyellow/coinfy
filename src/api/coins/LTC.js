@@ -558,6 +558,8 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
 
                 // We don't show the tx if value is 0
                 if (tx.value.gt(0) || tx.value.lt(0)) {
+                    tx.fees = tx.fees.toFixed()
+                    tx.value = tx.value.toFixed()
                     data.txs.push(tx)
                 } else {
                     data.totalTxs -= 1

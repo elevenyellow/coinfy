@@ -1,5 +1,6 @@
 import test from 'tape'
 import fetch from 'node-fetch'
+import BigNumber from 'bignumber.js'
 
 import {
     TYPE_COIN,
@@ -72,7 +73,7 @@ test('Exists / Types', t => {
     t.equal(typeof networks, 'object', 'networks')
     t.equal(typeof networks[MAINNET], 'object', 'networks 2')
     t.equal(typeof networks[MAINNET].url, 'string', 'networks 3')
-    t.equal(typeof networks[MAINNET].network, 'object', 'networks 4')
+    // t.equal(typeof networks[MAINNET].network, 'object', 'networks 4')
 
     t.equal(typeof setupNetwork, 'function', 'setupNetwork')
 
@@ -102,8 +103,6 @@ test('Numbers', t => {
     t.equal(format(12.12345, 4), `12.1234 ${symbol}`, 'format 2')
 
     t.equal(cutDecimals(12.123456789), `12.12345678`, 'cutDecimals')
-
-    t.equal(toSatoshis(1), 100000000, 'toSatoshis')
 
     t.end()
 })
@@ -326,8 +325,18 @@ test('fetchTxs', t => {
         t.equal(typeof txs.totalTxs, 'number')
         t.equal(Array.isArray(txs.txs), true)
         if (txs.txs.length > 0) {
-            t.equal(txs.txs[0].value.isBigNumber, true)
-            t.equal(txs.txs[0].fees.isBigNumber, true)
+            t.equal(typeof txs.txs[0].value, 'string', 'value')
+            t.equal(
+                BigNumber(txs.txs[0].value).toFixed(),
+                txs.txs[0].value,
+                'value fixnumber'
+            )
+            t.equal(typeof txs.txs[0].fees, 'string', 'fees')
+            t.equal(
+                BigNumber(txs.txs[0].fees).toFixed(),
+                txs.txs[0].fees,
+                'fees fixnumber'
+            )
             t.equal(typeof txs.txs[0].time, 'number')
             t.equal(typeof txs.txs[0].txid, 'string')
         }
@@ -338,7 +347,7 @@ test('fetchTxs', t => {
 test('createSimpleTx', t => {
     setupNetwork(TESTNET, networks) // changing to testnet
     return createSimpleTx({
-        from_addresses: ['LafY8kmptpwkiHgmJPBNRzrWwBL7Kz9dqc'],
+        from_addresses: ['mm42obtLkUesaHxj5i236B9hJ7m6yv4Ujg'],
         private_keys: ['cRkNqWAK64qSooKnadaFLa9uhSK1QtgkD5ezJQcsn1Fz5LQSnHT5'],
         to_address: '2N9Cki8ABz6oXuoF24rd5eAFPwwVpEWYctt',
         amount: 1,

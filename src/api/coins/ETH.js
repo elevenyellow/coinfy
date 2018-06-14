@@ -279,12 +279,12 @@ export function fetchTxs(
         raw_txs.forEach(txRaw => {
             let tx = {
                 txid: txRaw.hash,
-                fees: bigNumber(txRaw.gasUsed),
-                time: txRaw.timeStamp,
+                fees: bigNumber(txRaw.gasUsed).toFixed(),
+                time: Number(txRaw.timeStamp),
                 confirmations: txRaw.confirmations,
                 value: bigNumber(txRaw.value)
                     .div(_satoshis)
-                    .toString()
+                    .toFixed()
                 // raw: txRaw,
             }
             if (txRaw.from.toLowerCase() === address.toLowerCase())
@@ -375,7 +375,7 @@ export function createSimpleTx({
                 gasLimit: sanitizeHex(decToHex(gas_limit)),
                 gasPrice: sanitizeHex(
                     decToHex(
-                        fee
+                        bigNumber(fee)
                             .times(satoshis)
                             .div(gas_limit)
                             .round()
@@ -385,7 +385,13 @@ export function createSimpleTx({
                 // gasLimit: '0x016f2e',
                 nonce: sanitizeHex(e.result),
                 to: sanitizeHex(to_address),
-                value: sanitizeHex(decToHex(amount.times(satoshis).round()))
+                value: sanitizeHex(
+                    decToHex(
+                        bigNumber(amount)
+                            .times(satoshis)
+                            .round()
+                    )
+                )
             }
 
             if (typeof data == 'string') txJson.data = data
