@@ -174,9 +174,7 @@ export function getPrivateKeys(asset_id, password) {
     const Coin = Coins[asset.symbol]
     const is_seed = isAssetWithSeed(asset_id)
     const seed_encrypted = asset.seed
-    const addresses = Coin.multiaddress
-        ? asset.addresses.slice(0)
-        : [asset.address]
+    const addresses = asset.addresses.slice(0)
 
     if (is_seed) {
         const seed = Coin.decryptSeed(addresses, seed_encrypted, password)
