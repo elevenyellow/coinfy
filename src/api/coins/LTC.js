@@ -9,7 +9,11 @@ import {
 import { sortBy, highest, sum, includesMultiple } from '/api/arrays'
 import { resolveAll } from '/api/promises'
 
-import { validateAddress } from '/api/coins/BTC'
+import {
+    validateAddress,
+    sendRawTxInsight,
+    sendRawTxBlockcypher
+} from '/api/coins/BTC'
 
 import {
     TYPE_COIN,
@@ -656,39 +660,23 @@ export function getSendProviders() {
 const sendProviders = {
     mainnet: [
         {
+            name: 'BlockCypher',
+            url: `https://live.blockcypher.com/ltc/pushtx/`,
+            send: sendRawTxBlockcypher(
+                'https://api.blockcypher.com/v1/ltc/main/txs/push'
+            )
+        },
+        {
             name: 'Trezor.io',
             url: `${networks[MAINNET].url}/tx/send`,
-            send: sendRawTxInsight
+            send: sendRawTxInsight(`${api_url}/tx/send`)
         }
     ],
     testnet: [
         {
             name: 'Litecore.io',
             url: `${networks[TESTNET].url}/tx/send`,
-            send: sendRawTxInsight
+            send: sendRawTxInsight(`${api_url}/tx/send`)
         }
     ]
-}
-
-function sendRawTxInsight(rawTx) {
-    const fetchOptions = {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            rawtx: rawTx
-        })
-    }
-    return fetch(`${api_url}/tx/send`, fetchOptions)
-        .then(response => response.text())
-        .then(response => {
-            try {
-                return JSON.parse(response)
-            } catch (e) {
-                return Promise.reject(response)
-            }
-        })
-        .then(data => data.txid)
 }

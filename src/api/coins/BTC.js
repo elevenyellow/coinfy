@@ -698,70 +698,80 @@ export function getSendProviders() {
 const sendProviders = {
     mainnet: [
         {
+            name: 'BlockCypher',
+            url: `https://live.blockcypher.com/btc/pushtx/`,
+            send: sendRawTxBlockcypher(
+                'https://api.blockcypher.com/v1/btc/main/txs/push'
+            )
+        },
+        {
             name: 'Bitpay.com',
             url: `${networks[MAINNET].url}/tx/send`,
-            send: sendRawTxInsight
+            send: sendRawTxInsight(`${api_url}/tx/send`)
         }
     ],
     testnet: [
         {
             name: 'BlockCypher',
             url: `https://live.blockcypher.com/btc-testnet/pushtx/`,
-            send: sendRawTxBlockcypher
+            send: sendRawTxBlockcypher(
+                'https://api.blockcypher.com/v1/btc/test3/txs/push'
+            )
         },
         {
             name: 'Trezor.io',
             url: `${networks[TESTNET].url}/tx/send`, //'https://test-insight.bitpay.com/tx/send',
-            send: sendRawTxInsight
+            send: sendRawTxInsight(`${api_url}/tx/send`)
         }
     ]
 }
 
 // https://en.bitcoin.it/wiki/Transaction_broadcasting
-function sendRawTxInsight(rawTx) {
-    const fetchOptions = {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            rawtx: rawTx
-        })
+export function sendRawTxInsight(url) {
+    return function(rawTx) {
+        const fetchOptions = {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                rawtx: rawTx
+            })
+        }
+        return fetch(url, fetchOptions)
+            .then(response => response.text())
+            .then(response => {
+                try {
+                    return JSON.parse(response)
+                } catch (e) {
+                    return Promise.reject(response)
+                }
+            })
+            .then(data => data.txid)
     }
-    return fetch(`${api_url}/tx/send`, fetchOptions)
-        .then(response => response.text())
-        .then(response => {
-            try {
-                return JSON.parse(response)
-            } catch (e) {
-                return Promise.reject(response)
-            }
-        })
-        .then(data => data.txid)
 }
 
 // https://en.bitcoin.it/wiki/Transaction_broadcasting
-function sendRawTxBlockcypher(rawTx) {
-    const fetchOptions = {
-        method: 'POST',
-        body: JSON.stringify({
-            tx: rawTx
-        })
+export function sendRawTxBlockcypher(url) {
+    return function(rawTx) {
+        const fetchOptions = {
+            method: 'POST',
+            body: JSON.stringify({
+                tx: rawTx
+            })
+        }
+        return fetch(url, fetchOptions)
+            .then(response => response.text())
+            .then(response => {
+                try {
+                    return JSON.parse(response)
+                } catch (e) {
+                    return Promise.reject(response)
+                }
+            })
+            .then(data => data.tx.hash)
     }
-    return fetch(
-        'https://api.blockcypher.com/v1/btc/test3/txs/push',
-        fetchOptions
-    )
-        .then(response => response.text())
-        .then(response => {
-            try {
-                return JSON.parse(response)
-            } catch (e) {
-                return Promise.reject(response)
-            }
-        })
-        .then(data => data.tx.hash)
 }
 
 /*
