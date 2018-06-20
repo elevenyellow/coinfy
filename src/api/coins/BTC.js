@@ -587,7 +587,7 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
                         .minus(value_outputs)
                         .minus(tx_raw.fees)
                         .times(-1)
-                        
+
                     // raw: tx_raw,
                 }
 
@@ -598,8 +598,8 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
 
                 // We don't show the tx if value is 0
                 if (tx.value.gt(0) || tx.value.lt(0)) {
-                    tx.fees  = tx.fees.toFixed()
-                    tx.value  = tx.value.toFixed()
+                    tx.fees = tx.fees.toFixed()
+                    tx.value = tx.value.toFixed()
                     data.txs.push(tx)
                 } else {
                     data.totalTxs -= 1
@@ -705,6 +705,11 @@ const sendProviders = {
     ],
     testnet: [
         {
+            name: 'BlockCypher',
+            url: `https://live.blockcypher.com/btc-testnet/pushtx/`,
+            send: sendRawTxBlockcypher
+        },
+        {
             name: 'Trezor.io',
             url: `${networks[TESTNET].url}/tx/send`, //'https://test-insight.bitpay.com/tx/send',
             send: sendRawTxInsight
@@ -734,6 +739,29 @@ function sendRawTxInsight(rawTx) {
             }
         })
         .then(data => data.txid)
+}
+
+// https://en.bitcoin.it/wiki/Transaction_broadcasting
+function sendRawTxBlockcypher(rawTx) {
+    const fetchOptions = {
+        method: 'POST',
+        body: JSON.stringify({
+            tx: rawTx
+        })
+    }
+    return fetch(
+        'https://api.blockcypher.com/v1/btc/test3/txs/push',
+        fetchOptions
+    )
+        .then(response => response.text())
+        .then(response => {
+            try {
+                return JSON.parse(response)
+            } catch (e) {
+                return Promise.reject(response)
+            }
+        })
+        .then(data => data.tx.hash)
 }
 
 /*
