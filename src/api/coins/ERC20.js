@@ -25,6 +25,7 @@ import {
     encryptSeed,
     decryptSeed,
     decryptPrivateKeyFromSeed,
+    decryptWalletFromSeed,
     urlInfoTx,
     getSendProviders,
     urlDecodeTx,
@@ -37,24 +38,26 @@ import {
     discoverWallet,
     multiaddress,
     changeaddress,
-    getNextWalletFromSeed
+    getNextWalletFromSeed,
+    networks,
+    derivation_path
 } from '/api/coins/ETH'
 import { addHexPrefix } from './ETH'
 
-export const networks = {
-    [MAINNET]: {
-        // mainnet
-        api_url: 'https://api.etherscan.io/api',
-        url: 'https://etherscan.io',
-        url_myetherapi: 'https://api.myetherapi.com/eth'
-    },
-    [TESTNET]: {
-        // mainnet
-        api_url: 'https://ropsten.etherscan.io/api',
-        url: 'https://ropsten.etherscan.io',
-        url_myetherapi: 'https://api.myetherapi.com/rop'
-    }
-}
+// export const networks = {
+//     [MAINNET]: {
+//         // mainnet
+//         api_url: 'https://api.etherscan.io/api',
+//         url: 'https://etherscan.io',
+//         url_myetherapi: 'https://api.myetherapi.com/eth'
+//     },
+//     [TESTNET]: {
+//         // mainnet
+//         api_url: 'https://ropsten.etherscan.io/api',
+//         url: 'https://ropsten.etherscan.io',
+//         url_myetherapi: 'https://api.myetherapi.com/rop'
+//     }
+// }
 
 let network_id, url, url_myetherapi, api_url
 
@@ -200,6 +203,10 @@ export function createERC20({
         labels,
         type: TYPE_ERC20,
         symbol_fee,
+        derivation_path,
+        coin_decimals,
+        price_decimals,
+        satoshis,
         removeHexPrefix,
         isAddress,
         isPrivateKey,
@@ -210,6 +217,7 @@ export function createERC20({
         encryptSeed,
         decryptSeed,
         decryptPrivateKeyFromSeed,
+        decryptWalletFromSeed,
         getSendProviders,
         urlDecodeTx,
         getWalletFromSeed,
