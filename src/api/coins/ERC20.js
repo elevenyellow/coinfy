@@ -178,7 +178,7 @@ export function createERC20({
             params.data = getDataContractMethodCall(
                 'transfer(address,uint256)',
                 params.to_address,
-                params.amount
+                bigNumber(params.amount)
                     .times(bigNumber(10).pow(coin_decimals))
                     .toString(16)
             )
