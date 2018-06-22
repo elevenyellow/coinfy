@@ -178,11 +178,14 @@ export default class Send extends Component {
             )
         } else {
             state.view.amount2_input = amount2
-            state.view.amount1_input = this.Coin.cutDecimals(
-                bigNumber(parseNumberAsString(amount2))
-                    .div(price)
-                    .toFixed()
-            )
+            state.view.amount1_input =
+                price === 0
+                    ? 0
+                    : this.Coin.cutDecimals(
+                          bigNumber(parseNumberAsString(amount2))
+                              .div(price)
+                              .toFixed()
+                      )
         }
 
         this.updateAmount(parseNumberAsString(state.view.amount1_input))
