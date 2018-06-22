@@ -18,7 +18,7 @@ import {
     closeSession,
     changeNetwork
 } from '/store/actions'
-import { isBackupAssetsExported } from '/store/getters'
+import { isBackupAssetsExported, getTotalAssets } from '/store/getters'
 
 import state from '/store/state'
 
@@ -137,7 +137,8 @@ export default class Header extends Component {
             sideMenuOpen: state.sideMenuOpen,
             onSideMenu: this.onSideMenu,
             menuOpen: state.menuOpen,
-            showAlertBackup: !isBackupAssetsExported(),
+            showAlertBackup:
+                !isBackupAssetsExported() && getTotalAssets(state.assets) > 0,
             // onAddAsset: this.onAddAsset,
             onChangeNetwork: this.onChangeNetwork,
             onMenuOpen: this.onMenuOpen,
