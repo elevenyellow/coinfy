@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { createObserver, collect } from 'dop'
 
 import styles from '/const/styles'
-import { ASSET_LOGO, ASSET_LOGO_LIBRARY, OK } from '/const/'
+import { ASSET_LOGO, OK } from '/const/'
 import { routes } from '/store/router'
 
 import { generateRandomColor, getAverageColor, rgbToHex } from '/api/colors'
@@ -138,7 +138,7 @@ export default class ImportBitcoin extends Component {
             : ''
         // Loading possible icon
         if (symbol.length > 2 && !Coins.hasOwnProperty(symbol))
-            this.onChangeLogo(ASSET_LOGO_LIBRARY(symbol), false)
+            this.onChangeLogo(ASSET_LOGO(symbol), false)
         collector.emit()
     }
 
