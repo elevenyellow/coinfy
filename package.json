@@ -9,7 +9,7 @@
         "prod": "NODE_ENV=production node src/server",
         "forever": "NODE_ENV=production forever start src/server.js",
         "forever-stop": "forever stop src/server.js",
-        "test": "babel-node --presets=react,es2015 test/erc20.js | faucet",
+        "test": "babel-tape-runner --presets=react,es2015 test/*.js | faucet",
         "scrapper_logos": "node scripts/scrapper_logos",
         "hashes": "node scripts/hashes"
     },
