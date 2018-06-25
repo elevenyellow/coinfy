@@ -1,4 +1,5 @@
 const { createERC20 } = require('./ERC20')
+const { MAINNET } = require('../../const/')
 
 module.exports = createERC20({
     symbol: 'ZRX',
@@ -7,5 +8,6 @@ module.exports = createERC20({
     contract_address: '0xe41d2489571d322189246dafa5ebde1f4699f498',
     labels: 'zrx project ethereum token erc20 ecr20',
     coin_decimals: 18,
-    price_decimals: 2
+    price_decimals: 2,
+    networks_availables: [MAINNET]
 })

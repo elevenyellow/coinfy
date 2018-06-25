@@ -1,4 +1,5 @@
 const { createERC20 } = require('./ERC20')
+const { MAINNET } = require('../../const/')
 
 module.exports = createERC20({
     symbol: 'BAT',
@@ -7,5 +8,6 @@ module.exports = createERC20({
     contract_address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
     labels: 'bat ethereum token erc20 ecr20',
     coin_decimals: 18,
-    price_decimals: 2
+    price_decimals: 2,
+    networks_availables: [MAINNET]
 })

@@ -72,6 +72,7 @@ export const multiaddress = true // if true we can't change the address on the u
 export const changeaddress = true // if true we change the remaining balance to the next address
 export const labels = 'ltc coin'
 export const logo = ASSET_LOGO(symbol)
+export const networks_availables = [MAINNET, TESTNET]
 
 export const derivation_path = {
     mainnet: index => `m/44'/2'/0'/0/${index}`,

@@ -66,6 +66,7 @@ export const changeaddress = false // if true we change the remaining balance to
 export const default_gas_limit = 21000
 export const labels = 'eth coin etereum'
 export const logo = ASSET_LOGO(symbol)
+export const networks_availables = [MAINNET, TESTNET]
 
 export { addHexPrefix } from 'ethereumjs-util'
 

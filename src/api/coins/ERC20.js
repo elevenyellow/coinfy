@@ -70,7 +70,8 @@ export function createERC20({
     coin_decimals = 18,
     price_decimals = 2,
     logo = ASSET_LOGO(symbol),
-    custom = false
+    custom = false,
+    networks_availables = [MAINNET, TESTNET]
 }) {
     const default_gas_limit = 130000
     const txs_cache = {}
@@ -195,6 +196,7 @@ export function createERC20({
         },
 
         networks,
+        networks_availables,
         custom,
         logo: logo,
         symbol,
