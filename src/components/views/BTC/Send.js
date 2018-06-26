@@ -403,12 +403,13 @@ export default class Send extends Component {
     }
 
     get isValidForm() {
+        const min = bigNumber(10).pow(this.Coin.coin_decimals * -1)
         return (
             !state.view.address_input_error &&
             state.view.address_input.length > 0 &&
             state.view.password_input.length > 0 &&
-            state.view.amount.gt(0) &&
-            state.view.fee.gt(0) &&
+            state.view.amount.gte(min) &&
+            state.view.fee.gte(min) &&
             !state.view.password_input_invalid
         )
     }
