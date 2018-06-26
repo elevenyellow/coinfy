@@ -263,9 +263,11 @@ function SummaryTemplate({
                     ) : (
                         <IconSend size={23} color="white" />
                     )
-                    let value = received
-                        ? `+ ${tx.value.toString()}`
-                        : `- ${tx.value.toString().substr(1)}`
+                    let value = received ? (
+                        <ValuePositive>+ {tx.value}</ValuePositive>
+                    ) : (
+                        <ValueNegative>- {tx.value.substr(1)}</ValueNegative>
+                    )
                     return (
                         <Transaction>
                             <TransactionInner
@@ -342,7 +344,14 @@ function SummaryTemplate({
     )
 }
 
-// const Header = styled.div``
+const ValuePositive = styled.span`
+    color: #6bba39;
+`
+const ValueNegative = styled.span`
+    color: #e34444;
+`
+
+// const ValueNegative = styled.div``
 
 // const List = styled.div`
 //     width: 165px;

@@ -161,7 +161,7 @@ export function createERC20({
                         time: hexToDec(txRaw.timeStamp),
                         value: bigNumber(hexToDec(removeHexPrefix(txRaw.data)))
                             .div(satoshis)
-                            .toString()
+                            .toFixed()
                     }
                     if (txRaw.topics[1].toLowerCase() === address64)
                         tx.value = '-' + tx.value
