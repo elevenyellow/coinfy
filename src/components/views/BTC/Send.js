@@ -307,7 +307,8 @@ export default class Send extends Component {
                 private_keys: private_keys,
                 amount: state.view.amount, // amount to send
                 fee: state.view.fee,
-                change_address: state.view.change_address
+                change_address: state.view.change_address,
+                current_address: address
             })
                 .then(tx_raw => {
                     this.tx_raw = tx_raw

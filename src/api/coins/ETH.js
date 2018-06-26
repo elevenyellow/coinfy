@@ -343,10 +343,12 @@ export function createSimpleTx({
     amount,
     fee,
     gas_limit = default_gas_limit,
-    data
+    data,
+    current_address
 }) {
-    const from_address = from_addresses[0]
-    const private_key = private_keys[0]
+    const index = from_addresses.indexOf(current_address)
+    const from_address = from_addresses[index]
+    const private_key = private_keys[index]
     // const from_address = getAddressFromPrivateKey(private_key)
     // return JSONRpc(url_myetherapi, 'eth_getTransactionCount', [
     //     from_address,
