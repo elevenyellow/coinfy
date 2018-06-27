@@ -410,7 +410,7 @@ export default class Send extends Component {
             state.view.address_input.length > 0 &&
             state.view.password_input.length > 0 &&
             state.view.amount.gte(min) &&
-            state.view.fee.gte(min) &&
+            state.view.fee.gte(0) &&
             !state.view.password_input_invalid
         )
     }
