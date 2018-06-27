@@ -15,6 +15,10 @@ function sha1(data) {
     return shasum.digest('hex')
 }
 
+function shagit(data) {
+    return sha1(`blob ${data.length + 1}\0${data}\n`)
+}
+
 recursive('./public', ['.*'], (err, paths) => {
     console.log('')
     let correct = 0
@@ -24,11 +28,11 @@ recursive('./public', ['.*'], (err, paths) => {
     paths.forEach(path => {
         const path_clean = path.replace('public', '')
         const url = `https://coinfy.com${path_clean}`
-        // console.log(sha1(readLocalFile(path)), path)
+        // console.log(shagit(readLocalFile(path)), path)
         request(url, (error, response, body) => {
             loaded += 1
-            const hash_remote = sha1(body)
-            const hash_local = sha1(readLocalFile(path))
+            const hash_remote = shagit(body)
+            const hash_local = shagit(readLocalFile(path))
             if (hash_remote === hash_local) {
                 correct += 1
                 console.log(colors.green(`✔ ${hash_local} `) + path)
