@@ -5,7 +5,7 @@ const colors = require('colors')
 const request = require('request')
 const bytes = require('utf8-bytes')
 
-const domain = 'http://localhost:8000' //'https://coinfy.com'
+const domain = 'https://coinfy.com'
 const respository = `https://api.github.com/repos/elevenyellow/coinfy/git/trees/master`
 const extensions = ['js', 'htm', 'html', 'css']
 
