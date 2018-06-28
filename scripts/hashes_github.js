@@ -3,6 +3,7 @@ const fetch = require('node-fetch')
 const crypto = require('crypto')
 const colors = require('colors')
 const request = require('request')
+const bytes = require('utf8-bytes')
 
 const domain = 'http://localhost:8000' //'https://coinfy.com'
 const respository = `https://api.github.com/repos/elevenyellow/coinfy/git/trees/master`
@@ -49,7 +50,8 @@ function sha1(data) {
 
 // https://stackoverflow.com/questions/552659/how-to-assign-a-git-sha1s-to-a-file-without-git/552725#552725
 function shagit(data) {
-    return sha1(`blob ${data.length}\0${data}`)
+    const total_bytes = bytes(data).length
+    return sha1(`blob ${total_bytes}\0${data}`)
 }
 
 function getFolder(url) {
