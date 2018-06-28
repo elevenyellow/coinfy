@@ -4,13 +4,13 @@ const crypto = require('crypto')
 const colors = require('colors')
 const request = require('request')
 
-const domain = 'https://coinfy.com'
+const domain = 'http://localhost:8000' //'https://coinfy.com'
 const respository = `https://api.github.com/repos/elevenyellow/coinfy/git/trees/master`
 const extensions = ['js', 'htm', 'html', 'css']
 
 console.log('Getting tree list...')
 getTree(respository, file => file.path.indexOf('public') > -1).then(list => {
-    console.log(colors.green(`✔ Tree list received`))
+    console.log('✔ Tree list received')
 
     let correct = 0
     list = list.filter(item => extensions.includes(getExtension(item.path)))
