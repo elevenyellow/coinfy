@@ -1,38 +1,85 @@
-// const request = require('request')
 const fetch = require('node-fetch')
 const crypto = require('crypto')
 const colors = require('colors')
-const request = require('request')
 const bytes = require('utf8-bytes')
 
 const domain = 'https://coinfy.com'
 const respository = `https://api.github.com/repos/elevenyellow/coinfy/git/trees/master`
 const extensions = ['js', 'htm', 'html', 'css']
 
+// Getting email
+const email = process.argv[2]
+const password = process.argv[3]
+const timeout_repeat = process.argv[4] | 1
+let repeat = false
+
+// Getting parameters
+if (typeof email == 'string') {
+    if (validateEmail(email)) {
+        if (typeof password == 'string') {
+            repeat = true
+        } else {
+            console.log('Type a password as second parameter')
+            process.exit()
+        }
+    } else {
+        console.log('Invalid email')
+        process.exit()
+    }
+}
+
 console.log('Getting tree list...')
 getTree(respository, file => file.path.indexOf('public') > -1).then(list => {
-    console.log('✔ Tree list received')
+    checkFiles(list)
+})
 
-    let correct = 0
+function checkFiles(list) {
+    console.log('Checking list: ' + new Date().toString())
+    let completed = 0
+    let incorrect = []
     list = list.filter(item => extensions.includes(getExtension(item.path)))
     list.forEach(item => {
         const path = domain + item.path.replace('public', '')
         getFile(path).then(body => {
-            // console.log(body.length, path)
+            completed += 1
             const hash_github = item.sha
             const hash_domain = shagit(body)
             if (hash_domain === hash_github) {
-                correct += 1
                 console.log(colors.green(`✔ ${hash_github} `) + path)
-            } else
+            } else {
+                incorrect.push(path)
                 console.log(
                     colors.red(`✘ ${hash_domain}`) +
                         ` ${path}\n  ` +
                         colors.red(hash_github)
                 )
+            }
+
+            if (completed === list.length) {
+                const total_incorrects = incorrect.length
+                const total_list = list.length
+                console.log('')
+                console.log(
+                    colors[total_incorrects === 0 ? 'green' : 'red'].bold(
+                        `  ${total_list - total_incorrects}/${total_list}`
+                    )
+                )
+
+                if (repeat) {
+                    if (total_incorrects > 0) {
+                        console.log('Sending email')
+                    }
+
+                    setTimeout(() => {
+                        checkFiles(list)
+                    }, timeout_repeat * 60 * 1000)
+                }
+
+                console.log('')
+            }
         })
     })
-})
+}
 
 // UTILS FUNCTIONS
 
@@ -115,3 +162,24 @@ function getExtension(path) {
     const split = path.split('.')
     return split[split.length - 1]
 }
+
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return re.test(email)
+}
+
+// prompt('Whats your name?', function (input) {
+//     console.log(input);
+//     process.exit();
+// });
+// function prompt(question, callback) {
+//     const stdin = process.stdin,
+//         stdout = process.stdout
+
+//     stdin.resume()
+//     stdout.write(question)
+
+//     stdin.once('data', data => {
+//         callback(data.toString().trim())
+//     })
+// }
