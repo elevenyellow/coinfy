@@ -10,7 +10,7 @@ const respository = `https://api.github.com/repos/elevenyellow/coinfy/git/trees/
 const extensions = ['js', 'htm', 'html', 'css']
 
 // Getting email
-let timeout_repeat = 1
+let timeout_repeat = 5
 let host = 'smtp.gmail.com'
 let server
 let repeat = false
@@ -101,8 +101,8 @@ function init(email) {
                                     text:
                                         'Those files does no match with the github version:\n\n' +
                                         text,
-                                    from: `you <${email}>`,
-                                    to: `you <${email}>`
+                                    from: `${email}`,
+                                    to: `${email}`
                                     // cc:      "else <else@your-email.com>",
                                 },
                                 function(err, message) {
