@@ -2,6 +2,30 @@
 
 ## [FAQ](https://github.com/elevenyellow/coinfy/blob/master/FAQ.md)
 
+## Security
+
+We have a cron that is running contiously in background checking if the files served by https://coinfy.com are the same version of this repository.
+
+You can run it yourself by clonning this repository and running this two commands:
+
+```
+npm install
+npm run hashes
+```
+
+The output will be something similar to this:
+
+```
+Getting tree list...
+Checking list: Tue Jul 03 2018 18:50:34 GMT+0200 (CEST)
+✔ 46cc72aa782beda606cdcb96ebd95bfc8c313bbb https://coinfy.com/static/css/index.css
+✔ fcd68a44bb1f50ea722420ddb865459cbe269a26 https://coinfy.com/index.html
+✔ 610f961f6e7ee96956157540fcccebb1b32bdfc2 https://coinfy.com/static/bundle/main.js
+✔ a284dedba3fb97fe4a233bacb8729db908ab37e6 https://coinfy.com/static/bundle/libs.js
+✔ 5905705df7c34b92140e6b91dba9e9d5111f4d4a https://coinfy.com/static/libs/instascan.min.js
+  0 fails
+```
+
 ## Download and running the latest release on your machine
 
 In order to follow this you will need to install the latest version of: [git](https://git-scm.com/downloads), [node.js](https://nodejs.org) and [npm](https://www.npmjs.com/)
@@ -17,42 +41,17 @@ npm run prod
 open http://localhost:8000
 ```
 
-## Checking versions
-
-You can check if the files generated on your machine are the same that are being used in http://coinfy.com
-
-```
-npm run build
-npm run hashes
-```
-
-The output will be something similar to this:
-
-```
-> node test/hashes
-
-✔ 162a3e0021e56bb17ae901d1bcea87cfe2530df8 public/static/image/send.svg
-✔ 647c8cd0405e092f365878323f2b1d48bf19ab1e public/static/css/index.css
-✔ 2a21ac74b2626d1b63a6676ac7ae06d06b8eada2 public/index.html
-✔ a35f37108d6cb90adeebfa9196b3ccd636a69696 public/static/image/BCH.svg
-✔ b0e1a07808c4d6d61448a042a17a4548f41cf545 public/static/image/BTC.svg
-✔ f71b61d054a030ee2ab696e2ff78a3f78be461a1 public/static/image/loading.gif
-✔ e26f7f02d697636295998493365e4ab5ff74e1c3 public/static/image/favicon.png
-✔ f0193a911e470730c21afd5d51fcbcaab7b2847f public/static/image/logo.svg
-✔ 95fb24ad66c73aa30c6e3390e794de83db0f01e0 public/static/image/ETH.svg
-✔ bd8c30606f590d2c669bbd370d7147fb62a78474 public/static/image/logo2.svg
-✔ 6324b3b907a09e6d429a94d8727ced52c03b7e06 public/static/bundle/main.js
-✘ fd94b7754a994ee995d153c5381caeed34cffe21 public/static/bundle/libs.js
-  384da73c52159384e61123f410ab5bed45bbb231
-
-  11/12
-```
-
-It's probably that `bundle/libs.js` fails because it depends on the npm global packages versions you have installed.
-
 ## Developers
 
-To do
+```
+git clone git@github.com:elevenyellow/coinfy.git
+cd coinfy
+npm install
+npm run dev
+open http://localhost:8000
+```
+
+... to do
 
 ## License
 

@@ -3,6 +3,7 @@ const crypto = require('crypto')
 const colors = require('colors')
 const bytes = require('utf8-bytes')
 const emailjs = require('emailjs')
+const prompt = require('prompt')
 
 const domain = 'https://coinfy.com'
 const respository = `https://api.github.com/repos/elevenyellow/coinfy/git/trees/master`
@@ -14,31 +15,35 @@ let host = 'smtp.gmail.com'
 let server
 let repeat = false
 
-prompt('Email (optional): ', email => {
-    if (typeof email == 'string' && email.length > 0) {
-        if (!validateEmail(email)) {
-            console.log(colors.red('Invalid email'))
-            return process.exit()
+const schema = {
+    properties: {
+        email: {
+            description: 'Email (optional)',
+            message: 'Invalid email (optional)',
+            pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        },
+        password: {
+            description: 'Password (optional)',
+            message: 'Invalid password (optional)',
+            hidden: true
         }
-
-        prompt('Password: ', password => {
-            if (typeof password == 'string' && password.length > 0) {
-                repeat = true
-                server = emailjs.server.connect({
-                    user: email,
-                    password: password,
-                    host: host,
-                    ssl: true
-                })
-                init(email)
-            } else {
-                console.log(colors.red('Type a password'))
-                return process.exit()
-            }
-        })
-    } else {
-        init(email)
     }
+}
+prompt.start()
+prompt.get(schema, function(err, result) {
+    email = result.email
+    password = result.password
+
+    if (validateEmail(email)) {
+        repeat = true
+        server = emailjs.server.connect({
+            user: email,
+            password: password,
+            host: host,
+            ssl: true
+        })
+    }
+    init(email)
 })
 
 function init(email) {
@@ -211,14 +216,41 @@ function validateEmail(email) {
     return re.test(email)
 }
 
-function prompt(question, callback) {
-    const stdin = process.stdin,
-        stdout = process.stdout
+// function prompt(question, callback) {
+//     const stdin = process.stdin,
+//         stdout = process.stdout
 
-    stdin.resume()
-    stdout.write(question)
+//     stdin.resume()
+//     stdout.write(question)
 
-    stdin.once('data', data => {
-        callback(data.toString().trim())
-    })
-}
+//     stdin.once('data', data => {
+//         callback(data.toString().trim())
+//     })
+// }
+
+// prompt('Email (optional): ', email => {
+//     if (typeof email == 'string' && email.length > 0) {
+//         if (!validateEmail(email)) {
+//             console.log(colors.red('Invalid email'))
+//             return process.exit()
+//         }
+
+//         prompt('Password: ', password => {
+//             if (typeof password == 'string' && password.length > 0) {
+//                 repeat = true
+//                 server = emailjs.server.connect({
+//                     user: email,
+//                     password: password,
+//                     host: host,
+//                     ssl: true
+//                 })
+//                 init(email)
+//             } else {
+//                 console.log(colors.red('Type a password'))
+//                 return process.exit()
+//             }
+//         })
+//     } else {
+//         init(email)
+//     }
+// })

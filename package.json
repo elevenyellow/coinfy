@@ -11,7 +11,7 @@
         "forever-stop": "forever stop src/server.js",
         "test": "babel-tape-runner --presets=react,es2015 test/*.js | faucet",
         "scrapper_logos": "node scripts/scrapper_logos",
-        "hashes": "node scripts/hashes"
+        "hashes": "node scripts/hashes_github"
     },
     "dependencies": {
         "bignumber.js": "5.0.0",
@@ -54,6 +54,7 @@
         "lodash.merge": "^4.6.0",
         "node-fetch": "^2.1.2",
         "path": "^0.12.7",
+        "prompt": "^1.0.0",
         "recursive-readdir": "^2.2.1",
         "request": "^2.85.0",
         "sha1": "^1.1.1",
