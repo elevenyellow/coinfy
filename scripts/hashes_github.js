@@ -2,6 +2,7 @@ const fetch = require('node-fetch')
 const crypto = require('crypto')
 const colors = require('colors')
 const bytes = require('utf8-bytes')
+const emailjs = require('emailjs')
 
 const domain = 'https://coinfy.com'
 const respository = `https://api.github.com/repos/elevenyellow/coinfy/git/trees/master`
@@ -11,6 +12,9 @@ const extensions = ['js', 'htm', 'html', 'css']
 const email = process.argv[2]
 const password = process.argv[3]
 const timeout_repeat = process.argv[4] | 1
+const host = process.argv[5] | 'smtp.gmail.com'
+
+let server
 let repeat = false
 
 // Getting parameters
@@ -18,6 +22,12 @@ if (typeof email == 'string') {
     if (validateEmail(email)) {
         if (typeof password == 'string') {
             repeat = true
+            server = emailjs.server.connect({
+                user: email,
+                password: password,
+                host: host,
+                ssl: true
+            })
         } else {
             console.log('Type a password as second parameter')
             process.exit()
@@ -39,7 +49,7 @@ function checkFiles(list) {
     let incorrect = []
     list = list.filter(item => extensions.includes(getExtension(item.path)))
     list.forEach(item => {
-        const path = domain + item.path.replace('public', '')
+        const path = getPath(item)
         getFile(path).then(body => {
             completed += 1
             const hash_github = item.sha
@@ -47,7 +57,7 @@ function checkFiles(list) {
             if (hash_domain === hash_github) {
                 console.log(colors.green(`✔ ${hash_github} `) + path)
             } else {
-                incorrect.push(path)
+                incorrect.push(item)
                 console.log(
                     colors.red(`✘ ${hash_domain}`) +
                         ` ${path}\n  ` +
@@ -58,16 +68,37 @@ function checkFiles(list) {
             if (completed === list.length) {
                 const total_incorrects = incorrect.length
                 const total_list = list.length
-                console.log('')
                 console.log(
                     colors[total_incorrects === 0 ? 'green' : 'red'].bold(
-                        `  ${total_list - total_incorrects}/${total_list}`
+                        `  ${total_incorrects} fails`
                     )
                 )
 
                 if (repeat) {
                     if (total_incorrects > 0) {
-                        console.log('Sending email')
+                        console.log('')
+                        console.log('Sending email...')
+                        const subject = incorrect
+                            .map(item => `${item.sha} ${getPath(item)}`)
+                            .join('\n')
+
+                        server.send(
+                            {
+                                text: 'I hope this works',
+                                subject:
+                                    'Those files does no match with the github version:\n' +
+                                    subject,
+                                from: `you <${email}>`,
+                                to: `you <${email}>`
+                                // cc:      "else <else@your-email.com>",
+                            },
+                            function(err, message) {
+                                if (err) {
+                                    console.log(colors.red(err.message))
+                                    console.log('')
+                                } else console.log(colors.green('Email sent!'))
+                            }
+                        )
                     }
 
                     setTimeout(() => {
@@ -82,6 +113,9 @@ function checkFiles(list) {
 }
 
 // UTILS FUNCTIONS
+function getPath(item) {
+    return domain + item.path.replace('public', '')
+}
 
 function getFile(url) {
     return fetch(url)

@@ -45,6 +45,7 @@
         "babel-root-slash-import": "^1.1.0",
         "babel-tape-runner": "^2.0.1",
         "colors": "^1.1.2",
+        "emailjs": "^2.1.0",
         "eslint": "^4.5.0",
         "eslint-plugin-react": "^7.3.0",
         "eslint-watch": "^3.1.2",
