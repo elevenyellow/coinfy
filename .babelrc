@@ -1,8 +1,8 @@
 {
-    "plugins": [
+    plugins: [
         // "babel-dop",
         // "dynamic-import-webpack",
-        ["babel-root-slash-import", { "rootPathSuffix": "src/" }]
+        ['babel-root-slash-import', { rootPathSuffix: 'src/' }]
     ],
-    "presets": [["es2015", { "modules": false }], "react"]
+    presets: ['es2015', 'react'] // "presets": [["es2015", { "modules": false }], "react"]
 }

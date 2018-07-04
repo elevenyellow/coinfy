@@ -49,35 +49,40 @@ export default class AddAsset extends Component {
             .filter(symbol => symbol !== 'Coins')
             .forEach(symbol => {
                 const Coin = Coins[symbol]
-                if (Coin.type === TYPE_COIN) {
-                    this.assetList.push({
-                        name: Coin.name,
-                        symbol: symbol,
-                        type: Coin.type,
-                        url_create: routes.create({ symbol: symbol }),
-                        url_import: routes.import({ symbol: symbol }),
-                        logo: Coin.logo,
-                        labels: Coin.labels,
-                        position: 0,
-                        background_image: '/static/image/coin_background.png',
-                        background_image_opacity: 0.2
-                    })
-                } else if (Coin.type === TYPE_ERC20) {
-                    const deletable =
-                        Coin.custom && getAssetsBySymbol(symbol).length === 0
-                    this.assetList.push({
-                        name: Coin.name,
-                        symbol: symbol,
-                        type: Coin.type,
-                        url_create: routes.create({ symbol: symbol }),
-                        url_import: routes.import({ symbol: symbol }),
-                        logo: Coin.logo,
-                        labels: Coin.labels,
-                        position: 1,
-                        background_image: '/static/image/erc20_background.svg',
-                        background_image_opacity: 0.04,
-                        deletable: deletable
-                    })
+                if (Coin.networks_availables.includes(state.network)) {
+                    if (Coin.type === TYPE_COIN) {
+                        this.assetList.push({
+                            name: Coin.name,
+                            symbol: symbol,
+                            type: Coin.type,
+                            url_create: routes.create({ symbol: symbol }),
+                            url_import: routes.import({ symbol: symbol }),
+                            logo: Coin.logo,
+                            labels: Coin.labels,
+                            position: 0,
+                            background_image:
+                                '/static/image/coin_background.png',
+                            background_image_opacity: 0.2
+                        })
+                    } else if (Coin.type === TYPE_ERC20) {
+                        const deletable =
+                            Coin.custom &&
+                            getAssetsBySymbol(symbol).length === 0
+                        this.assetList.push({
+                            name: Coin.name,
+                            symbol: symbol,
+                            type: Coin.type,
+                            url_create: routes.create({ symbol: symbol }),
+                            url_import: routes.import({ symbol: symbol }),
+                            logo: Coin.logo,
+                            labels: Coin.labels,
+                            position: 1,
+                            background_image:
+                                '/static/image/erc20_background.svg',
+                            background_image_opacity: 0.04,
+                            deletable: deletable
+                        })
+                    }
                 }
             })
 

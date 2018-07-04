@@ -23,12 +23,12 @@ export const networks = {
     [MAINNET]: {
         // mainnet
         network: Bitcoin.networks.bitcoin, // 0x80
-        url: 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io/api/"
+        url: 'https://insight.bitcoin.com' // 'https://blockexplorer.com' // 'https://btc-bitcore4.trezor.io' // 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io"
     },
     [TESTNET]: {
         // testnet
         network: Bitcoin.networks.testnet, // 0xef
-        url: 'https://testnet-bitcore1.trezor.io' // "https://testnet-bitcore1.trezor.io/api/"
+        url: 'https://testnet-bitcore1.trezor.io' // 'https://test-insight.bitpay.com'
     }
 }
 let url, network, network_id, api_url
@@ -58,6 +58,7 @@ export const multiaddress = true // if true we can't change the address on the u
 export const changeaddress = true // if true we change the remaining balance to the next address
 export const labels = 'btc coin'
 export const logo = ASSET_LOGO(symbol)
+export const networks_availables = [MAINNET, TESTNET]
 
 export const derivation_path = {
     mainnet: index => `m/44'/0'/0'/0/${index}`,
@@ -135,7 +136,7 @@ export function getWalletsFromSeed({
     return wallets
 }
 
-export function getWalletFromKeyPair(keypair) {
+function getWalletFromKeyPair(keypair) {
     return { address: keypair.getAddress(), private_key: keypair.toWIF() }
 }
 
@@ -236,7 +237,7 @@ export function getSegwitAddressFromPrivateKey(private_key) {
     return getSegwitAddressFromECPair(ecpair)
 }
 
-export function getSegwitAddressFromECPair(ecpair) {
+function getSegwitAddressFromECPair(ecpair) {
     const redeemScript = getRedeemScript(ecpair)
     const redeemScriptHash = Bitcoin.crypto.hash160(redeemScript)
     const scriptPubKey = Bitcoin.script.scriptHash.output.encode(
@@ -245,7 +246,7 @@ export function getSegwitAddressFromECPair(ecpair) {
     return Bitcoin.address.fromOutputScript(scriptPubKey, network)
 }
 
-export function getRedeemScript(ecpair) {
+function getRedeemScript(ecpair) {
     const pubKey = ecpair.getPublicKeyBuffer()
     const pubKeyHash = Bitcoin.crypto.hash160(pubKey)
     return Bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash)
@@ -291,6 +292,17 @@ export function encryptSeed(seed, password) {
     const seed_encrypted = encryptAES128CTR(seed, password)
     // seed_encrypted.hash = sha3(seed).toString('hex')
     return seed_encrypted
+}
+
+export function decryptSeed(addresses, seed_encrypted, password) {
+    const seed = decryptAES128CTR(seed_encrypted, password)
+    const wallet = getWalletFromSeed({ seed })
+    const wallet2 = getWalletFromSeed({ seed, segwit: false })
+    if (
+        addresses.includes(wallet.address) ||
+        addresses.includes(wallet2.address)
+    )
+        return seed
 }
 
 export function encryptPrivateKey(private_key, password) {
@@ -371,19 +383,8 @@ export function decryptWalletFromSeed(
     }
 }
 
-export function decryptSeed(addresses, seed_encrypted, password) {
-    const seed = decryptAES128CTR(seed_encrypted, password)
-    const wallet = getWalletFromSeed({ seed })
-    const wallet2 = getWalletFromSeed({ seed, segwit: false })
-    if (
-        addresses.includes(wallet.address) ||
-        addresses.includes(wallet2.address)
-    )
-        return seed
-}
-
-export function encryptBIP38(privateKey, password, progressCallback) {
-    return _encryptBIP38(privateKey, password, progressCallback)
+export function encryptBIP38(private_key, password, progressCallback) {
+    return _encryptBIP38(private_key, password, progressCallback)
 }
 
 export function decryptBIP38(encryptedKey, password, progressCallback) {
@@ -402,8 +403,8 @@ export function discoverAddress({ seed, index = 0, segwit = false }) {
         fetchTotals(address).then(totals => {
             resolve({
                 address,
-                balance: totals.balance,
-                totalReceived: totals.totalReceived
+                balance: String(totals.balance),
+                totalReceived: String(totals.totalReceived)
             })
         })
     })
@@ -459,7 +460,7 @@ export function fetchBalance(address) {
             data.unconfirmedBalance < 0
                 ? data.balance + data.unconfirmedBalance
                 : data.balance
-        ).toString()
+        ).toFixed()
     })
 }
 
@@ -587,6 +588,7 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
                         .minus(value_outputs)
                         .minus(tx_raw.fees)
                         .times(-1)
+
                     // raw: tx_raw,
                 }
 
@@ -597,6 +599,8 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
 
                 // We don't show the tx if value is 0
                 if (tx.value.gt(0) || tx.value.lt(0)) {
+                    tx.fees = tx.fees.toFixed()
+                    tx.value = tx.value.toFixed()
                     data.txs.push(tx)
                 } else {
                     data.totalTxs -= 1
@@ -695,42 +699,80 @@ export function getSendProviders() {
 const sendProviders = {
     mainnet: [
         {
+            name: 'BlockCypher',
+            url: `https://live.blockcypher.com/btc/pushtx/`,
+            send: sendRawTxBlockcypher(
+                'https://api.blockcypher.com/v1/btc/main/txs/push'
+            )
+        },
+        {
             name: 'Bitpay.com',
             url: `${networks[MAINNET].url}/tx/send`,
-            send: sendRawTxInsight
+            send: sendRawTxInsight(`${api_url}/tx/send`)
         }
     ],
     testnet: [
         {
+            name: 'BlockCypher',
+            url: `https://live.blockcypher.com/btc-testnet/pushtx/`,
+            send: sendRawTxBlockcypher(
+                'https://api.blockcypher.com/v1/btc/test3/txs/push'
+            )
+        },
+        {
             name: 'Trezor.io',
             url: `${networks[TESTNET].url}/tx/send`, //'https://test-insight.bitpay.com/tx/send',
-            send: sendRawTxInsight
+            send: sendRawTxInsight(`${api_url}/tx/send`)
         }
     ]
 }
 
 // https://en.bitcoin.it/wiki/Transaction_broadcasting
-function sendRawTxInsight(rawTx) {
-    const fetchOptions = {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            rawtx: rawTx
-        })
+export function sendRawTxInsight(url) {
+    return function(rawTx) {
+        const fetchOptions = {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                rawtx: rawTx
+            })
+        }
+        return fetch(url, fetchOptions)
+            .then(response => response.text())
+            .then(response => {
+                try {
+                    return JSON.parse(response)
+                } catch (e) {
+                    return Promise.reject(response)
+                }
+            })
+            .then(data => data.txid)
     }
-    return fetch(`${api_url}/tx/send`, fetchOptions)
-        .then(response => response.text())
-        .then(response => {
-            try {
-                return JSON.parse(response)
-            } catch (e) {
-                return Promise.reject(response)
-            }
-        })
-        .then(data => data.txid)
+}
+
+// https://en.bitcoin.it/wiki/Transaction_broadcasting
+export function sendRawTxBlockcypher(url) {
+    return function(rawTx) {
+        const fetchOptions = {
+            method: 'POST',
+            body: JSON.stringify({
+                tx: rawTx
+            })
+        }
+        return fetch(url, fetchOptions)
+            .then(response => response.text())
+            .then(response => {
+                try {
+                    return JSON.parse(response)
+                } catch (e) {
+                    return Promise.reject(response)
+                }
+            })
+            .then(data => data.tx.hash)
+    }
 }
 
 /*

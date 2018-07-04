@@ -120,7 +120,7 @@ export function getWalletsFromSeed({
     return wallets
 }
 
-export function getWalletFromKeyPair(keypair) {
+function getWalletFromKeyPair(keypair) {
     return { address: keypair.getAddress(), private_key: keypair.toWIF() }
 }
 
@@ -182,7 +182,7 @@ export function getSegwitAddressFromPrivateKey(private_key) {
     return getSegwitAddressFromECPair(ecpair)
 }
 
-export function getSegwitAddressFromECPair(ecpair) {
+function getSegwitAddressFromECPair(ecpair) {
     const redeemScript = getRedeemScript(ecpair)
     const redeemScriptHash = Bitcoin.crypto.hash160(redeemScript)
     const scriptPubKey = Bitcoin.script.scriptHash.output.encode(
@@ -191,7 +191,7 @@ export function getSegwitAddressFromECPair(ecpair) {
     return Bitcoin.address.fromOutputScript(scriptPubKey, network)
 }
 
-export function getRedeemScript(ecpair) {
+function getRedeemScript(ecpair) {
     const pubKey = ecpair.getPublicKeyBuffer()
     const pubKeyHash = Bitcoin.crypto.hash160(pubKey)
     return Bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash)

@@ -9,7 +9,11 @@ import {
 import { sortBy, highest, sum, includesMultiple } from '/api/arrays'
 import { resolveAll } from '/api/promises'
 
-import { validateAddress } from '/api/coins/BTC'
+import {
+    validateAddress,
+    sendRawTxInsight,
+    sendRawTxBlockcypher
+} from '/api/coins/BTC'
 
 import {
     TYPE_COIN,
@@ -68,6 +72,7 @@ export const multiaddress = true // if true we can't change the address on the u
 export const changeaddress = true // if true we change the remaining balance to the next address
 export const labels = 'ltc coin'
 export const logo = ASSET_LOGO(symbol)
+export const networks_availables = [MAINNET, TESTNET]
 
 export const derivation_path = {
     mainnet: index => `m/44'/2'/0'/0/${index}`,
@@ -145,7 +150,7 @@ export function getWalletsFromSeed({
     return wallets
 }
 
-export function getWalletFromKeyPair(keypair) {
+function getWalletFromKeyPair(keypair) {
     return { address: keypair.getAddress(), private_key: keypair.toWIF() }
 }
 
@@ -208,7 +213,7 @@ export function getSegwitAddressFromPrivateKey(private_key) {
     return getSegwitAddressFromECPair(ecpair)
 }
 
-export function getSegwitAddressFromECPair(ecpair) {
+function getSegwitAddressFromECPair(ecpair) {
     const redeemScript = getRedeemScript(ecpair)
     const redeemScriptHash = Bitcoin.crypto.hash160(redeemScript)
     const scriptPubKey = Bitcoin.script.scriptHash.output.encode(
@@ -217,7 +222,7 @@ export function getSegwitAddressFromECPair(ecpair) {
     return Bitcoin.address.fromOutputScript(scriptPubKey, network)
 }
 
-export function getRedeemScript(ecpair) {
+function getRedeemScript(ecpair) {
     const pubKey = ecpair.getPublicKeyBuffer()
     const pubKeyHash = Bitcoin.crypto.hash160(pubKey)
     return Bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash)
@@ -370,8 +375,8 @@ export function discoverAddress({ seed, index = 0, segwit = false }) {
         fetchTotals(address).then(totals => {
             resolve({
                 address,
-                balance: totals.balance,
-                totalReceived: totals.totalReceived
+                balance: String(totals.balance),
+                totalReceived: String(totals.totalReceived)
             })
         })
     })
@@ -558,6 +563,8 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
 
                 // We don't show the tx if value is 0
                 if (tx.value.gt(0) || tx.value.lt(0)) {
+                    tx.fees = tx.fees.toFixed()
+                    tx.value = tx.value.toFixed()
                     data.txs.push(tx)
                 } else {
                     data.totalTxs -= 1
@@ -588,7 +595,7 @@ export function createSimpleTx({
     return fetch(`${api_url}/addrs/${from_addresses.join(',')}/utxo?noCache=1`)
         .then(response => response.json())
         .then(txs => {
-            // console.log(txs)
+            if (txs.length === 0) return
 
             let totalInput = bigNumber(0)
             const totalOutput = bigNumber(amount).plus(fee)
@@ -596,7 +603,7 @@ export function createSimpleTx({
 
             // Adding inputs
             // console.log(txs)
-            sortBy(txs || [], '-amount').forEach((tx, index) => {
+            sortBy(txs, '-amount').forEach((tx, index) => {
                 if (totalInput.lt(totalOutput)) {
                     txb.addInput(tx.txid, tx.vout)
                     txb.inputs[index].satoshis = tx.satoshis
@@ -654,39 +661,23 @@ export function getSendProviders() {
 const sendProviders = {
     mainnet: [
         {
+            name: 'BlockCypher',
+            url: `https://live.blockcypher.com/ltc/pushtx/`,
+            send: sendRawTxBlockcypher(
+                'https://api.blockcypher.com/v1/ltc/main/txs/push'
+            )
+        },
+        {
             name: 'Trezor.io',
             url: `${networks[MAINNET].url}/tx/send`,
-            send: sendRawTxInsight
+            send: sendRawTxInsight(`${api_url}/tx/send`)
         }
     ],
     testnet: [
         {
             name: 'Litecore.io',
             url: `${networks[TESTNET].url}/tx/send`,
-            send: sendRawTxInsight
+            send: sendRawTxInsight(`${api_url}/tx/send`)
         }
     ]
-}
-
-function sendRawTxInsight(rawTx) {
-    const fetchOptions = {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            rawtx: rawTx
-        })
-    }
-    return fetch(`${api_url}/tx/send`, fetchOptions)
-        .then(response => response.text())
-        .then(response => {
-            try {
-                return JSON.parse(response)
-            } catch (e) {
-                return Promise.reject(response)
-            }
-        })
-        .then(data => data.txid)
 }

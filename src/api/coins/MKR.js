@@ -1,4 +1,5 @@
 const { createERC20 } = require('./ERC20')
+const { MAINNET } = require('../../const/')
 
 module.exports = createERC20({
     symbol: 'MKR',
@@ -7,5 +8,6 @@ module.exports = createERC20({
     contract_address: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
     labels: 'marker mrk ethereum token erc20 ecr20',
     coin_decimals: 18,
-    price_decimals: 2
+    price_decimals: 2,
+    networks_availables: [MAINNET]
 })

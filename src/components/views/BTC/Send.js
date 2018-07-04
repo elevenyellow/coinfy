@@ -178,11 +178,14 @@ export default class Send extends Component {
             )
         } else {
             state.view.amount2_input = amount2
-            state.view.amount1_input = this.Coin.cutDecimals(
-                bigNumber(parseNumberAsString(amount2))
-                    .div(price)
-                    .toFixed()
-            )
+            state.view.amount1_input =
+                price === 0
+                    ? 0
+                    : this.Coin.cutDecimals(
+                          bigNumber(parseNumberAsString(amount2))
+                              .div(price)
+                              .toFixed()
+                      )
         }
 
         this.updateAmount(parseNumberAsString(state.view.amount1_input))
@@ -304,7 +307,8 @@ export default class Send extends Component {
                 private_keys: private_keys,
                 amount: state.view.amount, // amount to send
                 fee: state.view.fee,
-                change_address: state.view.change_address
+                change_address: state.view.change_address,
+                current_address: address
             })
                 .then(tx_raw => {
                     this.tx_raw = tx_raw
@@ -400,12 +404,13 @@ export default class Send extends Component {
     }
 
     get isValidForm() {
+        const min = bigNumber(10).pow(this.Coin.coin_decimals * -1)
         return (
             !state.view.address_input_error &&
             state.view.address_input.length > 0 &&
             state.view.password_input.length > 0 &&
-            state.view.amount.gt(0) &&
-            state.view.fee.gt(0) &&
+            state.view.amount.gte(min) &&
+            state.view.fee.gte(0) &&
             !state.view.password_input_invalid
         )
     }

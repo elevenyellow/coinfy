@@ -62,10 +62,11 @@ export const coin_decimals = 18
 export const price_decimals = 0
 export const satoshis = Math.pow(10, coin_decimals)
 export const multiaddress = false
-export const changeaddress = true // if true we change the remaining balance to the next address
+export const changeaddress = false // if true we change the remaining balance to the next address
 export const default_gas_limit = 21000
 export const labels = 'eth coin etereum'
 export const logo = ASSET_LOGO(symbol)
+export const networks_availables = [MAINNET, TESTNET]
 
 export { addHexPrefix } from 'ethereumjs-util'
 
@@ -279,12 +280,12 @@ export function fetchTxs(
         raw_txs.forEach(txRaw => {
             let tx = {
                 txid: txRaw.hash,
-                fees: bigNumber(txRaw.gasUsed),
-                time: txRaw.timeStamp,
+                fees: bigNumber(txRaw.gasUsed).toFixed(),
+                time: Number(txRaw.timeStamp),
                 confirmations: txRaw.confirmations,
                 value: bigNumber(txRaw.value)
                     .div(_satoshis)
-                    .toString()
+                    .toFixed()
                 // raw: txRaw,
             }
             if (txRaw.from.toLowerCase() === address.toLowerCase())
@@ -342,10 +343,12 @@ export function createSimpleTx({
     amount,
     fee,
     gas_limit = default_gas_limit,
-    data
+    data,
+    current_address
 }) {
-    const from_address = from_addresses[0]
-    const private_key = private_keys[0]
+    const index = from_addresses.indexOf(current_address)
+    const from_address = from_addresses[index]
+    const private_key = private_keys[index]
     // const from_address = getAddressFromPrivateKey(private_key)
     // return JSONRpc(url_myetherapi, 'eth_getTransactionCount', [
     //     from_address,
@@ -375,7 +378,7 @@ export function createSimpleTx({
                 gasLimit: sanitizeHex(decToHex(gas_limit)),
                 gasPrice: sanitizeHex(
                     decToHex(
-                        fee
+                        bigNumber(fee)
                             .times(satoshis)
                             .div(gas_limit)
                             .round()
@@ -385,7 +388,13 @@ export function createSimpleTx({
                 // gasLimit: '0x016f2e',
                 nonce: sanitizeHex(e.result),
                 to: sanitizeHex(to_address),
-                value: sanitizeHex(decToHex(amount.times(satoshis).round()))
+                value: sanitizeHex(
+                    decToHex(
+                        bigNumber(amount)
+                            .times(satoshis)
+                            .round()
+                    )
+                )
             }
 
             if (typeof data == 'string') txJson.data = data

@@ -217,8 +217,9 @@ export function importBackup(dataString) {
         const customs = data.customs
         for (let symbol in customs) {
             if (Coins[symbol] === undefined) {
-                if (customs[symbol].type === TYPE_ERC20)
+                if (customs[symbol].type === TYPE_ERC20) {
                     createCustomERC20(customs[symbol])
+                }
             }
         }
 
@@ -335,6 +336,7 @@ export function createCustomERC20(data) {
     data.type = TYPE_ERC20
     data.custom = true
     Coins[symbol] = createERC20(data)
+    // Coins[symbol].networks_availables = [state.network]
     saveCustomLocalstorage(data)
 }
 
