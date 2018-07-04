@@ -47,7 +47,6 @@ prompt.get(schema, function(err, result) {
 })
 
 function init(email) {
-    console.log('')
     console.log('Getting tree list...')
     getTree(respository, file => file.path.indexOf('public') > -1).then(
         list => {
@@ -56,6 +55,7 @@ function init(email) {
     )
 
     function checkFiles(list) {
+        console.log('')
         console.log('Checking list: ' + new Date().toString())
         let completed = 0
         let incorrect = []

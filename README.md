@@ -18,8 +18,8 @@ The output will be something similar to this:
 ```
 Getting tree list...
 Checking list: Tue Jul 03 2018 18:50:34 GMT+0200 (CEST)
-✔ 46cc72aa782beda606cdcb96ebd95bfc8c313bbb https://coinfy.com/static/css/index.css
 ✔ fcd68a44bb1f50ea722420ddb865459cbe269a26 https://coinfy.com/index.html
+✔ 46cc72aa782beda606cdcb96ebd95bfc8c313bbb https://coinfy.com/static/css/index.css
 ✔ 610f961f6e7ee96956157540fcccebb1b32bdfc2 https://coinfy.com/static/bundle/main.js
 ✔ a284dedba3fb97fe4a233bacb8729db908ab37e6 https://coinfy.com/static/bundle/libs.js
 ✔ 5905705df7c34b92140e6b91dba9e9d5111f4d4a https://coinfy.com/static/libs/instascan.min.js
