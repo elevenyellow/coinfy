@@ -6,7 +6,7 @@
 // m/44'/60'/0'/x: Electrum, MyEtherWallet (ledger), Ledger Chrome App, imToken
 // m/44'/coin_type'/account'/0: Coinomi
 
-var bip39 = require('bip39') // npm i -S bip39
+var bip39 = require('bip39crypto') // npm i -S bip39
 var crypto = require('crypto')
 var bitcoin = require('bitcoinjs-lib') // npm i -S bitcoinjs-lib
 var ethereum = require('ethereumjs-util')
