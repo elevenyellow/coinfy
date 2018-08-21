@@ -12,13 +12,21 @@ const base58 = require('bs58')
 const crc32 = require('crc-32')
 
 const HARDENED_THRESHOLD = 0x80000000
-const hdnodeBTC = mnemonicToHdNode(
+const seed1 =
     'civil void tool perfect avocado sweet immense fluid arrow aerobic boil flash'
-)
+const seed2 =
+    'category age design kid snow ketchup give upper toe destroy various concert'
+const hdnode = mnemonicToHdNode(seed2)
+const addrtomatch =
+    'DdzFFzCqrht9rXNV1cKD8gmVpi1WZa3cGGrm5i5S3XWaiWs8jMR8kMZwx395J5zLYmrE4HnRRQhdAYEUmP5YXvGPYJKWB18uvfsCSiqa'
+;('DdzFFzCqrhtCSHdvs127P4YXTea9QQbmj7FhJo4fTWS2R8bQEMj1WS8kedBN1mD7ivb1a6XN1XoXFJv7W9hAV6ewrP5zD3U4VqYJ52ZW')
 
 async function go() {
-    const addr = await deriveAddressWithHdNode(hdnodeBTC, 2147483649)
-    console.log(addr.address)
+    let addr
+    for (let i = 2147400000; i < 2147499999; i++) {
+        addr = await deriveAddressWithHdNode(hdnode, i)
+        if (addrtomatch === addr.address) console.log(addr.address)
+    }
 }
 go()
 
