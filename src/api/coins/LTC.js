@@ -28,7 +28,7 @@ export const networks = {
     [MAINNET]: {
         // mainnet
         network: Bitcoin.networks.litecoin,
-        url: 'https://ltc-bitcore1.trezor.io' // "https://insight.litecore.io"
+        url: 'https://insight.litecore.io' // "https://insight.litecore.io"
     },
     [TESTNET]: {
         // testnet

@@ -58,10 +58,8 @@ export const labels = 'bch coin'
 export const logo = ASSET_LOGO(symbol)
 
 export const derivation_path = {
-    mainnet: index => `m/44'/0'/0'/0/${index}`,
-    mainnetsegwit: index => `m/49'/0'/0'/0/${index}`,
-    testnet: index => `m/44'/1'/0'/0/${index}`,
-    testnetsegwit: index => `m/49'/1'/0'/0/${index}`
+    mainnet: index => `m/44'/145'/0'/0/${index}`,
+    testnet: index => `m/44'/1'/0'/0/${index}`
 }
 
 export function format(value, decimals = coin_decimals) {
@@ -142,6 +140,9 @@ function getSegwitWalletFromKeyPair(keypair) {
     }
 }
 
+// https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md
+// https://github.com/schancel/cashaddr-converter
+// https://github.com/bitcoincashjs/cashaddrjs
 export function isAddress(address) {
     return validateAddress({ symbol, address, network })
 }
