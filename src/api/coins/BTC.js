@@ -28,7 +28,7 @@ export const networks = {
     [TESTNET]: {
         // testnet
         network: Bitcoin.networks.testnet, // 0xef
-        url: 'https://testnet-bitcore1.trezor.io' // 'https://test-insight.bitpay.com'
+        url: 'https://test-insight.bitpay.com' // 'https://testnet-bitcore1.trezor.io'
     }
 }
 let url, network, network_id, api_url
