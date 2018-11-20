@@ -63,7 +63,7 @@
         "tape-run": "^4.0.0",
         "uglify-es-webpack-plugin": "^0.10.0",
         "utf8-bytes": "0.0.1",
-        "webpack": "^3.4.1",
+        "webpack": "^3.12.0",
         "webpack-dev-middleware": "^1.6.1",
         "webpack-hot-middleware": "^2.12.2"
     }
