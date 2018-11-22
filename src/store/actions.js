@@ -165,7 +165,7 @@ export function exportBackup(a_element) {
     )
     // console.log('exportBackup', data)
     downloadFile({
-        data: btoa(JSON.stringify(data)),
+        data: btoa(unescape(encodeURIComponent(JSON.stringify(data)))),
         a: a_element,
         name: 'YOU_MUST_RENAME_THIS_FOR_SECURITY'
     })
@@ -196,7 +196,7 @@ export function openImportAssetsFromFile() {
 
 export function importBackup(dataString) {
     try {
-        let data = JSON.parse(atob(dataString))
+        let data = JSON.parse(decodeURIComponent(escape(atob(dataString))))
 
         // cheking if the file imported is an old version
         if (data.v === undefined || data.network === undefined)
