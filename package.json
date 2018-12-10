@@ -1,6 +1,6 @@
 {
     "name": "coinfy",
-    "version": "1.5.14",
+    "version": "1.5.15",
     "repository": "https://github.com/elevenyellow/coinfy",
     "scripts": {
         "stats": "webpack --config=./webpack/production.js --profile --json > webpack-stats.json | open https://chrisbateman.github.io/webpack-visualizer/",
@@ -16,7 +16,7 @@
     "dependencies": {
         "bignumber.js": "5.0.0",
         "bip38": "2.0.1",
-        "bip39crypto": "2.5.0",
+        "bip39crypto": "^2.6.0",
         "bitcoin-fee": "^1.0.0",
         "bitcoinjs-lib": "^3.3.2",
         "crypto": "1.0.1",
