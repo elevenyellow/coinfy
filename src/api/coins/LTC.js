@@ -42,7 +42,7 @@ export const networks = {
             scriptHash: 0x3a, //  for segwit (start with 2)
             wif: 0xef
         },
-        url: 'https://test-insight.bitpay.com' //'https://testnet.litecore.io'
+        url: 'https://testnet.litecore.io' //'https://test-insight.bitpay.com' //http://explorer.litecointools.com
     }
 }
 let url, network, network_id, api_url
