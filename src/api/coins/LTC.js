@@ -668,16 +668,16 @@ const sendProviders = {
             )
         },
         {
-            name: 'Trezor.io',
-            url: `${networks[MAINNET].url}/tx/send`,
-            send: sendRawTxInsight(`${api_url}/tx/send`)
+            name: 'Litecore',
+            url: `https://insight.litecore.io/tx/send`,
+            send: sendRawTxInsight(`https://insight.litecore.io/api/tx/send`)
         }
     ],
     testnet: [
         {
             name: 'Litecore.io',
-            url: `${networks[TESTNET].url}/tx/send`,
-            send: sendRawTxInsight(`${api_url}/tx/send`)
+            url: `https://testnet.litecore.io/tx/send`,
+            send: sendRawTxInsight(`https://testnet.litecore.io/api/tx/send`)
         }
     ]
 }

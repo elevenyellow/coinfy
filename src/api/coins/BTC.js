@@ -706,9 +706,9 @@ const sendProviders = {
             )
         },
         {
-            name: 'Bitpay.com',
-            url: `${networks[MAINNET].url}/tx/send`,
-            send: sendRawTxInsight(`${api_url}/tx/send`)
+            name: 'Insight',
+            url: `https://insight.bitcoin.com/tx/send`,
+            send: sendRawTxInsight(`https://insight.bitcoin.com/api/tx/send`)
         }
     ],
     testnet: [
@@ -720,9 +720,9 @@ const sendProviders = {
             )
         },
         {
-            name: 'Trezor.io',
-            url: `${networks[TESTNET].url}/tx/send`, //'https://test-insight.bitpay.com/tx/send',
-            send: sendRawTxInsight(`${api_url}/tx/send`)
+            name: 'Bitpay',
+            url: `https://test-insight.bitpay.com/tx/send`,
+            send: sendRawTxInsight(`https://test-insight.bitpay.com/api/tx/send`)
         }
     ]
 }
