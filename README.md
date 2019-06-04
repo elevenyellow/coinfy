@@ -38,7 +38,7 @@ In order to follow this you will need to install the latest version of: [git](ht
 Open a terminal/console and type these commands
 
 ```
-git clone git@github.com:elevenyellow/coinfy.git
+git clone https://github.com/elevenyellow/coinfy.git
 cd coinfy
 npm install
 npm run build
