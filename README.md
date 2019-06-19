@@ -1,5 +1,10 @@
 <p align="center"><a href="https://coinfy.com/"><img width="200"src="https://coinfy.com/static/image/logo2.svg"></a></p>
 
+
+### Coinfy is a free & open source online wallet for Bitcoin, Ethereum and ERC20 tokens. Own your private keys and hold your cryptocurrencies securely in your browser.
+
+<img width="100%" src="https://coinfy.com/static/image/share.png">
+
 ## [FAQ](https://github.com/elevenyellow/coinfy/blob/master/FAQ.md)
 
 ## Security
@@ -33,7 +38,7 @@ In order to follow this you will need to install the latest version of: [git](ht
 Open a terminal/console and type these commands
 
 ```
-git clone git@github.com:elevenyellow/coinfy.git
+git clone https://github.com/elevenyellow/coinfy.git
 cd coinfy
 npm install
 npm run build
