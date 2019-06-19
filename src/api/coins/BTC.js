@@ -23,7 +23,7 @@ export const networks = {
     [MAINNET]: {
         // mainnet
         network: Bitcoin.networks.bitcoin, // 0x80
-        url: 'https://insight.bitcoin.com' // 'https://blockexplorer.com' // 'https://btc-bitcore4.trezor.io' // 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io"
+        url: 'https://insight.bitpay.com' // 'https://insight.bitcoin.com' // 'https://blockexplorer.com' // 'https://btc-bitcore4.trezor.io' // 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io"
     },
     [TESTNET]: {
         // testnet
@@ -116,8 +116,8 @@ export function getWalletsFromSeed({
                     ? derivation_path.mainnetsegwit
                     : derivation_path.mainnet
                 : segwit
-                    ? derivation_path.testnetsegwit
-                    : derivation_path.testnet
+                ? derivation_path.testnetsegwit
+                : derivation_path.testnet
 
     const wallets = []
     const bip32RootKey = getBip32RootKey({ seed, passphase, network })
@@ -521,8 +521,8 @@ function fetchFees() {
     const promises = BitcoinFee.SERVICES.map(service =>
         BitcoinFee.fetchFee(service)
     )
-    return resolveAll(promises).then(
-        fees => (fees.length > 0 ? highest(fees) : Promise.reject(null))
+    return resolveAll(promises).then(fees =>
+        fees.length > 0 ? highest(fees) : Promise.reject(null)
     )
 }
 function calcFee({ fee_per_kb, amount, inputs, outputs, extra_bytes = 0 }) {
@@ -722,7 +722,9 @@ const sendProviders = {
         {
             name: 'Bitpay',
             url: `https://test-insight.bitpay.com/tx/send`,
-            send: sendRawTxInsight(`https://test-insight.bitpay.com/api/tx/send`)
+            send: sendRawTxInsight(
+                `https://test-insight.bitpay.com/api/tx/send`
+            )
         }
     ]
 }
