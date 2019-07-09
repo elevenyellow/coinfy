@@ -707,8 +707,8 @@ const sendProviders = {
         },
         {
             name: 'Insight',
-            url: `https://insight.bitcoin.com/tx/send`,
-            send: sendRawTxInsight(`https://insight.bitcoin.com/api/tx/send`)
+            url: `https://insight.bitpay.com/tx/send`,
+            send: sendRawTxInsight(`https://insight.bitpay.com/api/tx/send`)
         }
     ],
     testnet: [
