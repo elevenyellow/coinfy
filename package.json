@@ -52,7 +52,7 @@
         "express": "^4.14.0",
         "faucet": "0.0.1",
         "lodash.merge": "^4.6.0",
-        "node-fetch": "^2.1.2",
+        "node-fetch": "^2.6.1",
         "path": "^0.12.7",
         "prompt": "^1.0.0",
         "recursive-readdir": "^2.2.1",
