@@ -4,7 +4,7 @@ import {
     isValidPrivate,
     privateToAddress,
     privateToPublic,
-    sha3
+    sha3,
 } from 'ethereumjs-util'
 import EthereumTx from 'ethereumjs-tx'
 import createKeccakHash from 'keccak'
@@ -18,7 +18,7 @@ import {
     MAINNET,
     TESTNET,
     ASSET_LOGO,
-    LOCALSTORAGE_NETWORK
+    LOCALSTORAGE_NETWORK,
 } from '/const/'
 
 // private
@@ -28,14 +28,14 @@ export const networks = {
         // mainnet
         api_url: 'https://api.etherscan.io/api',
         url: 'https://etherscan.io',
-        url_myetherapi: 'https://api.myetherapi.com/eth'
+        url_myetherapi: 'https://api.myetherapi.com/eth',
     },
     [TESTNET]: {
         // mainnet
         api_url: 'https://ropsten.etherscan.io/api',
         url: 'https://ropsten.etherscan.io',
-        url_myetherapi: 'https://api.myetherapi.com/rop'
-    }
+        url_myetherapi: 'https://api.myetherapi.com/rop',
+    },
 }
 
 let network_id, url, url_myetherapi, api_url
@@ -72,7 +72,7 @@ export { addHexPrefix } from 'ethereumjs-util'
 
 export const derivation_path = {
     mainnet: (index = 0) => `m/44'/60'/0'/0/${index}`,
-    testnet: (index = 0) => `m/44'/60'/0'/0/${index}`
+    testnet: (index = 0) => `m/44'/60'/0'/0/${index}`,
 }
 
 export function format(value, decimals = coin_decimals) {
@@ -123,13 +123,13 @@ export function getWalletFromSeed({
     seed,
     index = 0,
     derived_path_function,
-    passphase = ''
+    passphase = '',
 }) {
     return getWalletsFromSeed({
         index,
         seed,
         derived_path_function,
-        passphase
+        passphase,
     })[0]
 }
 
@@ -138,7 +138,7 @@ export function getWalletsFromSeed({
     index = 0,
     count = 1,
     derived_path_function,
-    passphase = ''
+    passphase = '',
 }) {
     if (derived_path_function === undefined)
         derived_path_function = derivation_path.mainnet
@@ -152,7 +152,7 @@ export function getWalletsFromSeed({
         let wallet = key.keyPair.d.toBuffer()
         wallets.push({
             address: addHexPrefix(privateToAddress(wallet).toString('hex')),
-            private_key: wallet.toString('hex')
+            private_key: wallet.toString('hex'),
         })
     }
 
@@ -185,20 +185,29 @@ export function discoverAddress({
     seed,
     contract_address,
     satoshis,
-    index = 0
+    index = 0,
 }) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         const wallet = getWalletFromSeed({
             seed,
-            index
+            index,
         })
         const address = wallet.address
-        fetchBalance(address, contract_address, satoshis).then(balance => {
-            resolve({
-                address,
-                balance
+        fetchBalance(address, contract_address, satoshis)
+            .then((balance) => {
+                resolve({
+                    address,
+                    balance,
+                    fetched: true,
+                })
             })
-        })
+            .catch((error) => {
+                resolve({
+                    address,
+                    balance: '0',
+                    fetched: false,
+                })
+            })
     })
 }
 
@@ -206,16 +215,16 @@ export function discoverWallet(
     { seed, contract_address, satoshis },
     onDiscoverAddress
 ) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         let index = 0
         const addresses = []
-        const onPush = wallet => {
+        const onPush = (wallet) => {
             if (onDiscoverAddress) onDiscoverAddress(wallet)
             addresses.push(wallet.address)
         }
         const onFetch = () => {
             discoverAddress({ seed, index, contract_address, satoshis }).then(
-                wallet => {
+                (wallet) => {
                     const balance = wallet.balance
                     if (balance > 0) {
                         index += 1
@@ -229,7 +238,7 @@ export function discoverWallet(
                         resolve({
                             address: addresses[addresses.length - 1],
                             addresses,
-                            index
+                            index,
                         })
                     }
                 }
@@ -245,8 +254,8 @@ export function fetchBalance(address, contract_address, _satoshis = satoshis) {
             ? `${api_url}?apikey=${api_key}&module=account&action=balance&address=${address}&tag=latest`
             : `${api_url}?apikey=${api_key}&module=account&action=tokenbalance&address=${address}&contractaddress=${contract_address}&tag=latest`
     )
-        .then(response => response.json())
-        .then(response => {
+        .then((response) => response.json())
+        .then((response) => {
             const n = bigNumber(response.result).div(_satoshis)
             return n.isNaN() ? '0' : n.toString()
         })
@@ -266,26 +275,24 @@ export function fetchTxs(
             ? Promise.resolve(txs_cache[address])
             : fetch(
                   `${api_url}?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${api_key}`
-              ).then(response => response.json())
+              ).then((response) => response.json())
 
-    return resolver.then(json => {
+    return resolver.then((json) => {
         txs_cache[address] = json
 
-        const raw_txs = json.result.filter(tx => tx.value > 0)
+        const raw_txs = json.result.filter((tx) => tx.value > 0)
         const data = {
             totalTxs: raw_txs.length,
-            txs: []
+            txs: [],
         }
 
-        raw_txs.forEach(txRaw => {
+        raw_txs.forEach((txRaw) => {
             let tx = {
                 txid: txRaw.hash,
                 fees: bigNumber(txRaw.gasUsed).toFixed(),
                 time: Number(txRaw.timeStamp),
                 confirmations: txRaw.confirmations,
-                value: bigNumber(txRaw.value)
-                    .div(_satoshis)
-                    .toFixed()
+                value: bigNumber(txRaw.value).div(_satoshis).toFixed(),
                 // raw: txRaw,
             }
             if (txRaw.from.toLowerCase() === address.toLowerCase())
@@ -303,15 +310,15 @@ export function fetchTxs(
 const cacheRecomendedFee = {}
 export function fetchRecomendedFee({
     gas_limit = default_gas_limit,
-    use_cache = false
+    use_cache = false,
 }) {
     const first_time = cacheRecomendedFee[default_gas_limit] === undefined
     return first_time || !use_cache
         ? // return JSONRpc(url_myetherapi, 'eth_gasPrice')
           fetch(`${api_url}?module=proxy&action=eth_gasPrice&apikey=${api_key}`)
-              .then(response => response.json())
+              .then((response) => response.json())
               .then(
-                  e =>
+                  (e) =>
                       (cacheRecomendedFee[default_gas_limit] = cutDecimals(
                           bigNumber(hexToDec(e.result))
                               .times(gas_limit)
@@ -326,13 +333,9 @@ export function fetchRecomendedFee({
 // getDataContractMethodCall('balanceOf(address)', '0xf9e4f0c2917d29753eca437f94b2997e597f3510')
 export function getDataContractMethodCall(method_name) {
     let args = Array.prototype.slice.call(arguments, 1)
-    let data = addHexPrefix(
-        sha3(method_name)
-            .toString('hex')
-            .slice(0, 8)
-    )
+    let data = addHexPrefix(sha3(method_name).toString('hex').slice(0, 8))
 
-    data = data + args.map(arg => padLeft(removeHexPrefix(arg), 64)).join('')
+    data = data + args.map((arg) => padLeft(removeHexPrefix(arg), 64)).join('')
     return data
 }
 
@@ -344,7 +347,7 @@ export function createSimpleTx({
     fee,
     gas_limit = default_gas_limit,
     data,
-    current_address
+    current_address,
 }) {
     const index = from_addresses.indexOf(current_address)
     const from_address = from_addresses[index]
@@ -357,8 +360,8 @@ export function createSimpleTx({
     return fetch(
         `${api_url}?module=proxy&action=eth_getTransactionCount&tag=latest&address=${from_address}&apikey=${api_key}`
     )
-        .then(response => response.json())
-        .then(e => {
+        .then((response) => response.json())
+        .then((e) => {
             // console.log('fee', fee.toString())
             // console.log('last_gas_price', last_gas_price.toString())
             // console.log('gas_limit', gas_limit.toString())
@@ -378,10 +381,7 @@ export function createSimpleTx({
                 gasLimit: sanitizeHex(decToHex(gas_limit)),
                 gasPrice: sanitizeHex(
                     decToHex(
-                        bigNumber(fee)
-                            .times(satoshis)
-                            .div(gas_limit)
-                            .round()
+                        bigNumber(fee).times(satoshis).div(gas_limit).round()
                     )
                 ),
                 // gasPrice: '0x04a817c800',
@@ -389,12 +389,8 @@ export function createSimpleTx({
                 nonce: sanitizeHex(e.result),
                 to: sanitizeHex(to_address),
                 value: sanitizeHex(
-                    decToHex(
-                        bigNumber(amount)
-                            .times(satoshis)
-                            .round()
-                    )
-                )
+                    decToHex(bigNumber(amount).times(satoshis).round())
+                ),
             }
 
             if (typeof data == 'string') txJson.data = data
@@ -487,16 +483,16 @@ const sendProviders = {
         {
             name: 'Etherscan',
             url: 'https://etherscan.io/pushTx',
-            send: sendRawEtherscan
-        }
+            send: sendRawEtherscan,
+        },
     ],
     testnet: [
         {
             name: 'Etherscan',
             url: 'https://ropsten.etherscan.io/pushTx',
-            send: sendRawEtherscan
-        }
-    ]
+            send: sendRawEtherscan,
+        },
+    ],
 }
 
 export function sendRawEtherscan(rawTx) {
@@ -505,8 +501,8 @@ export function sendRawEtherscan(rawTx) {
         `${api_url}?module=proxy&action=eth_sendRawTransaction&hex=${rawTx}&apikey=${api_key}`
         // { method: 'POST', body: rawTx }
     )
-        .then(response => response.json())
-        .then(e => {
+        .then((response) => response.json())
+        .then((e) => {
             if (e.error !== undefined)
                 return Promise.reject(JSON.stringify(e.error))
             return e.result
@@ -515,9 +511,7 @@ export function sendRawEtherscan(rawTx) {
 
 function toChecksumAddress(address) {
     address = address.toLowerCase().replace('0x', '')
-    let hash = createKeccakHash('keccak256')
-        .update(address)
-        .digest('hex')
+    let hash = createKeccakHash('keccak256').update(address).digest('hex')
     let ret = '0x'
 
     for (let i = 0; i < address.length; i++) {

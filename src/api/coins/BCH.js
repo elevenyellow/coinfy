@@ -4,7 +4,7 @@ import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
 import { formatCoin, limitDecimals, bigNumber } from '/api/numbers'
 import {
     decryptBIP38 as _decryptBIP38,
-    encryptBIP38 as _encryptBIP38
+    encryptBIP38 as _encryptBIP38,
 } from '/api/crypto'
 import { sortBy, highest, sum, includesMultiple } from '/api/arrays'
 import { resolveAll } from '/api/promises'
@@ -16,18 +16,18 @@ import {
     MAINNET,
     TESTNET,
     ASSET_LOGO,
-    LOCALSTORAGE_NETWORK
+    LOCALSTORAGE_NETWORK,
 } from '/const/'
 
 export const networks = {
     [MAINNET]: {
         network: Bitcoin.networks.bitcoin,
-        url: 'https://bch.blockdozer.com'
+        url: 'https://bch.blockdozer.com',
     },
     [TESTNET]: {
         network: Bitcoin.networks.testnet,
-        url: 'https://tbch.blockdozer.com'
-    }
+        url: 'https://tbch.blockdozer.com',
+    },
 }
 let url, network, network_id, api_url
 export function setupNetwork(id, networks) {
@@ -58,8 +58,8 @@ export const labels = 'bch coin'
 export const logo = ASSET_LOGO(symbol)
 
 export const derivation_path = {
-    mainnet: index => `m/44'/145'/0'/0/${index}`,
-    testnet: index => `m/44'/1'/0'/0/${index}`
+    mainnet: (index) => `m/44'/145'/0'/0/${index}`,
+    testnet: (index) => `m/44'/1'/0'/0/${index}`,
 }
 
 export function format(value, decimals = coin_decimals) {
@@ -84,13 +84,13 @@ export function getWalletFromSeed({
     seed,
     index = 0,
     derived_path_function,
-    passphase = ''
+    passphase = '',
 }) {
     return getWalletsFromSeed({
         seed,
         index,
         derived_path_function,
-        passphase
+        passphase,
     })[0]
 }
 
@@ -99,7 +99,7 @@ export function getWalletsFromSeed({
     index = 0,
     count = 1,
     derived_path_function,
-    passphase = ''
+    passphase = '',
 }) {
     if (derived_path_function === undefined)
         derived_path_function =
@@ -136,7 +136,7 @@ function getSegwitWalletFromKeyPair(keypair) {
     )
     return {
         address: Bitcoin.address.fromOutputScript(scriptPubKey, network),
-        private_key: keypair.toWIF()
+        private_key: keypair.toWIF(),
     }
 }
 
@@ -283,7 +283,7 @@ export function getNextWalletFromSeed(
     if (wallet)
         return getWalletFromSeed({
             seed: wallet.seed,
-            index: wallet.index + 1
+            index: wallet.index + 1,
         })
 }
 
@@ -320,33 +320,43 @@ export function decryptBIP38(encryptedKey, password, progressCallback) {
 
 // fetchs
 export function discoverAddress({ seed, index = 0 }) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         const wallet = getWalletFromSeed({
             seed,
-            index
+            index,
         })
         const address = wallet.address
-        fetchTotals(address).then(totals => {
-            resolve({
-                address,
-                balance: totals.balance,
-                totalReceived: totals.totalReceived
+        fetchTotals(address)
+            .then((totals) => {
+                resolve({
+                    address,
+                    balance: String(totals.balance),
+                    totalReceived: String(totals.totalReceived),
+                    fetched: true,
+                })
             })
-        })
+            .catch((error) => {
+                resolve({
+                    address,
+                    balance: '0',
+                    totalReceived: '0',
+                    fetched: false,
+                })
+            })
     })
 }
 
 export function discoverWallet({ seed }, onDiscoverAddress) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         let index = 0
         let segwit = false
         const addresses = []
-        const onPush = wallet => {
+        const onPush = (wallet) => {
             if (onDiscoverAddress) onDiscoverAddress(wallet)
             addresses.push(wallet.address)
         }
         const onFetch = () => {
-            discoverAddress({ seed, index, segwit }).then(wallet => {
+            discoverAddress({ seed, index, segwit }).then((wallet) => {
                 // console.log(seed, index, wallet)
                 if (wallet.totalReceived > 0) {
                     index += 1
@@ -365,7 +375,7 @@ export function discoverWallet({ seed }, onDiscoverAddress) {
                         address: addresses[addresses.length - 1],
                         addresses,
                         index,
-                        segwit
+                        segwit,
                     })
                 }
             })
@@ -381,7 +391,7 @@ export function fetchBalance(address) {
     //         // return Number(balance) / satoshis
     //         return bigNumber(balance).div(satoshis).toString()
     //     })
-    return fetchTotals(address).then(data => {
+    return fetchTotals(address).then((data) => {
         return bigNumber(
             data.unconfirmedBalance < 0
                 ? data.balance + data.unconfirmedBalance
@@ -396,8 +406,8 @@ export function fetchRecomendedFee() {
 // https://ltc-bitcore1.trezor.io/api/utils/estimatefee
 function fetchFees() {
     return fetch(`${api_url}/utils/estimatefee`)
-        .then(response => response.json())
-        .then(json => json[2])
+        .then((response) => response.json())
+        .then((json) => json[2])
 }
 
 export function fetchTxs(addresses, from = 0, to = from + 25) {
@@ -406,19 +416,19 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
             ','
         )}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${from}&to=${to}`
     )
-        .then(response => response.json())
-        .then(json => {
+        .then((response) => response.json())
+        .then((json) => {
             const data = {
                 totalTxs: json.totalItems,
-                txs: []
+                txs: [],
             }
-            json.items.forEach(tx_raw => {
+            json.items.forEach((tx_raw) => {
                 const value_inputs = tx_raw.vin
-                    .filter(input => addresses.includes(input.addr))
+                    .filter((input) => addresses.includes(input.addr))
                     .reduce((v, input) => v.add(input.value), bigNumber(0))
 
                 const value_outputs = tx_raw.vout
-                    .filter(output => {
+                    .filter((output) => {
                         const pubkey = output.scriptPubKey
                         return (
                             pubkey &&
@@ -436,7 +446,7 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
                     value: value_inputs
                         .minus(value_outputs)
                         .minus(tx_raw.fees)
-                        .times(-1)
+                        .times(-1),
                     // raw: tx_raw,
                 }
 
@@ -459,8 +469,8 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
 
 function fetchTotals(address) {
     return fetch(`${api_url}/addr/${address}`)
-        .then(response => response.json())
-        .then(totals => totals)
+        .then((response) => response.json())
+        .then((totals) => totals)
 }
 
 export function createSimpleTx({
@@ -469,14 +479,14 @@ export function createSimpleTx({
     private_keys,
     amount,
     fee,
-    change_address
+    change_address,
 }) {
     // const from_address = getAddressFromPrivateKey(private_key)
     const last_address = from_addresses[from_addresses.length - 1]
     change_address = isAddress(change_address) ? change_address : last_address
     return fetch(`${api_url}/addrs/${from_addresses.join(',')}/utxo?noCache=1`)
-        .then(response => response.json())
-        .then(txs => {
+        .then((response) => response.json())
+        .then((txs) => {
             // console.log(txs)
 
             let totalInput = bigNumber(0)
@@ -545,16 +555,16 @@ const sendProviders = {
         {
             name: 'Blockdozer.com',
             url: `${networks[MAINNET].url}/tx/send`,
-            send: sendRawTxInsight
-        }
+            send: sendRawTxInsight,
+        },
     ],
     testnet: [
         {
             name: 'Blockdozer.com',
             url: `${networks[TESTNET].url}/tx/send`,
-            send: sendRawTxInsight
-        }
-    ]
+            send: sendRawTxInsight,
+        },
+    ],
 }
 
 function sendRawTxInsight(rawTx) {
@@ -562,20 +572,20 @@ function sendRawTxInsight(rawTx) {
         method: 'POST',
         headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            rawtx: rawTx
-        })
+            rawtx: rawTx,
+        }),
     }
     return fetch(`${api_url}/tx/send`, fetchOptions)
-        .then(response => response.text())
-        .then(response => {
+        .then((response) => response.text())
+        .then((response) => {
             try {
                 return JSON.parse(response)
             } catch (e) {
                 return Promise.reject(response)
             }
         })
-        .then(data => data.txid)
+        .then((data) => data.txid)
 }

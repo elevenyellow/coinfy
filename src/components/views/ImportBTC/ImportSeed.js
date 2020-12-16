@@ -14,7 +14,7 @@ import state from '/store/state'
 import {
     isAssetRegisteredBySeed,
     getAssetId,
-    getParamsFromLocation
+    getParamsFromLocation,
 } from '/store/getters'
 import { routes, Show } from '/store/router'
 
@@ -31,7 +31,7 @@ import {
     FormField,
     FormFieldLeft,
     FormFieldRight,
-    FormFieldButtons
+    FormFieldButtons,
 } from '/components/styled/Form'
 import {
     ItemsList,
@@ -39,12 +39,12 @@ import {
     ItemListInner,
     ItemListItemRadio,
     ItemListItemLeft,
-    ItemListItemRight
+    ItemListItemRight,
 } from '/components/styled/ItemList'
 
 const STEP = {
     typing: 'typing',
-    addresses: 'addresses'
+    addresses: 'addresses',
 }
 
 export default class ImportPrivate extends Component {
@@ -62,7 +62,7 @@ export default class ImportPrivate extends Component {
         state.view.address_selected = 0
         collector.destroy()
 
-        this.observer = createObserver(m => this.forceUpdate())
+        this.observer = createObserver((m) => this.forceUpdate())
         this.observer.observe(state.view)
         this.observer.observe(state.view.addresses, 'length')
 
@@ -95,9 +95,8 @@ export default class ImportPrivate extends Component {
             //     seed: seed
             // })
 
-            state.view.is_valid_seed =
-                validateSeed(seed) &&
-                seed.trim().split(/\s+/g).length === recovery_phrase_words
+            state.view.is_valid_seed = validateSeed(seed) //&&
+            // seed.trim().split(/\s+/g).length === recovery_phrase_words
 
             if (isAssetRegisteredBySeed(this.Coin.symbol, seed)) {
                 state.view.seed_input_error = 'You already have this asset'
@@ -145,28 +144,34 @@ export default class ImportPrivate extends Component {
         const collector = collect()
         const addresses = state.view.addresses
         state.view.discovering = true
-        this.Coin.discoverWallet({ seed }, wallet => {
+        this.Coin.discoverWallet({ seed }, (wallet) => {
             // console.log(addresses === state.view.addresses)
-            if (addresses === state.view.addresses)
-                state.view.addresses.push(wallet)
-        }).then(wallet => {
-            // console.log(wallet)
             if (addresses === state.view.addresses) {
-                this.wallet = wallet
-                this.wallet.seed = seed
-                state.view.discovering = false
+                state.view.addresses.push(wallet)
             }
         })
+            .then((wallet) => {
+                // console.log(wallet)
+                if (addresses === state.view.addresses) {
+                    this.wallet = wallet
+                    this.wallet.seed = seed
+                    state.view.discovering = false
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            })
         collector.emit()
     }
 
     onLoadMore() {
         state.view.discovering = true
-        this.Coin.discoverAddress(this.wallet).then(wallet => {
+        this.Coin.discoverAddress(this.wallet).then((wallet) => {
             // console.log(wallet)
             const collector = collect()
             this.wallet.index += 1
             state.view.discovering = false
+            console.log(1, wallet)
             state.view.addresses.push(wallet)
             collector.emit()
         })
@@ -192,7 +197,7 @@ export default class ImportPrivate extends Component {
         const address = this.Coin.multiaddress
             ? this.wallet.address
             : state.view.addresses[state.view.address_selected].address
-        const addresses = state.view.addresses.map(wallet => wallet.address)
+        const addresses = state.view.addresses.map((wallet) => wallet.address)
         const asset = createAsset(this.Coin.type, symbol, address, addresses)
         const asset_id = getAssetId(asset)
         setSeed(asset_id, seed, state.view.seed_password)
@@ -248,7 +253,7 @@ export default class ImportPrivate extends Component {
             onBack: this.onBack,
             onChangeSelected: this.onChangeSelected,
             onLoadMore: this.onLoadMore,
-            onSubmit: this.onSubmit
+            onSubmit: this.onSubmit,
         })
     }
 }
@@ -275,7 +280,7 @@ function ImportPrivateTemplate({
     onBack,
     onChangeSelected,
     onLoadMore,
-    onSubmit
+    onSubmit,
 }) {
     return (
         <div>
@@ -380,7 +385,7 @@ function ImportPrivateTemplate({
                                         <Show if={!Coin.multiaddress}>
                                             <ItemListItemRadio>
                                                 <RadioButton
-                                                    onClick={e =>
+                                                    onClick={(e) =>
                                                         onChangeSelected(index)
                                                     }
                                                     checked={selected}
@@ -390,7 +395,9 @@ function ImportPrivateTemplate({
                                         <ItemListItemLeft>
                                             {addr.address}
                                         </ItemListItemLeft>
-                                        <ItemListItemRight>
+                                        <ItemListItemRight
+                                            error={addr.fetched !== true}
+                                        >
                                             {`${addr.balance} ${Coin.symbol}`}
                                         </ItemListItemRight>
                                     </ItemListInner>

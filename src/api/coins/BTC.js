@@ -5,7 +5,7 @@ import { encryptAES128CTR, decryptAES128CTR } from '/api/crypto'
 import { formatCoin, limitDecimals, bigNumber } from '/api/numbers'
 import {
     decryptBIP38 as _decryptBIP38,
-    encryptBIP38 as _encryptBIP38
+    encryptBIP38 as _encryptBIP38,
 } from '/api/crypto'
 import { sortBy, highest, sum, includesMultiple } from '/api/arrays'
 import { resolveAll } from '/api/promises'
@@ -15,7 +15,7 @@ import {
     MAINNET,
     TESTNET,
     ASSET_LOGO,
-    LOCALSTORAGE_NETWORK
+    LOCALSTORAGE_NETWORK,
 } from '/const/'
 
 // network
@@ -23,13 +23,13 @@ export const networks = {
     [MAINNET]: {
         // mainnet
         network: Bitcoin.networks.bitcoin, // 0x80
-        url: 'https://insight.bitpay.com' // 'https://insight.bitcoin.com' // 'https://blockexplorer.com' // 'https://btc-bitcore4.trezor.io' // 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io"
+        url: 'https://btc.bitnovo.com/insight', // 'https://insight.bitcoin.com' // 'https://blockexplorer.com' // 'https://btc-bitcore4.trezor.io' // 'https://insight.bitpay.com' // "https://btc-bitcore1.trezor.io"
     },
     [TESTNET]: {
         // testnet
         network: Bitcoin.networks.testnet, // 0xef
-        url: 'https://test-insight.bitpay.com' // 'https://testnet-bitcore1.trezor.io'
-    }
+        url: 'https://test-insight.bitpay.com', // 'https://testnet-bitcore1.trezor.io'
+    },
 }
 let url, network, network_id, api_url
 export function setupNetwork(id, networks) {
@@ -61,10 +61,10 @@ export const logo = ASSET_LOGO(symbol)
 export const networks_availables = [MAINNET, TESTNET]
 
 export const derivation_path = {
-    mainnet: index => `m/44'/0'/0'/0/${index}`,
-    mainnetsegwit: index => `m/49'/0'/0'/0/${index}`,
-    testnet: index => `m/44'/1'/0'/0/${index}`,
-    testnetsegwit: index => `m/49'/1'/0'/0/${index}`
+    mainnet: (index) => `m/44'/0'/0'/0/${index}`,
+    mainnetsegwit: (index) => `m/49'/0'/0'/0/${index}`,
+    testnet: (index) => `m/44'/1'/0'/0/${index}`,
+    testnetsegwit: (index) => `m/49'/1'/0'/0/${index}`,
 }
 
 export function format(value, decimals = coin_decimals) {
@@ -90,14 +90,14 @@ export function getWalletFromSeed({
     index = 0,
     derived_path_function,
     passphase = '',
-    segwit = true
+    segwit = true,
 }) {
     return getWalletsFromSeed({
         seed,
         index,
         derived_path_function,
         passphase,
-        segwit
+        segwit,
     })[0]
 }
 
@@ -107,7 +107,7 @@ export function getWalletsFromSeed({
     count = 1,
     derived_path_function,
     passphase = '',
-    segwit = true
+    segwit = true,
 }) {
     if (derived_path_function === undefined)
         derived_path_function =
@@ -152,7 +152,7 @@ function getSegwitWalletFromKeyPair(keypair) {
     )
     return {
         address: Bitcoin.address.fromOutputScript(scriptPubKey, network),
-        private_key: keypair.toWIF()
+        private_key: keypair.toWIF(),
     }
 }
 
@@ -350,7 +350,7 @@ export function getNextWalletFromSeed(
         return getWalletFromSeed({
             seed: wallet.seed,
             index: wallet.index + 1,
-            segwit: wallet.segwit
+            segwit: wallet.segwit,
         })
 }
 
@@ -393,34 +393,44 @@ export function decryptBIP38(encryptedKey, password, progressCallback) {
 
 // fetchs
 export function discoverAddress({ seed, index = 0, segwit = false }) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         const wallet = getWalletFromSeed({
             seed,
             index,
-            segwit
+            segwit,
         })
         const address = wallet.address
-        fetchTotals(address).then(totals => {
-            resolve({
-                address,
-                balance: String(totals.balance),
-                totalReceived: String(totals.totalReceived)
+        fetchTotals(address)
+            .then((totals) => {
+                resolve({
+                    address,
+                    balance: String(totals.balance),
+                    totalReceived: String(totals.totalReceived),
+                    fetched: true,
+                })
             })
-        })
+            .catch((error) => {
+                resolve({
+                    address,
+                    balance: '0',
+                    totalReceived: '0',
+                    fetched: false,
+                })
+            })
     })
 }
 
 export function discoverWallet({ seed }, onDiscoverAddress) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         let index = 0
         let segwit = false
         const addresses = []
-        const onPush = wallet => {
+        const onPush = (wallet) => {
             if (onDiscoverAddress) onDiscoverAddress(wallet)
             addresses.push(wallet.address)
         }
         const onFetch = () => {
-            discoverAddress({ seed, index, segwit }).then(wallet => {
+            discoverAddress({ seed, index, segwit }).then((wallet) => {
                 // console.log(seed, index, wallet)
                 if (wallet.totalReceived > 0) {
                     index += 1
@@ -439,7 +449,7 @@ export function discoverWallet({ seed }, onDiscoverAddress) {
                         address: addresses[addresses.length - 1],
                         addresses,
                         index,
-                        segwit
+                        segwit,
                     })
                 }
             })
@@ -455,7 +465,7 @@ export function fetchBalance(address) {
     //         // return Number(balance) / satoshis
     //         return bigNumber(balance).div(satoshis).toString()
     //     })
-    return fetchTotals(address).then(data => {
+    return fetchTotals(address).then((data) => {
         return bigNumber(
             data.unconfirmedBalance < 0
                 ? data.balance + data.unconfirmedBalance
@@ -469,7 +479,7 @@ export function fetchRecomendedFee({
     addresses,
     amount = 0,
     outputs = 1,
-    use_cache = false
+    use_cache = false,
 }) {
     const address = addresses.join(',')
     const cache = cacheRecomendedFee[address]
@@ -481,24 +491,24 @@ export function fetchRecomendedFee({
     const promise =
         first_time || !use_cache
             ? fetchFees()
-                  .catch(e =>
+                  .catch((e) =>
                       Promise.reject(
                           "BTC.fetchRecomendedFee: We couldn't fetch fee prices"
                       )
                   )
-                  .then(fee => {
+                  .then((fee) => {
                       cacheRecomendedFee[address] = { fee_per_kb: fee }
                       return fetch(`${api_url}/addrs/${address}/utxo?noCache=1`)
                   })
-                  .then(response => response.json())
-                  .catch(e =>
+                  .then((response) => response.json())
+                  .catch((e) =>
                       Promise.reject(
                           "BTC.fetchRecomendedFee: We couldn't fetch utxo"
                       )
                   )
-                  .then(utxo => {
+                  .then((utxo) => {
                       const inputs = sortBy(utxo || [], '-amount').map(
-                          input => input.amount
+                          (input) => input.amount
                       )
                       return (cacheRecomendedFee[address].inputs = inputs)
                   })
@@ -511,17 +521,17 @@ export function fetchRecomendedFee({
             amount: amount || 0,
             fee_per_kb: address_data.fee_per_kb,
             inputs: inputs,
-            outputs: outputs + 1 // extra output for change_address
+            outputs: outputs + 1, // extra output for change_address
         }
         // console.log(data)
         return calcFee(data)
     })
 }
 function fetchFees() {
-    const promises = BitcoinFee.SERVICES.map(service =>
+    const promises = BitcoinFee.SERVICES.map((service) =>
         BitcoinFee.fetchFee(service)
     )
-    return resolveAll(promises).then(fees =>
+    return resolveAll(promises).then((fees) =>
         fees.length > 0 ? highest(fees) : Promise.reject(null)
     )
 }
@@ -557,19 +567,19 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
             ','
         )}/txs?noScriptSig=1&noAsm=1&noSpent=0&from=${from}&to=${to}`
     )
-        .then(response => response.json())
-        .then(json => {
+        .then((response) => response.json())
+        .then((json) => {
             const data = {
                 totalTxs: json.totalItems,
-                txs: []
+                txs: [],
             }
-            json.items.forEach(tx_raw => {
+            json.items.forEach((tx_raw) => {
                 const value_inputs = tx_raw.vin
-                    .filter(input => addresses.includes(input.addr))
+                    .filter((input) => addresses.includes(input.addr))
                     .reduce((v, input) => v.add(input.value), bigNumber(0))
 
                 const value_outputs = tx_raw.vout
-                    .filter(output => {
+                    .filter((output) => {
                         const pubkey = output.scriptPubKey
                         return (
                             pubkey &&
@@ -587,7 +597,7 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
                     value: value_inputs
                         .minus(value_outputs)
                         .minus(tx_raw.fees)
-                        .times(-1)
+                        .times(-1),
 
                     // raw: tx_raw,
                 }
@@ -613,8 +623,8 @@ export function fetchTxs(addresses, from = 0, to = from + 25) {
 
 function fetchTotals(address) {
     return fetch(`${api_url}/addr/${address}`)
-        .then(response => response.json())
-        .then(totals => totals)
+        .then((response) => response.json())
+        .then((totals) => totals)
 }
 
 export function createSimpleTx({
@@ -623,14 +633,14 @@ export function createSimpleTx({
     private_keys,
     amount,
     fee,
-    change_address
+    change_address,
 }) {
     // const from_address = getAddressFromPrivateKey(private_key)
     const last_address = from_addresses[from_addresses.length - 1]
     change_address = isAddress(change_address) ? change_address : last_address
     return fetch(`${api_url}/addrs/${from_addresses.join(',')}/utxo?noCache=1`)
-        .then(response => response.json())
-        .then(txs => {
+        .then((response) => response.json())
+        .then((txs) => {
             // console.log(txs)
 
             let totalInput = bigNumber(0)
@@ -703,13 +713,13 @@ const sendProviders = {
             url: `https://live.blockcypher.com/btc/pushtx/`,
             send: sendRawTxBlockcypher(
                 'https://api.blockcypher.com/v1/btc/main/txs/push'
-            )
+            ),
         },
         {
             name: 'Insight',
             url: `https://insight.bitpay.com/tx/send`,
-            send: sendRawTxInsight(`https://insight.bitpay.com/api/tx/send`)
-        }
+            send: sendRawTxInsight(`https://insight.bitpay.com/api/tx/send`),
+        },
     ],
     testnet: [
         {
@@ -717,63 +727,63 @@ const sendProviders = {
             url: `https://live.blockcypher.com/btc-testnet/pushtx/`,
             send: sendRawTxBlockcypher(
                 'https://api.blockcypher.com/v1/btc/test3/txs/push'
-            )
+            ),
         },
         {
             name: 'Bitpay',
             url: `https://test-insight.bitpay.com/tx/send`,
             send: sendRawTxInsight(
                 `https://test-insight.bitpay.com/api/tx/send`
-            )
-        }
-    ]
+            ),
+        },
+    ],
 }
 
 // https://en.bitcoin.it/wiki/Transaction_broadcasting
 export function sendRawTxInsight(url) {
-    return function(rawTx) {
+    return function (rawTx) {
         const fetchOptions = {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                rawtx: rawTx
-            })
+                rawtx: rawTx,
+            }),
         }
         return fetch(url, fetchOptions)
-            .then(response => response.text())
-            .then(response => {
+            .then((response) => response.text())
+            .then((response) => {
                 try {
                     return JSON.parse(response)
                 } catch (e) {
                     return Promise.reject(response)
                 }
             })
-            .then(data => data.txid)
+            .then((data) => data.txid)
     }
 }
 
 // https://en.bitcoin.it/wiki/Transaction_broadcasting
 export function sendRawTxBlockcypher(url) {
-    return function(rawTx) {
+    return function (rawTx) {
         const fetchOptions = {
             method: 'POST',
             body: JSON.stringify({
-                tx: rawTx
-            })
+                tx: rawTx,
+            }),
         }
         return fetch(url, fetchOptions)
-            .then(response => response.text())
-            .then(response => {
+            .then((response) => response.text())
+            .then((response) => {
                 try {
                     return JSON.parse(response)
                 } catch (e) {
                     return Promise.reject(response)
                 }
             })
-            .then(data => data.tx.hash)
+            .then((data) => data.tx.hash)
     }
 }
 

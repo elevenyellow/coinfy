@@ -7,10 +7,10 @@ export const ItemsList = styled.div`
 
 export const ItemList = styled.div`
     clear: both;
-    color: ${props => (props.selected ? 'black' : styles.color.front3)};
+    color: ${(props) => (props.selected ? 'black' : styles.color.front3)};
     border-radius: 5px;
     margin-bottom: 10px;
-    background-color: ${props =>
+    background-color: ${(props) =>
         props.selected ? styles.color.background1 : 'transparent'};
 `
 
@@ -41,10 +41,12 @@ export const ItemListItemLeft = styled.div`
         font-size: 14px;
     }
 `
+
 export const ItemListItemRight = styled.div`
     float: right;
     font-weight: bold;
     padding-top: 12px;
+    color: ${(p) => (p.error ? 'red' : 'inherit')};
 
     ${styles.media.fourth} {
         float: none;
