@@ -1,3 +1,8 @@
+# THIS PROJECT IS NOT LONGER MAINTAINED. USE IT AT YOUR OWN RISK.
+
+
+
+
 <p align="center"><a href="https://coinfy.com/"><img width="200"src="https://coinfy.com/static/image/logo2.svg"></a></p>
 
 
